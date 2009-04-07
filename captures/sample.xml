@@ -1,0 +1,46 @@
+
+<user>
+  <id>9711 </id>
+  <firstname>Testuser </firstname>
+  <lastname>Lapenna </lastname>
+  <cityshortname>SF </cityshortname>
+  <cityid>23 </cityid>
+  <gender>male </gender>
+  <sendtwitter>false </sendtwitter>
+  <checkin>
+    <checkinid> </checkinid>
+    <venueid> </venueid>
+    <aliasid> </aliasid>
+    <venuename> </venuename>
+    <address> </address>
+    <crossstreet> </crossstreet>
+    <shout> </shout>
+    <geolat> </geolat>
+    <geolong> </geolong>
+    <xdatetime> </xdatetime>
+    <relative_time>0 seconds ago </relative_time>
+  </checkin>
+  <badges>
+    <badge>
+      <name>Newbie </name>
+      <icon>default_off.png </icon>
+      <description> </description>
+    </badge>
+    <badge>
+      <name>Adventurer </name>
+      <icon>default_off.png </icon>
+      <description> </description>
+    </badge>
+    <badge>
+      <name>Explorer </name>
+      <icon>default_off.png </icon>
+      <description> </description>
+    </badge>
+  </badges>
+</user>
+<checkincomplete>
+  <message>OK! We&apos;ve got you @ Noc Noc.
+  </message>
+  <url>
+    <![CDATA[
+    <style>

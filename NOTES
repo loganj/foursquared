@@ -1,0 +1,99 @@
+URL for location suggestion provider.
+curl 'http://playfoursquare.com/venues?q=pie&cityid=23'
+
++ CHECKIN Example
+http://m.playfoursquare.com/checkin?privacy=0&security_token=&shout=&twitter=0&venue=Noc+Noc
+
+-- Request Headers
+Host: m.playfoursquare.com
+User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.8) Gecko/2009032711 Ubuntu/8.10 (intrepid) Firefox/3.0.8
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-us,en;q=0.5
+Accept-Encoding: gzip,deflate
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+Keep-Alive: 300
+Connection: keep-alive
+Referer: http://m.playfoursquare.com/checkin
+Cookie: SESSIONID=bcf5bd566449ba0a2be9d7dc8bf02cb4; cookieCityID=23
+
+-- Response Headers
+Date: Sun, 05 Apr 2009 16:10:05 GMT
+Server: Apache
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+Content-Length: 2809
+Content-Type: text/html
+Via: 1.1 www.playfoursquare.com
+Keep-Alive: timeout=15, max=100
+Connection: Keep-Alive
+
+
+
++ DELETE TIP Example:
+http://playfoursquare.com/user?task=delete_tip&tid=5682&listid=1780
+Host: playfoursquare.com
+
+-- Request Headers
+User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.8) Gecko/2009032711 Ubuntu/8.10 (intrepid) Firefox/3.0.8
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-us,en;q=0.5
+Accept-Encoding: gzip,deflate
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+Keep-Alive: 300
+Connection: keep-alive
+Referer: http://playfoursquare.com/user/1818
+Cookie: SESSIONID=b5ca140cc5cbb59838fee18e8e64255b; cookieCityID=23
+
+-- Response Headers
+Date: Sun, 05 Apr 2009 15:54:40 GMT
+Server: Apache
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+Location: /user/1818
+Content-Length: 0
+Keep-Alive: timeout=15, max=100
+Connection: Keep-Alive
+Content-Type: text/html
+
+
+
++ DEMOTE Example
+http://playfoursquare.com/user?task=remove_from_list&tid=5682&listid=1780
+
+
+
++ LOGIN Example
+http://m.playfoursquare.com/login
+
+-- Request Headers
+Host: m.playfoursquare.com
+User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.8) Gecko/2009032711 Ubuntu/8.10 (intrepid) Firefox/3.0.8
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-us,en;q=0.5
+Accept-Encoding: gzip,deflate
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+Keep-Alive: 300
+Connection: keep-alive
+Referer: http://m.playfoursquare.com/index
+Cookie: SESSIONID=bcf5bd566449ba0a2be9d7dc8bf02cb4; cookieCityID=23
+
+-- Response Headers
+Date: Sun, 05 Apr 2009 16:38:46 GMT
+Server: Apache
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+Location: index
+Content-Length: 0
+Content-Type: text/html
+Set-Cookie: cookieCityID=23; expires=Mon, 05-Apr-2010 16:38:46 GMT
+Via: 1.1 www.playfoursquare.com
+Keep-Alive: timeout=15, max=100
+Connection: Keep-Alive
+
+
+
++ LOGOUT Example
+http://m.playfoursquare.com/logout
