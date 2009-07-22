@@ -19,6 +19,7 @@ import java.util.Random;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
+@SuppressWarnings("deprecation")
 public class FoursquaredTest {
     public static final boolean DEBUG = true;
     private static final Random mRandom = new Random();
@@ -155,7 +156,8 @@ public class FoursquaredTest {
         venue.setState("CA");
         venue.setZip("94117");
         venue.setCrossstreet("Imaginary");
-        venue.setDistance("0.1m");venue.setGeolat("37.7722");
+        venue.setDistance("0.1m");
+        venue.setGeolat("37.7722");
         venue.setGeolong("-122.437");
         venue.setStats(new Stats());
         return venue;

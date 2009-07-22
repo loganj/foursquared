@@ -154,6 +154,7 @@ class FoursquareHttpApi {
     /**
      * /api/checkins?lat=37.770653&lng=-122.436929&r=1&l=10
      */
+    @Deprecated
     Group checkins(String cityid, String lat, String lng) throws FoursquareException,
             FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(URL_API_CHECKINS, //
@@ -167,14 +168,15 @@ class FoursquareHttpApi {
     /**
      * /api/todo?cityid=23&lat=37.770900&lng=-122.436987
      */
+    @Deprecated
     Group todos(String cityid, String lat, String lng) throws FoursquareException, FoursquareError,
             IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(URL_API_TODO, //
                 new BasicNameValuePair("cityid", cityid), //
                 new BasicNameValuePair("lat", lat), //
                 new BasicNameValuePair("lng", lng));
-        return (Group)mHttpApi.doHttpRequest(httpPost, new GroupParser(
-                new GroupParser(new TipParser())));
+        return (Group)mHttpApi.doHttpRequest(httpPost, new GroupParser(new GroupParser(
+                new TipParser())));
     }
 
     /*
@@ -189,12 +191,14 @@ class FoursquareHttpApi {
     }
 
     User user() throws FoursquareException, FoursquareError, IOException {
-        return (User)mHttpApi.doHttpRequest(mHttpApi.createHttpPost(URL_API_USER), new UserParser());
+        return (User)mHttpApi
+                .doHttpRequest(mHttpApi.createHttpPost(URL_API_USER), new UserParser());
     }
 
     /**
      * /api/venue?vid=1234
      */
+    @Deprecated
     Venue venue(String id) throws FoursquareException, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(URL_API_VENUE,
                 new BasicNameValuePair("vid", id));
@@ -204,6 +208,7 @@ class FoursquareHttpApi {
     /**
      * /api/venues?lat=37.770653&lng=-122.436929&r=1&l=10
      */
+    @Deprecated
     Group venues(String query, String lat, String lng, int radius, int length)
             throws FoursquareException, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(URL_API_VENUES, //

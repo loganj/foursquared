@@ -34,34 +34,43 @@ public class Foursquare {
     private FoursquareHttpApi mFoursquare;
     private FoursquareHttpApiV1 mFoursquareV1;
 
+    @V1
+    @Classic
     public Foursquare() {
         mFoursquare = new FoursquareHttpApi();
         mFoursquareV1 = new FoursquareHttpApiV1();
     }
 
+    @V1
     public Foursquare(String oAuthConsumerKey, String oAuthConsumerSecret) {
         this();
         mFoursquareV1.setOAuthConsumerCredentials(oAuthConsumerKey, oAuthConsumerSecret);
     }
 
+    @Classic
     public void setCredentials(String phone, String password) {
         mPhone = phone;
         mPassword = password;
         mFoursquare.setCredentials(phone, password);
     }
 
+    @V1
     public void setOAuthToken(String token, String secret) {
         mFoursquareV1.setOAuthTokenWithSecret(token, secret);
     }
 
+    @V1
     public void setOAuthConsumerCredentials(String oAuthConsumerKey, String oAuthConsumerSecret) {
         mFoursquareV1.setOAuthConsumerCredentials(oAuthConsumerKey, oAuthConsumerSecret);
     }
 
+    @Classic
     public boolean hasCredentials() {
         return !(TextUtils.isEmpty(mPhone) && TextUtils.isEmpty(mPassword));
     }
 
+    @V1
+    @Classic
     public boolean hasCredentials(boolean v1) {
         return hasCredentials() && ((v1) ? mFoursquareV1.hasCredentials() : true);
     }
@@ -131,7 +140,7 @@ public class Foursquare {
     }
 
     /**
-     * This api is supported in the V1 !PI documented at:
+     * This api is supported in the V1 API documented at:
      * http://groups.google.com/group/foursquare-api/web/api-documentation
      */
     @interface V1 {
