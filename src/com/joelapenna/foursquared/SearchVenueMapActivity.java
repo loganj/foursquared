@@ -9,22 +9,17 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
-import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
 
-import android.content.Context;
-import android.graphics.Point;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -36,16 +31,27 @@ public class SearchVenueMapActivity extends MapActivity {
     public static final String TAG = "SearchVenueMapActivity";
     public static final boolean DEBUG = Foursquared.DEBUG;
 
+    private Venue mVenue;
+
     private MapView mMapView;
     private MapController mMapController;
     private VenueItemizedOverlay mVenuesOverlay;
     private MyLocationOverlay mMyLocationOverlay;
     private Observer mSearchResultsObserver;
+    private Button mVenueButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_venue_map_activity);
+
+        mVenueButton = (Button)findViewById(R.id.venueButton);
+        mVenueButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startVenueActivity(mVenue);
+            }
+        });
 
         initMap();
 
@@ -65,7 +71,7 @@ public class SearchVenueMapActivity extends MapActivity {
         super.onResume();
         if (DEBUG) Log.d(TAG, "onResume()");
         mMyLocationOverlay.enableMyLocation();
-        // mMyLocationOverlay.enableCompass();  // Disabled due to a sdk 1.5 emulator bug
+        // mMyLocationOverlay.enableCompass(); // Disabled due to a sdk 1.5 emulator bug
 
         clearMap();
         loadSearchResults(SearchVenueActivity.searchResultsObservable.getSearchResults());
@@ -81,6 +87,11 @@ public class SearchVenueMapActivity extends MapActivity {
         mMyLocationOverlay.disableMyLocation();
         mMyLocationOverlay.disableCompass();
         SearchVenueActivity.searchResultsObservable.deleteObserver(mSearchResultsObserver);
+    }
+
+    @Override
+    protected boolean isRouteDisplayed() {
+        return false;
     }
 
     private void initMap() {
@@ -128,7 +139,7 @@ public class SearchVenueMapActivity extends MapActivity {
 
     private void clearMap() {
         mMapView.getOverlays().remove(mVenuesOverlay);
-        mVenuesOverlay = new VenueItemizedOverlay(this.getResources().getDrawable(
+        mVenuesOverlay = new VenueItemizedOverlayWithToast(this.getResources().getDrawable(
                 R.drawable.reddot));
     }
 
@@ -159,50 +170,37 @@ public class SearchVenueMapActivity extends MapActivity {
         if (DEBUG) Log.d(TAG, "Could not re-center no location or venue overlay.");
     }
 
-    @Override
-    protected boolean isRouteDisplayed() {
-        return false;
+    void startVenueActivity(Venue venue) {
+        if (DEBUG) Log.d(TAG, "firing venue activity for venue");
+        Intent intent = new Intent(SearchVenueMapActivity.this, VenueActivity.class);
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.putExtra("venue", venue);
+        startActivity(intent);
     }
 
-    public class TestingVenueItemizedOverlay extends
-            com.joelapenna.foursquared.maps.VenueItemizedOverlay {
+    private class VenueItemizedOverlayWithToast extends VenueItemizedOverlay {
+        public static final String TAG = "VenueItemizedOverlayWithToast";
+        public static final boolean DEBUG = Foursquared.DEBUG;
 
-        private PopupWindow mWindow;
-
-        public TestingVenueItemizedOverlay(Drawable defaultMarker) {
+        public VenueItemizedOverlayWithToast(Drawable defaultMarker) {
             super(defaultMarker);
         }
 
+        @Override
+        public boolean onTap(GeoPoint p, MapView mapView) {
+            if (DEBUG) Log.d(TAG, "onTap: " + p);
+            mVenueButton.setVisibility(View.GONE);
+            return super.onTap(p, mapView);
+        }
+
+        @Override
         protected boolean onTap(int i) {
-            OverlayItem item = getItem(i);
-            Toast.makeText(getApplication(), item.getTitle(), Toast.LENGTH_SHORT).show();
-            PopupWindow window = getPopupWindow(item);
-            setPopupWindow(item);
-            return true;
-        }
-
-        private void setPopupWindow(OverlayItem item) {
-            GeoPoint geoPoint = item.getPoint();
-            Point point = new Point();
-            mMapView.getProjection().toPixels(geoPoint, point);
-            int x = point.x + mMapView.getLeft();
-            int y = point.y + 62; // TabHost height.
-            mWindow.showAtLocation(mMapView, Gravity.NO_GRAVITY, x, y);
-        }
-
-        private PopupWindow getPopupWindow(OverlayItem item) {
-            if (mWindow == null) {
-                LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View view = inflater.inflate(R.layout.venue_list_item, null);
-                mWindow = new PopupWindow(view, 128, 128, true);
-                mWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon));
-            }
-            TextView name = (TextView)mWindow.getContentView().findViewById(R.id.name);
-            name.setText(item.getTitle());
-
-            TextView locationLine1 = (TextView)mWindow.getContentView().findViewById(R.id.name);
-            locationLine1.setText(item.getSnippet());
-            return mWindow;
+            if (DEBUG) Log.d(TAG, "onTap: " + i);
+            VenueOverlayItem item = (VenueOverlayItem)getItem(i);
+            mVenue = item.getVenue();
+            mVenueButton.setText(item.getVenue().getVenuename());
+            mVenueButton.setVisibility(View.VISIBLE);
+            return super.onTap(i);
         }
     }
 }

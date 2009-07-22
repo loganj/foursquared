@@ -36,7 +36,7 @@ public class VenueItemizedOverlay extends ItemizedOverlay<OverlayItem> {
         int lat = (int)(Double.parseDouble(venue.getGeolat()) * 1E6);
         int lng = (int)(Double.parseDouble(venue.getGeolong()) * 1E6);
         GeoPoint point = new GeoPoint(lat, lng);
-        return new OverlayItem(point, venue.getVenuename(), "");
+        return new VenueOverlayItem(point, venue);
     }
 
     @Override
@@ -46,8 +46,15 @@ public class VenueItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 
     @Override
     public boolean onTap(GeoPoint p, MapView mapView) {
+        if (DEBUG) Log.d(TAG, "onTap: " + p);
         mapView.getController().animateTo(p);
-        return true;
+        return super.onTap(p, mapView);
+    }
+
+    @Override
+    protected boolean onTap(int i) {
+        if (DEBUG) Log.d(TAG, "onTap: " + i);
+        return super.onTap(i);
     }
 
     public void addVenue(Venue venue) {
@@ -61,6 +68,20 @@ public class VenueItemizedOverlay extends ItemizedOverlay<OverlayItem> {
      */
     public void finish() {
         super.populate();
+    }
+
+    public static class VenueOverlayItem extends OverlayItem {
+
+        private Venue mVenue;
+
+        public VenueOverlayItem(GeoPoint point, Venue venue) {
+            super(point, venue.getVenuename(), venue.getAddress());
+            mVenue = venue;
+        }
+
+        public Venue getVenue() {
+            return mVenue;
+        }
     }
 
 }
