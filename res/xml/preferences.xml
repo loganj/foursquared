@@ -6,20 +6,22 @@
 
   <PreferenceCategory
     android:title="Foursquare Credentials">
+    <!--  Note that these two are not persistent! -->
     <EditTextPreference
       android:key="phone"
       android:persistent="true"
-      android:title="Phone"
+      android:title="Phone or Username"
       android:hint="5558675309"
       android:phoneNumber="true"
       android:singleLine="true"
-      android:summary="The phone number associated with your foursquare account." />
+      android:summary="Your Foursquare username or phone number." />
     <EditTextPreference
       android:key="password"
       android:persistent="true"
       android:title="Password"
       android:password="true"
-      android:singleLine="true" />
+      android:singleLine="true"
+      android:summary="Your Foursquare password." />
   </PreferenceCategory>
 
   <PreferenceCategory
