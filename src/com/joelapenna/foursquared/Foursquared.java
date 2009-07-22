@@ -34,8 +34,8 @@ import java.util.List;
  */
 public class Foursquared extends Application {
     public static final String TAG = "Foursquared";
-    public static final boolean DEBUG = false;
-    public static final boolean API_DEBUG = false;
+    public static final boolean DEBUG = true;
+    public static final boolean API_DEBUG = true;
 
     public static final int LAST_LOCATION_UPDATE_THRESHOLD = 1000 * 60 * 60;
 
@@ -128,7 +128,7 @@ public class Foursquared extends Application {
             if (DEBUG) Log.d(TAG, "Trying to log in.");
             Auth auth = sFoursquare.login();
             // We don't call user because its broken for authenticated user lookups.
-            User user = sFoursquare.user();
+            // User user = sFoursquare.user();
             if (auth != null && auth.status() /* && user != null */) {
                 Editor editor = mSharedPrefs.edit();
 

@@ -4,15 +4,17 @@
 
 package com.joelapenna.foursquare.types;
 
+import com.joelapenna.foursquare.filters.VenueFilterable;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
  * Auto-generated: 2009-05-19 08:21:57.175264
- * 
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class Checkin implements Parcelable, FoursquareType {
+public class Checkin implements Parcelable, FoursquareType, VenueFilterable {
 
     private String mAddress;
     private String mAlert;
