@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 public class StatsParser extends AbstractParser<Stats> {
     private static final String TAG = "StatsParser";
-    private static final boolean DEBUG = Foursquare.DEBUG;
+    private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
     public Stats parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,

@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 public class MayorParser extends AbstractParser<Mayor> {
     private static final String TAG = "MayorParser";
-    private static final boolean DEBUG = Foursquare.DEBUG;
+    private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
     public Mayor parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,

@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 public class BadgeParser extends AbstractParser<Badge> {
     private static final String TAG = "BadgeParser";
-    private static final boolean DEBUG = Foursquare.DEBUG;
+    private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
     public Badge parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,

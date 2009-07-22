@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 public class BeenhereParser extends AbstractParser<Beenhere> {
     private static final String TAG = "BeenhereParser";
-    private static final boolean DEBUG = Foursquare.DEBUG;
+    private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
     public Beenhere parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,

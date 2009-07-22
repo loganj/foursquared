@@ -18,13 +18,13 @@ import java.io.IOException;
 
 /**
  * Auto-generated: 2009-06-10 02:19:23.229787
- *
+ * 
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
 public class VenueParser extends AbstractParser<Venue> {
     private static final String TAG = "VenueParser";
-    private static final boolean DEBUG = Foursquare.DEBUG;
+    private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
     public Venue parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,

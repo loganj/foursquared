@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 public class CredentialsParser extends AbstractParser<Credentials> {
     private static final String TAG = "CredentialsParser";
-    private static final boolean DEBUG = Foursquare.DEBUG;
+    private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
     public Credentials parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,

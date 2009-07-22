@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 public class TipParser extends AbstractParser<Tip> {
     private static final String TAG = "TipParser";
-    private static final boolean DEBUG = Foursquare.DEBUG;
+    private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
     public Tip parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,

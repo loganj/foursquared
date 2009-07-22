@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 public class CheckinParser extends AbstractParser<Checkin> {
     private static final String TAG = "CheckinParser";
-    private static final boolean DEBUG = Foursquare.DEBUG;
+    private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
     public Checkin parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
