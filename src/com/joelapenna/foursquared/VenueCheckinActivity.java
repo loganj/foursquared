@@ -7,7 +7,6 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
-import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
 
@@ -17,7 +16,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import java.util.Observable;
@@ -31,7 +29,6 @@ public class VenueCheckinActivity extends ListActivity {
     public static final boolean DEBUG = Foursquared.DEBUG;
 
     private Observer mParentDataObserver;
-    private TextView mEmpty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +43,6 @@ public class VenueCheckinActivity extends ListActivity {
                 startItemActivity(checkin.getUser());
             }
         });
-
-        mEmpty = (TextView)findViewById(android.R.id.empty);
 
         mParentDataObserver = new ParentDataObserver();
         ((VenueActivity)getParent()).venueObservable.addObserver(mParentDataObserver);
