@@ -1,88 +1,40 @@
 <?xml version="1.0" ?>
 <checkins>
   <checkin>
-    <id>
-      337912
-    </id>
+    <id>337912</id>
     <user>
-      <id>
-        9923
-      </id>
-      <firstname>
-        Test2
-      </firstname>
-      <lastname>
-        User2
-      </lastname>
-      <photo>
-        http://playfoursquare.com/userpix/blank_girl.png
-      </photo>
+      <id>9923</id>
+      <firstname>Test2</firstname>
+      <lastname>User2</lastname>
+      <photo>http://playfoursquare.com/userpix/blank_girl.png</photo>
     </user>
     <venue>
-      <id>
-        23035
-      </id>
-      <name>
-        The Page
-      </name>
-      <address>
-         298 Divisadero St
-      </address>
-      <crossstreet>
-        at Page
-      </crossstreet>
-      <geolat>
-        37.7722
-      </geolat>
-      <geolong>
-        -122.437
-      </geolong>
+      <id>23035</id>
+      <name>The Page</name>
+      <address>298 Divisadero St</address>
+      <crossstreet>at Page</crossstreet>
+      <geolat>37.7722</geolat>
+      <geolong>-122.437</geolong>
     </venue>
-    <created>
-      Mon, 08 Jun 09 01:53:09 +0000
-    </created>
-  </checkin>
+    <created>Mon, 08 Jun 09 01:53:09 +0000</created>
+ </checkin>
   <checkin>
-    <id>
-      337845
-    </id>
+    <id>337845</id>
     <user>
-      <id>
-        9711
-      </id>
-      <firstname>
-        testuser
-      </firstname>
-      <lastname>
-        lapenna
-      </lastname>
-      <photo>
-        http://playfoursquare.com/userpix/blank_boy.png
-      </photo>
+      <id>9711</id>
+      <firstname>testuser</firstname>
+      <lastname>lapenna</lastname>
+      <photo>http://playfoursquare.com/userpix/blank_boy.png</photo>
     </user>
     <venue>
-      <id>
-        44794
-      </id>
-      <name>
-        Bobby's place
-      </name>
-      <address>
-        123 Fake St
-      </address>
-      <crossstreet>
-        Imaginary
-      </crossstreet>
-      <geolat>
-        0
-      </geolat>
-      <geolong>
-        0
-      </geolong>
+      <id>44794</id>
+      <name>Bobby's place</name>
+      <address>123 Fake St</address>
+      <crossstreet>Imaginary</crossstreet>
+      <geolat>0</geolat>
+      <geolong>0</geolong>
     </venue>
-    <created>
-      Mon, 08 Jun 09 01:34:54 +0000
-    </created>
-  </checkin>
+    <created>Mon, 08 Jun 09 01:34:54 +0000</created>
+ </checkin>
 </checkins>
 

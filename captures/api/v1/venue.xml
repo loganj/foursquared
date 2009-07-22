@@ -1,106 +1,40 @@
 <?xml version="1.0" ?>
 <venue>
-  <id>
-    40450
-  </id>
-  <name>
-    On the Corner
-  </name>
-  <address>
-    359 Divisadero St
-  </address>
-  <crossstreet>
-    at Oak
-  </crossstreet>
-  <city>
-    San Francisco
-  </city>
-  <state>
-    CA
-  </state>
-  <zip>
-    94117
-  </zip>
+  <id>40450</id>
+  <name>On the Corner</name>
+  <address>359 Divisadero St</address>
+  <crossstreet>at Oak</crossstreet>
+  <city>San Francisco</city>
+  <state>CA</state>
+  <zip>94117</zip>
   <phone/>
-  <geolat>
-    37.7729
-  </geolat>
-  <geolong>
-    -122.437
-  </geolong>
+  <geolat>37.7729</geolat>
+  <geolong>-122.437</geolong>
   <stats>
-    <checkins>
-      77
-    </checkins>
+    <checkins>77</checkins>
     <beenhere/>
     <mayor>
       <user>
-        <id>
-          1818
-        </id>
-        <firstname>
-          Joe
-        </firstname>
-        <lastname>
-          LaPenna
-        </lastname>
-        <photo>
-          http://playfoursquare.com/userpix/1818_1239601037.jpg
-        </photo>
+        <id>1818</id>
+        <firstname>Joe</firstname>
+        <lastname>LaPenna</lastname>
+        <photo>http://playfoursquare.com/userpix/1818_1239601037.jpg</photo>
       </user>
-      <count>
-        9
-      </count>
+      <count>9</count>
     </mayor>
   </stats>
   <tips>
     <tip>
-      <id>
-        4272
-      </id>
-      <userid>
-        1058
-      </userid>
-      <firstname>
-        Shannon
-      </firstname>
-      <lastname>
-        Clark
-      </lastname>
-      <photo>
-        http://playfoursquare.com/userpix/1058_1237850027.jpg
-      </photo>
-      <text>
-        Play games here - both on their games night every Wed but the &quot;advanced&quot; tip is they have a phenomenal library of games you can request to borrow - a serious gamer's library
-      </text>
+      <id>4272</id>
+      <userid>1058</userid>
+      <firstname>Shannon</firstname>
+      <lastname>Clark</lastname>
+      <photo>http://playfoursquare.com/userpix/1058_1237850027.jpg</photo>
+      <text>Play games here - both on their games night every Wed but the
+        &quot;advanced&quot; tip is they have a phenomenal library of games you
+        can request to borrow - a serious gamer's library</text>
       <url/>
-      <created>
-        Wed, 25 Mar 09 02:31:55 +0000
-      </created>
-    </tip>
-    <tip>
-      <id>
-        905
-      </id>
-      <userid>
-        359
-      </userid>
-      <firstname>
-        alice
-      </firstname>
-      <lastname>
-        tiara
-      </lastname>
-      <photo>
-        http://playfoursquare.com/userpix/359_1236287154.jpg
-      </photo>
-      <text>
-        Their chocolate-chip cookies are freaking awesome.
-      </text>
-      <url/>
-      <created>
-        Thu, 05 Mar 09 21:17:48 +0000
-      </created>
+      <created>Wed, 25 Mar 09 02:31:55 +0000</created>
     </tip>
   </tips>
 </venue>
