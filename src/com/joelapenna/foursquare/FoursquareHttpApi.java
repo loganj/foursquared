@@ -45,12 +45,12 @@ class FoursquareHttpApi {
 
     private static final String HTTP_SCHEME = "http://";
     private static final String DOMAIN = "playfoursquare.com";
-    private static final String API_DOMAIN = "api.playfoursquare.com";
+    private static final String API_DOMAIN = DOMAIN;
 
     private static final String URL_DOMAIN = HTTP_SCHEME + DOMAIN;
     private static final String URL_API_DOMAIN = HTTP_SCHEME + API_DOMAIN;
 
-    private static final String URL_API_BASE = URL_API_DOMAIN + "/v1";
+    private static final String URL_API_BASE = URL_DOMAIN + "/api";
     private static final String URL_API_ADD = URL_API_BASE + "/add";
     private static final String URL_API_CHECKINS = URL_API_BASE + "/checkins";
     private static final String URL_API_LOGIN = URL_API_BASE + "/login";
@@ -151,7 +151,7 @@ class FoursquareHttpApi {
 
     /**
      * /api/checkins?lat=37.770653&lng=-122.436929&r=1&l=10
-     * 
+     *
      * @return
      */
     Group checkins(String cityid, String lat, String lng) throws FoursquareError,
@@ -165,7 +165,7 @@ class FoursquareHttpApi {
 
     /**
      * /api/todo?cityid=23&lat=37.770900&lng=-122.436987
-     * 
+     *
      * @throws IOException
      * @throws FoursquareParseException
      * @throws FoursquaredCredentialsError
@@ -196,7 +196,7 @@ class FoursquareHttpApi {
 
     /**
      * /api/venues?lat=37.770653&lng=-122.436929&r=1&l=10
-     * 
+     *
      * @return
      */
     Group venues(String query, String lat, String lng, int radius, int length)
@@ -212,7 +212,7 @@ class FoursquareHttpApi {
 
     /**
      * /api/venue?vid=1234
-     * 
+     *
      * @return
      */
     Venue venue(String id) throws FoursquareError, FoursquareParseException, IOException {
