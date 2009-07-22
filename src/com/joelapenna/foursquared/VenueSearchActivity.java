@@ -35,6 +35,10 @@ public class VenueSearchActivity extends ListActivity {
     private static final boolean DEBUG = Foursquared.DEBUG;
 
     private static final int MENU_SEARCH = 0;
+    private static final int MENU_REFRESH = 1;
+    private static final int MENU_NEARBY = 2;
+    
+    private static final String QUERY_NEARBY = null;
 
     private SearchAsyncTask mSearchTask;
     private String mQuery;
@@ -70,7 +74,11 @@ public class VenueSearchActivity extends ListActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.search_label) // More stuff.
-                .setIcon(android.R.drawable.ic_search_category_default);
+                .setIcon(android.R.drawable.ic_menu_search);
+        menu.add(Menu.NONE, MENU_NEARBY, Menu.NONE, R.string.nearby_label) // More stuff.
+        .setIcon(android.R.drawable.ic_menu_compass);
+        menu.add(Menu.NONE, MENU_REFRESH, Menu.NONE, R.string.refresh_label) // More stuff.
+        .setIcon(android.R.drawable.ic_search_category_default);
         return true;
     }
 
@@ -79,6 +87,12 @@ public class VenueSearchActivity extends ListActivity {
         switch (item.getItemId()) {
             case MENU_SEARCH:
                 onSearchRequested();
+                return true;
+            case MENU_NEARBY:
+                startQuery(null);
+                return true;
+            case MENU_REFRESH:
+                startQuery(mQuery);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -165,7 +179,7 @@ public class VenueSearchActivity extends ListActivity {
         public void onPreExecute() {
             if (DEBUG) Log.d(TAG, "SearchTask: onPreExecute()");
             setProgressBarIndeterminateVisibility(true);
-            if (mQuery == null) {
+            if (mQuery == QUERY_NEARBY) {
                 setTitle("Searching Nearby - Foursquared");
             } else {
                 setTitle("Searching \"" + mQuery + "\" - Foursquared");
@@ -203,7 +217,7 @@ public class VenueSearchActivity extends ListActivity {
                 putGroupsInAdapter(groups);
             } finally {
                 setProgressBarIndeterminateVisibility(false);
-                if (mQuery == null) {
+                if (mQuery == QUERY_NEARBY) {
                     setTitle("Searching Nearby");
                 } else {
                     setTitle(mQuery + " - Foursquared");

@@ -13,9 +13,14 @@
   <string
     name="venue_yelp_activity_name">Yelp!</string>
 
+  <string
+    name="refresh_label">Refresh</string>
+  <string
+    name="nearby_label">Nearby</string>
 
   <string
     name="search_label">Search</string>
   <string
     name="search_hint">Search for something...</string>
+
 </resources>
