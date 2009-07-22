@@ -4,4 +4,6 @@
   <timezone>America/Chicago</timezone>
   <name>Austin</name>
   <shortname>Austin</shortname>
+  <geolat></geolat>
+  <geolong></geolong>
 </city>

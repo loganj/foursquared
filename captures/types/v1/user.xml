@@ -4,6 +4,7 @@
   <firstname>Testuser</firstname>
   <lastname>Lapenna</lastname>
   <photo></photo>
+  <gender></gender>
   <city type="City"></city>
   <checkin type="Checkin"></checkin>
   <badges type="Group">
