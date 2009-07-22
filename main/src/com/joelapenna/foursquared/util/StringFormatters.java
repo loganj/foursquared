@@ -35,7 +35,7 @@ public class StringFormatters {
     }
 
     public static String getCheckinMessage(Checkin checkin) {
-        String venueName = (checkin.getVenue() != null) ? ". @ " + checkin.getVenue().getName()
+        String venueName = (checkin.getVenue() != null) ? " @ " + checkin.getVenue().getName()
                 : ".";
         String name = getUserAbbreviatedName(checkin.getUser());
         return name + venueName;
@@ -43,12 +43,9 @@ public class StringFormatters {
 
     public static String getUserAbbreviatedName(User user) {
         String firstName = user.getFirstname();
-        firstName = firstName != null ? firstName : "";
 
         String lastName = user.getLastname();
-        if (lastName == null) {
-            lastName = "";
-        } else if (lastName.length() > 0) {
+        if (lastName.length() > 0) {
             lastName = lastName.substring(0, 1) + ".";
         }
 
