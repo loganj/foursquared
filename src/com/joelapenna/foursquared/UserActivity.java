@@ -244,28 +244,7 @@ public class UserActivity extends Activity {
         @Override
         protected User doInBackground(Void... params) {
             try {
-                String uid;
-                Checkin checkin = null;
-                if (mUserId == null) {
-                    // TODO(jlapenna): Fix someday.
-                    SharedPreferences prefs = PreferenceManager
-                            .getDefaultSharedPreferences(UserActivity.this);
-                    uid = prefs.getString(Preferences.PREFERENCE_ID, null);
-                    // We have to check a second time if we're doing a user lookup because of a
-                    // weird data return issue from the foursquare server.
-                    if (DEBUG) Log.d(TAG, "Making stupid second user request.");
-                    checkin = Foursquared.getFoursquare().user(null, false, false).getCheckin();
-                } else {
-                    uid = mUserId;
-                }
-                User user = Foursquared.getFoursquare().user(uid, false, true);
-                // See above where we do a second query for the currently logged in user. If we
-                // request badges, we don't get checkins.
-                if (user != null && checkin != null) {
-                    if (DEBUG) Log.d(TAG, "Overloading checkin");
-                    user.setCheckin(checkin);
-                }
-                return user;
+                return Foursquared.getFoursquare().user(null, false, true);
             } catch (FoursquareException e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "FoursquareException", e);
