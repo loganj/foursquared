@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://earth.google.com/kml/2.2">
+  <Document>
+    <name>GE2ADT</name>
+    <Placemark><name>234 Divis</name><description>234 Divisadero St.</description><Point><coordinates>-122.43695,37.77097,0</coordinates></Point></Placemark>
+    <Placemark><name>345 Spear</name><description>234 Spear St.</description><Point><coordinates>-122.3902,37.789456,0</coordinates></Point></Placemark>
+    <Placemark><name>Noisebridge</name><description>Noisebridge</description><Point><coordinates>-122.4205,37.76529,0</coordinates></Point></Placemark>
+  </Document>
+</kml>
