@@ -57,6 +57,7 @@ public class VenueSearchActivity extends ListActivity {
     private Location mLocation;
 
     private String mQuery;
+    private Group mResults;
 
     private TextView mEmpty;
 
@@ -84,9 +85,15 @@ public class VenueSearchActivity extends ListActivity {
         mEmpty = (TextView)findViewById(android.R.id.empty);
 
         if (getLastNonConfigurationInstance() != null) {
-            if (DEBUG) Log.d(TAG, "Restoring configuration.");
-            mQuery = (String)getLastNonConfigurationInstance();
-            startQuery(mQuery);
+            if (DEBUG) Log.d(TAG, "Restoring state.");
+            StateHolder holder = (StateHolder)getLastNonConfigurationInstance();
+            if (holder.results == null) {
+                startQuery(holder.query);
+            } else {
+                mQuery = holder.query;
+                mResults = holder.results;
+                putGroupsInAdapter(holder.results);
+            }
         } else {
             if (DEBUG) Log.d(TAG, "Running new intent.");
             onNewIntent(getIntent());
@@ -134,7 +141,10 @@ public class VenueSearchActivity extends ListActivity {
 
     @Override
     public Object onRetainNonConfigurationInstance() {
-        return mQuery;
+        StateHolder holder = new StateHolder();
+        holder.query = mQuery;
+        holder.results = mResults;
+        return holder;
     }
 
     @Override
@@ -153,15 +163,6 @@ public class VenueSearchActivity extends ListActivity {
         if (mSearchTask != null) {
             mSearchTask.cancel(true);
         }
-    }
-
-    void testStuff() {
-        Group groups = new Group();
-        groups.setType("TLG");
-        groups.add(FoursquaredTest.createVenueGroup("Group A"));
-        groups.add(FoursquaredTest.createVenueGroup("Group B"));
-        groups.add(FoursquaredTest.createVenueGroup("Group C"));
-        putGroupsInAdapter(groups);
     }
 
     void startQuery(String query) {
@@ -249,6 +250,7 @@ public class VenueSearchActivity extends ListActivity {
         public void onPostExecute(Group groups) {
             try {
                 putGroupsInAdapter(groups);
+                mResults = groups;
             } finally {
                 setProgressBarIndeterminateVisibility(false);
                 if (mQuery == QUERY_NEARBY) {
@@ -333,5 +335,10 @@ public class VenueSearchActivity extends ListActivity {
                 return false;
             }
         }
+    }
+
+    private class StateHolder {
+        Group results;
+        String query;
     }
 }
