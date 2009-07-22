@@ -148,7 +148,7 @@ public class VenueTipsActivity extends ListActivity {
         switch (id) {
             case DIALOG_TODO:
                 title = "Add a Todo!";
-                message = "I want to...";
+                message = "I want to . . .";
                 listener = new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String text = editText.getText().toString();
@@ -161,7 +161,7 @@ public class VenueTipsActivity extends ListActivity {
 
             case DIALOG_TIP:
                 title = "Add a Tip!";
-                message = "I did this...";
+                message = "I did this . . .";
                 listener = new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String text = editText.getText().toString();
