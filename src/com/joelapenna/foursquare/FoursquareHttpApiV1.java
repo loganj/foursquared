@@ -16,6 +16,7 @@ import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.Foursquared;
 
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -70,15 +71,15 @@ public class FoursquareHttpApiV1 {
         HttpPost httpPost = mHttpApi.createHttpPost(URL_API_AUTHEXCHANGE, //
                 new BasicNameValuePair("fs_username", phone), //
                 new BasicNameValuePair("fs_password", password));
-        return (Credentials)mHttpApi.doHttpPost(httpPost, new CredentialsParser());
+        return (Credentials)mHttpApi.doHttpRequest(httpPost, new CredentialsParser());
     }
 
     Group tips(String geolat, String geolong, int limit) throws FoursquareException,
             FoursquareError, IOException {
-        HttpPost post = mHttpApi.createHttpPost(URL_API_TIPS, //
+        HttpGet httpGet = mHttpApi.createHttpGet(URL_API_TIPS, //
                 new BasicNameValuePair("geolat", geolat), // geolat
                 new BasicNameValuePair("geolong", geolong), // geolong
                 new BasicNameValuePair("l", String.valueOf(limit)));
-        return (Group)mHttpApi.doHttpPost(post, new GroupParser(new GroupParser(new TipParser())));
+        return (Group)mHttpApi.doHttpRequest(httpGet, new GroupParser(new GroupParser(new TipParser())));
     }
 }

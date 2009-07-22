@@ -103,6 +103,7 @@ public class Foursquare {
         return mFoursquare.checkins(cityId, lat, lng);
     }
 
+    @Deprecated
     public Group todos(String cityId, String lat, String lng) throws FoursquareException,
             FoursquareError, IOException {
         return mFoursquare.todos(cityId, lat, lng);

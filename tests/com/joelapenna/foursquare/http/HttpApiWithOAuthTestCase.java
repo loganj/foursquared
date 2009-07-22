@@ -5,10 +5,17 @@
 package com.joelapenna.foursquare.http;
 
 import com.joelapenna.foursquare.TestCredentials;
-import com.joelapenna.foursquare.http.HttpApiWithOAuth;
 
-import org.apache.http.Header;
-import org.apache.http.client.methods.HttpPost;
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.exception.OAuthMessageSignerException;
+import oauth.signpost.impl.DefaultOAuthConsumer;
+import oauth.signpost.signature.SignatureMethod;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.util.EntityUtils;
 
 import android.test.suitebuilder.annotation.LargeTest;
 
@@ -26,16 +33,18 @@ public class HttpApiWithOAuthTestCase extends TestCase {
     }
 
     @LargeTest
-    public void test_createHttpPost_SignsRequest() throws IOException {
-        HttpApiWithOAuth httpApi = new HttpApiWithOAuth(HttpApiWithOAuth.createHttpClient());
-        httpApi.setOAuthConsumerCredentials(TestCredentials.oAuthConsumerKey,
-                TestCredentials.oAuthConsumerSecret);
+    public void test_oAuthSigning() throws ClientProtocolException, IOException,
+            OAuthMessageSignerException {
+        OAuthConsumer consumer = new DefaultOAuthConsumer(TestCredentials.oAuthConsumerKey,
+                TestCredentials.oAuthConsumerSecret, SignatureMethod.HMAC_SHA1);
+        consumer.setTokenWithSecret(TestCredentials.oAuthToken, TestCredentials.oAuthTokenSecret);
 
-        HttpPost request = httpApi.createHttpPost("http://someurl");
-        Header authHeader = request.getFirstHeader("Authorization");
-        assertNotNull(authHeader);
-
-        String oauthHeader = authHeader.getValue();
-        assertTrue(oauthHeader.startsWith("OAuth "));
+        HttpGet httpGet = new HttpGet(
+                "http://api.playfoursquare.com/v1/tips?geolat=37.770900&geolong=-122.436987&l=1");
+        consumer.sign(httpGet);
+        HttpClient httpClient = HttpApi.createHttpClient();
+        HttpResponse response = httpClient.execute(httpGet);
+        String responseString = EntityUtils.toString(response.getEntity());
+        assertTrue(responseString.contains("<?xml version=\"1.0\" encoding=\"UTF-8\"?><tips>"));
     }
 }

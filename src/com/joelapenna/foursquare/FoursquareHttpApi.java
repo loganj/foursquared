@@ -100,7 +100,7 @@ class FoursquareHttpApi {
                 new BasicNameValuePair("phone", phone), //
                 new BasicNameValuePair("pass", password));
 
-        HttpResponse response = mHttpApi.executeHttpPost(httpPost);
+        HttpResponse response = mHttpApi.executeHttpRequest(httpPost);
         if (response == null) {
             if (DEBUG) Log.d(TAG, "execute() call for the httpPost generated an exception;");
             return null;
@@ -133,7 +133,7 @@ class FoursquareHttpApi {
                 new BasicNameValuePair("lat", lat), //
                 new BasicNameValuePair("lng", lng), //
                 new BasicNameValuePair("cityid", cityid));
-        return (Data)mHttpApi.doHttpPost(httpPost, new DataParser());
+        return (Data)mHttpApi.doHttpRequest(httpPost, new DataParser());
     }
 
     Checkin checkin(String phone, String venue, boolean silent, boolean twitter, String lat,
@@ -147,7 +147,7 @@ class FoursquareHttpApi {
                 new BasicNameValuePair("lng", lng), //
                 new BasicNameValuePair("cityid", cityid), //
                 new BasicNameValuePair("output", "xml"));
-        return (Checkin)mHttpApi.doHttpPost(httpPost, new CheckinResponseParser());
+        return (Checkin)mHttpApi.doHttpRequest(httpPost, new CheckinResponseParser());
     }
 
     /**
@@ -159,7 +159,7 @@ class FoursquareHttpApi {
                 new BasicNameValuePair("cityid", cityid), //
                 new BasicNameValuePair("lat", lat), //
                 new BasicNameValuePair("lng", lng));
-        return (Group)mHttpApi.doHttpPost(httpPost, new GroupParser(new GroupParser(
+        return (Group)mHttpApi.doHttpRequest(httpPost, new GroupParser(new GroupParser(
                 new CheckinParser())));
     }
 
@@ -172,7 +172,7 @@ class FoursquareHttpApi {
                 new BasicNameValuePair("cityid", cityid), //
                 new BasicNameValuePair("lat", lat), //
                 new BasicNameValuePair("lng", lng));
-        return (Group)mHttpApi.doHttpPost(httpPost, new GroupParser(
+        return (Group)mHttpApi.doHttpRequest(httpPost, new GroupParser(
                 new GroupParser(new TipParser())));
     }
 
@@ -184,11 +184,11 @@ class FoursquareHttpApi {
         HttpPost httpPost = mHttpApi.createHttpPost(URL_API_UPDATE, //
                 new BasicNameValuePair("status", status), //
                 new BasicNameValuePair("tipid", tipid));
-        return (Data)mHttpApi.doHttpPost(httpPost, new DataParser());
+        return (Data)mHttpApi.doHttpRequest(httpPost, new DataParser());
     }
 
     User user() throws FoursquareException, FoursquareError, IOException {
-        return (User)mHttpApi.doHttpPost(mHttpApi.createHttpPost(URL_API_USER), new UserParser());
+        return (User)mHttpApi.doHttpRequest(mHttpApi.createHttpPost(URL_API_USER), new UserParser());
     }
 
     /**
@@ -197,7 +197,7 @@ class FoursquareHttpApi {
     Venue venue(String id) throws FoursquareException, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(URL_API_VENUE,
                 new BasicNameValuePair("vid", id));
-        return (Venue)mHttpApi.doHttpPost(httpPost, new VenueParser());
+        return (Venue)mHttpApi.doHttpRequest(httpPost, new VenueParser());
     }
 
     /**
@@ -211,7 +211,7 @@ class FoursquareHttpApi {
                 new BasicNameValuePair("lng", lng), //
                 new BasicNameValuePair("r", String.valueOf(radius)), //
                 new BasicNameValuePair("l", String.valueOf(length)));
-        return (Group)mHttpApi.doHttpPost(httpPost, new GroupParser(new GroupParser(
+        return (Group)mHttpApi.doHttpRequest(httpPost, new GroupParser(new GroupParser(
                 new VenueParser())));
     }
 

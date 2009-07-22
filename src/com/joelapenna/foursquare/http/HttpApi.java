@@ -21,7 +21,9 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.params.HttpClientParams;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
@@ -60,6 +62,7 @@ public class HttpApi {
 
 <<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
 <<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
+<<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
     public FoursquareType doHttpPost(String url,
             Parser<? extends FoursquareType> abstractParser, NameValuePair... nameValuePairs)
             throws FoursquareError, FoursquareParseException, IOException {
@@ -76,8 +79,14 @@ public class HttpApi {
         if (DEBUG) Log.d(TAG, "doHttpPost: " + httpPost.getURI());
 >>>>>>> c72392a... Refactor doHttpPost to support soon to land HttpGet support. Add what:src/com/joelapenna/foursquare/http/HttpApi.java
         HttpResponse response = executeHttpPost(httpPost);
+=======
+    public FoursquareType doHttpRequest(HttpRequestBase httpRequest, Parser<? extends FoursquareType> parser)
+            throws FoursquareException, IOException {
+        if (DEBUG) Log.d(TAG, "doHttpRequest: " + httpRequest.getURI());
+        HttpResponse response = executeHttpRequest(httpRequest);
+>>>>>>> 69171d9... tips() works after realizing that authexchange causes tokens to expire!:src/com/joelapenna/foursquare/http/HttpApi.java
         if (response == null) {
-            if (DEBUG) Log.d(TAG, "execute() call for the httpPost generated an exception;");
+            if (DEBUG) Log.d(TAG, "execute() call for the httpRequest generated an exception;");
             return null;
         }
 
@@ -104,7 +113,7 @@ public class HttpApi {
         if (DEBUG) Log.d(TAG, "doHttpPost: " + url);
         HttpPost httpPost = createHttpPost(url, nameValuePairs);
 
-        HttpResponse response = executeHttpPost(httpPost);
+        HttpResponse response = executeHttpRequest(httpPost);
         if (response == null) {
             if (DEBUG) Log.d(TAG, "execute() call for the httpPost generated an exception;");
             throw new FoursquareError("breakdown request unsuccessful.");
@@ -127,29 +136,31 @@ public class HttpApi {
     }
 
     /**
-     * execute() an httpPost catching exceptions and returning null instead.
+     * execute() an httpRequest catching exceptions and returning null instead.
      * 
-     * @param httpPost
+     * @param httpRequest
      * @return
      */
-    public HttpResponse executeHttpPost(HttpPost httpPost) {
-        if (DEBUG) Log.d(TAG, "executing HttpPost for: " + httpPost.getURI().toString());
+    public HttpResponse executeHttpRequest(HttpRequestBase httpRequest) {
+        if (DEBUG) Log.d(TAG, "executing HttpRequest for: " + httpRequest.getURI().toString());
         HttpResponse response;
         try {
-            response = mHttpClient.execute(httpPost);
+            response = mHttpClient.execute(httpRequest);
         } catch (ClientProtocolException e) {
-            Log.d(TAG, "ClientProtocolException for " + httpPost, e);
+            Log.d(TAG, "ClientProtocolException for " + httpRequest, e);
             return null;
         } catch (IOException e) {
-            Log.d(TAG, "IOException for " + httpPost, e);
+            Log.d(TAG, "IOException for " + httpRequest, e);
             return null;
         }
         return response;
     }
 
     public HttpGet createHttpGet(String url, NameValuePair... nameValuePairs) {
-        if (DEBUG) Log.d(TAG, "creating HttpPost for: " + url);
-        HttpGet httpGet = new HttpGet(url);
+        if (DEBUG) Log.d(TAG, "creating HttpGet for: " + url);
+        String query = URLEncodedUtils.format(Arrays.asList(nameValuePairs), HTTP.UTF_8);
+        HttpGet httpGet = new HttpGet(url + "?" + query);
+        if (DEBUG) Log.d(TAG, "Created: " + httpGet.getURI());
         return httpGet;
     }
 
@@ -166,6 +177,7 @@ public class HttpApi {
         } catch (UnsupportedEncodingException e1) {
             throw new IllegalArgumentException("Unable to encode http parameters.");
         }
+        if (DEBUG) Log.d(TAG, "Created: " + httpPost);
         return httpPost;
     }
 
