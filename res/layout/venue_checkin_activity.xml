@@ -47,7 +47,8 @@
     android:id="@android:id/empty"
     android:layout_height="fill_parent"
     android:layout_width="fill_parent"
-    android:layout_gravity="center"
-    android:text="Searching for recent Checkins." />
+    android:layout_gravity="center|fill"
+    android:gravity="center"
+    android:text="Searching for recent checkins." />
 
 </LinearLayout>

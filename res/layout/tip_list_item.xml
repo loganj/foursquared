@@ -30,8 +30,7 @@
     android:layout_alignParentTop="true"
     android:layout_alignWithParentIfMissing="true"
 
-    android:textSize="16sp"
-    android:textStyle="bold"
+    android:textAppearance="@android:style/TextAppearance.Large"
 
     android:gravity="center_vertical" />
 
@@ -45,6 +44,8 @@
     android:layout_alignParentBottom="true"
     android:layout_alignParentRight="true"
     android:layout_below="@id/firstLine"
+
+    android:textAppearance="@android:style/TextAppearance.Small"
 
     android:maxLines="3"
     android:ellipsize="marquee" />

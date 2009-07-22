@@ -18,6 +18,8 @@
     android:layout_alignParentTop="true"
     android:layout_alignWithParentIfMissing="true"
 
+    android:textAppearance="@android:style/TextAppearance.Large"
+
     android:gravity="center_vertical" />
 
   <TextView
@@ -30,6 +32,8 @@
     android:layout_alignParentLeft="true"
     android:layout_alignParentRight="true"
     android:layout_below="@id/firstLine"
+
+    android:textAppearance="@android:style/TextAppearance.Small"
 
     android:singleLine="true"
     android:ellipsize="marquee" />

@@ -53,6 +53,8 @@ public class VenueCheckinActivity extends ListActivity {
 
     private Button mCheckinButton;
     private TextView mEmpty;
+    ToggleButton mSilentToggle;
+    ToggleButton mTwitterToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,11 +117,11 @@ public class VenueCheckinActivity extends ListActivity {
         });
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 
-        ToggleButton silentToggle = (ToggleButton)findViewById(R.id.silentToggle);
-        silentToggle.setChecked(settings.getBoolean(Foursquared.PREFERENCE_SILENT_CHECKIN, false));
+        ToggleButton mSilentToggle = (ToggleButton)findViewById(R.id.silentToggle);
+        mSilentToggle.setChecked(settings.getBoolean(Foursquared.PREFERENCE_SILENT_CHECKIN, false));
 
-        ToggleButton twitterToggle = (ToggleButton)findViewById(R.id.twitterToggle);
-        twitterToggle
+        ToggleButton mTwitterToggle = (ToggleButton)findViewById(R.id.twitterToggle);
+        mTwitterToggle
                 .setChecked(settings.getBoolean(Foursquared.PREFERENCE_TWITTER_CHECKIN, false));
 
     }
@@ -178,6 +180,8 @@ public class VenueCheckinActivity extends ListActivity {
         @Override
         public void onPreExecute() {
             mCheckinButton.setEnabled(false);
+            mSilentToggle.setEnabled(false);
+            mTwitterToggle.setEnabled(false);
             if (DEBUG) Log.d(TAG, "CheckinTask: onPreExecute()");
             VenueActivity.startProgressBar(VenueCheckinActivity.this, PROGRESS_BAR_TASK_ID);
 
@@ -228,6 +232,7 @@ public class VenueCheckinActivity extends ListActivity {
                     return;
                 }
                 showDialog(DIALOG_CHECKIN);
+                lookupCheckinGroups();
             } finally {
                 if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
                 VenueActivity.stopProgressBar(VenueCheckinActivity.this, PROGRESS_BAR_TASK_ID);
