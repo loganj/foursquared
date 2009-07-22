@@ -29,7 +29,7 @@ import java.io.IOException;
 
 /**
  * Auto-generated: %(timestamp)s
- *
+ * 
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -40,37 +40,11 @@ public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
     @Override
     public %(type_name)s parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
+        parser.require(XmlPullParser.START_TAG, null, "%(top_node_name)s");
+
         %(type_name)s %(top_node_name)s = new %(type_name)s();
-        int eventType = parser.getEventType();
 
-        while (eventType != XmlPullParser.END_DOCUMENT) {
-            switch (eventType) {
-                case XmlPullParser.START_TAG:
-                    if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
-
-                    String name = parser.getName();
-                    if ("error".equals(name)) {
-                        throw new FoursquareError(parser.getText());
-                    } else if ("%(top_node_name)s".equals(name)) {
-                        parse%(type_name)sTag(parser, %(top_node_name)s);
-                        return %(top_node_name)s;
-                    }
-                    break;
-
-                default:
-                    if (DEBUG) Log.d(TAG, "Unhandled Event");
-            }
-            eventType = parser.nextToken();
-        }
-        return null;
-    }
-
-    public void parse%(type_name)sTag(XmlPullParser parser, %(type_name)s %(top_node_name)s) throws XmlPullParserException,
-            IOException, FoursquareError, FoursquareParseException {
-        assert parser.getName() == "%(top_node_name)s";
-        if (DEBUG) Log.d(TAG, "parsing %(top_node_name)s stanza");
-
-        while (parser.nextTag() != XmlPullParser.END_TAG) {
+        while (parser.nextTag() == XmlPullParser.START_TAG) {
             if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
 
             String name = parser.getName();
@@ -78,13 +52,12 @@ public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
             } else {
                 // Consume something we don't understand.
                 if (DEBUG) Log.d(TAG, "Found tag that we don't recognize: " + name);
-                parser.nextText();
+                skipSubTree(parser);
             }
         }
-        parser.nextToken();
+        return %(top_node_name)s;
     }
-}
-"""
+}"""
 
 BOOLEAN_STANZA = """\
             } else if ("%(name)s".equals(name)) {

@@ -6,6 +6,7 @@ package com.joelapenna.foursquare.parsers;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
+import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Auth;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -16,6 +17,8 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
+ * Auto-generated: 2009-06-02 23:02:35.474137
+ * 
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -25,37 +28,12 @@ public class AuthParser extends AbstractParser<Auth> {
 
     @Override
     public Auth parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
-            FoursquareError {
+            FoursquareError, FoursquareParseException {
+        parser.require(XmlPullParser.START_TAG, null, "auth");
+
         Auth auth = new Auth();
-        int eventType = parser.nextToken();
 
-        while (eventType != XmlPullParser.END_DOCUMENT) {
-            switch (eventType) {
-                case XmlPullParser.START_TAG:
-                    if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
-
-                    String name = parser.getName();
-                    if ("error".equals(name)) {
-                        throw new FoursquareError(parser.getText());
-                    } else if ("auth".equals(name)) {
-                        parseAuthTag(parser, auth);
-                        break;
-                    }
-
-                default:
-                    if (DEBUG) Log.d(TAG, "Unhandled Event");
-            }
-            eventType = parser.nextToken();
-        }
-        return auth;
-    }
-
-    public void parseAuthTag(XmlPullParser parser, Auth auth) throws XmlPullParserException,
-            IOException {
-        assert parser.getName() == "auth";
-        if (DEBUG) Log.d(TAG, "parsing auth stanza");
-
-        while (parser.nextTag() != XmlPullParser.END_TAG) {
+        while (parser.nextTag() == XmlPullParser.START_TAG) {
             if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
 
             String name = parser.getName();
@@ -82,7 +60,12 @@ public class AuthParser extends AbstractParser<Auth> {
 
             } else if ("status".equals(name)) {
                 auth.setStatus(parser.nextText().equals("1"));
+            } else {
+                // Consume something we don't understand.
+                if (DEBUG) Log.d(TAG, "Found tag that we don't recognize: " + name);
+                skipSubTree(parser);
             }
         }
+        return auth;
     }
 }

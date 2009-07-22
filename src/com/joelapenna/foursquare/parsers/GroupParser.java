@@ -33,69 +33,18 @@ public class GroupParser extends AbstractParser<Group> {
 
     @Override
     public Group parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
-            FoursquareError {
-        // We're likely to have to parse multiple groups.
-        Group groups = new Group();
+            FoursquareError, FoursquareParseException {
 
-        int eventType = parser.getEventType();
-        while (eventType != XmlPullParser.END_DOCUMENT) {
-            switch (eventType) {
-                case XmlPullParser.START_TAG:
-                    if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
-                    String name = parser.getName();
+        Group group = new Group();
+        group.setType(parser.getAttributeValue(null, "type"));
 
-                    if ("error".equals(name)) {
-                        throw new FoursquareError(parser.getText());
-                    } else if ("group".equals(name)) {
-                        parseGroupTag(parser, groups);
-                    }
-                    break;
+        while (parser.nextTag() == XmlPullParser.START_TAG) {
+            if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
+            FoursquareType item = this.mSubParser.parse(parser);
+            if (DEBUG) Log.d(TAG, "adding item: " + item);
+            group.add(item);
 
-                default:
-                    if (DEBUG) Log.d(TAG, "Unhandled Event");
-            }
-            eventType = parser.nextToken();
         }
-        return groups;
-    }
-
-    public void parseGroupTag(XmlPullParser parser, Group parentGroup) throws XmlPullParserException,
-            IOException {
-        Group currentGroup = new Group();
-        currentGroup.setType(parser.getAttributeValue(null, "type"));
-        parentGroup.add(currentGroup);
-
-        int eventType = parser.getEventType();
-
-        while (eventType != XmlPullParser.END_DOCUMENT) {
-            switch (eventType) {
-                case XmlPullParser.START_TAG:
-                    if (DEBUG) Log.d(TAG, "Group : " + String.valueOf(parser.getName()));
-                    try {
-                        FoursquareType item = this.mSubParser.parse(parser);
-                        if (item != null) {
-                            if (DEBUG) Log.d(TAG, "adding item: " + item);
-                            currentGroup.add(item);
-                        }
-                    } catch (FoursquareError e) {
-                        // TODO Auto-generated catch block
-                        if (DEBUG) Log.d(TAG, "FoursquaredCredentialsError", e);
-                    } catch (FoursquareParseException e) {
-                        // TODO Auto-generated catch block
-                        if (DEBUG) Log.d(TAG, "FoursquareParseException", e);
-                    }
-                    break;
-
-                case XmlPullParser.END_TAG:
-                    if (parser.getName().equals("group")) {
-                        return;
-                    }
-                    break;
-
-                default:
-                    if (DEBUG) Log.d(TAG, "Unhandled Event");
-            }
-            eventType = parser.nextToken();
-        }
+        return group;
     }
 }

@@ -8,6 +8,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
+ * Auto-generated: 2009-06-02 23:02:35.715457
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Badge implements Parcelable, FoursquareType {

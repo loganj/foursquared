@@ -17,8 +17,8 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-05-28 10:32:37.599227
- *
+ * Auto-generated: 2009-06-02 23:02:36.637107
+ * 
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -29,42 +29,16 @@ public class UserParser extends AbstractParser<User> {
     @Override
     public User parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
+        parser.require(XmlPullParser.START_TAG, null, "user");
+
         User user = new User();
-        int eventType = parser.getEventType();
 
-        while (eventType != XmlPullParser.END_DOCUMENT) {
-            switch (eventType) {
-                case XmlPullParser.START_TAG:
-                    if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
-
-                    String name = parser.getName();
-                    if ("error".equals(name)) {
-                        throw new FoursquareError(parser.getText());
-                    } else if ("user".equals(name)) {
-                        parseUserTag(parser, user);
-                        return user;
-                    }
-                    break;
-
-                default:
-                    if (DEBUG) Log.d(TAG, "Unhandled Event");
-            }
-            eventType = parser.nextToken();
-        }
-        return null;
-    }
-
-    public void parseUserTag(XmlPullParser parser, User user) throws XmlPullParserException,
-            IOException, FoursquareError, FoursquareParseException {
-        assert parser.getName() == "user";
-        if (DEBUG) Log.d(TAG, "parsing user stanza");
-
-        while (parser.nextTag() != XmlPullParser.END_TAG) {
+        while (parser.nextTag() == XmlPullParser.START_TAG) {
             if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
 
             String name = parser.getName();
             if ("badges".equals(name)) {
-                user.setBadges(new BadgesParser(new BadgeParser()).parse(parser));
+                user.setBadges(new GroupParser(new BadgeParser()).parse(parser));
 
             } else if ("cityid".equals(name)) {
                 user.setCityid(parser.nextText());
@@ -92,10 +66,9 @@ public class UserParser extends AbstractParser<User> {
             } else {
                 // Consume something we don't understand.
                 if (DEBUG) Log.d(TAG, "Found tag that we don't recognize: " + name);
-                parser.nextText();
+                skipSubTree(parser);
             }
         }
-        parser.nextToken();
+        return user;
     }
 }
-

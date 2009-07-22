@@ -149,12 +149,13 @@ class FoursquareHttpApi {
 
     /**
      * /api/checkins?lat=37.770653&lng=-122.436929&r=1&l=10
-     *
+     * 
      * @return
      */
     Group checkins(String cityid, String lat, String lng) throws FoursquareError,
             FoursquareParseException, IOException {
-        return (Group)mHttpApi.doHttpPost(URL_API_CHECKINS, new GroupParser(new CheckinParser()),
+        return (Group)mHttpApi.doHttpPost(URL_API_CHECKINS, //
+                new GroupParser(new GroupParser(new CheckinParser())), //
                 new BasicNameValuePair("cityid", cityid), //
                 new BasicNameValuePair("lat", lat), // lat
                 new BasicNameValuePair("lng", lng) // lng
@@ -163,14 +164,15 @@ class FoursquareHttpApi {
 
     /**
      * /api/todo?cityid=23&lat=37.770900&lng=-122.436987
-     *
+     * 
      * @throws IOException
      * @throws FoursquareParseException
      * @throws FoursquaredCredentialsError
      */
     Group todos(String cityid, String lat, String lng) throws FoursquareError,
             FoursquareParseException, IOException {
-        return (Group)mHttpApi.doHttpPost(URL_API_TODO, new GroupParser(new TipParser()),
+        return (Group)mHttpApi.doHttpPost(URL_API_TODO, //
+                new GroupParser(new GroupParser(new TipParser())), //
                 new BasicNameValuePair("cityid", cityid), // city id
                 new BasicNameValuePair("lat", lat), // lat
                 new BasicNameValuePair("lng", lng) // lng
@@ -194,12 +196,13 @@ class FoursquareHttpApi {
 
     /**
      * /api/venues?lat=37.770653&lng=-122.436929&r=1&l=10
-     *
+     * 
      * @return
      */
     Group venues(String query, String lat, String lng, int radius, int length)
             throws FoursquareError, FoursquareParseException, IOException {
-        return (Group)mHttpApi.doHttpPost(URL_API_VENUES, new GroupParser(new VenueParser()),
+        return (Group)mHttpApi.doHttpPost(URL_API_VENUES, //
+                new GroupParser(new GroupParser(new VenueParser())), //
                 new BasicNameValuePair("lat", lat), // lat
                 new BasicNameValuePair("lng", lng), // lng
                 new BasicNameValuePair("q", query), // a query
@@ -210,7 +213,7 @@ class FoursquareHttpApi {
 
     /**
      * /api/venue?vid=1234
-     *
+     * 
      * @return
      */
     Venue venue(String id) throws FoursquareError, FoursquareParseException, IOException {

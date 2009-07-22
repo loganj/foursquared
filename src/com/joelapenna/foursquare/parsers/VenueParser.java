@@ -17,7 +17,8 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-05-03 01:13:26.628103
+ * Auto-generated: 2009-06-02 23:02:36.820816
+ * 
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -28,37 +29,11 @@ public class VenueParser extends AbstractParser<Venue> {
     @Override
     public Venue parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
+        parser.require(XmlPullParser.START_TAG, null, "venue");
+
         Venue venue = new Venue();
-        int eventType = parser.getEventType();
 
-        while (eventType != XmlPullParser.END_DOCUMENT) {
-            switch (eventType) {
-                case XmlPullParser.START_TAG:
-                    if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
-
-                    String name = parser.getName();
-                    if ("error".equals(name)) {
-                        throw new FoursquareError(parser.getText());
-                    } else if ("venue".equals(name)) {
-                        parseVenueTag(parser, venue);
-                        return venue;
-                    }
-                    break;
-
-                default:
-                    if (DEBUG) Log.d(TAG, "Unhandled Event");
-            }
-            eventType = parser.nextToken();
-        }
-        return null;
-    }
-
-    public void parseVenueTag(XmlPullParser parser, Venue venue) throws XmlPullParserException,
-            IOException, FoursquareError, FoursquareParseException {
-        assert parser.getName() == "venue";
-        if (DEBUG) Log.d(TAG, "parsing venue stanza");
-
-        while (parser.nextTag() != XmlPullParser.END_TAG) {
+        while (parser.nextTag() == XmlPullParser.START_TAG) {
             if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
 
             String name = parser.getName();
@@ -121,10 +96,9 @@ public class VenueParser extends AbstractParser<Venue> {
             } else {
                 // Consume something we don't understand.
                 if (DEBUG) Log.d(TAG, "Found tag that we don't recognize: " + name);
-                parser.nextText();
+                skipSubTree(parser);
             }
         }
-        parser.nextToken();
+        return venue;
     }
 }
-

@@ -36,12 +36,16 @@ public abstract class AbstractParser<T extends FoursquareType> implements Parser
      */
     final public T parse(XmlPullParser parser) throws FoursquareError, FoursquareParseException {
         try {
+            if (parser.getEventType() == XmlPullParser.START_DOCUMENT) {
+                parser.nextTag();
+            }
             return parseInner(parser);
         } catch (IOException e) {
             if (DEBUG) Log.d(TAG, "IOException", e);
-            throw new FoursquareParseException("Recieved IOException while processing");
+            throw new FoursquareParseException(e.getMessage());
         } catch (XmlPullParserException e) {
-            throw new FoursquareParseException("Recieved XmlPullParserException while processing");
+            if (DEBUG) Log.d(TAG, "XmlPullParserException", e);
+            throw new FoursquareParseException(e.getMessage());
         }
     }
 
@@ -66,4 +70,18 @@ public abstract class AbstractParser<T extends FoursquareType> implements Parser
         }
         return mFactory;
     }
+
+    public static void skipSubTree(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, null, null);
+        int level = 1;
+        while (level > 0) {
+            int eventType = parser.next();
+            if (eventType == XmlPullParser.END_TAG) {
+                --level;
+            } else if (eventType == XmlPullParser.START_TAG) {
+                ++level;
+            }
+        }
+    }
+
 }
