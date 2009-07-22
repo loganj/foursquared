@@ -27,6 +27,7 @@ import java.io.IOException;
 public class Foursquare {
     private static final String TAG = "Foursquare";
     public static final boolean DEBUG = Foursquared.API_DEBUG;
+    public static final boolean PARSER_DEBUG = Foursquared.PARSER_DEBUG;
 
     private String mPhone;
     private String mPassword;

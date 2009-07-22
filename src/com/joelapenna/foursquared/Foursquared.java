@@ -36,6 +36,7 @@ public class Foursquared extends Application {
     public static final String TAG = "Foursquared";
     public static final boolean DEBUG = true;
     public static final boolean API_DEBUG = true;
+    public static final boolean PARSER_DEBUG = true;
 
     public static final int LAST_LOCATION_UPDATE_THRESHOLD = 1000 * 60 * 60;
 

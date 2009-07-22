@@ -23,7 +23,7 @@ import java.io.IOException;
  */
 public class VenueParser extends AbstractParser<Venue> {
     private static final String TAG = "VenueParser";
-    private static final boolean DEBUG = Foursquare.DEBUG;
+    private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
     public Venue parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,

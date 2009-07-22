@@ -23,7 +23,7 @@ import java.io.IOException;
  */
 public class GroupParser extends AbstractParser<Group> {
     private static final String TAG = "GroupParser";
-    private static final boolean DEBUG = Foursquare.DEBUG;
+    private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     private Parser<? extends FoursquareType> mSubParser;
 
