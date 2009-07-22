@@ -57,5 +57,5 @@
     android:paddingBottom="2dip"
     android:textAppearance="@android:style/TextAppearance.Large"
     android:textColor="#0000ee"
-    android:text="Create an account?" />
+    android:text="Need an account?" />
 </RelativeLayout>
