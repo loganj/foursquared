@@ -12,14 +12,13 @@
     android:clickable="true" />
 
   <Button
-  android:id="@+id/yelpButton"
+    android:id="@+id/yelpButton"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:layout_alignParentRight="true"
     android:paddingTop="10dip"
     android:paddingBottom="10dip"
-    android:text="yelp!"
-     />
+    android:text="yelp!" />
 
 </RelativeLayout>

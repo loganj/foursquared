@@ -82,12 +82,15 @@ public class VenueMapActivity extends MapActivity {
         }
 
         // Otherwise...
-        if (!("0".equals(venue.getGeolat()) && "0".equals(venue.getGeolong()))) {
+        if (("0".equals(venue.getGeolat()) && "0".equals(venue.getGeolong()))) {
+            if (DEBUG) Log.d(TAG, "Terrible lat/long coordinates, ignoring.");
+        } else {
             if (DEBUG) Log.d(TAG, "Adding venue overlay at: " + venue.getGeolat());
             int lat = (int)(Double.parseDouble(venue.getGeolat()) * 1E6);
             int lng = (int)(Double.parseDouble(venue.getGeolong()) * 1E6);
             GeoPoint point = new GeoPoint(lat, lng);
             mOverlay.addOverlay(new OverlayItem(point, venue.getVenuename(), ""));
+            mMapView.getOverlays().add(mOverlay);
         }
     }
 
@@ -107,14 +110,13 @@ public class VenueMapActivity extends MapActivity {
      */
     private void setupMapView() {
         mMapView = (MapView)findViewById(R.id.mapView);
+        mMapView.setBuiltInZoomControls(true);
         mMapController = mMapView.getController();
 
         mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
         mMapView.getOverlays().add(mMyLocationOverlay);
 
         mOverlay = new SimpleItemizedOverlay(this.getResources().getDrawable(R.drawable.reddot));
-        mMapView.getOverlays().add(mOverlay);
-        mMapView.setBuiltInZoomControls(true);
     }
 
     @Override
