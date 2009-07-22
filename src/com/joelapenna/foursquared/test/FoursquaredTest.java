@@ -58,6 +58,16 @@ public class FoursquaredTest {
         return venue;
     }
 
+    public static Group createRandomVenueGroups(String id) {
+        Group group = new Group();
+        group.setType(id);
+        group.add(FoursquaredTest.createVenueGroup("A"));
+        group.add(FoursquaredTest.createVenueGroup("B"));
+        group.add(FoursquaredTest.createVenueGroup("C"));
+        group.add(FoursquaredTest.createVenueGroup("D"));
+        return group;
+    }
+
     public static Tip createTestTip() {
         Tip tip = new Tip();
         tip.setUserid("1058");
