@@ -6,6 +6,7 @@ package com.joelapenna.foursquare.parsers;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
+import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Venue;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -16,6 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
+ * Auto-generated: 2009-05-02 23:59:56.237833
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -25,7 +27,7 @@ public class VenueParser extends AbstractParser<Venue> {
 
     @Override
     public Venue parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
-            FoursquareError {
+            FoursquareError, FoursquareParseException {
         Venue venue = new Venue();
         int eventType = parser.getEventType();
 
@@ -41,6 +43,7 @@ public class VenueParser extends AbstractParser<Venue> {
                         parseVenueTag(parser, venue);
                         return venue;
                     }
+                    break;
 
                 default:
                     if (DEBUG) Log.d(TAG, "Unhandled Event");
@@ -51,7 +54,7 @@ public class VenueParser extends AbstractParser<Venue> {
     }
 
     public void parseVenueTag(XmlPullParser parser, Venue venue) throws XmlPullParserException,
-            IOException {
+            IOException, FoursquareError, FoursquareParseException {
         assert parser.getName() == "venue";
         if (DEBUG) Log.d(TAG, "parsing venue stanza");
 
@@ -63,10 +66,10 @@ public class VenueParser extends AbstractParser<Venue> {
                 venue.setAddress(parser.nextText());
 
             } else if ("beenhere_friends".equals(name)) {
-                venue.setBeenhereFriends(parser.nextText());
+                venue.setBeenhereFriends(parser.nextText().equals("1"));
 
             } else if ("beenhere_me".equals(name)) {
-                venue.setBeenhereMe(parser.nextText());
+                venue.setBeenhereMe(parser.nextText().equals("1"));
 
             } else if ("city".equals(name)) {
                 venue.setCity(parser.nextText());
@@ -77,17 +80,11 @@ public class VenueParser extends AbstractParser<Venue> {
             } else if ("distance".equals(name)) {
                 venue.setDistance(parser.nextText());
 
-            } else if ("extra".equals(name)) {
-                venue.setExtra(parser.nextText());
-
             } else if ("geolat".equals(name)) {
                 venue.setGeolat(parser.nextText());
 
             } else if ("geolong".equals(name)) {
                 venue.setGeolong(parser.nextText());
-
-            } else if ("here".equals(name)) {
-                venue.setHere(parser.nextText());
 
             } else if ("map".equals(name)) {
                 venue.setMap(parser.nextText());

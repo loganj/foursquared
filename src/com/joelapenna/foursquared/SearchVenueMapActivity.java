@@ -9,6 +9,7 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
@@ -139,8 +140,8 @@ public class SearchVenueMapActivity extends MapActivity {
 
     private void clearMap() {
         mMapView.getOverlays().remove(mVenuesOverlay);
-        mVenuesOverlay = new VenueItemizedOverlayWithToast(this.getResources().getDrawable(
-                R.drawable.reddot));
+        mVenuesOverlay = new VenueItemizedOverlayWithButton(this.getResources().getDrawable(
+                R.drawable.reddot), this.getResources().getDrawable(R.drawable.blueman));
     }
 
     private boolean isVenueMappable(Venue venue) {
@@ -178,12 +179,25 @@ public class SearchVenueMapActivity extends MapActivity {
         startActivity(intent);
     }
 
-    private class VenueItemizedOverlayWithToast extends VenueItemizedOverlay {
+    private class VenueItemizedOverlayWithButton extends VenueItemizedOverlay {
         public static final String TAG = "VenueItemizedOverlayWithToast";
         public static final boolean DEBUG = Foursquared.DEBUG;
 
-        public VenueItemizedOverlayWithToast(Drawable defaultMarker) {
+        private Drawable mBeenThereMarker;
+
+        public VenueItemizedOverlayWithButton(Drawable defaultMarker, Drawable beenThereMarker) {
             super(defaultMarker);
+            mBeenThereMarker = boundCenterBottom(beenThereMarker);
+        }
+
+        @Override
+        public OverlayItem createItem(int i) {
+            VenueOverlayItem item = (VenueOverlayItem)super.createItem(i);
+            if (item.getVenue().beenhereMe()) {
+                if (DEBUG) Log.d(TAG, "using the beenThereMarker for: " + item.getVenue());
+                item.setMarker(mBeenThereMarker);
+            }
+            return item;
         }
 
         @Override

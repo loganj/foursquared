@@ -13,9 +13,7 @@
   <mapurl>http://maps.google.com/maps?q=+298+Divisadero+St%2CSan+Francisco%2CCA%2C94117</mapurl>
   <yelp>http://mobile.yelp.com/search?find_desc=The+Page&amp;find_loc=San+Francisco%2CCA&amp;find_submit=Search</yelp>
   <num_checkins>46</num_checkins>
-  <beenhere_me></beenhere_me>
-  <beenhere_friends></beenhere_friends>
-  <here></here>
-  <extra></extra>
+  <beenhere_me>0</beenhere_me>
+  <beenhere_friends>0</beenhere_friends>
   <new_venue>0</new_venue>
 </venue>

@@ -8,20 +8,19 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
+ * Auto-generated: 2009-05-02 23:59:43.412557
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class Venue implements FoursquareType, Parcelable {
+public class Venue implements Parcelable, FoursquareType {
 
     private String mAddress;
-    private String mBeenhereFriends;
-    private String mBeenhereMe;
+    private boolean mBeenhereFriends;
+    private boolean mBeenhereMe;
     private String mCity;
     private String mCrossstreet;
     private String mDistance;
-    private String mExtra;
     private String mGeolat;
     private String mGeolong;
-    private String mHere;
     private String mMap;
     private String mMapurl;
     private boolean mNewVenue;
@@ -43,19 +42,19 @@ public class Venue implements FoursquareType, Parcelable {
         mAddress = address;
     }
 
-    public String getBeenhereFriends() {
+    public boolean beenhereFriends() {
         return mBeenhereFriends;
     }
 
-    public void setBeenhereFriends(String beenhereFriends) {
+    public void setBeenhereFriends(boolean beenhereFriends) {
         mBeenhereFriends = beenhereFriends;
     }
 
-    public String getBeenhereMe() {
+    public boolean beenhereMe() {
         return mBeenhereMe;
     }
 
-    public void setBeenhereMe(String beenhereMe) {
+    public void setBeenhereMe(boolean beenhereMe) {
         mBeenhereMe = beenhereMe;
     }
 
@@ -83,14 +82,6 @@ public class Venue implements FoursquareType, Parcelable {
         mDistance = distance;
     }
 
-    public String getExtra() {
-        return mExtra;
-    }
-
-    public void setExtra(String extra) {
-        mExtra = extra;
-    }
-
     public String getGeolat() {
         return mGeolat;
     }
@@ -105,14 +96,6 @@ public class Venue implements FoursquareType, Parcelable {
 
     public void setGeolong(String geolong) {
         mGeolong = geolong;
-    }
-
-    public String getHere() {
-        return mHere;
-    }
-
-    public void setHere(String here) {
-        mHere = here;
     }
 
     public String getMap() {
@@ -197,19 +180,17 @@ public class Venue implements FoursquareType, Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         boolean[] booleanArray = {
-            mNewVenue,
+            mBeenhereFriends,
+        mBeenhereMe,
+        mNewVenue,
         };
         dest.writeBooleanArray(booleanArray);
         dest.writeString(this.mAddress);
-        dest.writeString(this.mBeenhereFriends);
-        dest.writeString(this.mBeenhereMe);
         dest.writeString(this.mCity);
         dest.writeString(this.mCrossstreet);
         dest.writeString(this.mDistance);
-        dest.writeString(this.mExtra);
         dest.writeString(this.mGeolat);
         dest.writeString(this.mGeolong);
-        dest.writeString(this.mHere);
         dest.writeString(this.mMap);
         dest.writeString(this.mMapurl);
         dest.writeString(this.mNumCheckins);
@@ -221,19 +202,17 @@ public class Venue implements FoursquareType, Parcelable {
     }
 
     private void readFromParcel(Parcel source) {
-        boolean[] booleanArray = new boolean[1];
+        boolean[] booleanArray = new boolean[3];
         source.readBooleanArray(booleanArray);
-        this.mNewVenue = booleanArray[0];
+        this.mBeenhereFriends = booleanArray[0];
+        this.mBeenhereMe = booleanArray[1];
+        this.mNewVenue = booleanArray[2];
         this.mAddress = source.readString();
-        this.mBeenhereFriends = source.readString();
-        this.mBeenhereMe = source.readString();
         this.mCity = source.readString();
         this.mCrossstreet = source.readString();
         this.mDistance = source.readString();
-        this.mExtra = source.readString();
         this.mGeolat = source.readString();
         this.mGeolong = source.readString();
-        this.mHere = source.readString();
         this.mMap = source.readString();
         this.mMapurl = source.readString();
         this.mNumCheckins = source.readString();
@@ -259,4 +238,5 @@ public class Venue implements FoursquareType, Parcelable {
         }
 
     };
+
 }
