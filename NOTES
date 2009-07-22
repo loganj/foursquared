@@ -53,45 +53,10 @@ public class TestConstants {
 }
 
 
-==Ideas==
+==Setting up Eclipse==
 
-+ "Lead" a Bar Crawl
-Use your phone to generate a "proxy" authentication credentials and store that on your client. Pass that authentication credential onto another phone, maybe by QRCode and allow others to act on your behalf. Provide UI on your phone to disable that credential by sending an RPC to /api/logout with those credentials.
+Create 2 android projects, one rooted at $foursquared_repo/main/ the other at
+$foursquared_repo/tests. Name the former "foursquared" and the latter
+"foursquared_tests."
 
-This will give a user the ability to designate someone else as their notifier. This allows people to form up for a bar crawl, with one person leading the checkins for foursquare.
-
-+ Shortcuts to favorite checkins.
-
-+ Yelp Integration
-
-
--------------
-URL for location suggestion provider.
-curl 'http://playfoursquare.com/venues?q=pie&cityid=23'
-
-+ CHECKIN Example
-http://m.playfoursquare.com/checkin?privacy=0&security_token=&shout=&twitter=0&venue=Noc+Noc
-
--- Request Headers
-Host: m.playfoursquare.com
-User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.8) Gecko/2009032711 Ubuntu/8.10 (intrepid) Firefox/3.0.8
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-Accept-Language: en-us,en;q=0.5
-Accept-Encoding: gzip,deflate
-Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
-Keep-Alive: 300
-Connection: keep-alive
-Referer: http://m.playfoursquare.com/checkin
-Cookie: SESSIONID=bcf5bd566449ba0a2be9d7dc8bf02cb4; cookieCityID=23
-
--- Response Headers
-Date: Sun, 05 Apr 2009 16:10:05 GMT
-Server: Apache
-Expires: Thu, 19 Nov 1981 08:52:00 GMT
-Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-Pragma: no-cache
-Content-Length: 2809
-Content-Type: text/html
-Via: 1.1 www.playfoursquare.com
-Keep-Alive: timeout=15, max=100
-Connection: Keep-Alive
+As long as they are named like this, the provided .project files should work.
