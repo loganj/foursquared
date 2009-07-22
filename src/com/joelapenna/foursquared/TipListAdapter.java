@@ -20,14 +20,14 @@ import android.widget.TextView;
 /**
  * @author jlapenna
  */
-class TipsListAdapter extends BaseAdapter {
+class TipListAdapter extends BaseAdapter {
     private static final String TAG = "TipListAdapter";
     private static final boolean DEBUG = Foursquared.DEBUG;
 
     private LayoutInflater mInflater;
     private Group mTips;
 
-    public TipsListAdapter(Context context, Group tips) {
+    public TipListAdapter(Context context, Group tips) {
         mInflater = LayoutInflater.from(context);
         mTips = tips;
     }

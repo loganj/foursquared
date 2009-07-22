@@ -257,7 +257,7 @@ public class VenueTipsActivity extends ListActivity {
         int groupCount = groups.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
             Group group = (Group)groups.get(groupsIndex);
-            TipsListAdapter groupAdapter = new TipsListAdapter(this, group);
+            TipListAdapter groupAdapter = new TipListAdapter(this, group);
             if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
             mainAdapter.addSection(group.getType(), groupAdapter);
         }
