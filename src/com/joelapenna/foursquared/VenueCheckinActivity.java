@@ -118,7 +118,9 @@ public class VenueCheckinActivity extends ListActivity {
         });
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        mSilentToggle = (ToggleButton)findViewById(R.id.silentToggle);
         mSilentToggle.setChecked(settings.getBoolean(Foursquared.PREFERENCE_SILENT_CHECKIN, false));
+        mTwitterToggle = (ToggleButton)findViewById(R.id.twitterToggle);
         mTwitterToggle.setChecked(settings
                 .getBoolean(Foursquared.PREFERENCE_TWITTER_CHECKIN, false));
     }
