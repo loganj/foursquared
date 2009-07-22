@@ -148,10 +148,11 @@ public class MainActivity extends Activity {
                 String password = mPasswordEditText.getText().toString();
 
                 Editor editor = mPrefs.edit();
-                Preferences.loginUser(Foursquared.getFoursquare(), phoneNumber, password, editor);
-                editor.commit();
-
-                return true;
+                if (Preferences.loginUser( //
+                        Foursquared.getFoursquare(), phoneNumber, password, editor)) {
+                    editor.commit();
+                    return true;
+                }
 
             } catch (FoursquareCredentialsError e) {
                 // TODO Auto-generated catch block

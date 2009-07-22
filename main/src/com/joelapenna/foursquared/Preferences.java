@@ -60,7 +60,7 @@ public class Preferences {
 
     /**
      * Log in a user and put credential information into the preferences edit queue.
-     *
+     * 
      * @param foursquare
      * @param phoneNumber
      * @param password
@@ -69,25 +69,29 @@ public class Preferences {
      * @throws FoursquareException
      * @throws IOException
      */
-    static void loginUser(Foursquare foursquare, String phoneNumber, String password, Editor editor)
-            throws FoursquareCredentialsError, FoursquareException, IOException {
+    static boolean loginUser(Foursquare foursquare, String phoneNumber, String password,
+            Editor editor) throws FoursquareCredentialsError, FoursquareException, IOException {
         if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Trying to log in.");
 
         foursquare.setCredentials(phoneNumber, password);
         foursquare.setOAuthToken(null, null);
 
         Credentials credentials = foursquare.authExchange();
+        if (credentials == null) {
+            return false;
+        }
         foursquare.setOAuthToken(credentials.getOauthToken(), credentials.getOauthTokenSecret());
         User user = foursquare.user(null, false, false);
 
         storePhoneAndPassword(editor, phoneNumber, password);
         storeAuthExchangeCredentials(editor, credentials);
         storeUser(editor, user);
+        return true;
     }
 
     /**
      * Read credentials from preferences and attempt to log in.
-     *
+     * 
      * @param preferences
      * @param foursquare
      * @param doAuthExchange

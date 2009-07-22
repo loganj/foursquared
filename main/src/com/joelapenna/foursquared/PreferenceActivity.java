@@ -174,10 +174,11 @@ public class PreferenceActivity extends android.preference.PreferenceActivity im
                 String password = mPrefs.getString(Preferences.PREFERENCE_PASSWORD, null);
 
                 Editor editor = mPrefs.edit();
-                Preferences.loginUser(Foursquared.getFoursquare(), phoneNumber, password, editor);
-                editor.commit();
-
-                return true;
+                if (Preferences.loginUser(Foursquared.getFoursquare(), phoneNumber, password,
+                        editor)) {
+                    editor.commit();
+                    return true;
+                }
             } catch (FoursquareCredentialsError e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "FoursquareCredentialsError", e);

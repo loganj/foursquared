@@ -97,6 +97,9 @@ public class VenueActivity extends TabActivity {
                 if (DEBUG) Log.d(TAG, "Restoring checkins: " + holder.checkins);
                 setCheckins(holder.checkins);
             }
+            if (holder.checkin != null) {
+                mStateHolder.checkin = holder.checkin;
+            }
         } else {
             mStateHolder.venueId = getIntent().getExtras().getString(EXTRA_VENUE);
             new VenueTask().execute(mStateHolder.venueId);
@@ -381,13 +384,14 @@ public class VenueActivity extends TabActivity {
         @Override
         public void onPreExecute() {
             mCheckinMenuItem.setEnabled(false);
-            if (DEBUG) Log.d(TAG, "CheckinTask: onPreExecute()");
+            if (DEBUG) Log.d(TAG, "VenueCheckinTask: onPreExecute()");
             startProgressBar(PROGRESS_BAR_TASK_ID);
 
         }
 
         @Override
         public com.joelapenna.foursquare.types.classic.Checkin doInBackground(Venue... params) {
+            if (DEBUG) Log.d(TAG, "VenueCheckinTask: doInBackground()");
             try {
                 final Venue venue = params[0];
                 if (DEBUG) Log.d(TAG, "Checking in to: " + venue.getName());
@@ -418,6 +422,7 @@ public class VenueActivity extends TabActivity {
 
         @Override
         public void onPostExecute(com.joelapenna.foursquare.types.classic.Checkin checkin) {
+            if (DEBUG) Log.d(TAG, "VenueCheckinTask: onPostExecute()");
             try {
                 mStateHolder.checkin = checkin;
                 if (checkin == null) {
