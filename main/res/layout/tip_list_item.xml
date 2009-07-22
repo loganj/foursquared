@@ -26,7 +26,7 @@
     android:focusable="false" />
 
   <TextView
-    android:id="@+id/firstLine"
+    android:id="@+id/tipTextView"
 
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -36,30 +36,30 @@
     android:layout_alignParentTop="true"
     android:layout_alignWithParentIfMissing="true"
 
-    android:textSize="16sp"
-
     android:maxLines="3"
+    android:ellipsize="end"
     android:gravity="center_vertical" />
 
   <TextView
-    android:id="@+id/secondLine"
+    android:id="@+id/userTextView"
 
-    android:layout_width="fill_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
 
     android:layout_toRightOf="@id/checkbox"
     android:layout_alignParentBottom="true"
     android:layout_alignParentRight="true"
     android:layout_alignWithParentIfMissing="true"
-    android:layout_below="@id/firstLine"
+    android:layout_below="@id/tipTextView"
 
     android:paddingRight="6dip"
-
+    
     android:gravity="right"
     android:textAppearance="@android:style/TextAppearance.Small"
     android:textColor="#7EDDFC"
 
-    android:singleLine="true"
+    android:maxLines="1"
+    android:scrollHorizontally="true"
     android:ellipsize="marquee" />
 
 </RelativeLayout>

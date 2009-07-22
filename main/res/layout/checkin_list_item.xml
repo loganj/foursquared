@@ -18,12 +18,12 @@
     android:layout_alignParentTop="true"
     android:layout_alignWithParentIfMissing="true"
 
-    android:textAppearance="@android:style/TextAppearance.Large"
+    android:gravity="center_vertical"
+    android:textAppearance="@android:style/TextAppearance.Medium"
 
-    android:singleLine="true"
-    android:ellipsize="marquee"
-
-    android:gravity="center_vertical" />
+    android:maxLines="1"
+    android:scrollHorizontally="true"
+    android:ellipsize="marquee" />
 
   <TextView
     android:id="@+id/timeTextView"
@@ -41,7 +41,8 @@
     android:textAppearance="@android:style/TextAppearance.Small"
     android:textColor="#7EDDFC"
 
-    android:singleLine="true"
+    android:maxLines="1"
+    android:scrollHorizontally="true"
     android:ellipsize="marquee" />
 
   <TextView
@@ -53,13 +54,15 @@
     android:layout_alignParentBottom="true"
     android:layout_alignParentLeft="true"
     android:layout_below="@id/firstLine"
+    android:layout_toLeftOf="@id/timeTextView"
 
     android:paddingRight="6dip"
 
     android:gravity="left"
     android:textAppearance="@android:style/TextAppearance.Small"
 
-    android:singleLine="true"
+    android:maxLines="1"
+    android:scrollHorizontally="true"
     android:ellipsize="marquee" />
 
 </RelativeLayout>

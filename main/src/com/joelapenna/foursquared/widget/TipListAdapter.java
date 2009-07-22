@@ -48,8 +48,8 @@ public class TipListAdapter extends BaseTipAdapter {
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.firstLine = (TextView)convertView.findViewById(R.id.firstLine);
-            holder.secondLine = (TextView)convertView.findViewById(R.id.secondLine);
+            holder.tipTextView = (TextView)convertView.findViewById(R.id.tipTextView);
+            holder.userTextView = (TextView)convertView.findViewById(R.id.userTextView);
 
             convertView.setTag(holder);
         } else {
@@ -61,14 +61,14 @@ public class TipListAdapter extends BaseTipAdapter {
         Tip tip = (Tip)getItem(position);
         // Popping from string->html fixes things like "&amp;" converting it back to a string
         // prevents a stack overflow in cupcake.
-        holder.firstLine.setText(Html.fromHtml(tip.getText()).toString());
-        holder.secondLine.setText("- " + StringFormatters.getUserAbbreviatedName(tip.getUser()));
+        holder.tipTextView.setText(Html.fromHtml(tip.getText()).toString());
+        holder.userTextView.setText("- " + StringFormatters.getUserAbbreviatedName(tip.getUser()));
 
         return convertView;
     }
 
     private static class ViewHolder {
-        TextView firstLine;
-        TextView secondLine;
+        TextView tipTextView;
+        TextView userTextView;
     }
 }
