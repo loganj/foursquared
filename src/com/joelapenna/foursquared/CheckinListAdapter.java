@@ -105,7 +105,7 @@ class CheckinListAdapter extends BaseAdapter {
         return (mCheckins.size() <= 0);
     }
 
-    private class ViewHolder {
+    private static class ViewHolder {
         TextView firstLine;
         TextView secondLine;
     }

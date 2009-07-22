@@ -1,3 +1,6 @@
+/**
+ * Copyright 2009 Joe LaPenna
+ */
 package com.joelapenna.foursquared.util;
 
 import com.joelapenna.foursquare.types.Venue;

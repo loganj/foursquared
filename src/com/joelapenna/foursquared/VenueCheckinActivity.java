@@ -55,8 +55,8 @@ public class VenueCheckinActivity extends ListActivity {
 
     private Button mCheckinButton;
     private TextView mEmpty;
-    ToggleButton mSilentToggle;
-    ToggleButton mTwitterToggle;
+    private ToggleButton mSilentToggle;
+    private ToggleButton mTwitterToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +134,7 @@ public class VenueCheckinActivity extends ListActivity {
                 }
             }
         });
-        
+
         mSilentToggle.setChecked(settings.getBoolean(Foursquared.PREFERENCE_SILENT_CHECKIN, false));
         mTwitterToggle.setChecked(settings
                 .getBoolean(Foursquared.PREFERENCE_TWITTER_CHECKIN, false));

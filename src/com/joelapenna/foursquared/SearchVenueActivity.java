@@ -56,7 +56,7 @@ public class SearchVenueActivity extends TabActivity {
     private Location mLocation;
 
     private String mQuery;
-    Group mSearchResults;
+    private Group mSearchResults;
 
     private TextView mEmpty;
     private SeparatedListAdapter mListAdapter;

@@ -108,7 +108,7 @@ class TipListAdapter extends BaseAdapter {
         return (mTips.size() <= 0);
     }
 
-    private class ViewHolder {
+    private static class ViewHolder {
         TextView firstLine;
         TextView secondLine;
         CheckBox checkbox;

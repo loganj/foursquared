@@ -115,7 +115,7 @@ class VenueListAdapter extends BaseAdapter {
         return (mVenues.size() <= 0);
     }
 
-    private class ViewHolder {
+    private static class ViewHolder {
         TextView name;
         TextView locationLine1;
         TextView locationLine2;

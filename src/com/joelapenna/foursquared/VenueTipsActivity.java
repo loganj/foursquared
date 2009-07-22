@@ -45,7 +45,7 @@ public class VenueTipsActivity extends ListActivity {
     public static final String TAG = "VenueTipsActivity";
     public static final boolean DEBUG = Foursquared.DEBUG;
 
-    public static final int DIALOG_TODO = 0;
+    private static final int DIALOG_TODO = 0;
     private static final int DIALOG_TIP = 1;
     private static final int DIALOG_ADD_FAIL_MESSAGE = 2;
     private static final int DIALOG_ADD_SHOW_MESSAGE = 3;

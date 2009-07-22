@@ -69,6 +69,11 @@ public class VenueMapActivity extends MapActivity {
         mMyLocationOverlay.disableCompass();
     }
 
+    @Override
+    protected boolean isRouteDisplayed() {
+        return false;
+    }
+
     private void initMap() {
         mMapView = (MapView)findViewById(R.id.mapView);
         mMapView.setBuiltInZoomControls(true);
@@ -106,10 +111,5 @@ public class VenueMapActivity extends MapActivity {
         }
         mMapController.animateTo(center);
         mMapController.setZoom(12);
-    }
-
-    @Override
-    protected boolean isRouteDisplayed() {
-        return false;
     }
 }
