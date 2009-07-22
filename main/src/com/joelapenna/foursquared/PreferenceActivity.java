@@ -4,14 +4,11 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.types.Credentials;
-import com.joelapenna.foursquare.types.User;
 
 import android.app.ProgressDialog;
-import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -19,7 +16,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.PhoneNumberUtils;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -66,8 +62,6 @@ public class PreferenceActivity extends android.preference.PreferenceActivity im
     @Override
     protected void onStart() {
         super.onStart();
-        // Look up the phone number if its not set.
-        setPhoneNumber();
         mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -100,14 +94,12 @@ public class PreferenceActivity extends android.preference.PreferenceActivity im
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_CLEAR:
-                Editor editor = mPrefs.edit();
-                editor.clear();
-                editor.commit();
+                mPrefs.edit().clear().commit();
                 Foursquared.getFoursquare().setCredentials(null, null);
                 Foursquared.getFoursquare().setOAuthToken(null, null);
-                // Lame-o hack to force update all the preference views.
+
+                startActivity(new Intent(this, MainActivity.class));
                 finish();
-                startActivity(getIntent());
                 return true;
         }
         return false;
@@ -164,25 +156,6 @@ public class PreferenceActivity extends android.preference.PreferenceActivity im
         }
     }
 
-    private void setPhoneNumber() {
-        if (DEBUG) Log.d(TAG, "Setting phone number if not set.");
-        String phoneNumber = mPrefs.getString(Preferences.PREFERENCE_PHONE, null);
-
-        if (TextUtils.isEmpty(phoneNumber)) {
-            if (DEBUG) Log.d(TAG, "Phone number not found.");
-            TelephonyManager telephony = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-            phoneNumber = telephony.getLine1Number();
-            if (!TextUtils.isEmpty(phoneNumber) && phoneNumber.startsWith("1")) {
-                phoneNumber = phoneNumber.substring(1);
-                if (DEBUG) Log.d(TAG, "Phone number not found. Setting it: " + phoneNumber);
-                Editor editor = mPrefs.edit();
-                editor.putString(Preferences.PREFERENCE_PHONE, PhoneNumberUtils
-                        .stripSeparators(phoneNumber));
-                editor.commit();
-            }
-        }
-    }
-
     private class LoginTask extends AsyncTask<Void, Void, Boolean> {
         private static final String TAG = "LoginTask";
         private static final boolean DEBUG = FoursquaredSettings.DEBUG;
@@ -197,7 +170,13 @@ public class PreferenceActivity extends android.preference.PreferenceActivity im
         protected Boolean doInBackground(Void... params) {
             if (DEBUG) Log.d(TAG, "doInBackground()");
             try {
-                verifyCredentials(mPrefs, Foursquared.getFoursquare(), true);
+                String phoneNumber = mPrefs.getString(Preferences.PREFERENCE_PHONE, null);
+                String password = mPrefs.getString(Preferences.PREFERENCE_PASSWORD, null);
+
+                Editor editor = mPrefs.edit();
+                Preferences.loginUser(Foursquared.getFoursquare(), phoneNumber, password, editor);
+                editor.commit();
+
                 return true;
             } catch (FoursquareCredentialsError e) {
                 // TODO Auto-generated catch block
@@ -223,6 +202,12 @@ public class PreferenceActivity extends android.preference.PreferenceActivity im
                 Toast.makeText(PreferenceActivity.this,
                         "Unable to log in. Please check your phone number and password.",
                         Toast.LENGTH_LONG).show();
+                mPrefs.edit().clear().commit();
+                Foursquared.getFoursquare().setCredentials(null, null);
+                Foursquared.getFoursquare().setOAuthToken(null, null);
+
+                startActivity(new Intent(PreferenceActivity.this, MainActivity.class));
+                finish();
             }
             dismissProgressDialog();
         }
@@ -231,44 +216,5 @@ public class PreferenceActivity extends android.preference.PreferenceActivity im
         protected void onCancelled() {
             dismissProgressDialog();
         }
-    }
-
-    private static void verifyCredentials(SharedPreferences preferences, Foursquare foursquare,
-            boolean doAuthExchange) throws FoursquareCredentialsError, FoursquareException,
-            IOException {
-        if (DEBUG) Log.d(TAG, "verifyCredentials()");
-
-        String phoneNumber = preferences.getString(Preferences.PREFERENCE_PHONE, null);
-        String password = preferences.getString(Preferences.PREFERENCE_PASSWORD, null);
-
-        if (TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(password)) {
-            throw new FoursquareCredentialsError("Phone number or password not set in preferences.");
-        }
-
-        final Editor editor = preferences.edit();
-        loginUser(editor, foursquare, phoneNumber, password);
-
-        String oauthToken = preferences.getString(Preferences.PREFERENCE_OAUTH_TOKEN, null);
-        String oauthTokenSecret = preferences.getString(Preferences.PREFERENCE_OAUTH_TOKEN_SECRET,
-                null);
-        foursquare.setCredentials(phoneNumber, password);
-        foursquare.setOAuthToken(oauthToken, oauthTokenSecret);
-    }
-
-    static void loginUser(final Editor editor, final Foursquare foursquare, String phoneNumber,
-            String password) throws FoursquareCredentialsError, FoursquareException, IOException {
-        if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Trying to log in.");
-
-        foursquare.setCredentials(phoneNumber, password);
-
-        if (DEBUG) Log.d(TAG, "doAuthExchange specified for loginUser");
-        foursquare.setOAuthToken(null, null);
-        Credentials credentials = foursquare.authExchange();
-        Preferences.storeAuthExchangeCredentials(editor, credentials);
-
-        foursquare.setOAuthToken(credentials.getOauthToken(), credentials.getOauthTokenSecret());
-
-        User user = foursquare.user(null, false, false);
-        Preferences.storeUser(editor, user);
     }
 }

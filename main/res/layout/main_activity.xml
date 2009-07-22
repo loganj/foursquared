@@ -5,27 +5,46 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:layout_width="fill_parent"
-  android:layout_height="fill_parent">
+  android:layout_height="fill_parent"
+  android:background="@android:color/white">
   <ImageView
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_gravity="center"
-    android:gravity="center"
-    android:adjustViewBounds="true"
-    android:scaleType="fitXY"
-    android:src="@drawable/shamu" />
-  <TextView
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_gravity="center"
-    android:gravity="center"
-    android:textAppearance="@android:style/TextAppearance.Large"
-    android:text="Shamu says you need to enter your phone number and password!" />
-  <Button
-    android:id="@+id/button"
-    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
-    android:textAppearance="@android:style/TextAppearance.Large"
-    android:text="Preferences" />
+    android:layout_alignParentTop="true"
+    android:layout_alignWithParentIfMissing="true"
+    android:layout_weight="1"
+    android:padding="3dip"
+    android:scaleType="centerInside"
+    android:src="@drawable/main_logo" />
+  <LinearLayout
+    android:id="@+id/controls"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:layout_weight="2"
+    android:orientation="vertical"
+    android:layout_alignParentBottom="true">
+    <EditText
+      android:id="@+id/phoneEditText"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:lines="1"
+      android:singleLine="true"
+      android:textAppearance="@android:style/TextAppearance.Large"
+      android:hint="Phone Number" />
+    <EditText
+      android:id="@+id/passwordEditText"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:lines="1"
+      android:singleLine="true"
+      android:password="true"
+      android:textAppearance="@android:style/TextAppearance.Large"
+      android:hint="Password" />
+    <Button
+      android:id="@+id/button"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:textAppearance="@android:style/TextAppearance.Large"
+      android:text="Log-in" />
+  </LinearLayout>
 </RelativeLayout>

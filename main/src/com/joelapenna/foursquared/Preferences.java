@@ -4,14 +4,19 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
+import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.User;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
+import android.text.TextUtils;
 import android.util.Log;
 
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -42,14 +47,78 @@ public class Preferences {
     // Not-in-XML preferences for dumpcatcher
     public static final String PREFERENCE_DUMPCATCHER_CLIENT = "dumpcatcher_client";
 
-    static void storeUser(final Editor editor, User user) {
-        if (user != null && user.getId() != null) {
-            editor.putString(PREFERENCE_CITY_ID, user.getCity().getId());
-            editor.putString(PREFERENCE_ID, user.getId());
-            if (DEBUG) Log.d(TAG, "Commiting user info: " + String.valueOf(editor.commit()));
-        } else {
-            if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Unable to lookup user.");
+    static String createUniqueId(SharedPreferences preferences) {
+        String uniqueId = preferences.getString(PREFERENCE_DUMPCATCHER_CLIENT, null);
+        if (uniqueId == null) {
+            uniqueId = UUID.randomUUID().toString();
+            Editor editor = preferences.edit();
+            editor.putString(PREFERENCE_DUMPCATCHER_CLIENT, uniqueId);
+            editor.commit();
         }
+        return uniqueId;
+    }
+
+    /**
+     * Log in a user and put credential information into the preferences edit queue.
+     *
+     * @param foursquare
+     * @param phoneNumber
+     * @param password
+     * @param editor
+     * @throws FoursquareCredentialsError
+     * @throws FoursquareException
+     * @throws IOException
+     */
+    static void loginUser(Foursquare foursquare, String phoneNumber, String password, Editor editor)
+            throws FoursquareCredentialsError, FoursquareException, IOException {
+        if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Trying to log in.");
+
+        foursquare.setCredentials(phoneNumber, password);
+        foursquare.setOAuthToken(null, null);
+
+        Credentials credentials = foursquare.authExchange();
+        foursquare.setOAuthToken(credentials.getOauthToken(), credentials.getOauthTokenSecret());
+        User user = foursquare.user(null, false, false);
+
+        storePhoneAndPassword(editor, phoneNumber, password);
+        storeAuthExchangeCredentials(editor, credentials);
+        storeUser(editor, user);
+    }
+
+    /**
+     * Read credentials from preferences and attempt to log in.
+     *
+     * @param preferences
+     * @param foursquare
+     * @param doAuthExchange
+     * @return
+     * @throws FoursquareCredentialsError
+     * @throws FoursquareException
+     * @throws IOException
+     */
+    static User verifyCredentials(Resources resources, SharedPreferences preferences,
+            boolean doAuthExchange) throws FoursquareCredentialsError, FoursquareException,
+            IOException {
+        if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "verifyCredentials()");
+
+        String phoneNumber = preferences.getString(PREFERENCE_PHONE, null);
+        String password = preferences.getString(PREFERENCE_PASSWORD, null);
+
+        if (TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(password)) {
+            throw new FoursquareCredentialsError("Phone number or password not set in preferences.");
+        }
+
+        Foursquare foursquare = new Foursquare( //
+                resources.getString(R.string.oauth_consumer_key), //
+                resources.getString(R.string.oauth_consumer_secret));
+        foursquare.setCredentials(phoneNumber, password);
+
+        String oAuthConsumerKey = preferences.getString(PREFERENCE_OAUTH_TOKEN, null);
+        String oAuthConsumerSecret = preferences.getString(PREFERENCE_OAUTH_TOKEN, null);
+
+        foursquare.setOAuthConsumerCredentials(oAuthConsumerKey, oAuthConsumerSecret);
+
+        return foursquare.user(null, false, false);
     }
 
     static void storeAuthExchangeCredentials(final Editor editor, Credentials credentials)
@@ -66,14 +135,18 @@ public class Preferences {
         }
     }
 
-    static String createUniqueId(SharedPreferences preferences) {
-        String uniqueId = preferences.getString(PREFERENCE_DUMPCATCHER_CLIENT, null);
-        if (uniqueId == null) {
-            uniqueId = UUID.randomUUID().toString();
-            Editor editor = preferences.edit();
-            editor.putString(Preferences.PREFERENCE_DUMPCATCHER_CLIENT, uniqueId);
-            editor.commit();
+    static void storePhoneAndPassword(final Editor editor, String phoneNumber, String password) {
+        editor.putString(PREFERENCE_PHONE, phoneNumber);
+        editor.putString(PREFERENCE_PASSWORD, password);
+    }
+
+    static void storeUser(final Editor editor, User user) {
+        if (user != null && user.getId() != null) {
+            editor.putString(PREFERENCE_CITY_ID, user.getCity().getId());
+            editor.putString(PREFERENCE_ID, user.getId());
+            if (DEBUG) Log.d(TAG, "Commiting user info: " + String.valueOf(editor.commit()));
+        } else {
+            if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Unable to lookup user.");
         }
-        return uniqueId;
     }
 }
