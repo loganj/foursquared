@@ -7,6 +7,7 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.User;
 
@@ -31,6 +32,8 @@ public class Preferences {
 
     // Not-in-XML preferences
     public static final String PREFERENCE_CITY_ID = "city_id";
+    public static final String PREFERENCE_CITY_GEOLAT = "city_geolat";
+    public static final String PREFERENCE_CITY_GEOLONG = "city_geolong";
     public static final String PREFERENCE_EMAIL = "email";
     public static final String PREFERENCE_FIRST = "first_name";
     public static final String PREFERENCE_GENDER = "gender";
@@ -108,7 +111,10 @@ public class Preferences {
 
     static void storeUser(final Editor editor, User user) {
         if (user != null && user.getId() != null) {
-            editor.putString(PREFERENCE_CITY_ID, user.getCity().getId());
+            City city = user.getCity();
+            editor.putString(PREFERENCE_CITY_ID, city.getId());
+            editor.putString(PREFERENCE_CITY_GEOLAT, city.getGeolat());
+            editor.putString(PREFERENCE_CITY_GEOLONG, city.getGeolong());
             editor.putString(PREFERENCE_ID, user.getId());
             if (DEBUG) Log.d(TAG, "Commiting user info: " + String.valueOf(editor.commit()));
         } else {
