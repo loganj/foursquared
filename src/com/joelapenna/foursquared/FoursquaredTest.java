@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.Checkin;
+import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 
@@ -18,9 +19,9 @@ public class FoursquaredTest {
     public static final String TAG = "FoursquaredTest";
     public static final boolean DEBUG = true;
 
-    public static Venue createTestVenue() {
+    public static Venue createTestVenue(String id) {
         Venue venue = new Venue();
-        venue.setVenuename("The Page");
+        venue.setVenuename("Named " + id);
         venue.setAddress("298 Divisadero St.");
         venue.setCity("San Francisco");
         venue.setState("CA");
@@ -92,25 +93,19 @@ public class FoursquaredTest {
         return checkin;
 
     }
-
-    /**
-     * @return
-     */
-    public static List<Venue> createTestVenues() {
-        List<Venue> venues = new ArrayList<Venue>();
-        venues.add(createTestVenue());
-        venues.add(createTestVenue());
-        venues.add(createTestVenue());
-        venues.add(createTestVenue());
-        venues.add(createTestVenue());
-        venues.add(createTestVenue());
-        venues.add(createTestVenue());
-        venues.add(createTestVenue());
-        venues.add(createTestVenue());
-        venues.add(createTestVenue());
-        venues.add(createTestVenue());
-        venues.add(createTestVenue());
-        venues.add(createTestVenue());
-        return venues;
+    
+    public static Group createVenueGroup(String type) {
+        Group tlg = new Group();
+        tlg.setType(type);
+        tlg.add(createTestVenue("1"));
+        tlg.add(createTestVenue("2"));
+        tlg.add(createTestVenue("3"));
+        tlg.add(createTestVenue("4"));
+        tlg.add(createTestVenue("5"));
+        tlg.add(createTestVenue("6"));
+        tlg.add(createTestVenue("7"));
+        tlg.add(createTestVenue("8"));
+        tlg.add(createTestVenue("9"));
+        return tlg;        
     }
 }

@@ -60,7 +60,7 @@ public class Foursquared extends Application {
     public Location getLocation() {
         LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
         criteria.setCostAllowed(true);
 
         String providerName = manager.getBestProvider(criteria, true);

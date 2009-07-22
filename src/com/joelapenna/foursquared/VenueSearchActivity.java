@@ -8,11 +8,12 @@ import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
-import android.os.AsyncTask;
+import com.joelapenna.foursquared.util.SeparatedListAdapter;
 
 import android.app.ListActivity;
 import android.content.Intent;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -41,7 +42,7 @@ public class VenueSearchActivity extends ListActivity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.venue_search_activity);
 
-        setListAdapter(new VenueSearchListAdapter(this));
+        setListAdapter(new SeparatedListAdapter(this));
 
         mSearchEdit = (EditText)findViewById(R.id.searchEdit);
         mSearchEdit.setOnKeyListener(new OnKeyListener() {
@@ -65,16 +66,18 @@ public class VenueSearchActivity extends ListActivity {
                 fireVenueActivityIntent(venue);
             }
         });
+
+        // testStuff();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
+    private void testStuff() {
+        mSearchEdit.setText("YOUR FACE");
+        Group groups = new Group();
+        groups.setType("TLG");
+        groups.add(FoursquaredTest.createVenueGroup("Group A"));
+        groups.add(FoursquaredTest.createVenueGroup("Group B"));
+        groups.add(FoursquaredTest.createVenueGroup("Group C"));
+        putGroupsInAdapter(groups);
     }
 
     protected void startQuery() {
@@ -91,6 +94,32 @@ public class VenueSearchActivity extends ListActivity {
         intent.setAction(Intent.ACTION_VIEW);
         intent.putExtra("venue", venue);
         startActivity(intent);
+    }
+
+    private void putGroupsInAdapter(Group groups) {
+        try {
+            if (groups == null) {
+                Toast.makeText(getApplicationContext(), "Could not complete search!",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            SeparatedListAdapter mainAdapter = (SeparatedListAdapter)getListAdapter();
+            mainAdapter.clear();
+            int groupCount = groups.size();
+            for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
+                Group group = (Group)groups.get(groupsIndex);
+                VenueListAdapter groupAdapter = new VenueListAdapter(this, group);
+                if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
+                mainAdapter.addSection(group.getType(), groupAdapter);
+            }
+            mainAdapter.notifyDataSetInvalidated();
+
+        } finally {
+            setProgressBarIndeterminateVisibility(false);
+            String query = mSearchEdit.getText().toString();
+            setTitle("Searching: " + query);
+            mSearchEdit.setEnabled(true);
+        }
     }
 
     class SearchAsyncTask extends AsyncTask<String, Void, Group> {
@@ -130,29 +159,7 @@ public class VenueSearchActivity extends ListActivity {
 
         @Override
         public void onPostExecute(Group groups) {
-            try {
-                if (groups == null) {
-                    Toast.makeText(getApplicationContext(), "Could not complete search!",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                VenueSearchListAdapter adapter = (VenueSearchListAdapter)getListAdapter();
-                adapter.clear();
-                int groupCount = groups.size();
-                for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
-                    Group group = (Group)groups.get(groupsIndex);
-                    int venuesCount = group.size();
-                    for (int venuesIndex = 0; venuesIndex < venuesCount; venuesIndex++) {
-                        Venue venue = (Venue)group.get(venuesIndex);
-                        adapter.add(venue);
-                    }
-                }
-            } finally {
-                setProgressBarIndeterminateVisibility(false);
-                String query = mSearchEdit.getText().toString();
-                setTitle("Searching: " + query);
-                mSearchEdit.setEnabled(true);
-            }
+            putGroupsInAdapter(groups);
         }
     }
 }

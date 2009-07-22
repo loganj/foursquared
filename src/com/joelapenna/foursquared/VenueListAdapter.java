@@ -4,6 +4,7 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 
 import android.content.Context;
@@ -14,21 +15,19 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author jlapenna
  */
-class VenueSearchListAdapter extends BaseAdapter {
-    private static final String TAG = "VenuesListAdapter";
+class VenueListAdapter extends BaseAdapter {
+    private static final String TAG = "VenueListAdapter";
     private static final boolean DEBUG = Foursquared.DEBUG;
 
     private LayoutInflater mInflater;
-    private List<Venue> mVenues = new ArrayList<Venue>();
+    private Group mVenues;
 
-    public VenueSearchListAdapter(Context context) {
+    public VenueListAdapter(Context context, Group venues) {
         mInflater = LayoutInflater.from(context);
+        mVenues = venues;
     }
 
     /**
@@ -43,7 +42,7 @@ class VenueSearchListAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        if (DEBUG) Log.d(TAG, "getItem() called");
+        if (DEBUG) Log.d(TAG, "getItem() called: " + String.valueOf(position));
         return mVenues.get(position);
     }
 
@@ -54,7 +53,7 @@ class VenueSearchListAdapter extends BaseAdapter {
      */
     @Override
     public long getItemId(int position) {
-        if (DEBUG) Log.d(TAG, "getItemId() called");
+        if (DEBUG) Log.d(TAG, "getItemId() called: " + String.valueOf(position));
         return position;
     }
 
@@ -67,11 +66,7 @@ class VenueSearchListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (DEBUG) Log.d(TAG, "getView() called for position: " + position);
         Venue venue = (Venue)getItem(position);
-        
-        return getVenueView(convertView, venue);
-    }
-
-    private View getVenueView(View convertView, Venue venue) {
+        if (DEBUG) Log.d(TAG, "getView() is: " + venue);
         // A ViewHolder keeps references to children views to avoid unnecessary
         // calls to findViewById() on each row.
         ViewHolder holder;
@@ -95,6 +90,8 @@ class VenueSearchListAdapter extends BaseAdapter {
             // and the ImageView.
             holder = (ViewHolder)convertView.getTag();
         }
+
+        Log.d(TAG, holder.toString());
         holder.name.setText(venue.getVenuename());
         holder.locationLine1.setText(venue.getAddress());
         String line2 = Foursquared.getVenueLocationLine2(venue);
@@ -103,6 +100,7 @@ class VenueSearchListAdapter extends BaseAdapter {
         } else {
             holder.locationLine2.setText(line2);
         }
+        if (DEBUG) Log.d(TAG, "Returning: " + convertView);
         return convertView;
     }
 
@@ -117,21 +115,7 @@ class VenueSearchListAdapter extends BaseAdapter {
         return (mVenues.size() <= 0);
     }
 
-    public void add(Venue venue) {
-        mVenues.add(venue);
-        notifyDataSetChanged();
-    }
-
-    public void clear() {
-        mVenues.clear();
-        notifyDataSetInvalidated();
-    }
-
-    private static class HeaderViewHolder {
-        TextView name;
-    }
-
-    private static class ViewHolder {
+    private class ViewHolder {
         TextView name;
         TextView locationLine1;
         TextView locationLine2;
