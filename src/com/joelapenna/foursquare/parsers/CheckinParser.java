@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-06-10 23:39:02.470109
+ * Auto-generated: 2009-06-19 00:18:41.012691
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -29,7 +29,13 @@ public class CheckinParser extends AbstractParser<Checkin> {
     @Override
     public Checkin parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "checkin");
+        try {
+            parser.require(XmlPullParser.START_TAG, null, "checkin");
+        } catch (XmlPullParserException e) {
+            if (parser.getName().equals("error")) {
+                throw new FoursquareError(parser.getText());
+            }
+        }
 
         Checkin checkin = new Checkin();
 
@@ -42,6 +48,9 @@ public class CheckinParser extends AbstractParser<Checkin> {
 
             } else if ("id".equals(name)) {
                 checkin.setId(parser.nextText());
+
+            } else if ("shout".equals(name)) {
+                checkin.setShout(parser.nextText());
 
             } else if ("user".equals(name)) {
                 checkin.setUser(new UserParser().parse(parser));

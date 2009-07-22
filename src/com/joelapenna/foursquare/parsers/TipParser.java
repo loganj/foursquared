@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-06-10 02:19:22.852979
+ * Auto-generated: 2009-06-19 00:18:42.154336
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -29,7 +29,13 @@ public class TipParser extends AbstractParser<Tip> {
     @Override
     public Tip parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "tip");
+        try {
+            parser.require(XmlPullParser.START_TAG, null, "tip");
+        } catch (XmlPullParserException e) {
+            if (parser.getName().equals("error")) {
+                throw new FoursquareError(parser.getText());
+            }
+        }
 
         Tip tip = new Tip();
 

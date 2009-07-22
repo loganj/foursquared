@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-06-10 02:19:21.530622
+ * Auto-generated: 2009-06-19 00:18:40.620826
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -29,7 +29,13 @@ public class BeenhereParser extends AbstractParser<Beenhere> {
     @Override
     public Beenhere parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "beenhere");
+        try {
+            parser.require(XmlPullParser.START_TAG, null, "beenhere");
+        } catch (XmlPullParserException e) {
+            if (parser.getName().equals("error")) {
+                throw new FoursquareError(parser.getText());
+            }
+        }
 
         Beenhere beenhere = new Beenhere();
 

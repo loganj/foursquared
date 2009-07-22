@@ -40,7 +40,13 @@ public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
     @Override
     public %(type_name)s parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "%(top_node_name)s");
+        try {
+            parser.require(XmlPullParser.START_TAG, null, "%(top_node_name)s");
+        } catch (XmlPullParserException e) {
+            if (parser.getName().equals("error")) {
+                throw new FoursquareError(parser.getText());
+            }
+        }
 
         %(type_name)s %(top_node_name)s = new %(type_name)s();
 

@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-06-10 02:19:22.450852
+ * Auto-generated: 2009-06-19 00:18:41.770217
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -29,7 +29,13 @@ public class MayorParser extends AbstractParser<Mayor> {
     @Override
     public Mayor parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "mayor");
+        try {
+            parser.require(XmlPullParser.START_TAG, null, "mayor");
+        } catch (XmlPullParserException e) {
+            if (parser.getName().equals("error")) {
+                throw new FoursquareError(parser.getText());
+            }
+        }
 
         Mayor mayor = new Mayor();
 
