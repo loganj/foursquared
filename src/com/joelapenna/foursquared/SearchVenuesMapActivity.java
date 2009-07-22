@@ -11,6 +11,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Stats;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
 import com.joelapenna.foursquared.util.IconsIterator;
@@ -33,9 +34,9 @@ import java.util.Observer;
 public class SearchVenuesMapActivity extends MapActivity {
     public static final String TAG = "SearchVenuesMapActivity";
     public static final boolean DEBUG = Foursquared.DEBUG;
-    
+
     private final IconsIterator mIconsIterator = new IconsIterator();
-    
+
     private Venue mTappedVenue;
 
     private Observer mSearchResultsObserver;
@@ -192,8 +193,7 @@ public class SearchVenuesMapActivity extends MapActivity {
         GeoPoint center = mMyLocationOverlay.getMyLocation();
         if (center != null
                 && SearchVenuesActivity.searchResultsObservable.getQuery() == SearchVenuesActivity.QUERY_NEARBY) {
-            if (DEBUG) Log.d(TAG,
-                    "recenterMap via MyLocation as we are doing a nearby search");
+            if (DEBUG) Log.d(TAG, "recenterMap via MyLocation as we are doing a nearby search");
             mMapController.animateTo(center);
             mMapController.setZoom(16);
         } else if (mVenuesGroupOverlays.size() > 0) {
@@ -229,7 +229,8 @@ public class SearchVenuesMapActivity extends MapActivity {
         @Override
         public OverlayItem createItem(int i) {
             VenueOverlayItem item = (VenueOverlayItem)super.createItem(i);
-            if (item.getVenue().getStats().getBeenhere().me()) {
+            Stats stats = item.getVenue().getStats();
+            if (stats != null && stats.getBeenhere().me()) {
                 if (DEBUG) Log.d(TAG, "using the beenThereMarker for: " + item.getVenue());
                 item.setMarker(mBeenThereMarker);
             }
