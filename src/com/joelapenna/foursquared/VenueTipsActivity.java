@@ -164,6 +164,7 @@ public class VenueTipsActivity extends ListActivity {
                         String text = editText.getText().toString();
                         if (!TextUtils.isEmpty(text)) {
                             addTodo(text);
+                            editText.setText("");
                         }
                     }
                 };
@@ -175,6 +176,7 @@ public class VenueTipsActivity extends ListActivity {
                         String text = editText.getText().toString();
                         if (!TextUtils.isEmpty(text)) {
                             addTip(text);
+                            editText.setText("");
                         }
                     }
                 };
