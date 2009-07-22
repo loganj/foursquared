@@ -9,6 +9,7 @@ import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
 import com.joelapenna.foursquared.test.FoursquaredTest;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 
@@ -21,6 +22,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -134,7 +136,11 @@ public class VenueSearchActivity extends ListActivity {
         if (intent == null) {
             if (DEBUG) Log.d(TAG, "No intent to search, querying default.");
         } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            if (DEBUG) Log.d(TAG, "onNewIntent received search intent");
+            if (DEBUG) Log.d(TAG, "onNewIntent received search intent and saving.");
+            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+                   VenueQuerySuggestionsProvider.AUTHORITY, VenueQuerySuggestionsProvider.MODE);
+            suggestions.saveRecentQuery(intent.getStringExtra(SearchManager.QUERY), null);
+
         }
         startQuery(intent.getStringExtra(SearchManager.QUERY));
     }
@@ -231,6 +237,7 @@ public class VenueSearchActivity extends ListActivity {
                     if (DEBUG) Log.d(TAG, "Searching without location.");
                     return foursquare.venues(mQuery, null, null, 10, 1);
                 } else {
+                    // Try to make the search radius to be the same as our accuracy.
                     if (DEBUG) Log.d(TAG, "Searching with location: " + location);
                     int radius;
                     if (location.hasAccuracy()) {
