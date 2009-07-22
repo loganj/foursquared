@@ -20,7 +20,7 @@ import java.io.IOException;
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class IncomingCheckinParser extends AbstractParser<Checkin> {
-    private static final String TAG = "CheckinResponseParser";
+    private static final String TAG = "IncomingCheckinParser";
     private static final boolean DEBUG = Foursquare.DEBUG;
 
     @Override
@@ -38,6 +38,7 @@ public class IncomingCheckinParser extends AbstractParser<Checkin> {
                         throw new FoursquareError(parser.getText());
                     } else if ("checkin".equals(name)) {
                         parseCheckinTag(parser, checkin);
+                        return checkin;
                     }
 
                 default:

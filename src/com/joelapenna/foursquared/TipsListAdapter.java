@@ -25,7 +25,7 @@ import java.util.List;
  */
 class TipsListAdapter extends BaseAdapter {
     private static final String TAG = "TipsListAdapter";
-    private static final boolean DEBUG = FoursquaredTest.DEBUG;
+    private static final boolean DEBUG = Foursquared.DEBUG;
 
     private LayoutInflater mInflater;
     private List<Tip> mTips = new ArrayList<Tip>();
@@ -40,7 +40,7 @@ class TipsListAdapter extends BaseAdapter {
 
     /**
      * The number of items in the list is determined by the number of tips in our array.
-     *
+     * 
      * @see android.widget.ListAdapter#getCount()
      */
     @Override
@@ -56,7 +56,7 @@ class TipsListAdapter extends BaseAdapter {
 
     /**
      * Use the position index as a unique id.
-     *
+     * 
      * @see android.widget.ListAdapter#getItemId(int)
      */
     @Override
@@ -67,7 +67,7 @@ class TipsListAdapter extends BaseAdapter {
 
     /**
      * Make a view to hold each row.
-     *
+     * 
      * @see android.widget.ListAdapter#getView(int, android.view.View, android.view.ViewGroup)
      */
     @Override
@@ -96,10 +96,6 @@ class TipsListAdapter extends BaseAdapter {
             // and the ImageView.
             holder = (ViewHolder)convertView.getTag();
         }
-
-        // Bind the data efficiently with the holder.
-        // TODO(jlapenna): Make this "relative" when cupcake comes out, using
-        // DateUtils.getRelativeTimeSpanString
 
         Tip tip = (Tip)getItem(position);
         holder.firstLine.setText(tip.getFirstname() + " " + tip.getLastname() + " did this...");

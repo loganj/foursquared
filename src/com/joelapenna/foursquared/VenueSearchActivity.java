@@ -20,6 +20,7 @@ import android.view.Window;
 import android.view.View.OnKeyListener;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.IOException;
@@ -29,14 +30,14 @@ import java.io.IOException;
  */
 public class VenueSearchActivity extends ListActivity {
     private static final String TAG = "VenueSearchActivity";
-    private static final boolean DEBUG = FoursquaredTest.DEBUG;
+    private static final boolean DEBUG = Foursquared.DEBUG;
 
     private EditText mSearchEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.venue_search_activity);
 
         setListAdapter(new VenueSearchListAdapter(this));
@@ -68,7 +69,9 @@ public class VenueSearchActivity extends ListActivity {
     protected void startQuery() {
         if (DEBUG) Log.d(TAG, "sendQuery()");
         String query = mSearchEdit.getText().toString();
-        new SearchUserTask().execute(new String[] { query});
+        new SearchUserTask().execute(new String[] {
+            query
+        });
     }
 
     protected void fireVenueActivityIntent(Venue venue) {
@@ -110,6 +113,11 @@ public class VenueSearchActivity extends ListActivity {
         @Override
         public void onPostExecute(Group groups) {
             try {
+                if (groups == null) {
+                    Toast.makeText(getApplicationContext(), "Could not complete search!",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 VenueSearchListAdapter adapter = (VenueSearchListAdapter)getListAdapter();
                 adapter.clear();
                 int groupCount = groups.size();

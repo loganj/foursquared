@@ -71,7 +71,7 @@ public class GroupParser extends AbstractParser<Group> {
         while (eventType != XmlPullParser.END_DOCUMENT) {
             switch (eventType) {
                 case XmlPullParser.START_TAG:
-                    if (DEBUG) Log.d(TAG, "CheckinGroup : " + String.valueOf(parser.getName()));
+                    if (DEBUG) Log.d(TAG, "Group : " + String.valueOf(parser.getName()));
                     try {
                         FoursquareType item = this.mSubParser.parse(parser);
                         if (item != null) {

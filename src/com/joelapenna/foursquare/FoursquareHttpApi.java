@@ -106,7 +106,8 @@ class FoursquareHttpApi extends HttpApi {
                 new BasicNameValuePair("twitter", (twitter) ? "1" : "0"), // twitter
                 new BasicNameValuePair("lat", (lat != null) ? lat : ""), // lat
                 new BasicNameValuePair("lng", (lng != null) ? lng : ""), // lng
-                new BasicNameValuePair("cityid", (cityid != null) ? cityid : ""));
+                new BasicNameValuePair("cityid", (cityid != null) ? cityid : ""),
+                new BasicNameValuePair("output", "xml"));
     }
 
     /**

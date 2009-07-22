@@ -47,7 +47,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
             ((Foursquared)getApplication()).loadCredentials();
         } catch (FoursquaredCredentialsError e) {
             if (DEBUG) Log.d(TAG, e.getMessage());
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG);
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 

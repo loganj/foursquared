@@ -20,7 +20,7 @@ import java.io.IOException;
 
 public class TestActivity extends Activity {
     private static final String TAG = "TestActivity";
-    private static final boolean DEBUG = FoursquaredTest.DEBUG;
+    private static final boolean DEBUG = Foursquared.DEBUG;
 
     private Foursquare mFoursquare;
 
@@ -32,12 +32,12 @@ public class TestActivity extends Activity {
         mFoursquare = ((Foursquared)getApplication()).getFoursquare();
         try {
             // testLogin();
-            testVenues();
-            testVenue();
-            testCheckins();
-            testTodos();
+            // testVenues();
+            // testVenue();
+            // testCheckins();
+            // testTodos();
             // testBreakdown();
-            // testCheckin();
+            testCheckin();
         } catch (FoursquareError e) {
             // TODO Auto-generated catch block
             if (DEBUG) Log.d(TAG, "FoursquaredCredentialsError", e);
@@ -92,7 +92,7 @@ public class TestActivity extends Activity {
 
     private void testCheckin() throws FoursquareError, FoursquareParseException, IOException {
         Log.d(TAG, "testCheckin");
-        Checkin checkin = mFoursquare.checkin("Bobby's place", false, false, "", "");
+        Checkin checkin = mFoursquare.checkin("Bobby's place", false, false, null, null);
         Log.d(TAG, "IncomingCheckin userid: " + checkin.getUserid());
         Log.d(TAG, "IncomingCheckin message: " + checkin.getMessage());
         Log.d(TAG, "IncomingCheckin url: " + checkin.getUrl());

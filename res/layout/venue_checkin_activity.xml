@@ -24,12 +24,11 @@
     android:layout_height="fill_parent"
     android:layout_width="fill_parent" />
 
-  <ProgressBar
+  <TextView
     android:id="@android:id/empty"
-    android:layout_height="128dip"
-    android:layout_width="128dip"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
     android:layout_gravity="center"
-    android:paddingTop="32dip"
-    android:indeterminate="true" />
+    android:text="No tips found, Add one!" />
 
 </LinearLayout>

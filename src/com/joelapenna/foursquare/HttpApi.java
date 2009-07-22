@@ -40,7 +40,6 @@ import java.util.List;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
- *
  */
 public class HttpApi {
 
@@ -57,57 +56,58 @@ public class HttpApi {
         super();
     }
 
-    protected FoursquareType doHttpPost(String url, Parser<? extends FoursquareType> abstractParser, NameValuePair... nameValuePairs) throws FoursquareError,
-            FoursquareParseException, IOException {
-                if (DEBUG) Log.d(TAG, "doHttpPost: " + url);
-                HttpPost httpPost = createHttpPost(url, Arrays.asList(nameValuePairs));
-            
-                HttpResponse response = executeHttpPost(httpPost);
-                if (response == null) {
-                    if (DEBUG) Log.d(TAG, "execute() call for the httpPost generated an exception;");
-                    return null;
-                }
-            
-                switch (response.getStatusLine().getStatusCode()) {
-                    case 200:
-                        break;
-                    default:
-                        if (DEBUG) Log.d(TAG, "Default case for status code reached: "
-                                + response.getStatusLine().toString());
-                        return null;
-                }
-            
-                return abstractParser.parse(AuthParser.createParser(response.getEntity().getContent()));
-            }
+    protected FoursquareType doHttpPost(String url,
+            Parser<? extends FoursquareType> abstractParser, NameValuePair... nameValuePairs)
+            throws FoursquareError, FoursquareParseException, IOException {
+        if (DEBUG) Log.d(TAG, "doHttpPost: " + url);
+        HttpPost httpPost = createHttpPost(url, Arrays.asList(nameValuePairs));
 
-    protected String doHttpPost(String url, NameValuePair... nameValuePairs) throws FoursquareError,
-            FoursquareParseException, IOException {
-                if (DEBUG) Log.d(TAG, "doHttpPost: " + url);
-                HttpPost httpPost = createHttpPost(url, Arrays.asList(nameValuePairs));
-            
-                HttpResponse response = executeHttpPost(httpPost);
-                if (response == null) {
-                    if (DEBUG) Log.d(TAG, "execute() call for the httpPost generated an exception;");
-                    throw new FoursquareError("breakdown request unsuccessful.");
-                }
-            
-                switch (response.getStatusLine().getStatusCode()) {
-                    case 200:
-                        break;
-                    default:
-                        throw new FoursquareError(response.getStatusLine().toString());
-                }
-            
-                try {
-                    return EntityUtils.toString(response.getEntity());
-                } catch (ParseException e) {
-                    throw new FoursquareParseException(e.getMessage());
-                }
-            }
+        HttpResponse response = executeHttpPost(httpPost);
+        if (response == null) {
+            if (DEBUG) Log.d(TAG, "execute() call for the httpPost generated an exception;");
+            return null;
+        }
+
+        switch (response.getStatusLine().getStatusCode()) {
+            case 200:
+                break;
+            default:
+                if (DEBUG) Log.d(TAG, "Default case for status code reached: "
+                        + response.getStatusLine().toString());
+                return null;
+        }
+
+        return abstractParser.parse(AuthParser.createParser(response.getEntity().getContent()));
+    }
+
+    protected String doHttpPost(String url, NameValuePair... nameValuePairs)
+            throws FoursquareError, FoursquareParseException, IOException {
+        if (DEBUG) Log.d(TAG, "doHttpPost: " + url);
+        HttpPost httpPost = createHttpPost(url, Arrays.asList(nameValuePairs));
+
+        HttpResponse response = executeHttpPost(httpPost);
+        if (response == null) {
+            if (DEBUG) Log.d(TAG, "execute() call for the httpPost generated an exception;");
+            throw new FoursquareError("breakdown request unsuccessful.");
+        }
+
+        switch (response.getStatusLine().getStatusCode()) {
+            case 200:
+                break;
+            default:
+                throw new FoursquareError(response.getStatusLine().toString());
+        }
+
+        try {
+            return EntityUtils.toString(response.getEntity());
+        } catch (ParseException e) {
+            throw new FoursquareParseException(e.getMessage());
+        }
+    }
 
     /**
      * execute() an httpPost catching exceptions and returning null instead.
-     *
+     * 
      * @param httpPost
      * @return
      */
@@ -129,22 +129,22 @@ public class HttpApi {
     /**
      * Create a thread-safe client. This client does not do redirecting, to allow us to capture
      * correct "error" codes.
-     *
+     * 
      * @return HttpClient
      */
     public static final DefaultHttpClient createHttpClient() {
         // Sets up the http part of the service.
         final SchemeRegistry supportedSchemes = new SchemeRegistry();
-    
+
         // Register the "http" protocol scheme, it is required
         // by the default operator to look up socket factories.
         final SocketFactory sf = PlainSocketFactory.getSocketFactory();
         supportedSchemes.register(new Scheme("http", sf, 80));
-    
+
         // Set some client http client parameter defaults.
         final HttpParams httpParams = createHttpParams();
         HttpClientParams.setRedirecting(httpParams, false);
-    
+
         final ClientConnectionManager ccm = new ThreadSafeClientConnManager(httpParams,
                 supportedSchemes);
         return new DefaultHttpClient(ccm, httpParams);
@@ -167,6 +167,9 @@ public class HttpApi {
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader(CLIENT_VERSION_HEADER, CLIENT_VERSION);
         try {
+            for (int i = 0; i < params.size(); i++) {
+                if (DEBUG) Log.d(TAG, "Param: " + params.get(i));
+            }
             httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
         } catch (UnsupportedEncodingException e1) {
             throw new IllegalArgumentException("Unable to encode http parameters.");

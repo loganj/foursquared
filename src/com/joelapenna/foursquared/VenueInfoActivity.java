@@ -24,7 +24,7 @@ import android.widget.Button;
  */
 public class VenueInfoActivity extends MapActivity {
     public static final String TAG = "VenueInfoActivity";
-    public static final boolean DEBUG = FoursquaredTest.DEBUG;
+    public static final boolean DEBUG = Foursquared.DEBUG;
 
     private MapView mMapView;
     private MapController mMapController;

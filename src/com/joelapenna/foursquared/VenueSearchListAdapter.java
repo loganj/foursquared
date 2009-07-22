@@ -22,7 +22,7 @@ import java.util.List;
  */
 class VenueSearchListAdapter extends BaseAdapter {
     private static final String TAG = "VenuesListAdapter";
-    private static final boolean DEBUG = FoursquaredTest.DEBUG;
+    private static final boolean DEBUG = Foursquared.DEBUG;
 
     private LayoutInflater mInflater;
     private List<Venue> mVenues = new ArrayList<Venue>();

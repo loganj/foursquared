@@ -4,9 +4,11 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.error.FoursquareError;
+import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Checkin;
-import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.util.UserTask;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -14,21 +16,28 @@ import android.app.ListActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.Toast;
 
-import java.util.List;
+import java.io.IOException;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class VenueCheckinActivity extends ListActivity {
+    public static final String TAG = "VenueCheckinActivity";
+    public static final boolean DEBUG = Foursquared.DEBUG;
 
     private static final int DIALOG_CHECKIN = 0;
 
     private Venue mVenue;
+    private Button mCheckinButton;
+    public Checkin mCheckin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,39 +45,92 @@ public class VenueCheckinActivity extends ListActivity {
         setContentView(R.layout.venue_checkin_activity);
 
         setListAdapter(new TipsListAdapter(this));
-        List<Tip> tips = FoursquaredTest.createTestTips();
-        for (int i = 0; i < tips.size(); i++) {
-            ((TipsListAdapter)getListAdapter()).add(tips.get(i));
-        }
 
-        Button checkinButton = (Button)findViewById(R.id.checkinButton);
-        checkinButton.setOnClickListener(new OnClickListener() {
+        mCheckinButton = (Button)findViewById(R.id.checkinButton);
+        mCheckinButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                showDialog(DIALOG_CHECKIN);
-                v.setEnabled(false);
+                sendCheckin();
             }
         });
 
         setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
     }
 
-    private void setVenue(Venue venue) {
-        mVenue = venue;
-    }
-
     @Override
     public Dialog onCreateDialog(int id) {
         switch (id) {
             case DIALOG_CHECKIN:
-                Checkin checkin = FoursquaredTest.createIncomingCheckin();
+                Checkin checkin = mCheckin;
+                if (DEBUG) Log.d(TAG, checkin.getUserid());
+                if (DEBUG) Log.d(TAG, checkin.getMessage());
+                if (DEBUG) Log.d(TAG, String.valueOf(checkin.status()));
+                if (DEBUG) Log.d(TAG, checkin.getUrl());
+
                 WebView webView = new WebView(this);
+                webView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
+                        LayoutParams.FILL_PARENT));
                 webView.loadUrl(checkin.getUrl());
+                webView.setBackgroundColor(android.R.color.transparent);
                 Spanned title = Html.fromHtml(checkin.getMessage());
                 return new AlertDialog.Builder(this) // the builder
                         .setView(webView) // use a web view
-                        .setIcon(android.R.drawable.ic_dialog_info) // show an icon
+                        .setIcon(android.R.drawable.ic_dialog_info) // show an
                         .setTitle(title).create(); // return it.
+
         }
         return null;
+    }
+
+    private void sendCheckin() {
+        new CheckinUserTask().execute(new Venue[] {
+            mVenue
+        });
+    }
+
+    private void setVenue(Venue venue) {
+        mVenue = venue;
+    }
+
+    class CheckinUserTask extends UserTask<Venue, Void, Checkin> {
+
+        @Override
+        public void onPreExecute() {
+            mCheckinButton.setEnabled(false);
+        }
+
+        @Override
+        public Checkin doInBackground(Venue... params) {
+            try {
+                final Venue venue = params[0];
+                if (DEBUG) Log.d(TAG, "Checking in to: " + venue.getVenuename());
+                return ((Foursquared)getApplication()).getFoursquare().checkin(
+                        venue.getVenuename(), false, false, null, null);
+            } catch (FoursquareError e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "FoursquareError", e);
+            } catch (FoursquareParseException e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "FoursquareParseException", e);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "IOException", e);
+            }
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(Checkin checkin) {
+            try {
+                mCheckin = checkin;
+                if (checkin == null) {
+                    mCheckinButton.setEnabled(true);
+                    Toast.makeText(VenueCheckinActivity.this, "Unable to checkin! (FIX THIS!)",
+                            Toast.LENGTH_LONG).show();
+                }
+                showDialog(DIALOG_CHECKIN);
+            } finally {
+                // Anything else?
+            }
+        }
     }
 }
