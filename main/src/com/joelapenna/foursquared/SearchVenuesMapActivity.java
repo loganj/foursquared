@@ -159,7 +159,7 @@ public class SearchVenuesMapActivity extends MapActivity {
 
     /**
      * Create an overlay that contains a specific group's list of mappable venues.
-     *
+     * 
      * @param group
      * @return
      */
@@ -230,7 +230,7 @@ public class SearchVenuesMapActivity extends MapActivity {
         public OverlayItem createItem(int i) {
             VenueOverlayItem item = (VenueOverlayItem)super.createItem(i);
             Stats stats = item.getVenue().getStats();
-            if (stats != null && stats.getBeenhere().me()) {
+            if (stats != null && stats.getBeenhere() != null && stats.getBeenhere().me()) {
                 if (DEBUG) Log.d(TAG, "using the beenThereMarker for: " + item.getVenue());
                 item.setMarker(mBeenThereMarker);
             }
