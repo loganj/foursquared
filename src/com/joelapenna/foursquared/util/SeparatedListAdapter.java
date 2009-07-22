@@ -25,7 +25,7 @@ public class SeparatedListAdapter extends BaseAdapter {
     public final static int TYPE_SECTION_HEADER = 0;
 
     public SeparatedListAdapter(Context context) {
-        headers = new ArrayAdapter<String>(context, R.layout.list_header, R.id.list_header_title);
+        headers = new ArrayAdapter<String>(context, R.layout.list_header);
     }
 
     public void addSection(String section, Adapter adapter) {
