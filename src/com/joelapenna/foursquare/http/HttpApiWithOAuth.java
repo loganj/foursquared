@@ -23,6 +23,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 
 import android.util.Log;
 
@@ -80,7 +81,11 @@ public class HttpApiWithOAuth extends HttpApi {
                 bestEffortConsumeContent(response);
 =======
                 response.getEntity().consumeContent();
+<<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApiWithOAuth.java
 >>>>>>> ce6538a... Improve content consumption (so we don't leak threads) in HttpApis.:src/com/joelapenna/foursquare/http/HttpApiWithOAuth.java
+=======
+                if (DEBUG) Log.d(TAG, EntityUtils.toString(response.getEntity()));
+>>>>>>> be0d8a3... Add a debugging message when auth_exchange 401s:src/com/joelapenna/foursquare/http/HttpApiWithOAuth.java
                 throw new FoursquareCredentialsError(response.getStatusLine().toString());
             default:
                 if (DEBUG) Log.d(TAG, "Default case for status code reached: "
