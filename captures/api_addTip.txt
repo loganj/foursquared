@@ -1,0 +1,25 @@
+GET /api/add?type=top&text=add%20a%20tip&vid=44794&lat=37.770741&lng=-122.436854&cityid=23 HTTP/1.1
+Host: playfoursquare.com
+User-Agent: foursquare/1.1 CFNetwork/444.1 Darwin/10.0.0d3
+X_foursquare_client_version: iPhone 20090401
+Authorization: Basic NzA4NDIxOTUyNjo0NDE4Mzc2Mw==
+Accept: */*
+Accept-Language: en-us
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+
+
+HTTP/1.1 200 OK
+Date: Thu, 16 Apr 2009 04:44:43 GMT
+Server: Apache
+Content-Length: 122
+Keep-Alive: timeout=15, max=100
+Connection: Keep-Alive
+Content-Type: application/xml; charset=utf-8
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+  <status>1</status>
+  <message>top item has been added! (#6879)</message>
+</data>
