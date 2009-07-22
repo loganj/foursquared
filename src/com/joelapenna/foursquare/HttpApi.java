@@ -47,20 +47,17 @@ public class HttpApi {
     protected static final boolean DEBUG = Foursquare.DEBUG;
     private static final String CLIENT_VERSION = "iPhone 20090301";
     private static final String CLIENT_VERSION_HEADER = "X_foursquare_client_version";
-    protected DefaultHttpClient mHttpClient;
+    private DefaultHttpClient mHttpClient;
 
-    /**
-     * 
-     */
-    public HttpApi() {
-        super();
+    public HttpApi(DefaultHttpClient httpClient) {
+        mHttpClient = httpClient;
     }
 
-    protected FoursquareType doHttpPost(String url,
+    public FoursquareType doHttpPost(String url,
             Parser<? extends FoursquareType> abstractParser, NameValuePair... nameValuePairs)
             throws FoursquareError, FoursquareParseException, IOException {
         if (DEBUG) Log.d(TAG, "doHttpPost: " + url);
-        HttpPost httpPost = createHttpPost(url, Arrays.asList(nameValuePairs));
+        HttpPost httpPost = createHttpPost(url, nameValuePairs);
 
         HttpResponse response = executeHttpPost(httpPost);
         if (response == null) {
@@ -80,10 +77,10 @@ public class HttpApi {
         return abstractParser.parse(AuthParser.createParser(response.getEntity().getContent()));
     }
 
-    protected String doHttpPost(String url, NameValuePair... nameValuePairs)
+    public String doHttpPost(String url, NameValuePair... nameValuePairs)
             throws FoursquareError, FoursquareParseException, IOException {
         if (DEBUG) Log.d(TAG, "doHttpPost: " + url);
-        HttpPost httpPost = createHttpPost(url, Arrays.asList(nameValuePairs));
+        HttpPost httpPost = createHttpPost(url, nameValuePairs);
 
         HttpResponse response = executeHttpPost(httpPost);
         if (response == null) {
@@ -111,7 +108,7 @@ public class HttpApi {
      * @param httpPost
      * @return
      */
-    protected HttpResponse executeHttpPost(HttpPost httpPost) {
+    public HttpResponse executeHttpPost(HttpPost httpPost) {
         if (DEBUG) Log.d(TAG, "executing HttpPost for: " + httpPost.getURI().toString());
         HttpResponse response;
         try {
@@ -124,6 +121,22 @@ public class HttpApi {
             return null;
         }
         return response;
+    }
+
+    public HttpPost createHttpPost(String url, NameValuePair... nameValuePairs) {
+        if (DEBUG) Log.d(TAG, "creating HttpPost for: " + url);
+        List<NameValuePair> params = Arrays.asList(nameValuePairs);
+        HttpPost httpPost = new HttpPost(url);
+        httpPost.addHeader(CLIENT_VERSION_HEADER, CLIENT_VERSION);
+        try {
+            for (int i = 0; i < params.size(); i++) {
+                if (DEBUG) Log.d(TAG, "Param: " + params.get(i));
+            }
+            httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+        } catch (UnsupportedEncodingException e1) {
+            throw new IllegalArgumentException("Unable to encode http parameters.");
+        }
+        return httpPost;
     }
 
     /**
@@ -160,21 +173,6 @@ public class HttpApi {
         HttpProtocolParams.setContentCharset(params, "UTF-8");
         HttpProtocolParams.setUseExpectContinue(params, true);
         return params;
-    }
-
-    protected static final HttpPost createHttpPost(String url, List<NameValuePair> params) {
-        if (DEBUG) Log.d(TAG, "creating HttpPost for: " + url);
-        HttpPost httpPost = new HttpPost(url);
-        httpPost.addHeader(CLIENT_VERSION_HEADER, CLIENT_VERSION);
-        try {
-            for (int i = 0; i < params.size(); i++) {
-                if (DEBUG) Log.d(TAG, "Param: " + params.get(i));
-            }
-            httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
-        } catch (UnsupportedEncodingException e1) {
-            throw new IllegalArgumentException("Unable to encode http parameters.");
-        }
-        return httpPost;
     }
 
 }

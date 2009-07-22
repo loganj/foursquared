@@ -31,7 +31,7 @@ public class Foursquare {
     private FoursquareHttpApi mFoursquare;
 
     public Foursquare() {
-        mFoursquare = new FoursquareHttpApi(FoursquareHttpApi.createHttpClient());
+        mFoursquare = new FoursquareHttpApi();
     }
 
     public Foursquare(String phone, String password) {
