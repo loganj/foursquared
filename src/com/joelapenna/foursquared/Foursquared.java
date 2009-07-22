@@ -4,9 +4,14 @@
 
 package com.joelapenna.foursquared;
 
+import com.googlecode.dumpcatcher.logging.Dumpcatcher;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquared.maps.BestLocationListener;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Application;
 import android.content.Context;
@@ -20,6 +25,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.List;
 
 /**
@@ -30,12 +36,16 @@ public class Foursquared extends Application {
     public static final boolean DEBUG = true;
     public static final boolean API_DEBUG = false;
     public static final boolean PARSER_DEBUG = false;
+    public static final boolean USE_DUMPCATCHER = true;
+    public static final boolean DUMPCATCHER_TEST = true;
 
     public static final int LAST_LOCATION_UPDATE_THRESHOLD = 1000 * 60 * 60;
 
     // Common menu items
     private static final int MENU_PREFERENCES = -1;
     private static final int MENU_GROUP_SYSTEM = 20;
+
+    private Dumpcatcher mDumpcatcher;
 
     private LocationListener mLocationListener = new LocationListener();
 
@@ -45,11 +55,15 @@ public class Foursquared extends Application {
     private static Foursquare sFoursquare = new Foursquare();
 
     public void onCreate() {
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if (USE_DUMPCATCHER) setupDumpcatcher();
         // Set the oauth credentials.
         sFoursquare.setOAuthConsumerCredentials( //
                 getResources().getString(R.string.oauth_consumer_key), //
                 getResources().getString(R.string.oauth_consumer_secret));
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
         mOnSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -83,6 +97,33 @@ public class Foursquared extends Application {
         return mLocationListener;
     }
 
+    private void setupDumpcatcher() {
+        String client = Preferences.createUniqueId(mPrefs);
+        if (DUMPCATCHER_TEST) {
+            if (DEBUG) Log.d(TAG, "Loading Dumpcatcher TEST");
+            mDumpcatcher = new Dumpcatcher( //
+                    getResources().getString(R.string.test_dumpcatcher_product_key), //
+                    getResources().getString(R.string.test_dumpcatcher_secret), //
+                    getResources().getString(R.string.test_dumpcatcher_url), client, 5);
+        } else {
+            if (DEBUG) Log.d(TAG, "Loading Dumpcatcher Live");
+            mDumpcatcher = new Dumpcatcher( //
+                    getResources().getString(R.string.dumpcatcher_product_key), //
+                    getResources().getString(R.string.dumpcatcher_secret), //
+                    getResources().getString(R.string.dumpcatcher_url), client, 5);
+        }
+
+        // TODO(jlapenna): Make this work!
+        // This doesn't work. Don't pretend it does.
+        // UncaughtExceptionHandler handler = mDumpcatcher.createUncaughtExceptionHandler();
+        // Thread.setDefaultUncaughtExceptionHandler(handler);
+        // Thread.currentThread().setUncaughtExceptionHandler(handler);
+
+        // TODO(jlapenna): Usage related, async sendCrashes should be pooled together or something.
+        // This is nasty.
+        sendUsage("Started");
+    }
+
     private void loadCredentials() throws FoursquareCredentialsError {
         if (DEBUG) Log.d(TAG, "loadCredentials()");
         String phoneNumber = mPrefs.getString(Preferences.PREFERENCE_PHONE, null);
@@ -108,6 +149,25 @@ public class Foursquared extends Application {
             location = manager.getLastKnownLocation(providers.get(i));
             mLocationListener.getBetterLocation(location);
         }
+    }
+
+    private void sendUsage(final String usage) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    NameValuePair[] parameters = {
+                            new BasicNameValuePair("tag", "usage"),
+                            new BasicNameValuePair("short", usage),
+                    };
+                    HttpResponse response = mDumpcatcher.sendCrash(parameters);
+                    response.getEntity().consumeContent();
+                } catch (Exception e) {
+                    // no biggie...
+                }
+            }
+        });
+        thread.start();
     }
 
     public static void addPreferencesToMenu(Context context, Menu menu) {

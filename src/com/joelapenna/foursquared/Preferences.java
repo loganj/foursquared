@@ -8,8 +8,11 @@ import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.User;
 
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
+
+import java.util.UUID;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -36,6 +39,9 @@ public class Preferences {
     public static final String PREFERENCE_OAUTH_TOKEN = "oauth_token";
     public static final String PREFERENCE_OAUTH_TOKEN_SECRET = "oauth_token_secret";
 
+    // Not-in-XML preferences for dumpcatcher
+    public static final String PREFERENCE_DUMPCATCHER_CLIENT = "dumpcatcher_client";
+
     static void storeUser(final Editor editor, User user) {
         if (user != null && user.getId() != null) {
             editor.putString(PREFERENCE_CITY_ID, user.getCity().getId());
@@ -60,4 +66,14 @@ public class Preferences {
         }
     }
 
+    static String createUniqueId(SharedPreferences preferences) {
+        String uniqueId = preferences.getString(PREFERENCE_DUMPCATCHER_CLIENT, null);
+        if (uniqueId == null) {
+            uniqueId = UUID.randomUUID().toString();
+            Editor editor = preferences.edit();
+            editor.putString(Preferences.PREFERENCE_DUMPCATCHER_CLIENT, uniqueId);
+            editor.commit();
+        }
+        return uniqueId;
+    }
 }
