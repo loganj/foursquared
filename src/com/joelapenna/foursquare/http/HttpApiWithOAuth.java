@@ -14,8 +14,10 @@ import com.joelapenna.foursquare.parsers.Parser;
 import com.joelapenna.foursquare.types.FoursquareType;
 
 import oauth.signpost.OAuthConsumer;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
-import oauth.signpost.impl.DefaultOAuthConsumer;
+import oauth.signpost.OAuthConsumer;
 import oauth.signpost.signature.SignatureMethod;
 
 import org.apache.http.HttpResponse;
@@ -47,9 +49,16 @@ public class HttpApiWithOAuth extends HttpApi {
         if (DEBUG) Log.d(TAG, "doHttpRequest: " + httpRequest.getURI());
         try {
             if (DEBUG) Log.d(TAG, "Signing request: " + httpRequest.getURI());
+            if (DEBUG) Log.d(TAG, "Consumer: " + mConsumer.getConsumerKey() + ", "
+                    + mConsumer.getConsumerSecret());
+            if (DEBUG) Log.d(TAG, "Token: " + mConsumer.getToken() + ", "
+                    + mConsumer.getTokenSecret());
             mConsumer.sign(httpRequest);
         } catch (OAuthMessageSignerException e) {
             if (DEBUG) Log.d(TAG, "OAuthMessageSignerException", e);
+            throw new RuntimeException(e);
+        } catch (OAuthExpectationFailedException e) {
+            if (DEBUG) Log.d(TAG, "OAuthExpectationFailedException", e);
             throw new RuntimeException(e);
         }
         HttpResponse response = executeHttpRequest(httpRequest);
@@ -93,7 +102,7 @@ public class HttpApiWithOAuth extends HttpApi {
     }
 
     public void setOAuthConsumerCredentials(String key, String secret) {
-        mConsumer = new DefaultOAuthConsumer(key, secret, SignatureMethod.HMAC_SHA1);
+        mConsumer = new CommonsHttpOAuthConsumer(key, secret, SignatureMethod.HMAC_SHA1);
     }
 
     public void setOAuthTokenWithSecret(String token, String tokenSecret) {
@@ -102,7 +111,7 @@ public class HttpApiWithOAuth extends HttpApi {
             if (DEBUG) Log.d(TAG, "Resetting consumer due to null token/secret.");
             String consumerKey = mConsumer.getConsumerKey();
             String consumerSecret = mConsumer.getConsumerSecret();
-            mConsumer = new DefaultOAuthConsumer(consumerKey, consumerSecret,
+            mConsumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret,
                     SignatureMethod.HMAC_SHA1);
         } else {
             mConsumer.setTokenWithSecret(token, tokenSecret);

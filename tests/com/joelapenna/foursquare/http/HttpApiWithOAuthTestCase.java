@@ -7,8 +7,10 @@ package com.joelapenna.foursquare.http;
 import com.joelapenna.foursquare.TestCredentials;
 
 import oauth.signpost.OAuthConsumer;
+import oauth.signpost.basic.DefaultOAuthConsumer;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
-import oauth.signpost.impl.DefaultOAuthConsumer;
 import oauth.signpost.signature.SignatureMethod;
 
 import org.apache.http.HttpResponse;
@@ -34,8 +36,8 @@ public class HttpApiWithOAuthTestCase extends TestCase {
 
     @LargeTest
     public void test_oAuthSigning() throws ClientProtocolException, IOException,
-            OAuthMessageSignerException {
-        OAuthConsumer consumer = new DefaultOAuthConsumer(TestCredentials.oAuthConsumerKey,
+            OAuthMessageSignerException, OAuthExpectationFailedException {
+        OAuthConsumer consumer = new CommonsHttpOAuthConsumer(TestCredentials.oAuthConsumerKey,
                 TestCredentials.oAuthConsumerSecret, SignatureMethod.HMAC_SHA1);
         consumer.setTokenWithSecret(TestCredentials.oAuthToken, TestCredentials.oAuthTokenSecret);
 
