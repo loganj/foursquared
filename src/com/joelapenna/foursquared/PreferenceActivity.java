@@ -76,7 +76,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         if (getLastNonConfigurationInstance() != null) {
             if (DEBUG) Log.d(TAG, "Restoring state.");
             mLoginTask = (LoginTask)getLastNonConfigurationInstance();
-        };
+        }
     }
 
     @Override
@@ -160,8 +160,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         protected Boolean doInBackground(Void... params) {
             if (DEBUG) Log.d(TAG, "doInBackground()");
             try {
-                verifyCredentials( //
-                        (Context)PreferenceActivity.this, mPrefs, Foursquared.getFoursquare(), true);
+                verifyCredentials(mPrefs, Foursquared.getFoursquare(), true);
                 return true;
             } catch (FoursquareCredentialsError e) {
                 // TODO Auto-generated catch block
@@ -192,9 +191,9 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         }
     }
 
-    private static void verifyCredentials(Context context, SharedPreferences preferences,
-            Foursquare foursquare, boolean doAuthExchange) throws FoursquareCredentialsError,
-            FoursquareException, IOException {
+    private static void verifyCredentials(SharedPreferences preferences, Foursquare foursquare,
+            boolean doAuthExchange) throws FoursquareCredentialsError, FoursquareException,
+            IOException {
         if (DEBUG) Log.d(TAG, "verifyCredentials()");
         final Editor editor = preferences.edit();
         String phoneNumber = preferences.getString(Preferences.PREFERENCE_PHONE, null);
@@ -204,7 +203,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
             throw new FoursquareCredentialsError("Phone number or password not set in preferences.");
         }
         foursquare.setCredentials(phoneNumber, password);
-        Preferences.loginUser(context, foursquare, doAuthExchange, editor);
+        Preferences.loginUser(editor, foursquare, doAuthExchange);
 
         String oauthToken = preferences.getString(Preferences.PREFERENCE_OAUTH_TOKEN, null);
         String oauthTokenSecret = preferences.getString(Preferences.PREFERENCE_OAUTH_TOKEN_SECRET,

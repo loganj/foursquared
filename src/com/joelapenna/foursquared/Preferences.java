@@ -11,7 +11,6 @@ import com.joelapenna.foursquare.types.Auth;
 import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.User;
 
-import android.content.Context;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
@@ -21,6 +20,8 @@ import java.io.IOException;
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Preferences {
+    private static final String TAG = "Preferences";
+    private static final boolean DEBUG = Foursquared.DEBUG;
 
     public static final String PREFERENCE_PHONE = "phone";
     public static final String PREFERENCE_PASSWORD = "password";
@@ -45,7 +46,7 @@ public class Preferences {
             editor.putString(PREFERENCE_CITY_ID, user.getCityid());
             editor.putString(PREFERENCE_ID, user.getId());
             editor.putString(PREFERENCE_GENDER, user.getGender());
-            editor.commit();
+            if (DEBUG) Log.d(TAG, "Commiting user info: " + String.valueOf(editor.commit()));
         } else {
             if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Unable to lookup user.");
         }
@@ -57,7 +58,7 @@ public class Preferences {
             editor.putString(PREFERENCE_FIRST, auth.getFirstname());
             editor.putString(PREFERENCE_LAST, auth.getLastname());
             editor.putString(PREFERENCE_PHOTO, auth.getPhoto());
-            editor.commit();
+            if (DEBUG) Log.d(TAG, "Commiting auth info: " + String.valueOf(editor.commit()));
         } else {
             throw new FoursquareCredentialsError("Unable to login.");
         }
@@ -67,17 +68,18 @@ public class Preferences {
             throws FoursquareCredentialsError {
         if (credentials != null && credentials.getOauthToken() != null
                 && credentials.getOauthTokenSecret() != null) {
+            if (DEBUG) Log.d(TAG, "Storing oauth token");
             editor.putString(PREFERENCE_OAUTH_TOKEN, credentials.getOauthToken());
             editor.putString(PREFERENCE_OAUTH_TOKEN_SECRET, credentials.getOauthTokenSecret());
-            editor.commit();
+            if (DEBUG) Log.d(TAG, "Commiting authexchange token: " + String.valueOf(editor.commit()));
         } else {
             throw new FoursquareCredentialsError("Unable to auth exchange.");
         }
     }
 
-    static void loginUser(final Context context, final Foursquare foursquare,
-            final boolean doAuthExchange, final Editor editor) throws FoursquareCredentialsError,
-            FoursquareException, IOException {
+    static void loginUser(final Editor editor, final Foursquare foursquare,
+            final boolean doAuthExchange) throws FoursquareCredentialsError, FoursquareException,
+            IOException {
         if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Trying to log in.");
         Auth auth = foursquare.login();
         Preferences.storeLoginAuth(editor, auth);
@@ -86,6 +88,7 @@ public class Preferences {
         Preferences.storeUser(editor, user);
 
         if (doAuthExchange) {
+            if (DEBUG) Log.d(TAG, "doAuthExchange specified for loginUser");
             Credentials credentials = foursquare.authExchange();
             Preferences.storeAuthExchangeCredentials(editor, credentials);
         }

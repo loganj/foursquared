@@ -48,10 +48,13 @@ public class HttpApiWithOAuth extends HttpApi {
 
     public void setOAuthTokenWithSecret(String token, String tokenSecret) {
         if (token == null && tokenSecret == null) {
+            if (DEBUG) Log.d(TAG, "Resetting consumer due to null token/secret.");
             String consumerKey = mConsumer.getConsumerKey();
             String consumerSecret = mConsumer.getConsumerSecret();
             mConsumer = new DefaultOAuthConsumer(consumerKey, consumerSecret,
                     SignatureMethod.HMAC_SHA1);
+        } else {
+            mConsumer.setTokenWithSecret(token, tokenSecret);
         }
     }
 
