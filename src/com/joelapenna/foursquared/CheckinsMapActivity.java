@@ -212,8 +212,6 @@ public class CheckinsMapActivity extends MapActivity {
         public static final String TAG = "CheckinItemizedOverlayWithButton";
         public static final boolean DEBUG = Foursquared.DEBUG;
 
-        private Drawable mBeenThereMarker;
-
         public CheckinItemizedOverlayWithButton(Drawable defaultMarker) {
             super(defaultMarker);
         }

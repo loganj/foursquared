@@ -5,6 +5,7 @@ package com.joelapenna.foursquared.util;
 
 import java.util.Iterator;
 
+@SuppressWarnings("unchecked")
 public class InfiniteIterator implements Iterator {
 
     private int[] mArray;
