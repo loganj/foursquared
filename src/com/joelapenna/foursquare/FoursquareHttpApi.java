@@ -111,8 +111,10 @@ class FoursquareHttpApi {
                 if (DEBUG) Log.d(TAG, "Default case for status code reached.");
                 return null;
         }
-        Auth auth = new AuthParser().parse(AuthParser.createParser(response.getEntity()
-                .getContent()));
+        // Auth results are wrapped in a "data" element. We shouldn't use it, rather we should use
+        // the first item in it.
+        Auth auth = (Auth)new GroupParser(new AuthParser()).parse(
+                AuthParser.createParser(response.getEntity().getContent())).get(0);
         setCredentials(phone, password);
         return auth;
     }
