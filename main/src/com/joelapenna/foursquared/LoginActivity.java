@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
+import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.User;
@@ -190,24 +191,16 @@ public class LoginActivity extends Activity {
 
                 User user = Preferences.loginUser( //
                         Foursquared.getFoursquare(), phoneNumber, password, editor);
-
-                if (user != null) {
-                    Location location = mLocationListener.getLastKnownLocation();
-                    if (location != null) {
-                        City city = Foursquared.getFoursquare().checkCity(
-                                String.valueOf(location.getLatitude()),
-                                String.valueOf(location.getLongitude()));
-                        if (!user.getCity().getId().equals(city.getId())) {
-                            Foursquared.getFoursquare().switchCity(city.getId());
-                        }
-                        Preferences.storeCity(editor, city);
-
-                    } else {
-                        Preferences.storeCity(editor, user.getCity());
-                    }
-                    editor.commit();
-                    return true;
+                if (user == null) {
+                    return false;
                 }
+
+                City city = Preferences.switchCityIfChanged(Foursquared.getFoursquare(), user,
+                        mLocationListener.getLastKnownLocation());
+                Preferences.storeCity(editor, city);
+
+                editor.commit();
+                return true;
 
             } catch (FoursquareCredentialsError e) {
                 // TODO Auto-generated catch block

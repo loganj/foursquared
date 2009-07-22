@@ -6,6 +6,7 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
+import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Credentials;
@@ -13,6 +14,7 @@ import com.joelapenna.foursquare.types.User;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.location.Location;
 import android.util.Log;
 
 import java.io.IOException;
@@ -62,7 +64,7 @@ public class Preferences {
 
     /**
      * Log in a user and put credential information into the preferences edit queue.
-     * 
+     *
      * @param foursquare
      * @param phoneNumber
      * @param password
@@ -89,6 +91,36 @@ public class Preferences {
         storeAuthExchangeCredentials(editor, credentials);
         storeUser(editor, user);
         return user;
+    }
+
+    static City switchCityIfChanged(Foursquare foursquare, User user, Location location)
+            throws FoursquareException, FoursquareError, IOException {
+        City city = null;
+        City currentCity = user.getCity();
+        if (location != null) {
+            City newCity = foursquare.checkCity(//
+                    String.valueOf(location.getLatitude()), //
+                    String.valueOf(location.getLongitude()));
+
+            if (currentCity != null && newCity != null) {
+                if (!currentCity.getId().equals(newCity.getId())) {
+                    foursquare.switchCity(newCity.getId());
+                    city = newCity;
+                } else {
+                    city = currentCity;
+                }
+            } else if (newCity != null) {
+                foursquare.switchCity(newCity.getId());
+                city = newCity;
+
+            } else if (currentCity != null) {
+                city = currentCity;
+            }
+
+        } else {
+            city = currentCity;
+        }
+        return city;
     }
 
     static void storeAuthExchangeCredentials(final Editor editor, Credentials credentials)
