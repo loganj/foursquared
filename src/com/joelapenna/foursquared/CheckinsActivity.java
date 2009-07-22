@@ -258,15 +258,15 @@ public class CheckinsActivity extends TabActivity {
     private void ensureTitle(boolean finished) {
         if (finished) {
             if (mSearchHolder.query == QUERY_NEARBY) {
-                setTitle("Nearby Checkins - Foursquared");
+                setTitle("Nearby Checkins - Foursquare");
             } else {
-                setTitle(mSearchHolder.query + " - Foursquared");
+                setTitle(mSearchHolder.query + " - Foursquare");
             }
         } else {
             if (mSearchHolder.query == QUERY_NEARBY) {
-                setTitle("Searching Nearby Checkins - Foursquared");
+                setTitle("Searching Nearby Checkins - Foursquare");
             } else {
-                setTitle("Searching \"" + mSearchHolder.query + "\" Checkins - Foursquared");
+                setTitle("Searching \"" + mSearchHolder.query + "\" Checkins - Foursquare");
             }
         }
 

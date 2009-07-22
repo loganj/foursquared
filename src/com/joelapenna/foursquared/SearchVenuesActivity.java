@@ -257,15 +257,15 @@ public class SearchVenuesActivity extends TabActivity {
     private void ensureTitle(boolean finished) {
         if (finished) {
             if (mSearchHolder.query == QUERY_NEARBY) {
-                setTitle("Nearby - Foursquared");
+                setTitle("Nearby - Foursquare");
             } else {
-                setTitle(mSearchHolder.query + " - Foursquared");
+                setTitle(mSearchHolder.query + " - Foursquare");
             }
         } else {
             if (mSearchHolder.query == QUERY_NEARBY) {
-                setTitle("Searching Nearby - Foursquared");
+                setTitle("Searching Nearby - Foursquare");
             } else {
-                setTitle("Searching \"" + mSearchHolder.query + "\" - Foursquared");
+                setTitle("Searching \"" + mSearchHolder.query + "\" - Foursquare");
             }
         }
     }

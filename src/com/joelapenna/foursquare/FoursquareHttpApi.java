@@ -44,7 +44,7 @@ import java.io.IOException;
 @SuppressWarnings("deprecation")
 class FoursquareHttpApi {
     private static final String TAG = "FoursquareHttpApi";
-    private static final boolean DEBUG = FoursquaredSettings.API_DEBUG;
+    private static final boolean DEBUG = Foursquare.DEBUG;
 
     private static final String HTTP_SCHEME = "http://";
     private static final String DOMAIN = "playfoursquare.com";

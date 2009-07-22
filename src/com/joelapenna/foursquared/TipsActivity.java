@@ -257,15 +257,15 @@ public class TipsActivity extends TabActivity {
     private void ensureTitle(boolean finished) {
         if (finished) {
             if (mSearchHolder.query == QUERY_NEARBY) {
-                setTitle("Nearby Tips - Foursquared");
+                setTitle("Nearby Tips - Foursquare");
             } else {
-                setTitle(mSearchHolder.query + " - Foursquared");
+                setTitle(mSearchHolder.query + " - Foursquare");
             }
         } else {
             if (mSearchHolder.query == QUERY_NEARBY) {
-                setTitle("Searching Nearby Tips - Foursquared");
+                setTitle("Searching Nearby Tips - Foursquare");
             } else {
-                setTitle("Searching \"" + mSearchHolder.query + "\" Tips - Foursquared");
+                setTitle("Searching \"" + mSearchHolder.query + "\" Tips - Foursquare");
             }
         }
 

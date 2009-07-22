@@ -250,7 +250,7 @@ public class VenueActivity extends TabActivity {
 
     private void onVenueSet(Venue venue) {
         if (DEBUG) Log.d(TAG, "onVenueSet:" + venue.getName());
-        setTitle(venue.getName() + " - Foursquared");
+        setTitle(venue.getName() + " - Foursquare");
         TextView name = (TextView)findViewById(R.id.venueName);
         TextView locationLine1 = (TextView)findViewById(R.id.venueLocationLine1);
         TextView locationLine2 = (TextView)findViewById(R.id.venueLocationLine2);

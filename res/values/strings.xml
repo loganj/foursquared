@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string
-    name="app_name">Foursquared!</string>
+    name="app_name">Foursquare</string>
   <string
     name="add_venue_activity_name">Add a New Venue</string>
   <string
