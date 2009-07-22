@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-06-10 02:19:23.039174
+ * Auto-generated: 2009-06-14 16:53:14.617010
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -54,6 +54,9 @@ public class UserParser extends AbstractParser<User> {
 
             } else if ("lastname".equals(name)) {
                 user.setLastname(parser.nextText());
+
+            } else if ("photo".equals(name)) {
+                user.setPhoto(parser.nextText());
 
             } else {
                 // Consume something we don't understand.
