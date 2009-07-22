@@ -30,7 +30,6 @@ public class SearchVenueMapActivity extends MapActivity {
     private MapController mMapController;
     private VenueItemizedOverlay mVenuesOverlay;
     private MyLocationOverlay mMyLocationOverlay;
-
     private Observer mSearchResultsObserver;
 
     @Override
@@ -133,17 +132,21 @@ public class SearchVenueMapActivity extends MapActivity {
 
     private void updateMap() {
         GeoPoint center = mMyLocationOverlay.getMyLocation();
+        if (mVenuesOverlay.size() > 0) {
+            if (DEBUG) Log.d(TAG, "updateMap via overlay span");
+            center = mVenuesOverlay.getCenter();
+            mMapController.animateTo(center);
+            mMapController.zoomToSpan(mVenuesOverlay.getLatSpanE6(), mVenuesOverlay.getLonSpanE6());
+            return;
+        }
+
         if (center != null) {
+            if (DEBUG) Log.d(TAG, "updateMap via location overlay");
             mMapController.animateTo(center);
             mMapController.setZoom(16);
             return;
         }
-        if (mVenuesOverlay.size() > 0) {
-            center = mVenuesOverlay.getCenter();
-            mMapController.animateTo(center);
-            mMapController.setZoom(12);
-            return;
-        }
+        if (DEBUG) Log.d(TAG, "Could not re-center no location or venue overlay.");
     }
 
     @Override

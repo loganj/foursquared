@@ -16,6 +16,9 @@
     name="venue_yelp_activity_name">Yelp!</string>
 
   <string
+    name="preferences_label">Preferences</string>
+
+  <string
     name="refresh_label">Refresh</string>
   <string
     name="nearby_label">Nearby</string>

@@ -56,7 +56,6 @@ public class SearchVenueActivity extends TabActivity {
     private static final long MAX_LOCATION_UPDATE_DELTA_THRESHOLD = 1000 * 60 * 5;
 
     private SearchAsyncTask mSearchTask;
-
     private LocationManager mLocationManager;
     private BestLocationListener mLocationListener;
     private Location mLocation;
@@ -119,12 +118,13 @@ public class SearchVenueActivity extends TabActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.search_label) // More stuff.
+        menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.search_label) //
                 .setIcon(android.R.drawable.ic_menu_search);
-        menu.add(Menu.NONE, MENU_NEARBY, Menu.NONE, R.string.nearby_label) // More stuff.
+        menu.add(Menu.NONE, MENU_NEARBY, Menu.NONE, R.string.nearby_label) //
                 .setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_REFRESH, Menu.NONE, R.string.refresh_label) // More stuff.
+        menu.add(Menu.NONE, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
                 .setIcon(R.drawable.ic_menu_refresh);
+        Foursquared.addPreferencesToMenu(this, menu);
         return true;
     }
 
@@ -200,7 +200,9 @@ public class SearchVenueActivity extends TabActivity {
         mTabHost.addTab(mTabHost.newTabSpec("map")
                 // Map Tab
                 .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_mapmode))
-                .setContent(intent) // The contained activity
+                .setContent(intent) // The
+                // contained
+                // activity
                 );
         mTabHost.setCurrentTab(0);
     }
@@ -214,7 +216,8 @@ public class SearchVenueActivity extends TabActivity {
     void startQuery(String query) {
         if (DEBUG) Log.d(TAG, "sendQuery()");
         mQuery = query;
-        // not going through set* because we don't want to notify search result observers.
+        // not going through set* because we don't want to notify search result
+        // observers.
         mSearchResults = null;
 
         // If a task is already running, don't start a new one.
@@ -278,7 +281,8 @@ public class SearchVenueActivity extends TabActivity {
                     if (DEBUG) Log.d(TAG, "Searching without location.");
                     return foursquare.venues(mQuery, null, null, 10, 1);
                 } else {
-                    // Try to make the search radius to be the same as our accuracy.
+                    // Try to make the search radius to be the same as our
+                    // accuracy.
                     if (DEBUG) Log.d(TAG, "Searching with location: " + location);
                     int radius;
                     if (location.hasAccuracy()) {
@@ -398,6 +402,7 @@ public class SearchVenueActivity extends TabActivity {
 
     private class StateHolder {
         Group results;
+
         String query;
     }
 

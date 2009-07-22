@@ -5,7 +5,6 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.test.FoursquaredTest;
 
 import android.app.TabActivity;
 import android.content.BroadcastReceiver;
@@ -16,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Menu;
 import android.view.Window;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -60,6 +60,14 @@ public class VenueActivity extends TabActivity {
         super.onDestroy();
         if (DEBUG) Log.d(TAG, "onDestroy()");
         unregisterReceiver(mBroadcastReceiver);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        Foursquared.addPreferencesToMenu(this, menu);
+        return true;
+
     }
 
     public static void startProgressBar(Context context, String taskId) {

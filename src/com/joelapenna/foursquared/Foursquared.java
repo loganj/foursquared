@@ -19,6 +19,7 @@ import android.location.LocationProvider;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
 
 import java.util.Date;
 
@@ -27,7 +28,9 @@ import java.util.Date;
  */
 public class Foursquared extends Application {
     public static final String TAG = "Foursquared";
-    public static final boolean DEBUG = false;
+
+    public static final boolean DEBUG = true;
+
     public static final boolean API_DEBUG = false;
 
     public static final int LAST_LOCATION_UPDATE_THRESHOLD = 1000 * 60 * 60;
@@ -35,12 +38,18 @@ public class Foursquared extends Application {
     public static final String EXTRAS_VENUE_KEY = "venue";
 
     public static final String PREFERENCE_PHONE = "phone";
+
     public static final String PREFERENCE_PASSWORD = "password";
+
     public static final String PREFERENCE_TWITTER_CHECKIN = "twitter_checkin";
+
     public static final String PREFERENCE_SILENT_CHECKIN = "silent_checkin";
 
     // Hidden preferences
     public static final String PREFERENCE_EMAIL = "email";
+
+    // Common menu items
+    private static final int MENU_PREFERENCES = -1;
 
     private Foursquare mFoursquare;
 
@@ -48,7 +57,8 @@ public class Foursquared extends Application {
         try {
             loadCredentials();
         } catch (FoursquaredCredentialsError e) {
-            // We're not doing anything because hopefully our related activities will handle the
+            // We're not doing anything because hopefully our related activities
+            // will handle the
             // failure. This is simply convenience.
         }
     }
@@ -70,8 +80,9 @@ public class Foursquared extends Application {
         if (location != null) {
             long timeDelta = new Date().getTime() - location.getTime();
             if (timeDelta > LAST_LOCATION_UPDATE_THRESHOLD) {
-                if (DEBUG) Log.d(TAG, "Last known position is too old! "
-                        + String.valueOf(timeDelta));
+                if (DEBUG) {
+                    Log.d(TAG, "Last known position is too old! " + String.valueOf(timeDelta));
+                }
                 return null;
             }
             if (DEBUG) Log.d(TAG, "got Location: " + location);
@@ -87,8 +98,7 @@ public class Foursquared extends Application {
         String password = settings.getString(Foursquared.PREFERENCE_PASSWORD, null);
 
         if (TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(password)) {
-            throw new FoursquaredCredentialsError(
-                    "Phone number or password not set in preferences.");
+            throw new FoursquaredCredentialsError("Phone number or password not set in preferences.");
         }
         mFoursquare = new Foursquare(phoneNumber, password);
     }
@@ -106,5 +116,11 @@ public class Foursquared extends Application {
         } else {
             return null;
         }
+    }
+
+    public static void addPreferencesToMenu(Context context, Menu menu) {
+        Intent intent = new Intent(context, PreferenceActivity.class);
+        menu.add(Menu.NONE, MENU_PREFERENCES, Menu.NONE, R.string.preferences_label) //
+                .setIcon(android.R.drawable.ic_menu_preferences).setIntent(intent);
     }
 }
