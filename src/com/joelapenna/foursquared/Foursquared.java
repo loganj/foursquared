@@ -10,6 +10,7 @@ import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Auth;
+import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.maps.BestLocationListener;
 
 import android.app.Application;
@@ -129,8 +130,7 @@ public class Foursquared extends Application {
         try {
             if (DEBUG) Log.d(TAG, "Trying to log in.");
             Auth auth = sFoursquare.login();
-            // We don't call user because its broken for authenticated user lookups.
-            // User user = sFoursquare.user();
+            User user = sFoursquare.user();
             if (auth != null && auth.status() /* && user != null */) {
                 Editor editor = mSharedPrefs.edit();
 
@@ -139,9 +139,9 @@ public class Foursquared extends Application {
                 editor.putString(PREFERENCE_LAST, auth.getLastname());
                 editor.putString(PREFERENCE_PHOTO, auth.getPhoto());
 
-                // editor.putString(PREFERENCE_CITY_ID, user.getCityid());
-                // editor.putString(PREFERENCE_ID, user.getId());
-                // editor.putString(PREFERENCE_GENDER, user.getGender());
+                editor.putString(PREFERENCE_CITY_ID, user.getCityid());
+                editor.putString(PREFERENCE_ID, user.getId());
+                editor.putString(PREFERENCE_GENDER, user.getGender());
 
                 editor.commit();
             }
