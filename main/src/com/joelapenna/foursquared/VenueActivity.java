@@ -142,18 +142,18 @@ public class VenueActivity extends TabActivity {
 
         if (mTwitterToggle.isChecked()) {
             mTwitterToggle.setIcon(android.R.drawable.button_onoff_indicator_on);
-            mTwitterToggle.setTitle("Tell Twitter");
+            mTwitterToggle.setTitle("Telling Twitter");
         } else {
             mTwitterToggle.setIcon(android.R.drawable.button_onoff_indicator_off);
-            mTwitterToggle.setTitle("Hide from Twitter");
+            mTwitterToggle.setTitle("Hiding Tweet");
         }
 
         if (mShareToggle.isChecked()) {
             mShareToggle.setIcon(android.R.drawable.button_onoff_indicator_on);
-            mShareToggle.setTitle("Tell my friends");
+            mShareToggle.setTitle("Telling friends");
         } else {
             mShareToggle.setIcon(android.R.drawable.button_onoff_indicator_off);
-            mShareToggle.setTitle("Hide from Friends");
+            mShareToggle.setTitle("Hiding checkin");
         }
 
         if (mShareToggle.isChecked()) {
