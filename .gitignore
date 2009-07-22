@@ -2,3 +2,4 @@ bin/
 gen/
 R.java
 .project
+res/values/credentials.xml
