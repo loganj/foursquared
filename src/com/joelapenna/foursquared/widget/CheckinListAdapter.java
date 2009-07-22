@@ -6,6 +6,7 @@ package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.R;
 
@@ -58,7 +59,12 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
         }
 
         Checkin checkin = (Checkin)getItem(position);
-        String firstLineString = checkin.getFirstname() + " " + checkin.getLastname().substring(0, 1) + ".";
+        String firstLineString;
+        if (checkin.getDisplay() != null) {
+            firstLineString = checkin.getDisplay();
+        } else {
+            firstLineString = checkin.getFirstname() + " " + checkin.getLastname().substring(0, 1) + ".";
+        }
         // Popping from string->html fixes things like "&amp;" converting it back to a string
         // prevents a stack overflow in cupcake.
         holder.firstLine.setText(firstLineString);
@@ -67,6 +73,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
         return convertView;
     }
 
+<<<<<<< HEAD:src/com/joelapenna/foursquared/widget/CheckinListAdapter.java
     @Override
     public boolean hasStableIds() {
         return false;
@@ -77,6 +84,18 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
     public boolean isEmpty() {
         if (DEBUG) Log.d(TAG, "isEmpty() called");
         return (mCheckins.size() <= 0);
+=======
+    public static Venue venueFromCheckin(Checkin checkin) {
+        Venue venue = new Venue();
+        venue.setAddress(checkin.getAddress());
+        venue.setCity(checkin.getCityName());
+        venue.setCrossstreet(checkin.getCrossstreet());
+        venue.setGeolat(checkin.getGeolat());
+        venue.setGeolong(checkin.getGeolong());
+        venue.setVenueid(checkin.getVenueid());
+        venue.setVenuename(checkin.getVenuename());
+        return venue;
+>>>>>>> 12c68cf... Use display attribute in list items when available.:src/com/joelapenna/foursquared/widget/CheckinListAdapter.java
     }
 
     private static class ViewHolder {
