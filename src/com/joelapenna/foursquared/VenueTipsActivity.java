@@ -81,7 +81,7 @@ public class VenueTipsActivity extends ListActivity {
 
         VenueActivity parent = (VenueActivity)getParent();
         if (parent.venueObservable.getVenue() != null) {
-            mVenueObserver.update(parent.venueObservable, mVenue);
+            mVenueObserver.update(parent.venueObservable, parent.venueObservable.getVenue());
         } else {
             parent.venueObservable.addObserver(mVenueObserver);
         }
@@ -223,7 +223,7 @@ public class VenueTipsActivity extends ListActivity {
         });
     }
 
-    private Group tipsAndTodos(Venue venue) {
+    private Group onVenueSet(Venue venue) {
         Group tipsAndTodos = new Group();
 
         Group tips = venue.getTips();
@@ -273,7 +273,7 @@ public class VenueTipsActivity extends ListActivity {
         @Override
         public void update(Observable observable, Object data) {
             mVenue = (Venue)data;
-            setTipGroups(tipsAndTodos(mVenue));
+            setTipGroups(onVenueSet(mVenue));
             findViewById(R.id.tipButton).setEnabled(true);
             findViewById(R.id.todoButton).setEnabled(true);
         }
