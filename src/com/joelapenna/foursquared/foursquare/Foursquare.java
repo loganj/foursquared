@@ -54,6 +54,11 @@ public class Foursquare {
             String lng) throws FoursquareError, FoursquareParseException, IOException {
         return mFoursquare.checkin(mPhone, venue, silent, twitter, lat, lng, null);
     }
+    
+    public Group todos(String cityId, String lat, String lng) throws FoursquareError,
+    FoursquareParseException, IOException {
+        return mFoursquare.todos(cityId, lat, lng);
+    }
 
     public Group venues(String lat, String lng, int radius, int length) throws FoursquareError,
             FoursquareParseException, IOException {

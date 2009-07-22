@@ -72,11 +72,12 @@ public class GroupParser extends AbstractParser<Group> {
             switch (eventType) {
                 case XmlPullParser.START_TAG:
                     if (DEBUG) Log.d(TAG, "CheckinGroup : " + String.valueOf(parser.getName()));
-
                     try {
                         FoursquareType item = this.mSubParser.parse(parser);
-                        if (DEBUG) Log.d(TAG, "adding item: " + item);
-                        group.add(item);
+                        if (item != null) {
+                            if (DEBUG) Log.d(TAG, "adding item: " + item);
+                            group.add(item);
+                        }
                     } catch (FoursquareError e) {
                         // TODO Auto-generated catch block
                         if (DEBUG) Log.d(TAG, "FoursquareError", e);

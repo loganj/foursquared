@@ -10,6 +10,7 @@ import com.joelapenna.foursquared.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquared.foursquare.types.Checkin;
 import com.joelapenna.foursquared.foursquare.types.Group;
 import com.joelapenna.foursquared.foursquare.types.IncomingCheckin;
+import com.joelapenna.foursquared.foursquare.types.Tip;
 import com.joelapenna.foursquared.foursquare.types.Venue;
 
 import android.app.Activity;
@@ -31,11 +32,11 @@ public class MainActivity extends Activity {
 
         mFoursquare = new Foursquare("4158303607", "ci9ahXa9");
         try {
-            // All requests fail if this guy isn't called first. I wonder why...
             // testLogin();
             testVenues();
             testVenue();
             testCheckins();
+            testTodos();
             // testBreakdown();
             // testCheckin();
         } catch (FoursquareError e) {
@@ -50,9 +51,18 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void testBreakdown() throws FoursquareError, FoursquareParseException, IOException {
-        Log.d(TAG, "testBreakdown");
-        Log.d(TAG, mFoursquare.breakdown("9232", "67889"));
+    private void testTodos() throws FoursquareError, FoursquareParseException, IOException {
+        Log.d(TAG, "testTodos");
+        Group tipGroups = mFoursquare.todos("23", "37.770900", "-122.436987");
+        Log.d(TAG, "Num Groups:" + tipGroups.size());
+        for (int i = 0; i < tipGroups.size(); i++) {
+            Group tips = (Group)tipGroups.get(i);
+            Log.d(TAG, "TodoGroup:" + tips.getType());
+            for (int j = 0; j < tips.size(); j++) {
+                Tip tip = (Tip)tips.get(j);
+                Log.d(TAG, "Todo at: " + tip.getVenueid() + "(" + tip.getTipid() + ")");
+            }
+        }
 
     }
 
@@ -68,6 +78,12 @@ public class MainActivity extends Activity {
                 Log.d(TAG, "Checkin at: " + checkin.getVenuename() + "(" + checkin.getCheckinid() + ")");
             }
         }
+    }
+
+    private void testBreakdown() throws FoursquareError, FoursquareParseException, IOException {
+        Log.d(TAG, "testBreakdown");
+        Log.d(TAG, mFoursquare.breakdown("9232", "67889"));
+
     }
 
     private void testLogin() throws FoursquareError, FoursquareParseException, IOException {

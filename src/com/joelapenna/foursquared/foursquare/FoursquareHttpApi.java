@@ -11,6 +11,7 @@ import com.joelapenna.foursquared.foursquare.parsers.CheckinParser;
 import com.joelapenna.foursquared.foursquare.parsers.GroupParser;
 import com.joelapenna.foursquared.foursquare.parsers.IncomingCheckinResponseParser;
 import com.joelapenna.foursquared.foursquare.parsers.Parser;
+import com.joelapenna.foursquared.foursquare.parsers.TipParser;
 import com.joelapenna.foursquared.foursquare.parsers.VenueParser;
 import com.joelapenna.foursquared.foursquare.types.Auth;
 import com.joelapenna.foursquared.foursquare.types.FoursquareType;
@@ -64,6 +65,7 @@ class FoursquareHttpApi {
     private static final String URL_API_BASE = "http://" + DOMAIN + "/api";
     private static final String URL_API_CHECKINS = URL_API_BASE + "/checkins";
     private static final String URL_API_LOGIN = URL_API_BASE + "/login";
+    private static final String URL_API_TODO = URL_API_BASE + "/todo";
     private static final String URL_API_VENUES = URL_API_BASE + "/venues";
     private static final String URL_API_VENUE = URL_API_BASE + "/venue";
 
@@ -136,6 +138,22 @@ class FoursquareHttpApi {
     }
 
     /**
+     * /api/todo?cityid=23&lat=37.770900&lng=-122.436987
+     * 
+     * @throws IOException
+     * @throws FoursquareParseException
+     * @throws FoursquareError
+     */
+    Group todos(String cityId, String lat, String lng) throws FoursquareError,
+            FoursquareParseException, IOException {
+        return (Group)doHttpPost(URL_API_TODO, new GroupParser(new TipParser()),
+                new BasicNameValuePair("cityid", cityId), // city id
+                new BasicNameValuePair("lat", (lat != null) ? lat : ""), // lat
+                new BasicNameValuePair("lng", (lng != null) ? lng : "") // lng
+        );
+    }
+
+    /**
      * /api/venues?lat=37.770653&lng=-122.436929&r=1&l=10
      * 
      * @return
@@ -146,7 +164,8 @@ class FoursquareHttpApi {
                 new BasicNameValuePair("lat", (lat != null) ? lat : ""), // lat
                 new BasicNameValuePair("lng", (lng != null) ? lng : ""), // lng
                 new BasicNameValuePair("r", String.valueOf(radius)), // radius in miles?
-                new BasicNameValuePair("length", String.valueOf(length)));
+                new BasicNameValuePair("length", String.valueOf(length)) // uhh...
+        );
     }
 
     /**
@@ -160,9 +179,8 @@ class FoursquareHttpApi {
     }
 
     /**
-     * /incoming/breakdown?cid=67889&uid=9232&client=iphone
-     * 
-     * This guy has a custom implementation because it does not receive XML.
+     * /incoming/breakdown?cid=67889&uid=9232&client=iphone This guy has a custom implementation
+     * because it does not receive XML.
      */
     String breakdown(String userId, String checkinId) throws FoursquareError,
             FoursquareParseException, IOException {
