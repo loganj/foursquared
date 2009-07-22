@@ -92,6 +92,7 @@ public class VenueMapActivity extends MapActivity {
         mVenue = venue;
         if (isVenueMappable(venue)) {
             mOverlay.addVenue(venue);
+            mOverlay.finish();
             mMapView.getOverlays().add(mOverlay);
         }
     }

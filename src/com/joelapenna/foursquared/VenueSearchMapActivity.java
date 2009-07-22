@@ -23,7 +23,7 @@ import java.util.Observer;
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class VenueSearchMapActivity extends MapActivity {
-    public static final String TAG = "VenueMapActivity";
+    public static final String TAG = "VenueSearchMapActivity";
     public static final boolean DEBUG = Foursquared.DEBUG;
 
     private MapView mMapView;
@@ -93,6 +93,7 @@ public class VenueSearchMapActivity extends MapActivity {
             if (DEBUG) Log.d(TAG, "no search results. Not loading.");
             return;
         }
+        if (DEBUG) Log.d(TAG, "Loading search results");
 
         final int groupCount = searchResults.size();
         for (int groupIndex = 0; groupIndex < groupCount; groupIndex++) {
@@ -102,12 +103,14 @@ public class VenueSearchMapActivity extends MapActivity {
             for (int venueIndex = 0; venueIndex < venueCount; venueIndex++) {
                 Venue venue = (Venue)group.get(venueIndex);
                 if (isVenueMappable(venue)) {
+                    if (DEBUG) Log.d(TAG, "adding venue: " + venue.getVenuename());
                     mVenuesOverlay.addVenue(venue);
                 }
             }
         }
         if (mVenuesOverlay.size() > 0) {
             if (DEBUG) Log.d(TAG, "adding mVenuesOverlay to mMapView");
+            mVenuesOverlay.finish();
             mMapView.getOverlays().add(mVenuesOverlay);
         }
     }

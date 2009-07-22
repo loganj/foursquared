@@ -23,7 +23,7 @@ public class VenueItemizedOverlay extends ItemizedOverlay<OverlayItem> {
     public static final String TAG = "VenueItemizedOverlay";
     public static final boolean DEBUG = Foursquared.DEBUG;
 
-    ArrayList<Venue> mVenues = new ArrayList<Venue>();
+    private ArrayList<Venue> mVenues = new ArrayList<Venue>();
 
     public VenueItemizedOverlay(Drawable defaultMarker) {
         super(boundCenterBottom(defaultMarker));
@@ -32,7 +32,7 @@ public class VenueItemizedOverlay extends ItemizedOverlay<OverlayItem> {
     @Override
     protected OverlayItem createItem(int i) {
         Venue venue = mVenues.get(i);
-        if (DEBUG) Log.d(TAG, "creating venue overlayItem");
+        if (DEBUG) Log.d(TAG, "creating venue overlayItem: " + venue.getVenuename());
         int lat = (int)(Double.parseDouble(venue.getGeolat()) * 1E6);
         int lng = (int)(Double.parseDouble(venue.getGeolong()) * 1E6);
         GeoPoint point = new GeoPoint(lat, lng);
@@ -52,7 +52,15 @@ public class VenueItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 
     public void addVenue(Venue venue) {
         mVenues.add(venue);
-        populate();
+    }
+
+    /*
+     * We don't call populate every time we add a venue because that causes createItem to be called
+     * for every item already in the list. The documentation says that populate() will cache these
+     * calls to createItem but that does not seem to be the case.
+     */
+    public void finish() {
+        super.populate();
     }
 
 }
