@@ -307,7 +307,7 @@ public class VenueTipsActivity extends ListActivity {
         @Override
         public void onPreExecute() {
             if (DEBUG) Log.d(TAG, "AddTipTask: onPreExecute()");
-            VenueActivity.startProgressBar(VenueTipsActivity.this, PROGRESS_BAR_TASK_ID);
+            ((VenueActivity)getParent()).startProgressBar(PROGRESS_BAR_TASK_ID);
         }
 
         @Override
@@ -355,12 +355,12 @@ public class VenueTipsActivity extends ListActivity {
             } else {
                 showDialog(DIALOG_ADD_SHOW_MESSAGE);
             }
-            VenueActivity.stopProgressBar(VenueTipsActivity.this, PROGRESS_BAR_TASK_ID);
+            ((VenueActivity)getParent()).stopProgressBar(PROGRESS_BAR_TASK_ID);
         }
 
         @Override
         public void onCancelled() {
-            VenueActivity.stopProgressBar(VenueTipsActivity.this, PROGRESS_BAR_TASK_ID);
+            ((VenueActivity)getParent()).stopProgressBar(PROGRESS_BAR_TASK_ID);
         }
     }
 
@@ -373,7 +373,7 @@ public class VenueTipsActivity extends ListActivity {
         @Override
         public void onPreExecute() {
             if (DEBUG) Log.d(TAG, "UpdateTipTask: onPreExecute()");
-            VenueActivity.startProgressBar(VenueTipsActivity.this, PROGRESS_BAR_TASK_ID);
+            ((VenueActivity)getParent()).startProgressBar(PROGRESS_BAR_TASK_ID);
         }
 
         @Override
@@ -403,12 +403,12 @@ public class VenueTipsActivity extends ListActivity {
             } else {
                 showDialog(DIALOG_UPDATE_SHOW_MESSAGE);
             }
-            VenueActivity.stopProgressBar(VenueTipsActivity.this, PROGRESS_BAR_TASK_ID);
+            ((VenueActivity)getParent()).stopProgressBar(PROGRESS_BAR_TASK_ID);
         }
 
         @Override
         public void onCancelled() {
-            VenueActivity.stopProgressBar(VenueTipsActivity.this, PROGRESS_BAR_TASK_ID);
+            ((VenueActivity)getParent()).stopProgressBar(PROGRESS_BAR_TASK_ID);
         }
     }
 }

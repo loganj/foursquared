@@ -9,14 +9,9 @@ import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.app.TabActivity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.Window;
@@ -26,6 +21,7 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Observable;
+import java.util.Observer;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -34,17 +30,14 @@ public class VenueActivity extends TabActivity {
     private static final String TAG = "VenueActivity";
     private static final boolean DEBUG = Foursquared.DEBUG;
 
-    public static final String ACTION_PROGRESS_BAR_START = "com.joelapenna.foursquared.VenueActivity.PROGRESS_BAR_START";
-    public static final String ACTION_PROGRESS_BAR_STOP = "com.joelapenna.foursquared.VenueActivity.PROGRESS_BAR_STOP";
-
     public static final String EXTRA_TASK_ID = "task_id";
     public static final String EXTRA_VENUE = "com.joelapenna.foursquared.VenueId";
 
-    ProgressBarHandler mProgressBarHandler = new ProgressBarHandler();
-    BroadcastReceiver mBroadcastReceiver;
-
     VenueObservable venueObservable = new VenueObservable();
 
+    private HashSet<Object> mProgressBarTasks = new HashSet<Object>();
+
+    private Observer mVenueObserver = new VenueObserver();
     private Venue mVenue = null;
 
     @Override
@@ -53,20 +46,10 @@ public class VenueActivity extends TabActivity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.venue_activity);
 
-        // We register this early (not in onStart) because our children might end up calling out to
-        // this.
-        initBroadcastReceiver();
-
         initTabHost();
 
+        venueObservable.addObserver(mVenueObserver);
         new VenueTask().execute(getIntent().getExtras().getString(EXTRA_VENUE));
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (DEBUG) Log.d(TAG, "onDestroy()");
-        unregisterReceiver(mBroadcastReceiver);
     }
 
     @Override
@@ -77,42 +60,21 @@ public class VenueActivity extends TabActivity {
 
     }
 
-    public static void startProgressBar(Context context, String taskId) {
-        Intent intent = new Intent(ACTION_PROGRESS_BAR_START);
-        intent.putExtra(VenueActivity.EXTRA_TASK_ID, taskId);
-        context.sendBroadcast(intent);
+    public void startProgressBar(String taskId) {
+        boolean added = mProgressBarTasks.add(taskId);
+        if (!added) {
+            if (DEBUG) Log.d(TAG, "Received start for already tracked task. Ignoring");
+        }
+        setProgressBarIndeterminateVisibility(true);
     }
 
-    public static void stopProgressBar(Context context, String taskId) {
-        Intent intent = new Intent(ACTION_PROGRESS_BAR_STOP);
-        intent.putExtra(VenueActivity.EXTRA_TASK_ID, taskId);
-        context.sendBroadcast(intent);
-    }
-
-    private void initBroadcastReceiver() {
-        if (DEBUG) Log.d(TAG, "initBroadcastReceiver()");
-        mBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (DEBUG) Log.d(TAG, "BrodcastReceiver: onReceive() " + intent);
-                if (ACTION_PROGRESS_BAR_START.equals(intent.getAction())) {
-                    Message msg = mProgressBarHandler
-                            .obtainMessage(ProgressBarHandler.MESSAGE_PROGRESS_BAR_START);
-                    msg.obj = intent.getStringExtra(EXTRA_TASK_ID);
-                    msg.sendToTarget();
-                } else if (ACTION_PROGRESS_BAR_STOP.equals(intent.getAction())) {
-                    Message msg = mProgressBarHandler
-                            .obtainMessage(ProgressBarHandler.MESSAGE_PROGRESS_BAR_STOP);
-                    msg.obj = intent.getStringExtra(EXTRA_TASK_ID);
-                    msg.sendToTarget();
-                }
-            }
-        };
-
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION_PROGRESS_BAR_STOP);
-        filter.addAction(ACTION_PROGRESS_BAR_START);
-        registerReceiver(mBroadcastReceiver, filter);
+    public void stopProgressBar(String taskId) {
+        boolean removed = mProgressBarTasks.remove(taskId);
+        if (!removed) {
+            if (DEBUG) Log.d(TAG, "Received stop for untracked task. Ignoring");
+        } else if (mProgressBarTasks.isEmpty()) {
+            setProgressBarIndeterminateVisibility(false);
+        }
     }
 
     private void initTabHost() {
@@ -147,7 +109,7 @@ public class VenueActivity extends TabActivity {
 
     }
 
-    private void setVenue(Venue venue) {
+    private void displayVenue(Venue venue) {
         if (DEBUG) Log.d(TAG, "loading venue:" + venue.getName());
         setTitle(venue.getName() + " - Foursquared");
         TextView name = (TextView)findViewById(R.id.venueName);
@@ -161,39 +123,11 @@ public class VenueActivity extends TabActivity {
         if (line2 != null) {
             locationLine2.setText(line2);
         }
-
-        mVenue = venue;
-        venueObservable.notifyObservers(venue);
     }
 
-    private class ProgressBarHandler extends Handler {
-
-        static final int MESSAGE_PROGRESS_BAR_START = 0;
-        static final int MESSAGE_PROGRESS_BAR_STOP = 1;
-
-        private HashSet<Object> mTasks = new HashSet<Object>();
-
-        @Override
-        public void handleMessage(Message msg) {
-            if (DEBUG) Log.d(TAG, "Recieved message:" + msg.toString());
-            switch (msg.what) {
-                case MESSAGE_PROGRESS_BAR_START:
-                    boolean added = mTasks.add(msg.obj);
-                    if (!added) {
-                        if (DEBUG) Log.d(TAG, "Received start for already tracked task. Ignoring");
-                    }
-                    setProgressBarIndeterminateVisibility(true);
-                    break;
-                case MESSAGE_PROGRESS_BAR_STOP:
-                    boolean removed = mTasks.remove(msg.obj);
-                    if (!removed) {
-                        if (DEBUG) Log.d(TAG, "Received stop for untracked task. Ignoring");
-                    } else if (mTasks.isEmpty()) {
-                        setProgressBarIndeterminateVisibility(false);
-                    }
-                    break;
-            }
-        }
+    private void setVenue(Venue venue) {
+        mVenue = venue;
+        venueObservable.notifyObservers(venue);
     }
 
     private class VenueTask extends AsyncTask<String, Void, Venue> {
@@ -201,7 +135,7 @@ public class VenueActivity extends TabActivity {
 
         @Override
         protected void onPreExecute() {
-            VenueActivity.startProgressBar(VenueActivity.this, PROGRESS_BAR_TASK_ID);
+            startProgressBar(PROGRESS_BAR_TASK_ID);
         }
 
         @Override
@@ -220,13 +154,13 @@ public class VenueActivity extends TabActivity {
 
         @Override
         protected void onPostExecute(Venue venue) {
-            VenueActivity.stopProgressBar(VenueActivity.this, PROGRESS_BAR_TASK_ID);
+            stopProgressBar(PROGRESS_BAR_TASK_ID);
             setVenue(venue);
         }
 
         @Override
         protected void onCancelled() {
-
+            stopProgressBar(PROGRESS_BAR_TASK_ID);
         }
     }
 
@@ -238,6 +172,18 @@ public class VenueActivity extends TabActivity {
 
         public Venue getVenue() {
             return mVenue;
+        }
+    }
+
+    /**
+     * This guy will be an attempt at controlling a dialog without relying on AsyncTask...
+     *
+     * @author Joe LaPenna (joe@joelapenna.com)
+     */
+    class VenueObserver implements Observer {
+        @Override
+        public void update(Observable observable, Object data) {
+            displayVenue(mVenue);
         }
     }
 }

@@ -217,7 +217,7 @@ public class VenueCheckinActivity extends ListActivity {
             mSilentToggle.setEnabled(false);
             mTwitterToggle.setEnabled(false);
             if (DEBUG) Log.d(TAG, "CheckinTask: onPreExecute()");
-            VenueActivity.startProgressBar(VenueCheckinActivity.this, PROGRESS_BAR_TASK_ID);
+            ((VenueActivity)getParent()).startProgressBar(PROGRESS_BAR_TASK_ID);
 
         }
 
@@ -265,13 +265,13 @@ public class VenueCheckinActivity extends ListActivity {
                 lookupCheckinGroups();
             } finally {
                 if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
-                VenueActivity.stopProgressBar(VenueCheckinActivity.this, PROGRESS_BAR_TASK_ID);
+                ((VenueActivity)getParent()).stopProgressBar(PROGRESS_BAR_TASK_ID);
             }
         }
 
         @Override
         public void onCancelled() {
-            VenueActivity.stopProgressBar(VenueCheckinActivity.this, PROGRESS_BAR_TASK_ID);
+            ((VenueActivity)getParent()).stopProgressBar(PROGRESS_BAR_TASK_ID);
         }
     }
 
@@ -282,7 +282,7 @@ public class VenueCheckinActivity extends ListActivity {
         @Override
         public void onPreExecute() {
             if (DEBUG) Log.d(TAG, "CheckinTask: onPreExecute()");
-            VenueActivity.startProgressBar(VenueCheckinActivity.this, PROGRESS_BAR_TASK_ID);
+            ((VenueActivity)getParent()).startProgressBar(PROGRESS_BAR_TASK_ID);
         }
 
         @Override
@@ -313,7 +313,7 @@ public class VenueCheckinActivity extends ListActivity {
                 setCheckins(checkins);
             } finally {
                 if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
-                VenueActivity.stopProgressBar(VenueCheckinActivity.this, PROGRESS_BAR_TASK_ID);
+                ((VenueActivity)getParent()).stopProgressBar(PROGRESS_BAR_TASK_ID);
                 if (getListAdapter().getCount() <= 0) {
                     mEmpty.setText("No checkins for this venue! Add one!");
                 }
@@ -322,7 +322,7 @@ public class VenueCheckinActivity extends ListActivity {
 
         @Override
         public void onCancelled() {
-            VenueActivity.stopProgressBar(VenueCheckinActivity.this, PROGRESS_BAR_TASK_ID);
+            ((VenueActivity)getParent()).stopProgressBar(PROGRESS_BAR_TASK_ID);
         }
 
     }
