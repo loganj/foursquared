@@ -33,6 +33,10 @@ public class RemoteResourceManager extends Observable {
         mRemoteResourceFetcher.addObserver(mFetcherObserver);
     }
 
+    public void shutdown() {
+        mRemoteResourceFetcher.shutdown();
+    }
+
     /**
      * Request a resource be downloaded. Useful to call after a IOException from getInputStream.
      *

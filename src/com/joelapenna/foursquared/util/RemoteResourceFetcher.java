@@ -72,6 +72,10 @@ class RemoteResourceFetcher extends Observable {
         makeRequest(new Request(uri, hash));
     }
 
+    public void shutdown() {
+        mFetcherThread.getLooper().quit();
+    }
+
     private void startFetcher() {
         if (DEBUG) Log.d(TAG, "Starting Initializer");
         mFetcherThread = new HandlerThread("FetcherThread", Process.THREAD_PRIORITY_BACKGROUND);

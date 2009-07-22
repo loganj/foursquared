@@ -95,6 +95,9 @@ public class UserActivity extends Activity {
     public void onStop() {
         super.onStop();
         if (DEBUG) Log.d(TAG, "onStop()");
+        mBadgeIconManager.shutdown();
+        mUserPhotoManager.shutdown();
+
         if (mUserTask != null) {
             mUserTask.cancel(true);
         }
