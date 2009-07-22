@@ -11,31 +11,20 @@
     android:layout_width="fill_parent">
     <TableRow>
       <Button
-        android:id="@+id/checkinButton"
+        android:id="@+id/tipButton"
         android:layout_height="wrap_content"
         android:layout_width="0px"
         android:layout_weight="1"
-        android:text="Check-in here"
+        android:text="Add a Tip"
+        android:textAppearance="@android:style/TextAppearance.Medium" />
+      <Button
+        android:id="@+id/todoButton"
+        android:layout_height="wrap_content"
+        android:layout_width="0px"
+        android:layout_weight="1"
+        android:text="Add a Todo"
         android:textAppearance="@android:style/TextAppearance.Medium" />
     </TableRow>
-
-    <TableRow>
-      <ToggleButton
-        android:id="@+id/silentToggle"
-        android:layout_height="wrap_content"
-        android:layout_width="0px"
-        android:layout_weight="1"
-        android:textOff="Hide Checkin?"
-        android:textOn="Hiding Checkin" />
-      <ToggleButton
-        android:id="@+id/twitterToggle"
-        android:layout_height="wrap_content"
-        android:layout_width="0px"
-        android:layout_weight="1"
-        android:textOff="Send Tweet?"
-        android:textOn="Tweeting Checkin" />
-    </TableRow>
-
   </TableLayout>
 
   <ListView
@@ -48,6 +37,6 @@
     android:layout_height="fill_parent"
     android:layout_width="fill_parent"
     android:layout_gravity="center"
-    android:text="Searching for Nearby Venues." />
+    android:text="No tips found, Add one!" />
 
 </LinearLayout>

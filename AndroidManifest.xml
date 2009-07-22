@@ -88,6 +88,10 @@
     </activity>
 
     <activity
+      android:name=".VenueTipsActivity">
+    </activity>
+
+    <activity
       android:name=".VenueYelpActivity">
     </activity>
 

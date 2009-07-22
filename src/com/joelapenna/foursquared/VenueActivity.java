@@ -115,6 +115,15 @@ public class VenueActivity extends TabActivity {
                 .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_compass))
                 .setContent(intent) // The contained activity
                 );
+
+        tag = (String)this.getText(R.string.venue_tips_activity_name);
+        intent = new Intent(this, VenueTipsActivity.class);
+        intent.putExtra(Foursquared.EXTRAS_VENUE_KEY, mVenue);
+        tabHost.addTab(tabHost.newTabSpec(tag)
+                // Info Tab
+                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_info_details))
+                .setContent(intent) // The contained activity
+                );
     }
 
     private void setVenue(Venue venue) {

@@ -14,7 +14,6 @@ import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.SimpleItemizedOverlay;
 
 import android.content.Intent;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,7 +21,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ZoomControls;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
