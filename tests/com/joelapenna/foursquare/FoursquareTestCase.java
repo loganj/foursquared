@@ -8,7 +8,7 @@ import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.types.classic.Auth;
-import com.joelapenna.foursquare.types.classic.User;
+import com.joelapenna.foursquare.types.User;
 
 import android.test.suitebuilder.annotation.LargeTest;
 import android.test.suitebuilder.annotation.SmallTest;
@@ -91,7 +91,7 @@ public class FoursquareTestCase extends TestCase {
     public void test_user() throws FoursquareException, IOException {
         Foursquare foursquare = getFoursquareForTest();
 
-        User user = foursquare.user();
+        User user = foursquare.user(null, true, true);
         assertNotNull(user);
     }
 

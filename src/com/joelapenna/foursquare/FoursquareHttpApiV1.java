@@ -74,7 +74,8 @@ public class FoursquareHttpApiV1 {
     }
 
     public void setOAuthConsumerCredentials(String oAuthConsumerKey, String oAuthConsumerSecret) {
-        if (DEBUG) Log.d(TAG, "Setting consumer key/secret: " + oAuthConsumerKey + " "+ oAuthConsumerSecret);
+        if (DEBUG) Log.d(TAG, "Setting consumer key/secret: " + oAuthConsumerKey + " "
+                + oAuthConsumerSecret);
         mHttpApi.setOAuthConsumerCredentials(oAuthConsumerKey, oAuthConsumerSecret);
     }
 
@@ -157,10 +158,12 @@ public class FoursquareHttpApiV1 {
     /**
      * /user?uid=9937
      */
-    User user(String uid) throws FoursquareException, FoursquareCredentialsError, FoursquareError,
-            IOException {
+    User user(String uid, boolean mayor, boolean badges) throws FoursquareException,
+            FoursquareCredentialsError, FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(URL_API_USER, //
-                new BasicNameValuePair("uid", uid));
+                new BasicNameValuePair("uid", uid), //
+        new BasicNameValuePair("mayor", (mayor) ? "1" : "0"), //
+        new BasicNameValuePair("badges", (badges) ? "1" : "0"));
         return (User)mHttpApi.doHttpRequest(httpGet, new UserParser());
     }
 

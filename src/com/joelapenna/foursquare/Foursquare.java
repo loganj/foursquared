@@ -12,7 +12,7 @@ import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.classic.Auth;
 import com.joelapenna.foursquare.types.classic.Checkin;
-import com.joelapenna.foursquare.types.classic.User;
+import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared;
 
@@ -133,9 +133,10 @@ public class Foursquare {
         return mFoursquare.update(status, tipid);
     }
 
-    @Classic
-    public User user() throws FoursquareException, FoursquareError, IOException {
-        return mFoursquare.user();
+    @V1
+    public User user(String user, boolean mayor, boolean badges) throws FoursquareException,
+            FoursquareError, IOException {
+        return mFoursquareV1.user(null, mayor, badges);
     }
 
     @V1

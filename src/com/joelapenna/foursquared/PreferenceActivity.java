@@ -7,6 +7,8 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.types.Credentials;
+import com.joelapenna.foursquare.types.User;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -240,15 +242,31 @@ public class PreferenceActivity extends android.preference.PreferenceActivity im
         if (TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(password)) {
             throw new FoursquareCredentialsError("Phone number or password not set in preferences.");
         }
-        foursquare.setCredentials(phoneNumber, password);
 
         final Editor editor = preferences.edit();
-        Preferences.loginUser(editor, foursquare, doAuthExchange);
+        loginUser(editor, foursquare, phoneNumber, password);
 
         String oauthToken = preferences.getString(Preferences.PREFERENCE_OAUTH_TOKEN, null);
         String oauthTokenSecret = preferences.getString(Preferences.PREFERENCE_OAUTH_TOKEN_SECRET,
                 null);
         foursquare.setCredentials(phoneNumber, password);
         foursquare.setOAuthToken(oauthToken, oauthTokenSecret);
+    }
+
+    static void loginUser(final Editor editor, final Foursquare foursquare, String phoneNumber,
+            String password) throws FoursquareCredentialsError, FoursquareException, IOException {
+        if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Trying to log in.");
+
+        foursquare.setCredentials(phoneNumber, password);
+
+        if (DEBUG) Log.d(TAG, "doAuthExchange specified for loginUser");
+        foursquare.setOAuthToken(null, null);
+        Credentials credentials = foursquare.authExchange();
+        Preferences.storeAuthExchangeCredentials(editor, credentials);
+
+        foursquare.setOAuthToken(credentials.getOauthToken(), credentials.getOauthTokenSecret());
+
+        User user = foursquare.user(null, true, true);
+        Preferences.storeUser(editor, user);
     }
 }

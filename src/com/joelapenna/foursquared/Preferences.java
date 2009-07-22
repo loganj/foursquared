@@ -4,17 +4,12 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
-import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Credentials;
-import com.joelapenna.foursquare.types.classic.Auth;
-import com.joelapenna.foursquare.types.classic.User;
+import com.joelapenna.foursquare.types.User;
 
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
-
-import java.io.IOException;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -43,24 +38,11 @@ public class Preferences {
 
     static void storeUser(final Editor editor, User user) {
         if (user != null && user.getId() != null) {
-            editor.putString(PREFERENCE_CITY_ID, user.getCityid());
+            editor.putString(PREFERENCE_CITY_ID, user.getCity().getId());
             editor.putString(PREFERENCE_ID, user.getId());
-            editor.putString(PREFERENCE_GENDER, user.getGender());
             if (DEBUG) Log.d(TAG, "Commiting user info: " + String.valueOf(editor.commit()));
         } else {
             if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Unable to lookup user.");
-        }
-    }
-
-    static final void storeLoginAuth(Editor editor, Auth auth) throws FoursquareCredentialsError {
-        if (auth != null && auth.status() /* && user != null */) {
-            editor.putString(PREFERENCE_EMAIL, auth.getEmail());
-            editor.putString(PREFERENCE_FIRST, auth.getFirstname());
-            editor.putString(PREFERENCE_LAST, auth.getLastname());
-            editor.putString(PREFERENCE_PHOTO, auth.getPhoto());
-            if (DEBUG) Log.d(TAG, "Commiting auth info: " + String.valueOf(editor.commit()));
-        } else {
-            throw new FoursquareCredentialsError("Unable to login.");
         }
     }
 
@@ -76,25 +58,6 @@ public class Preferences {
         } else {
             throw new FoursquareCredentialsError("Unable to auth exchange.");
         }
-    }
-
-    static void loginUser(final Editor editor, final Foursquare foursquare,
-            final boolean doAuthExchange) throws FoursquareCredentialsError, FoursquareException,
-            IOException {
-        if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Trying to log in.");
-
-        if (doAuthExchange) {
-            if (DEBUG) Log.d(TAG, "doAuthExchange specified for loginUser");
-            foursquare.setOAuthToken(null, null);
-            Credentials credentials = foursquare.authExchange();
-            Preferences.storeAuthExchangeCredentials(editor, credentials);
-        }
-
-        Auth auth = foursquare.login();
-        Preferences.storeLoginAuth(editor, auth);
-
-        User user = foursquare.user();
-        Preferences.storeUser(editor, user);
     }
 
 }
