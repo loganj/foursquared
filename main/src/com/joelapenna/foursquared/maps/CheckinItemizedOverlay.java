@@ -8,9 +8,11 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Checkin;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.FoursquaredSettings;
 
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -42,11 +44,12 @@ public class CheckinItemizedOverlay extends BaseGroupItemizedOverlay {
     }
 
     public static boolean isCheckinMappable(Checkin checkin) {
-        if (checkin.getVenue() == null //
-                || checkin.getVenue().getGeolat() == null //
-                || checkin.getVenue().getGeolong() == null //
-                || checkin.getVenue().getGeolat().equals("0") //
-                || checkin.getVenue().getGeolong().equals("0")) {
+        Venue venue = checkin.getVenue();
+        if (venue == null //
+                || TextUtils.isEmpty(venue.getGeolat()) //
+                || TextUtils.isEmpty(venue.getGeolong()) //
+                || venue.getGeolat().equals("0") //
+                || venue.getGeolong().equals("0")) {
             return false;
         }
         return true;

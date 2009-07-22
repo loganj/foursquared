@@ -8,9 +8,11 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Tip;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.FoursquaredSettings;
 
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -42,11 +44,12 @@ public class TipItemizedOverlay extends BaseGroupItemizedOverlay {
     }
 
     public static boolean isTipMappable(Tip tip) {
-        if (tip.getVenue() == null //
-                || tip.getVenue().getGeolat() == null //
-                || tip.getVenue().getGeolong() == null //
-                || tip.getVenue().getGeolat().equals("0") //
-                || tip.getVenue().getGeolong().equals("0")) {
+        Venue venue = tip.getVenue();
+        if (venue == null //
+                || TextUtils.isEmpty(venue.getGeolat()) //
+                || TextUtils.isEmpty(venue.getGeolong()) //
+                || venue.getGeolat().equals("0") //
+                || venue.getGeolong().equals("0")) {
             return false;
         }
         return true;

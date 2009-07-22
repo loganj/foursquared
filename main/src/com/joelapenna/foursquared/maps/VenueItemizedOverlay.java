@@ -11,6 +11,7 @@ import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.FoursquaredSettings;
 
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -42,8 +43,9 @@ public class VenueItemizedOverlay extends BaseGroupItemizedOverlay {
     }
 
     public static boolean isVenueMappable(Venue venue) {
-        if ((venue.getGeolat() == null //
-                || venue.getGeolong() == null) //
+        if (venue == null //
+                || TextUtils.isEmpty(venue.getGeolat()) //
+                || TextUtils.isEmpty(venue.getGeolong()) //
                 || venue.getGeolat().equals("0") //
                 || venue.getGeolong().equals("0")) {
             return false;
