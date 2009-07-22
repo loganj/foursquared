@@ -4,11 +4,16 @@
 
 package com.joelapenna.foursquared.foursquare;
 
-import com.joelapenna.foursquared.foursquare.error.FoursquareException;
+import com.joelapenna.foursquared.foursquare.error.FoursquareError;
 import com.joelapenna.foursquared.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquared.foursquare.parsers.AuthParser;
+import com.joelapenna.foursquared.foursquare.parsers.CheckinResponseParser;
+import com.joelapenna.foursquared.foursquare.parsers.IncomingCheckinResponseParser;
+import com.joelapenna.foursquared.foursquare.parsers.Parser;
 import com.joelapenna.foursquared.foursquare.types.Auth;
 import com.joelapenna.foursquared.foursquare.types.Checkin;
+import com.joelapenna.foursquared.foursquare.types.FoursquareType;
+import com.joelapenna.foursquared.foursquare.types.IncomingCheckin;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -37,6 +42,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -50,21 +56,23 @@ class FoursquareHttpApi {
     private static final String CLIENT_VERSION_HEADER = "X_foursquare_client_version";
 
     private static final String DOMAIN = "playfoursquare.com";
-    private static final String MOBILE_DOMAIN = "m.playfoursquare.com";
-    private static final String URL_BASE = "http://" + MOBILE_DOMAIN;
-    private static final String URL_CHECKIN = URL_BASE + "/checkin";
     private static final String URL_API_BASE = "http://" + DOMAIN + "/api";
+    private static final String URL_API_CHECKIN = URL_API_BASE + "/checkin";
     private static final String URL_API_LOGIN = URL_API_BASE + "/login";
 
+    // Not the normal URL because, well, it doesn't have a normal URL!
+    private static final String URL_API_INCOMING = "http://" + DOMAIN + "/incoming/incoming.php";
+
     private DefaultHttpClient mHttpClient;
+    private String mPhone;
 
     FoursquareHttpApi(DefaultHttpClient httpClient) {
         mHttpClient = httpClient;
-
     }
 
     Auth login(String phone, String password) {
         if (DEBUG) Log.d(TAG, "login()");
+        mPhone = phone;
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("phone", phone));
@@ -90,12 +98,12 @@ class FoursquareHttpApi {
             mHttpClient.getCredentialsProvider().setCredentials(new AuthScope(DOMAIN, 80),
                     new UsernamePasswordCredentials(phone, password));
             return auth;
+        } catch (FoursquareError e) {
+            // TODO Auto-generated catch block
+            if (DEBUG) Log.d(TAG, "FoursquareError", e);
         } catch (FoursquareParseException e) {
             // TODO Auto-generated catch block
             if (DEBUG) Log.d(TAG, "FoursquareParseException", e);
-        } catch (FoursquareException e) {
-            // TODO Auto-generated catch block
-            if (DEBUG) Log.d(TAG, "FoursquareException", e);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             if (DEBUG) Log.d(TAG, "IOException", e);
@@ -111,14 +119,60 @@ class FoursquareHttpApi {
      * @param twitter
      * @return
      */
+    @Deprecated
     Checkin checkin(String venue, boolean privacy, boolean twitter) {
         if (DEBUG) Log.d(TAG, "checkin: " + venue + ", " + privacy + ", " + twitter);
-        /*
-        return doHttpPost(new CheckinResponseParser(),
-                new BasicNameValuePair("venue", venue),
-                new BasicNameValuePair("privacy", (privacy) ? "1" : "0"),
-                new BasicNameValuePair("twitter", (twitter) ? "1" : "0"));
-        */
+        return (Checkin)doHttpPost(URL_API_CHECKIN, new CheckinResponseParser(),
+                new BasicNameValuePair("venue", venue), new BasicNameValuePair("privacy",
+                        (privacy) ? "1" : "0"), new BasicNameValuePair("twitter", (twitter) ? "1"
+                        : "0"));
+    }
+
+    IncomingCheckin checkin(String phone, String venue, boolean silent, boolean twitter, String lat, String lng, String cityid) {
+        return (IncomingCheckin)doHttpPost(
+                URL_API_INCOMING,
+                new IncomingCheckinResponseParser(),
+                new BasicNameValuePair("number", phone),
+                new BasicNameValuePair("message", "@" + venue),
+                new BasicNameValuePair("silent", (silent) ? "1" : "0"),
+                new BasicNameValuePair("twitter", (twitter) ? "1" : "0"),
+                new BasicNameValuePair("lat", lat),
+                new BasicNameValuePair("lng", lng),
+                new BasicNameValuePair("cityid", cityid),
+                new BasicNameValuePair("phone", mPhone));
+    }
+
+    private FoursquareType doHttpPost(String url, Parser<? extends FoursquareType> abstractParser,
+            NameValuePair... nameValuePairs) {
+        if (DEBUG) Log.d(TAG, "doHttpPost()");
+        HttpPost httpPost = createHttpPost(url, Arrays.asList(nameValuePairs));
+
+        HttpResponse response = executeHttpPost(httpPost);
+        if (response == null) {
+            if (DEBUG) Log.d(TAG, "execute() call for the httpPost generated an exception;");
+            return null;
+        }
+
+        switch (response.getStatusLine().getStatusCode()) {
+            case 200:
+                break;
+            default:
+                if (DEBUG) Log.d(TAG, "Default case for status code reached.");
+                return null;
+        }
+
+        try {
+            return abstractParser.parse(response.getEntity().getContent());
+        } catch (FoursquareError e) {
+            // TODO Auto-generated catch block
+            if (DEBUG) Log.d(TAG, "FoursquareError", e);
+        } catch (FoursquareParseException e) {
+            // TODO Auto-generated catch block
+            if (DEBUG) Log.d(TAG, "FoursquareParseException", e);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            if (DEBUG) Log.d(TAG, "IOException", e);
+        }
         return null;
     }
 
@@ -179,7 +233,7 @@ class FoursquareHttpApi {
         return params;
     }
 
-    private static HttpPost createHttpPost(String url, List<NameValuePair> params) {
+    private static final HttpPost createHttpPost(String url, List<NameValuePair> params) {
         if (DEBUG) Log.d(TAG, "creating HttpPost for: " + url);
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader(CLIENT_VERSION_HEADER, CLIENT_VERSION);

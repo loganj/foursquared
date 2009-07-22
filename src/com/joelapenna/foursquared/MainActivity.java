@@ -20,8 +20,10 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        if (DEBUG) Log.d(TAG, "onCreate");
 
         mFoursquare = new Foursquare("4158303607", "ci9ahXa9");
         Log.d(TAG, String.valueOf(mFoursquare.login()));
+        //Log.d(TAG, mFoursquare.checkin("Bobby's place", false, false, "", "").toString());
     }
 }

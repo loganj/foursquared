@@ -5,7 +5,7 @@
 package com.joelapenna.foursquared.foursquare.parsers;
 
 import com.joelapenna.foursquared.foursquare.Foursquare;
-import com.joelapenna.foursquared.foursquare.error.FoursquareException;
+import com.joelapenna.foursquared.foursquare.error.FoursquareError;
 import com.joelapenna.foursquared.foursquare.types.Checkin;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -18,13 +18,13 @@ import java.io.IOException;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class CheckinResponseParser extends Parser<Checkin> {
+public class CheckinResponseParser extends AbstractParser<Checkin> {
     private static final String TAG = "CheckinResponseParser";
     private static final boolean DEBUG = Foursquare.DEBUG;
 
     @Override
     public Checkin parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
-            FoursquareException {
+            FoursquareError {
         Checkin checkin = new Checkin();
         int eventType = parser.nextToken();
         while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -34,7 +34,7 @@ public class CheckinResponseParser extends Parser<Checkin> {
                     String name = parser.getName();
 
                     if ("error".equals(name)) {
-                        throw new FoursquareException(parser.getText());
+                        throw new FoursquareError(parser.getText());
                     } else if ("auth".equals(name)) {
                         parseCheckinTag(parser, checkin);
                     } else if ("checkincomplete".equals(name)) {

@@ -7,10 +7,10 @@ package com.joelapenna.foursquared.foursquare.error;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-class FoursquareException extends Exception {
+public class FoursquareError extends FoursquareException {
     private static final long serialVersionUID = 1L;
 
-    public FoursquareException(String message) {
+    public FoursquareError(String message) {
         super(message);
     }
 

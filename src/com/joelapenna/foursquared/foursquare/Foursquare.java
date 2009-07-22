@@ -5,7 +5,9 @@
 package com.joelapenna.foursquared.foursquare;
 
 import com.joelapenna.foursquared.foursquare.types.Auth;
-import com.joelapenna.foursquared.foursquare.types.Checkin;
+import com.joelapenna.foursquared.foursquare.types.IncomingCheckin;
+
+import android.util.Log;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -23,18 +25,19 @@ public class Foursquare {
         setCredentials(phone, password);
     }
 
-    public void setCredentials(String email, String password) {
-        mPhone = email;
+    public void setCredentials(String phone, String password) {
+        mPhone = phone;
         mPassword = password;
     }
 
     public boolean login() {
+        if (DEBUG) Log.d(TAG, "login()");
         Auth auth = mFoursquare.login(mPhone, mPassword);
-        return (auth != null && auth.isSuccessful());
+        return (auth != null && auth.status());
 
     }
 
-    public Checkin checkin(String venue, boolean privacy, boolean twitter) {
-        return mFoursquare.checkin(venue, privacy, twitter);
+    public IncomingCheckin checkin(String venue, boolean silent, boolean twitter, String lat, String lng) {
+        return mFoursquare.checkin(mPhone, venue, silent, twitter, lat, lng, "23");
     }
 }
