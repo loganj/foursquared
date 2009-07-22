@@ -50,6 +50,7 @@ public class FoursquareHttpApiV1 {
 
     private static final String URL_API_AUTHEXCHANGE = URL_API_BASE + "/authexchange";
 
+    private static final String URL_API_ADDVENUE = URL_API_BASE + "/addvenue";
     private static final String URL_API_ADDTIP = URL_API_BASE + "/addtip";
     private static final String URL_API_CITIES = URL_API_BASE + "/cities";
     private static final String URL_API_CHECKCITY = URL_API_BASE + "/checkcity";
@@ -115,6 +116,37 @@ public class FoursquareHttpApiV1 {
         return (Data)mHttpApi.doHttpRequest(httpPost, new DataParser());
     }
 
+    /**
+     * @param name the name of the venue
+     * @param address the address of the venue (e.g., "202 1st Avenue")
+     * @param crossstreet the cross streets (e.g., "btw Grand & Broome")
+     * @param city the city name where this venue is
+     * @param state the state where the city is
+     * @param zip (optional) the ZIP code for the venue
+     * @param cityid (required) the foursquare cityid where the venue is
+     * @param phone (optional) the phone number for the venue
+     * @return
+     * @throws FoursquareException
+     * @throws FoursquareCredentialsError
+     * @throws FoursquareError
+     * @throws IOException
+     */
+    Venue addvenue(String name, String address, String crossstreet, String city, String state,
+            String zip, String cityid, String phone) throws FoursquareException,
+            FoursquareCredentialsError, FoursquareError, IOException {
+        HttpPost httpPost = mHttpApi.createHttpPost(URL_API_ADDVENUE, //
+                new BasicNameValuePair("name", name), //
+                new BasicNameValuePair("address", address), //
+                new BasicNameValuePair("crossstreet", crossstreet), //
+                new BasicNameValuePair("city", city), //
+                new BasicNameValuePair("state", state), //
+                new BasicNameValuePair("zip", zip), //
+                new BasicNameValuePair("cityid", cityid), //
+                new BasicNameValuePair("phone", phone) //
+                );
+        return (Venue)mHttpApi.doHttpRequest(httpPost, new VenueParser());
+    }
+
     /*
      * /cities
      */
@@ -175,8 +207,8 @@ public class FoursquareHttpApiV1 {
             FoursquareCredentialsError, FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(URL_API_USER, //
                 new BasicNameValuePair("uid", uid), //
-        new BasicNameValuePair("mayor", (mayor) ? "1" : "0"), //
-        new BasicNameValuePair("badges", (badges) ? "1" : "0"));
+                new BasicNameValuePair("mayor", (mayor) ? "1" : "0"), //
+                new BasicNameValuePair("badges", (badges) ? "1" : "0"));
         return (User)mHttpApi.doHttpRequest(httpGet, new UserParser());
     }
 
