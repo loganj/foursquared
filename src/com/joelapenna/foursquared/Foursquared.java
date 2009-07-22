@@ -28,7 +28,6 @@ import java.util.Date;
  */
 public class Foursquared extends Application {
     public static final String TAG = "Foursquared";
-
     public static final boolean DEBUG = true;
 
     public static final boolean API_DEBUG = false;
@@ -38,11 +37,8 @@ public class Foursquared extends Application {
     public static final String EXTRAS_VENUE_KEY = "venue";
 
     public static final String PREFERENCE_PHONE = "phone";
-
     public static final String PREFERENCE_PASSWORD = "password";
-
     public static final String PREFERENCE_TWITTER_CHECKIN = "twitter_checkin";
-
     public static final String PREFERENCE_SILENT_CHECKIN = "silent_checkin";
 
     // Hidden preferences
@@ -98,7 +94,8 @@ public class Foursquared extends Application {
         String password = settings.getString(Foursquared.PREFERENCE_PASSWORD, null);
 
         if (TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(password)) {
-            throw new FoursquaredCredentialsError("Phone number or password not set in preferences.");
+            throw new FoursquaredCredentialsError(
+                    "Phone number or password not set in preferences.");
         }
         mFoursquare = new Foursquare(phoneNumber, password);
     }
