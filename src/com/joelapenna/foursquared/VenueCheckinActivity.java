@@ -136,9 +136,9 @@ public class VenueCheckinActivity extends ListActivity {
             }
         });
 
-        mSilentToggle.setChecked(settings.getBoolean(Foursquared.PREFERENCE_SILENT_CHECKIN, false));
+        mSilentToggle.setChecked(settings.getBoolean(Preferences.PREFERENCE_SILENT_CHECKIN, false));
         mTwitterToggle.setChecked(settings
-                .getBoolean(Foursquared.PREFERENCE_TWITTER_CHECKIN, false));
+                .getBoolean(Preferences.PREFERENCE_TWITTER_CHECKIN, false));
     }
 
     private void sendCheckin() {

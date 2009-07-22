@@ -6,18 +6,12 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
-import com.joelapenna.foursquare.error.FoursquareError;
-import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.error.FoursquareParseException;
-import com.joelapenna.foursquare.types.Auth;
-import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.maps.BestLocationListener;
 
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.location.Location;
 import android.location.LocationManager;
@@ -25,9 +19,7 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
-import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -41,48 +33,38 @@ public class Foursquared extends Application {
 
     public static final int LAST_LOCATION_UPDATE_THRESHOLD = 1000 * 60 * 60;
 
-    public static final String PREFERENCE_PHONE = "phone";
-    public static final String PREFERENCE_PASSWORD = "password";
-    public static final String PREFERENCE_TWITTER_CHECKIN = "twitter_checkin";
-    public static final String PREFERENCE_SILENT_CHECKIN = "silent_checkin";
-
-    // Hidden preferences
-    public static final String PREFERENCE_CITY_ID = "city_id";
-    public static final String PREFERENCE_EMAIL = "email";
-    public static final String PREFERENCE_FIRST = "first_name";
-    public static final String PREFERENCE_GENDER = "gender";
-    public static final String PREFERENCE_ID = "id";
-    public static final String PREFERENCE_LAST = "last_name";
-    public static final String PREFERENCE_PHOTO = "photo";
-
     // Common menu items
     private static final int MENU_PREFERENCES = -1;
     private static final int MENU_GROUP_SYSTEM = -1;
 
     private LocationListener mLocationListener = new LocationListener();
 
-    private SharedPreferences mSharedPrefs;
+    private SharedPreferences mPrefs;
     private OnSharedPreferenceChangeListener mOnSharedPreferenceChangeListener;
 
     private static Foursquare sFoursquare = new Foursquare();
 
     public void onCreate() {
-        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        // Set the oauth credentials.
+        sFoursquare.setOAuthConsumerCredentials( //
+                getResources().getString(R.string.oauth_consumer_key), //
+                getResources().getString(R.string.oauth_consumer_secret));
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mOnSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                if (key.equals(PREFERENCE_PHONE) || key.equals(PREFERENCE_PASSWORD)) {
+                if (key.equals(Preferences.PREFERENCE_PHONE)
+                        || key.equals(Preferences.PREFERENCE_PASSWORD)) {
                     Log.d(TAG, key + " preference was changed");
                     try {
                         loadCredentials();
                     } catch (FoursquareCredentialsError e) {
-                        if (DEBUG) Log.d(TAG, "Clearing credentials", e);
-                        sFoursquare.setCredentials(null, null);
+                        // pass
                     }
                 }
             }
         };
-        mSharedPrefs.registerOnSharedPreferenceChangeListener(mOnSharedPreferenceChangeListener);
+        mPrefs.registerOnSharedPreferenceChangeListener(mOnSharedPreferenceChangeListener);
 
         try {
             loadCredentials();
@@ -103,56 +85,16 @@ public class Foursquared extends Application {
 
     private void loadCredentials() throws FoursquareCredentialsError {
         if (DEBUG) Log.d(TAG, "loadCredentials()");
-        String phoneNumber = mSharedPrefs.getString(Foursquared.PREFERENCE_PHONE, null);
-        String password = mSharedPrefs.getString(Foursquared.PREFERENCE_PASSWORD, null);
+        String phoneNumber = mPrefs.getString(Preferences.PREFERENCE_PHONE, null);
+        String password = mPrefs.getString(Preferences.PREFERENCE_PASSWORD, null);
+        String oauthToken = mPrefs.getString(Preferences.PREFERENCE_OAUTH_TOKEN, null);
+        String oauthTokenSecret = mPrefs.getString(Preferences.PREFERENCE_OAUTH_TOKEN_SECRET, null);
 
-        if (TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(password)) {
-            throw new FoursquareCredentialsError(
-                    "Phone number or password not set in preferences.");
+        if (TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(password)
+                || TextUtils.isEmpty(oauthToken) || TextUtils.isEmpty(oauthTokenSecret)) {
+            throw new FoursquareCredentialsError("Phone number or password not set in preferences.");
         }
-        sFoursquare.setCredentials(phoneNumber, password);
-        new Thread() {
-            public void run() {
-                try {
-                    Foursquared.this.getUserInfo();
-                } catch (FoursquareException e) {
-                    // TODO Auto-generated catch block
-                    if (DEBUG) Log.d(TAG, "Could not log in: ", e);
-                    Toast.makeText(Foursquared.this,
-                            "Unable to log in. Please check your phone number and password.",
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        }.start();
-    }
-
-    private void getUserInfo() throws FoursquareCredentialsError, FoursquareException {
-        try {
-            if (DEBUG) Log.d(TAG, "Trying to log in.");
-            Auth auth = sFoursquare.login();
-            User user = sFoursquare.user();
-            if (auth != null && auth.status() /* && user != null */) {
-                Editor editor = mSharedPrefs.edit();
-
-                editor.putString(PREFERENCE_EMAIL, auth.getEmail());
-                editor.putString(PREFERENCE_FIRST, auth.getFirstname());
-                editor.putString(PREFERENCE_LAST, auth.getLastname());
-                editor.putString(PREFERENCE_PHOTO, auth.getPhoto());
-
-                editor.putString(PREFERENCE_CITY_ID, user.getCityid());
-                editor.putString(PREFERENCE_ID, user.getId());
-                editor.putString(PREFERENCE_GENDER, user.getGender());
-
-                editor.commit();
-            }
-        } catch (FoursquareError e) {
-            if (DEBUG) Log.d(TAG, "FoursquareError: ", e);
-            throw new FoursquareCredentialsError(e.getMessage());
-        } catch (FoursquareParseException e) {
-            if (DEBUG) Log.d(TAG, "FoursquareCredentialsError: ", e);
-            throw new FoursquareCredentialsError(e.getMessage());
-        } catch (IOException e) {
-        }
+        sFoursquare.setCredentials(phoneNumber, password, oauthToken, oauthTokenSecret);
     }
 
     private void primeLocationListener() {

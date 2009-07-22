@@ -19,6 +19,8 @@
 
   <string
     name="preferences_label">Preferences</string>
+  <string
+    name="clear_prefs_label">Reset Credentials</string>
 
   <string
     name="checkins_label">Checkins</string>

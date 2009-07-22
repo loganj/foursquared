@@ -36,12 +36,12 @@ public class Foursquare {
 
     public Foursquare() {
         mFoursquare = new FoursquareHttpApi();
-        mFoursquareV1 = null;
+        mFoursquareV1 = new FoursquareHttpApiV1();
     }
 
     public Foursquare(String oAuthConsumerKey, String oAuthConsumerSecret) {
-        mFoursquare = new FoursquareHttpApi();
-        mFoursquareV1 = new FoursquareHttpApiV1(oAuthConsumerKey, oAuthConsumerSecret);
+        this();
+        mFoursquareV1.setOAuthConsumerCredentials(oAuthConsumerKey, oAuthConsumerSecret);
     }
 
     public void setCredentials(String phone, String password) {
@@ -51,10 +51,12 @@ public class Foursquare {
     }
 
     public void setCredentials(String phone, String password, String token, String secret) {
-        mPhone = phone;
-        mPassword = password;
-        mFoursquare.setCredentials(phone, password);
+        setCredentials(phone, password);
         mFoursquareV1.setCredentials(token, secret);
+    }
+
+    public void setOAuthConsumerCredentials(String oAuthConsumerKey, String oAuthConsumerSecret) {
+        mFoursquareV1.setOAuthConsumerCredentials(oAuthConsumerKey, oAuthConsumerSecret);
     }
 
     public boolean hasCredentials() {

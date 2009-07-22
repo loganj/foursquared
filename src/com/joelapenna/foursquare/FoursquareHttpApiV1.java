@@ -31,10 +31,14 @@ public class FoursquareHttpApiV1 {
     private DefaultHttpClient mHttpClient;
     private HttpApiWithOAuth mHttpApi;
 
-    public FoursquareHttpApiV1(String oAuthConsumerKey, String oAuthConsumerSecret) {
+    public FoursquareHttpApiV1() {
         mHttpClient = HttpApi.createHttpClient();
         mHttpApi = new HttpApiWithOAuth(mHttpClient);
-        mHttpApi.setOAuthConsumerCredentials(oAuthConsumerKey, oAuthConsumerSecret);
+    }
+
+    public FoursquareHttpApiV1(String oAuthConsumerKey, String oAuthConsumerSecret) {
+        this();
+        setOAuthConsumerCredentials(oAuthConsumerKey, oAuthConsumerSecret);
     }
 
     public void setCredentials(String token, String secret) {
@@ -44,6 +48,10 @@ public class FoursquareHttpApiV1 {
         } else {
             mHttpApi.setOAuthTokenWithSecret(token, secret);
         }
+    }
+
+    public void setOAuthConsumerCredentials(String oAuthConsumerKey, String oAuthConsumerSecret) {
+        mHttpApi.setOAuthConsumerCredentials(oAuthConsumerKey, oAuthConsumerSecret);
     }
 
     public boolean hasCredentials() {

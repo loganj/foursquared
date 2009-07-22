@@ -4,9 +4,9 @@
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <PreferenceCategory
+  <PreferenceScreen
+    android:key="credentials_screen"
     android:title="Foursquare Credentials">
-    <!--  Note that these two are not persistent! -->
     <EditTextPreference
       android:key="phone"
       android:persistent="true"
@@ -22,7 +22,7 @@
       android:password="true"
       android:singleLine="true"
       android:summary="Your Foursquare password." />
-  </PreferenceCategory>
+  </PreferenceScreen>
 
   <PreferenceCategory
     android:title="Check-in Defaults">
