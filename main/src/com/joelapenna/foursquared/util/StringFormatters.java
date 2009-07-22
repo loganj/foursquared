@@ -34,7 +34,7 @@ public class StringFormatters {
     }
 
     public static String getCheckinMessage(Checkin checkin) {
-        String venueName = (checkin.getVenue() != null) ? ". @" + checkin.getVenue().getName()
+        String venueName = (checkin.getVenue() != null) ? ". @ " + checkin.getVenue().getName()
                 : ".";
         String name = checkin.getUser().getFirstname() + " "
                 + checkin.getUser().getLastname().substring(0, 1);
