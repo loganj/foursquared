@@ -116,6 +116,12 @@ class VenueSearchListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void clear() {
+        mVenues.clear();
+        notifyDataSetInvalidated();
+    }
+
+
     private static class ViewHolder {
         TextView name;
         TextView locationLine1;

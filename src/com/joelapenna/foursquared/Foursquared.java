@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -29,7 +28,7 @@ public class Foursquared extends Application {
     // Hidden preferences
     public static final String PREFERENCE_EMAIL = "email";
 
-    public Foursquare mFoursquare;
+    private Foursquare mFoursquare;
 
     public void onCreate() {
         try {

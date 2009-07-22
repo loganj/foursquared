@@ -108,7 +108,7 @@ public class TestActivity extends Activity {
 
     private void testVenues() throws FoursquareError, FoursquareParseException, IOException {
         Log.d(TAG, "testVenues");
-        Group venueGroups = mFoursquare.venues("37.770900", "-122.436987", 1, 10);
+        Group venueGroups = mFoursquare.venues(null, "37.770900", "-122.436987", 1, 10);
         Log.d(TAG, "Num Groups:" + venueGroups.size());
         for (int i = 0; i < venueGroups.size(); i++) {
             Group venues = (Group)venueGroups.get(i);

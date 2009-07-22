@@ -55,9 +55,14 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         if (DEBUG) Log.d(TAG, "Setting phone number if not set.");
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         String phoneNumber = settings.getString(Foursquared.PREFERENCE_PHONE, null);
+
         if (phoneNumber == null || TextUtils.isEmpty(phoneNumber)) {
             TelephonyManager telephony = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
             phoneNumber = telephony.getLine1Number();
+            if (phoneNumber.startsWith("1")) {
+                phoneNumber = phoneNumber.substring(1);
+            }
+
             if (DEBUG) Log.d(TAG, "Phone number not found. Setting it: " + phoneNumber);
             Editor editor = settings.edit();
             editor.putString(Foursquared.PREFERENCE_PHONE, phoneNumber);

@@ -10,7 +10,7 @@
       android:persistent="true"
       android:key="phone"
       android:title="Phone"
-      android:hint="555 867 5309"
+      android:hint="5558675309"
       android:phoneNumber="true"
       android:singleLine="true" />
     <EditTextPreference

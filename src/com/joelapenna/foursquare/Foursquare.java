@@ -60,9 +60,9 @@ public class Foursquare {
         return mFoursquare.todos(cityId, lat, lng);
     }
 
-    public Group venues(String lat, String lng, int radius, int length) throws FoursquareError,
+    public Group venues(String query, String lat, String lng, int radius, int length) throws FoursquareError,
             FoursquareParseException, IOException {
-        return mFoursquare.venues(lat, lng, radius, length);
+        return mFoursquare.venues(query, lat, lng, radius, length);
     }
 
     public Group checkins(String cityId) throws FoursquareError, FoursquareParseException,
