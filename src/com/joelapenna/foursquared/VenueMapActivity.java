@@ -51,10 +51,10 @@ public class VenueMapActivity extends MapActivity {
             }
         });
 
-        setupMapView();
-
+        initMap();
+        
         setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
-        setMap();
+        updateMap();
     }
 
     @Override
@@ -69,6 +69,17 @@ public class VenueMapActivity extends MapActivity {
         super.onPause();
         mMyLocationOverlay.disableMyLocation();
         mMyLocationOverlay.disableCompass();
+    }
+    
+    private void initMap() {
+        mMapView = (MapView)findViewById(R.id.mapView);
+        mMapView.setBuiltInZoomControls(true);
+        mMapController = mMapView.getController();
+
+        mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
+        mMapView.getOverlays().add(mMyLocationOverlay);
+
+        mOverlay = new SimpleItemizedOverlay(this.getResources().getDrawable(R.drawable.reddot));
     }
 
     private void setVenue(Venue venue) {
@@ -93,7 +104,7 @@ public class VenueMapActivity extends MapActivity {
         }
     }
 
-    private void setMap() {
+    private void updateMap() {
         GeoPoint center;
         if (mOverlay.size() > 0) {
             center = mOverlay.getCenter();
@@ -104,23 +115,8 @@ public class VenueMapActivity extends MapActivity {
         mMapController.setZoom(12);
     }
 
-    /**
-     * Setup the map.
-     */
-    private void setupMapView() {
-        mMapView = (MapView)findViewById(R.id.mapView);
-        mMapView.setBuiltInZoomControls(true);
-        mMapController = mMapView.getController();
-
-        mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
-        mMapView.getOverlays().add(mMyLocationOverlay);
-
-        mOverlay = new SimpleItemizedOverlay(this.getResources().getDrawable(R.drawable.reddot));
-    }
-
     @Override
     protected boolean isRouteDisplayed() {
         return false;
     }
-
 }
