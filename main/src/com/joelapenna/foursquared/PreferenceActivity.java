@@ -86,7 +86,6 @@ public class PreferenceActivity extends android.preference.PreferenceActivity im
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_CLEAR, Menu.NONE, R.string.clear_prefs_label) //
                 .setIcon(android.R.drawable.ic_menu_revert);
-        Foursquared.addPreferencesToMenu(this, menu);
         return true;
     }
 
