@@ -1,3 +1,33 @@
+REPOSITORY
+
+The main foursquared repo is at http://joelapenna.com/git/foursquared.git
+
+*Some files must be manually created in order for the tests and source to build.*
+
+*Create res/values/credentials.xml* -- do not check this in. It must contain strings:
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string
+    name="google_maps_api_key">SOME_TEST_KEY</string>
+
+  <string
+    name="oauth_consumer_key">SOME_OTHER_KEY</string>
+  <string
+    name="oauth_consumer_secret">SOME_OTHER_OTHER_KEY</string>
+</resources>
+
+*Create src/com/joelapenna/foursquare/test/TestConstants.java* -- do not check this in. It must contain strings:
+   
+public class TestConstants {
+
+    static final String oAuthConsumerKey = "SOME_OTHER_KEY";
+    static final String oAuthConsumerSecret = "SOME_OTHER_OTHER_KEY";
+
+    static final String testFoursquareUsername = "testuser@example.com";
+    static final String testFoursquarePassword = "some_password";
+}
+
 IDEAS
 
 + "Lead" a Bar Crawl
