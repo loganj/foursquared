@@ -44,6 +44,17 @@ public class RemoteResourceManager extends Observable {
     }
 
     /**
+     * Request a resource be downloaded. Useful to call after a IOException from getInputStream.
+     *
+     * @param uri
+     * @throws IOException
+     */
+    public void requestBlocking(Uri uri) throws IOException {
+        if (DEBUG) Log.d(TAG, "request(): " + uri);
+        mRemoteResourceFetcher.fetchBlocking(uri, Uri.encode(uri.toString()));
+    }
+
+    /**
      * If IOException is thrown, we don't have the resource available.
      *
      * @param uri

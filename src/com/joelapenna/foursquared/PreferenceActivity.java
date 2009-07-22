@@ -266,7 +266,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity im
 
         foursquare.setOAuthToken(credentials.getOauthToken(), credentials.getOauthTokenSecret());
 
-        User user = foursquare.user(null, true, true);
+        User user = foursquare.user(null, false, false);
         Preferences.storeUser(editor, user);
     }
 }

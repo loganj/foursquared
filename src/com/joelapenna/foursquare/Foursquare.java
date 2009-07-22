@@ -136,7 +136,7 @@ public class Foursquare {
     @V1
     public User user(String user, boolean mayor, boolean badges) throws FoursquareException,
             FoursquareError, IOException {
-        return mFoursquareV1.user(null, mayor, badges);
+        return mFoursquareV1.user(user, mayor, badges);
     }
 
     @V1

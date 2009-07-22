@@ -74,6 +74,8 @@ public class VenueActivity extends TabActivity {
         initTabHost();
 
         venueObservable.addObserver(mVenueObserver);
+
+        // TODO(jlapenna): retainNonConfigurationBlahBlah.
         new VenueTask().execute(getIntent().getExtras().getString(EXTRA_VENUE));
     }
 
@@ -248,7 +250,7 @@ public class VenueActivity extends TabActivity {
 
     /**
      * This guy will be an attempt at controlling a dialog without relying on AsyncTask...
-     * 
+     *
      * @author Joe LaPenna (joe@joelapenna.com)
      */
     class VenueObserver implements Observer {

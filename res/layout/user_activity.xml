@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <!-- Copyright 2009 Joe LaPenna -->
+
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:padding="6dip">
+
+  <ImageView
+    android:id="@+id/photo"
+
+    android:layout_width="64px"
+    android:layout_height="64px"
+
+    android:layout_alignParentTop="true"
+    android:layout_alignParentLeft="true"
+    android:layout_marginRight="6dip"
+
+    android:scaleType="fitXY"
+
+    android:src="@drawable/blank_boy" />
+
+  <TextView
+    android:id="@+id/name"
+
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+
+    android:layout_toRightOf="@id/photo"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentTop="true"
+    android:layout_alignWithParentIfMissing="true"
+
+    android:textAppearance="@android:style/TextAppearance.Large"
+
+    android:singleLine="true"
+    android:ellipsize="marquee"
+
+    android:gravity="center_vertical" />
+
+  <TextView
+    android:id="@+id/city"
+
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+
+    android:layout_toRightOf="@id/photo"
+    android:layout_alignParentRight="true"
+    android:layout_below="@id/name"
+
+    android:textAppearance="@android:style/TextAppearance.Medium"
+
+    android:singleLine="true"
+    android:ellipsize="marquee" />
+
+  <GridView
+    android:id="@+id/badgesGrid"
+    android:layout_width="fill_parent"
+    android:layout_height="0dip"
+    android:layout_weight="1"
+
+    android:layout_alignParentRight="true"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentBottom="true"
+    android:layout_below="@id/photo"
+
+    android:paddingTop="12dip"
+
+    android:horizontalSpacing="12dip"
+    android:verticalSpacing="12dip"
+
+    android:columnWidth="80dip"
+    android:numColumns="auto_fit" />
+
+</RelativeLayout>

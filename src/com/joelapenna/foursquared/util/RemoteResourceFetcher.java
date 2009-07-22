@@ -56,11 +56,20 @@ class RemoteResourceFetcher extends Observable {
         startFetcher();
     }
 
+    @Override
+    public void notifyObservers(Object data) {
+        setChanged();
+        super.notifyObservers(data);
+    }
+
     public void fetch(Uri uri, String hash) {
         Message msg = mFetcherHandler.obtainMessage(FetcherHandler.MESSAGE_FETCH);
-        msg.obj = uri;
         msg.obj = new Request(uri, hash);
         mFetcherHandler.sendMessage(msg);
+    }
+
+    public void fetchBlocking(Uri uri, String hash) throws IOException {
+        makeRequest(new Request(uri, hash));
     }
 
     private void startFetcher() {
@@ -91,40 +100,29 @@ class RemoteResourceFetcher extends Observable {
             if (DEBUG) Log.d(TAG, "handle Message" + msg.toString());
             switch (msg.what) {
                 case MESSAGE_FETCH:
-                    Request request = (Request)msg.obj;
-                    // We'll still notify observers that we tried to download the file but when the
-                    // client fetches it and gets an IOException the'll know the request failed.
-                    InputStream is = fetch(request.uri);
-                    if (is != null) {
-                        mResourceCache.store(request.hash, is);
+                    try {
+                        makeRequest((Request)msg.obj);
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        // There isn't anything we can really do here... that I want to implement.
                     }
-                    notifyObservers(request.uri);
                 default:
                     break;
             }
         }
-
-        private InputStream fetch(Uri uri) {
-            try {
-                HttpGet httpGet = new HttpGet(uri.toString());
-                // Now process the response we get
-                HttpResponse response;
-                response = mHttpClient.execute(httpGet);
-
-                HttpEntity entity = response.getEntity();
-                if (entity != null) {
-                    return entity.getContent();
-                }
-            } catch (IOException e) {
-                if (DEBUG) Log.d(TAG, "IOException!", e);
-            }
-            return null;
-        }
     }
 
-    public void notifyObservers(Object data) {
-        setChanged();
-        super.notifyObservers(data);
+    private void makeRequest(Request request) throws IOException {
+        try {
+            HttpGet httpGet = new HttpGet(request.uri.toString());
+            HttpResponse response;
+            response = mHttpClient.execute(httpGet);
+            HttpEntity entity = response.getEntity();
+            InputStream is = entity.getContent();
+            mResourceCache.store(request.hash, is);
+        } finally {
+            notifyObservers(request.uri);
+        }
     }
 
     /**

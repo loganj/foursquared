@@ -71,6 +71,15 @@
 
 
     <activity
+      android:name=".TestUserActivity">
+      <intent-filter>
+        <action
+          android:name="android.intent.action.MAIN" />
+      </intent-filter>
+    </activity>
+
+
+    <activity
       android:name=".CheckinsActivity"
       android:label="@string/checkins_activity_name"
       android:launchMode="singleTop">
@@ -115,6 +124,15 @@
 
     <activity
       android:name=".SearchVenuesMapActivity">
+    </activity>
+
+
+    <activity
+      android:name=".UserActivity">
+      <intent-filter>
+        <action
+          android:name="android.intent.action.MAIN" />
+      </intent-filter>
     </activity>
 
 
