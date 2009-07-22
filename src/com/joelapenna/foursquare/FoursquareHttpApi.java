@@ -24,7 +24,6 @@ import com.joelapenna.foursquare.types.classic.Auth;
 import com.joelapenna.foursquare.types.classic.Checkin;
 import com.joelapenna.foursquare.types.classic.User;
 import com.joelapenna.foursquare.types.classic.Venue;
-import com.joelapenna.foursquared.FoursquaredSettings;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;

@@ -20,6 +20,8 @@
     android:layout_alignParentBottom="true"
     android:layout_marginRight="6dip"
 
+    android:visibility="gone"
+
     android:clickable="false"
     android:focusable="false" />
 

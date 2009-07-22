@@ -39,7 +39,7 @@ public class AddVenueActivity extends Activity {
     private LocationListener mLocationListener;
     private LocationManager mLocationManager;
 
-    FieldsHolder mFieldsHolder;
+    FieldsHolder mFieldsHolder = new FieldsHolder();
 
     private EditText mNameEditText;
     private EditText mCityEditText;

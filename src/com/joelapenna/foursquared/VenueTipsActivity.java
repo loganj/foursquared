@@ -66,6 +66,9 @@ public class VenueTipsActivity extends ListActivity {
         setContentView(R.layout.venue_tips_activity);
 
         setListAdapter(new SeparatedListAdapter(this));
+        // TODO(jlapenna): Hey Joe, you need to make this work...
+        // TODO(foursquare): Hey Foursquare, you need to support this in the API.
+        /*
         getListView().setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -76,6 +79,7 @@ public class VenueTipsActivity extends ListActivity {
                 updateTodo(tip.getId());
             }
         });
+        */
 
         setupUi();
 
