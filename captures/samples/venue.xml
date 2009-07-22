@@ -1,0 +1,17 @@
+<venue>
+<venueid>23035</venueid>
+<venuename>The Page</venuename>
+<distance>0.1m</distance>
+<address> 298 Divisadero St</address>
+<crossstreet>at Page</crossstreet>
+<geolat>37.7722</geolat>
+<geolong>-122.437</geolong>
+<map>http://maps.google.com/staticmap?zoom=15&amp;size=280x100&amp;markers=37.7722,-122.437&amp;maptype=mobile</map>
+<mapurl>http://maps.google.com/maps?q=+298+Divisadero+St%2CSan+Francisco%2CCA%2C94117</mapurl>
+<yelp>http://mobile.yelp.com/search?find_desc=The+Page&amp;find_loc=San+Francisco%2CCA&amp;find_submit=Search</yelp>
+<num_checkins>46</num_checkins>
+<beenhere_me></beenhere_me>
+<beenhere_friends></beenhere_friends>
+<extra></extra>
+<new_venue>0</new_venue>
+</venue>

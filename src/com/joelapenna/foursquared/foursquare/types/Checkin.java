@@ -7,7 +7,7 @@ package com.joelapenna.foursquared.foursquare.types;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class Checkin extends FoursquareType {
+public class Checkin implements FoursquareType {
 
     private String mCheckinId;
     private String mVenueId;

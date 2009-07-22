@@ -25,7 +25,7 @@ public abstract class AbstractParser<T extends FoursquareType> implements Parser
     private static final String TAG = "AbstractParser";
     private static final boolean DEBUG = Foursquare.DEBUG;
 
-    private static XmlPullParserFactory mFactory;
+    private static XmlPullParserFactory mFactory = setFactory();
 
     abstract protected T parseInner(final XmlPullParser parser) throws FoursquareParseException,
             FoursquareError, IOException, XmlPullParserException;
@@ -35,14 +35,11 @@ public abstract class AbstractParser<T extends FoursquareType> implements Parser
      * @seecom.joelapenna.foursquared.foursquare.parsers.Parser#parse(java.io.
      * InputStream)
      */
-    final public T parse(InputStream is) throws FoursquareError, FoursquareParseException {
+    final public T parse(XmlPullParser parser) throws FoursquareError, FoursquareParseException {
         if (DEBUG) Log.d(TAG, "parse()ing");
-        setFactory();
-        XmlPullParser parser = createParser(is);
         try {
             return parseInner(parser);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             if (DEBUG) Log.d(TAG, "IOException", e);
             throw new FoursquareParseException("Recieved IOException while processing");
         } catch (XmlPullParserException e) {
@@ -50,7 +47,7 @@ public abstract class AbstractParser<T extends FoursquareType> implements Parser
         }
     }
 
-    protected static XmlPullParser createParser(InputStream is) {
+    public static XmlPullParser createParser(InputStream is) {
         XmlPullParser parser;
         try {
             parser = mFactory.newPullParser();
@@ -61,7 +58,7 @@ public abstract class AbstractParser<T extends FoursquareType> implements Parser
         return parser;
     }
 
-    protected static void setFactory() {
+    protected static XmlPullParserFactory setFactory() {
         if (mFactory == null) {
             try {
                 mFactory = XmlPullParserFactory.newInstance();
@@ -69,5 +66,6 @@ public abstract class AbstractParser<T extends FoursquareType> implements Parser
                 throw new IllegalStateException("Could not create a factory");
             }
         }
+        return mFactory;
     }
 }

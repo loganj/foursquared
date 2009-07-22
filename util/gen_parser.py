@@ -37,19 +37,19 @@ public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
     public %(type_name)s parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError {
         %(type_name)s %(top_node_name)s = new %(type_name)s();
-        int eventType = parser.nextToken();
+        int eventType = parser.getEventType();
 
         while (eventType != XmlPullParser.END_DOCUMENT) {
             switch (eventType) {
                 case XmlPullParser.START_TAG:
                     if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
-                    String name = parser.getName();
 
+                    String name = parser.getName();
                     if ("error".equals(name)) {
                         throw new FoursquareError(parser.getText());
                     } else if ("%(top_node_name)s".equals(name)) {
                         parse%(type_name)sTag(parser, %(top_node_name)s);
-                        break;
+                        return %(top_node_name)s;
                     }
 
                 default:
@@ -57,18 +57,21 @@ public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
             }
             eventType = parser.nextToken();
         }
-        return %(top_node_name)s;
+        return null;
     }
 
     public void parse%(type_name)sTag(XmlPullParser parser, %(type_name)s %(top_node_name)s) throws XmlPullParserException,
             IOException {
         assert parser.getName() == "%(top_node_name)s";
         if (DEBUG) Log.d(TAG, "parsing %(top_node_name)s stanza");
+
         while (parser.nextTag() != XmlPullParser.END_TAG) {
             if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
+
             String name = parser.getName();
 %(stanzas)s            }
         }
+        parser.nextToken();
     }
 }
 """

@@ -4,10 +4,15 @@
 
 package com.joelapenna.foursquared.foursquare;
 
+import com.joelapenna.foursquared.foursquare.error.FoursquareError;
+import com.joelapenna.foursquared.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquared.foursquare.types.Auth;
 import com.joelapenna.foursquared.foursquare.types.IncomingCheckin;
+import com.joelapenna.foursquared.foursquare.types.VenueGroup;
 
 import android.util.Log;
+
+import java.io.IOException;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -30,14 +35,20 @@ public class Foursquare {
         mPassword = password;
     }
 
-    public boolean login() {
+    public boolean login() throws FoursquareError, FoursquareParseException, IOException {
         if (DEBUG) Log.d(TAG, "login()");
         Auth auth = mFoursquare.login(mPhone, mPassword);
         return (auth != null && auth.status());
 
     }
 
-    public IncomingCheckin checkin(String venue, boolean silent, boolean twitter, String lat, String lng) {
-        return mFoursquare.checkin(mPhone, venue, silent, twitter, lat, lng, "23");
+    public IncomingCheckin checkin(String venue, boolean silent, boolean twitter, String lat,
+            String lng) throws FoursquareError, FoursquareParseException, IOException {
+        return mFoursquare.checkin(mPhone, venue, silent, twitter, lat, lng, null);
+    }
+
+    public VenueGroup venues(String lat, String lng, int radius, int length)
+            throws FoursquareError, FoursquareParseException, IOException {
+        return mFoursquare.venues(lat, lng, radius, length);
     }
 }

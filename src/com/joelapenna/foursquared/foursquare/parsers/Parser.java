@@ -8,7 +8,7 @@ import com.joelapenna.foursquared.foursquare.error.FoursquareError;
 import com.joelapenna.foursquared.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquared.foursquare.types.FoursquareType;
 
-import java.io.InputStream;
+import org.xmlpull.v1.XmlPullParser;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -16,6 +16,6 @@ import java.io.InputStream;
  */
 public interface Parser<T extends FoursquareType> {
 
-    public abstract T parse(InputStream is) throws FoursquareError, FoursquareParseException;
+    public abstract T parse(XmlPullParser parser) throws FoursquareError, FoursquareParseException;
 
 }

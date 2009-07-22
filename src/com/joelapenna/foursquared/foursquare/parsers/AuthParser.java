@@ -33,8 +33,8 @@ public class AuthParser extends AbstractParser<Auth> {
             switch (eventType) {
                 case XmlPullParser.START_TAG:
                     if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
-                    String name = parser.getName();
 
+                    String name = parser.getName();
                     if ("error".equals(name)) {
                         throw new FoursquareError(parser.getText());
                     } else if ("auth".equals(name)) {
@@ -54,8 +54,10 @@ public class AuthParser extends AbstractParser<Auth> {
             IOException {
         assert parser.getName() == "auth";
         if (DEBUG) Log.d(TAG, "parsing auth stanza");
+
         while (parser.nextTag() != XmlPullParser.END_TAG) {
             if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
+
             String name = parser.getName();
             if ("email".equals(name)) {
                 auth.setEmail(parser.nextText());
@@ -84,4 +86,3 @@ public class AuthParser extends AbstractParser<Auth> {
         }
     }
 }
-
