@@ -272,6 +272,7 @@ public class CheckinsActivity extends TabActivity {
     private void ensureTitle(boolean finished) {
         if (finished) {
             setTitle("Foursquare Friends");
+        } else {
             setTitle("Foursquare - Searching for Friends");
         }
 
