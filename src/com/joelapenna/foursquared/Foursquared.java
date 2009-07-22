@@ -128,7 +128,7 @@ public class Foursquared extends Application {
             if (DEBUG) Log.d(TAG, "Trying to log in.");
             Auth auth = sFoursquare.login();
             // We don't call user because its broken for authenticated user lookups.
-            // User user = sFoursquare.user();
+            User user = sFoursquare.user();
             if (auth != null && auth.status() /* && user != null */) {
                 Editor editor = mSharedPrefs.edit();
 

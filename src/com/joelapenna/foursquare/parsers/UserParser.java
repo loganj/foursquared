@@ -64,7 +64,7 @@ public class UserParser extends AbstractParser<User> {
 
             String name = parser.getName();
             if ("badges".equals(name)) {
-                user.setBadges(new GroupParser(new BadgeParser()).parse(parser));
+                user.setBadges(new BadgesParser(new BadgeParser()).parse(parser));
 
             } else if ("cityid".equals(name)) {
                 user.setCityid(parser.nextText());
