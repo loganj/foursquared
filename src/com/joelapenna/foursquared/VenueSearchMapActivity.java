@@ -9,10 +9,9 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
-import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.maps.SimpleItemizedOverlay;
+import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -29,7 +28,7 @@ public class VenueSearchMapActivity extends MapActivity {
 
     private MapView mMapView;
     private MapController mMapController;
-    private SimpleItemizedOverlay mVenuesOverlay;
+    private VenueItemizedOverlay mVenuesOverlay;
     private MyLocationOverlay mMyLocationOverlay;
 
     private Observer mSearchResultsObserver;
@@ -75,25 +74,6 @@ public class VenueSearchMapActivity extends MapActivity {
         VenueSearchActivity.searchResultsObservable.deleteObserver(mSearchResultsObserver);
     }
 
-    private void addVenue(Venue venue) {
-        // If our venue information is not displayable...
-        if ((venue.getGeolat() == null || venue.getGeolong() == null) //
-                || venue.getGeolat().equals("0") || venue.getGeolong().equals("0")) {
-            return;
-        }
-
-        // Otherwise...
-        if (("0".equals(venue.getGeolat()) && "0".equals(venue.getGeolong()))) {
-            if (DEBUG) Log.d(TAG, "Terrible lat/long coordinates, ignoring.");
-        } else {
-            if (DEBUG) Log.d(TAG, "Adding venue overlay at: " + venue.getGeolat());
-            int lat = (int)(Double.parseDouble(venue.getGeolat()) * 1E6);
-            int lng = (int)(Double.parseDouble(venue.getGeolong()) * 1E6);
-            GeoPoint point = new GeoPoint(lat, lng);
-            mVenuesOverlay.addItem(new OverlayItem(point, venue.getVenuename(), ""));
-        }
-    }
-
     private void initMap() {
         mMapView = (MapView)findViewById(R.id.mapView);
         mMapView.setBuiltInZoomControls(true);
@@ -101,6 +81,11 @@ public class VenueSearchMapActivity extends MapActivity {
 
         mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
         mMapView.getOverlays().add(mMyLocationOverlay);
+        mMyLocationOverlay.runOnFirstFix(new Runnable() {
+            public void run() {
+                mMapView.getController().animateTo(mMyLocationOverlay.getMyLocation());
+            }
+        });
     }
 
     private void loadSearchResults(Group searchResults) {
@@ -115,7 +100,10 @@ public class VenueSearchMapActivity extends MapActivity {
             if (DEBUG) Log.d(TAG, "Adding items in group: " + group.getType());
             final int venueCount = group.size();
             for (int venueIndex = 0; venueIndex < venueCount; venueIndex++) {
-                addVenue((Venue)group.get(venueIndex));
+                Venue venue = (Venue)group.get(venueIndex);
+                if (isVenueMappable(venue)) {
+                    mVenuesOverlay.addVenue(venue);
+                }
             }
         }
         if (mVenuesOverlay.size() > 0) {
@@ -126,8 +114,16 @@ public class VenueSearchMapActivity extends MapActivity {
 
     private void clearMap() {
         mMapView.getOverlays().remove(mVenuesOverlay);
-        mVenuesOverlay = new SimpleItemizedOverlay(this.getResources().getDrawable(
-                R.drawable.reddot));
+        mVenuesOverlay = new VenueItemizedOverlay(this.getResources()
+                .getDrawable(R.drawable.reddot));
+    }
+
+    private boolean isVenueMappable(Venue venue) {
+        if ((venue.getGeolat() == null || venue.getGeolong() == null) //
+                || venue.getGeolat().equals("0") || venue.getGeolong().equals("0")) {
+            return false;
+        }
+        return true;
     }
 
     private void updateMap() {

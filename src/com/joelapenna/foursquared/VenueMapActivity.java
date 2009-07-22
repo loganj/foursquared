@@ -9,14 +9,12 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
-import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.maps.SimpleItemizedOverlay;
+import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -30,7 +28,7 @@ public class VenueMapActivity extends MapActivity {
 
     private MapView mMapView;
     private MapController mMapController;
-    private SimpleItemizedOverlay mOverlay;
+    private VenueItemizedOverlay mOverlay;
     private MyLocationOverlay mMyLocationOverlay;
 
     private Venue mVenue;
@@ -52,7 +50,7 @@ public class VenueMapActivity extends MapActivity {
         });
 
         initMap();
-        
+
         setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
         updateMap();
     }
@@ -70,7 +68,7 @@ public class VenueMapActivity extends MapActivity {
         mMyLocationOverlay.disableMyLocation();
         mMyLocationOverlay.disableCompass();
     }
-    
+
     private void initMap() {
         mMapView = (MapView)findViewById(R.id.mapView);
         mMapView.setBuiltInZoomControls(true);
@@ -79,27 +77,21 @@ public class VenueMapActivity extends MapActivity {
         mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
         mMapView.getOverlays().add(mMyLocationOverlay);
 
-        mOverlay = new SimpleItemizedOverlay(this.getResources().getDrawable(R.drawable.reddot));
+        mOverlay = new VenueItemizedOverlay(this.getResources().getDrawable(R.drawable.reddot));
+    }
+
+    private boolean isVenueMappable(Venue venue) {
+        if ((venue.getGeolat() == null || venue.getGeolong() == null) //
+                || venue.getGeolat().equals("0") || venue.getGeolong().equals("0")) {
+            return false;
+        }
+        return true;
     }
 
     private void setVenue(Venue venue) {
         mVenue = venue;
-
-        // If our venue information is not displayable...
-        if ((venue.getGeolat() == null || venue.getGeolong() == null) //
-                || venue.getGeolat().equals("0") || venue.getGeolong().equals("0")) {
-            return;
-        }
-
-        // Otherwise...
-        if (("0".equals(venue.getGeolat()) && "0".equals(venue.getGeolong()))) {
-            if (DEBUG) Log.d(TAG, "Terrible lat/long coordinates, ignoring.");
-        } else {
-            if (DEBUG) Log.d(TAG, "Adding venue overlay at: " + venue.getGeolat());
-            int lat = (int)(Double.parseDouble(venue.getGeolat()) * 1E6);
-            int lng = (int)(Double.parseDouble(venue.getGeolong()) * 1E6);
-            GeoPoint point = new GeoPoint(lat, lng);
-            mOverlay.addItem(new OverlayItem(point, venue.getVenuename(), ""));
+        if (isVenueMappable(venue)) {
+            mOverlay.addVenue(venue);
             mMapView.getOverlays().add(mOverlay);
         }
     }
