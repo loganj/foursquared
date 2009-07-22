@@ -113,11 +113,10 @@ public class Foursquared extends Application {
                     getResources().getString(R.string.dumpcatcher_url), client, 5);
         }
 
-        // TODO(jlapenna): Make this work!
-        // This doesn't work. Don't pretend it does.
-        // UncaughtExceptionHandler handler = mDumpcatcher.createUncaughtExceptionHandler();
+        UncaughtExceptionHandler handler = mDumpcatcher.createUncaughtExceptionHandler();
+        // This can hang the app starving android of its ability to properly kill threads.
         // Thread.setDefaultUncaughtExceptionHandler(handler);
-        // Thread.currentThread().setUncaughtExceptionHandler(handler);
+        Thread.currentThread().setUncaughtExceptionHandler(handler);
 
         // TODO(jlapenna): Usage related, async sendCrashes should be pooled together or something.
         // This is nasty.
