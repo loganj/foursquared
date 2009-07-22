@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import datetime
 import sys
 import textwrap
 
@@ -16,6 +17,7 @@ package com.joelapenna.foursquare.parsers;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
+import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.%(type_name)s;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -26,6 +28,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
+ * Auto-generated: %(timestamp)s
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -35,7 +38,7 @@ public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
 
     @Override
     public %(type_name)s parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
-            FoursquareError {
+            FoursquareError, FoursquareParseException {
         %(type_name)s %(top_node_name)s = new %(type_name)s();
         int eventType = parser.getEventType();
 
@@ -51,6 +54,7 @@ public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
                         parse%(type_name)sTag(parser, %(top_node_name)s);
                         return %(top_node_name)s;
                     }
+                    break;
 
                 default:
                     if (DEBUG) Log.d(TAG, "Unhandled Event");
@@ -61,7 +65,7 @@ public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
     }
 
     public void parse%(type_name)sTag(XmlPullParser parser, %(type_name)s %(top_node_name)s) throws XmlPullParserException,
-            IOException {
+            IOException, FoursquareError, FoursquareParseException {
         assert parser.getName() == "%(top_node_name)s";
         if (DEBUG) Log.d(TAG, "parsing %(top_node_name)s stanza");
 
@@ -80,10 +84,17 @@ public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
     }
 }
 """
+
 BOOLEAN_STANZA = """\
             } else if ("%(name)s".equals(name)) {
                 %(top_node_name)s.set%(camel_name)s(parser.nextText().equals("1"));
 """
+
+GROUP_STANZA = """\
+            } else if ("%(name)s".equals(name)) {
+                %(top_node_name)s.set%(camel_name)s(new GroupParser(new %(camel_name_singular)sParser()).parse(parser));
+"""
+
 STANZA = """\
             } else if ("%(name)s".equals(name)) {
                 %(top_node_name)s.set%(camel_name)s(parser.nextText());
@@ -103,6 +114,9 @@ def GenerateClass(type_name, top_node_name, attributes):
     replacements = Replacements(top_node_name, name, typ)
     if typ == common.BOOLEAN:
       stanzas.append(BOOLEAN_STANZA % replacements)
+    elif typ == common.GROUP:
+      replacements['camel_name_singular'] = replacements['camel_name'][:-1]
+      stanzas.append(GROUP_STANZA % replacements)
     else:
       stanzas.append(STANZA % replacements)
   if stanzas:
@@ -131,7 +145,8 @@ def Replacements(top_node_name, name, typ):
       'camel_name': camel_name,
       'attribute_name': attribute_name,
       'field_name': field_name,
-      'typ': typ
+      'typ': typ,
+      'timestamp': datetime.datetime.now()
   }
 
 

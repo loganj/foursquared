@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import datetime
 import sys
 import textwrap
 
@@ -14,10 +15,10 @@ HEADER = """\
 
 package com.joelapenna.foursquare.types;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+%(imports)s
 
 /**
+ * Auto-generated: %(timestamp)s
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class %(type_name)s implements %(interfaces)s {
@@ -88,6 +89,12 @@ PARCELABLE_ATTRIBUTE_WRITE_PARCEL = (
 PARCELABLE_ATTRIBUTE_READ_PARCEL = (
     '    this.m%(camel_name)s = source.read%(attribute_type)s();')
 
+PARCELABLE_GROUP_ATTRIBUTE_WRITE_PARCEL = (
+    '    dest.writeParcelable((Parcelable)this.m%(camel_name)s, flags);')
+
+PARCELABLE_GROUP_ATTRIBUTE_READ_PARCEL = (
+    '    this.m%(camel_name)s = (Group)source.readParcelable(null);')
+
 
 def main():
   type_name, top_node_name, attributes = common.WalkNodesForAttributes(
@@ -137,8 +144,11 @@ def AccessorReplacements(attribute_name, attribute_type):
 
 def Header(type_name):
   interfaces = common.INTERFACES.get(type_name, common.DEFAULT_INTERFACES)
+  imports = common.CLASS_IMPORTS.get(type_name, common.DEFAULT_CLASS_IMPORTS)
   return HEADER % {'type_name': type_name,
-                   'interfaces': ', '.join(interfaces)}
+                   'interfaces': ', '.join(interfaces),
+                   'imports': ';\n'.join(imports) + ';',
+                   'timestamp': datetime.datetime.now()}
 
 
 def Field(attribute_name, attribute_type):
@@ -171,9 +181,10 @@ def Parcelable(type_name, attributes):
     # skip booleans put them all in a boolean array.
     if (attribute_type == common.BOOLEAN):
       booleans.append(replacements['camel_name'])
-      continue
-
-    write_parcel_lines.append(PARCELABLE_ATTRIBUTE_WRITE_PARCEL % replacements)
+    elif (attribute_type == common.GROUP):
+      write_parcel_lines.append(PARCELABLE_GROUP_ATTRIBUTE_WRITE_PARCEL % replacements)
+    else:
+      write_parcel_lines.append(PARCELABLE_ATTRIBUTE_WRITE_PARCEL % replacements)
   write_parcel_lines = '    \n'.join(write_parcel_lines)
   write_boolean_parcel_lines = '    ' + '    \n'.join('    m%s,' % b for b in booleans)
 
@@ -189,8 +200,10 @@ def Parcelable(type_name, attributes):
     # skip booleans put them all in a boolean array.
     if (attribute_type == common.BOOLEAN):
       continue
-
-    read_parcel_lines.append(PARCELABLE_ATTRIBUTE_READ_PARCEL % replacements)
+    elif (attribute_type == common.GROUP):
+      read_parcel_lines.append(PARCELABLE_GROUP_ATTRIBUTE_READ_PARCEL % replacements)
+    else:
+      read_parcel_lines.append(PARCELABLE_ATTRIBUTE_READ_PARCEL % replacements)
   read_parcel_lines = '    \n'.join(read_parcel_lines)
 
   # Compose it.

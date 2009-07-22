@@ -1,9 +1,12 @@
 #!/usr/bin/python
 
+import logging
+
 from xml.dom import pulldom
 
 BOOLEAN = "boolean"
 STRING = "String"
+GROUP = "Group"
 
 
 DEFAULT_INTERFACES = ['Parcelable', 'FoursquareType']
@@ -11,6 +14,15 @@ DEFAULT_INTERFACES = ['Parcelable', 'FoursquareType']
 INTERFACES = {
     'Checkin': DEFAULT_INTERFACES + ['VenueFilterable'],
     'Tip': DEFAULT_INTERFACES + ['VenueFilterable'],
+}
+
+DEFAULT_CLASS_IMPORTS = [
+    'import android.os.Parcel',
+    'import android.os.Parcelable',
+]
+
+CLASS_IMPORTS = {
+    'User': DEFAULT_CLASS_IMPORTS + ['import com.joelapenna.foursquare.types.Group'],
 }
 
 
@@ -42,14 +54,29 @@ def WalkNodesForAttributes(path):
         continue
 
       doc.expandNode(node)
-      has_text_child = (node.hasChildNodes()
-                        and node.firstChild.nodeType == node.TEXT_NODE)
+      has_text_child = False
+      has_complex_child = False
+      child_node_tagnames = set()
+      for child in node.childNodes:
+        if child.nodeType == node.ELEMENT_NODE:
+          child_node_tagnames.add(child.tagName)
+          has_complex_child = True
+        if child.nodeType == node.TEXT_NODE and not child.data.isspace():
+          has_text_child = True
+      assert len(child_node_tagnames) in [0, 1]
+
       if has_text_child:
+        logging.warn(node.tagName + ' has a text child')
         value = node.firstChild.data
+        if (node.tagName == 'badges'):
+            import pdb; pdb.set_trace()
       else:
         value = None
-      if value in ["0", "1"]:
+
+      if value in ["0", "1", "true", "false"]:
         typ = BOOLEAN
+      elif node.hasChildNodes() and has_complex_child:
+        typ = GROUP
       elif node.hasChildNodes() and not has_text_child:
         typ = ''.join([word.capitalize() for word in node.tagName.split('_')])
       else:
