@@ -34,18 +34,19 @@ abstract class BaseGroupItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 
     @Override
     public boolean onTap(GeoPoint p, MapView mapView) {
-        if (DEBUG) Log.d(TAG, "onTap: " + p);
+        if (DEBUG) Log.d(TAG, "onTap: " + group.getType() + " " + p);
         mapView.getController().animateTo(p);
         return super.onTap(p, mapView);
     }
 
     @Override
     protected boolean onTap(int i) {
-        if (DEBUG) Log.d(TAG, "onTap: " + i);
+        if (DEBUG) Log.d(TAG, "onTap: " + group.getType() + " " + i);
         return super.onTap(i);
     }
 
     public void setGroup(Group g) {
+        assert g.getType() != null;
         group = g;
         super.populate();
     }

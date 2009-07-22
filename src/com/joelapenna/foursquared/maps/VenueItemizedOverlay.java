@@ -41,6 +41,16 @@ public class VenueItemizedOverlay extends BaseGroupItemizedOverlay {
         return super.onTap(p, mapView);
     }
 
+    public static boolean isVenueMappable(Venue venue) {
+        if ((venue.getGeolat() == null //
+                || venue.getGeolong() == null) //
+                || venue.getGeolat().equals("0") //
+                || venue.getGeolong().equals("0")) {
+            return false;
+        }
+        return true;
+    }
+
     public static class VenueOverlayItem extends OverlayItem {
 
         private Venue mVenue;

@@ -13,6 +13,7 @@ import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
+import com.joelapenna.foursquared.util.InfiniteIterator;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -33,14 +34,26 @@ public class SearchVenueMapActivity extends MapActivity {
     public static final String TAG = "SearchVenueMapActivity";
     public static final boolean DEBUG = Foursquared.DEBUG;
 
+    private static final int[] MAP_NEW_ICONS = {
+            R.drawable.reddot, R.drawable.bluedot, R.drawable.greendot,
+    };
+    private static final InfiniteIterator MAP_NEW_ICONS_ITERATOR = new InfiniteIterator(
+            MAP_NEW_ICONS);
+
+    private static final int[] MAP_BEEN_THERE_ICONS = {
+            R.drawable.pinkdot, R.drawable.ltbluedot, R.drawable.yellowdot,
+    };
+    private static final InfiniteIterator MAP_BEEN_THERE_ICONS_ITERATOR = new InfiniteIterator(
+            MAP_BEEN_THERE_ICONS);
     private Venue mTappedVenue;
+
+    private Observer mSearchResultsObserver;
+    private Button mVenueButton;
 
     private MapView mMapView;
     private MapController mMapController;
     private ArrayList<VenueItemizedOverlay> mVenuesGroupOverlays = new ArrayList<VenueItemizedOverlay>();
     private MyLocationOverlay mMyLocationOverlay;
-    private Observer mSearchResultsObserver;
-    private Button mVenueButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,15 +176,17 @@ public class SearchVenueMapActivity extends MapActivity {
         final int venueCount = group.size();
         for (int venueIndex = 0; venueIndex < venueCount; venueIndex++) {
             Venue venue = (Venue)group.get(venueIndex);
-            if (isVenueMappable(venue)) {
+            if (VenueItemizedOverlay.isVenueMappable(venue)) {
                 if (DEBUG) Log.d(TAG, "adding venue: " + venue.getVenuename());
                 mappableVenues.add(venue);
             }
         }
         if (mappableVenues.size() > 0) {
             VenueItemizedOverlay mappableVenuesOverlay = new VenueItemizedOverlayWithButton( //
-                    this.getResources().getDrawable(R.drawable.reddot), //
-                    this.getResources().getDrawable(R.drawable.bluedot));
+                    this.getResources().getDrawable(
+                            ((Integer)MAP_NEW_ICONS_ITERATOR.next()).intValue()), //
+                    this.getResources().getDrawable(
+                            ((Integer)MAP_BEEN_THERE_ICONS_ITERATOR.next()).intValue()));
             mappableVenuesOverlay.setGroup(mappableVenues);
             return mappableVenuesOverlay;
         } else {
@@ -179,29 +194,33 @@ public class SearchVenueMapActivity extends MapActivity {
         }
     }
 
-    private boolean isVenueMappable(Venue venue) {
-        if ((venue.getGeolat() == null //
-                || venue.getGeolong() == null) //
-                || venue.getGeolat().equals("0") //
-                || venue.getGeolong().equals("0")) {
-            return false;
-        }
-        return true;
-    }
-
     private void recenterMap() {
         GeoPoint center = mMyLocationOverlay.getMyLocation();
         if (center != null) {
-            if (DEBUG) Log.d(TAG, "updateMap via location overlay");
+            if (DEBUG) Log.d(TAG, "recenterMap via MyLocation overlay");
             mMapController.animateTo(center);
             mMapController.setZoom(16);
             return;
+        } else if (true) { // This is because the real else isn't working at the moment.
+            if (DEBUG) Log.d(TAG, "recenterMap via venues overlay center.");
+            VenueItemizedOverlay newestOverlay = mVenuesGroupOverlays.get(0);
+            mMapController.animateTo(newestOverlay.getCenter());
+            mMapController.setZoom(10);
+        } else if (mVenuesGroupOverlays.size() > 0) {
+            if (DEBUG) Log.d(TAG, "recenterMap via venues overlay span.");
+            VenueItemizedOverlay newestOverlay = mVenuesGroupOverlays.get(0);
+            if (DEBUG) {
+                Log.d(TAG, "recenterMap to: " + newestOverlay.getLatSpanE6() + " "
+                        + newestOverlay.getLonSpanE6());
+            }
+            // For some reason, this is zooming us to some weird spot!.
+            mMapController.zoomToSpan(newestOverlay.getLatSpanE6(), newestOverlay.getLonSpanE6());
         }
-        if (DEBUG) Log.d(TAG, "Could not re-center no location or venue overlay.");
+        if (DEBUG) Log.d(TAG, "Could not re-center; No known user location.");
     }
 
     private class VenueItemizedOverlayWithButton extends VenueItemizedOverlay {
-        public static final String TAG = "VenueItemizedOverlayWithToast";
+        public static final String TAG = "VenueItemizedOverlayWithButton";
         public static final boolean DEBUG = Foursquared.DEBUG;
 
         private Drawable mBeenThereMarker;
@@ -223,19 +242,20 @@ public class SearchVenueMapActivity extends MapActivity {
 
         @Override
         public boolean onTap(GeoPoint p, MapView mapView) {
-            if (DEBUG) Log.d(TAG, "onTap: " + p);
+            if (DEBUG) Log.d(TAG, "onTap: " + this + " " + p + " " + mapView);
             mVenueButton.setVisibility(View.GONE);
             return super.onTap(p, mapView);
         }
 
         @Override
         protected boolean onTap(int i) {
-            if (DEBUG) Log.d(TAG, "onTap: " + i);
+            if (DEBUG) Log.d(TAG, "onTap: " + this + " " + i);
             VenueOverlayItem item = (VenueOverlayItem)getItem(i);
             mTappedVenue = item.getVenue();
+            if (DEBUG) Log.d(TAG, "onTap: " + item.getVenue().getVenuename());
             mVenueButton.setText(item.getVenue().getVenuename());
             mVenueButton.setVisibility(View.VISIBLE);
-            return super.onTap(i);
+            return true;
         }
     }
 }

@@ -11,6 +11,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
+import com.joelapenna.foursquared.test.FoursquaredTest;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
 
@@ -95,6 +96,9 @@ public class SearchVenueActivity extends TabActivity {
         } else {
             if (DEBUG) Log.d(TAG, "Running new intent.");
             onNewIntent(getIntent());
+            // Group fakeResults = FoursquaredTest.createRandomVenueGroups("Root");
+            // setSearchResults(fakeResults);
+            // putGroupsInAdapter(fakeResults);
         }
     }
 
@@ -153,6 +157,8 @@ public class SearchVenueActivity extends TabActivity {
     @Override
     public void onStart() {
         super.onStart();
+        // We should probably dynamically connect to any location provider we can find and not just
+        // the gps/network providers.
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 LocationListener.LOCATION_UPDATE_MIN_TIME,
                 LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
