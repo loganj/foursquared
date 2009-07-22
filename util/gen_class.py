@@ -20,7 +20,7 @@ import android.os.Parcelable;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class %(type_name)s implements FoursquareType, Parcelable {
+public class %(type_name)s implements %(interfaces)s {
 """
 
 
@@ -136,7 +136,9 @@ def AccessorReplacements(attribute_name, attribute_type):
 
 
 def Header(type_name):
-  return HEADER % {'type_name': type_name}
+  interfaces = common.INTERFACES.get(type_name, common.DEFAULT_INTERFACES)
+  return HEADER % {'type_name': type_name,
+                   'interfaces': ', '.join(interfaces)}
 
 
 def Field(attribute_name, attribute_type):

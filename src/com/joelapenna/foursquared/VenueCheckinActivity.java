@@ -6,7 +6,7 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
-import com.joelapenna.foursquare.filters.CheckinGroupFilterByVenue;
+import com.joelapenna.foursquare.filters.VenueFilter;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
@@ -149,7 +149,7 @@ public class VenueCheckinActivity extends ListActivity {
             return;
         }
         if (mVenue != null) {
-            mGroups = CheckinGroupFilterByVenue.filter(groups, mVenue);
+            mGroups = VenueFilter.filter(groups, mVenue);
         } else {
             mGroups = groups;
         }

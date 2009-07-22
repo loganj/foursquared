@@ -6,6 +6,14 @@ BOOLEAN = "boolean"
 STRING = "String"
 
 
+DEFAULT_INTERFACES = ['Parcelable', 'FoursquareType']
+
+INTERFACES = {
+    'Checkin': DEFAULT_INTERFACES + ['VenueFilterable'],
+    'Tip': DEFAULT_INTERFACES + ['VenueFilterable'],
+}
+
+
 def WalkNodesForAttributes(path):
   """Parse the xml file getting all attributes.
   <venue>
