@@ -228,10 +228,18 @@ public class VenueSearchActivity extends ListActivity {
                 Location location = mLocation;
                 Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
                 if (location == null) {
+                    if (DEBUG) Log.d(TAG, "Searching without location.");
                     return foursquare.venues(mQuery, null, null, 10, 1);
                 } else {
+                    if (DEBUG) Log.d(TAG, "Searching with location: " + location);
+                    int radius;
+                    if (location.hasAccuracy()) {
+                        radius = Float.valueOf(location.getAccuracy()).intValue();
+                    } else {
+                        radius = 10;
+                    }
                     return foursquare.venues(mQuery, String.valueOf(location.getLatitude()), String
-                            .valueOf(location.getLongitude()), 10, 1);
+                            .valueOf(location.getLongitude()), radius, 1);
                 }
             } catch (FoursquareError e) {
                 // TODO Auto-generated catch block
