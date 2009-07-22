@@ -304,6 +304,11 @@ public class SearchVenuesActivity extends TabActivity {
 
     private class SearchTask extends AsyncTask<Void, Void, Group> {
 
+        /**
+         *
+         */
+        private static final int METERS_PER_MILE = 1609;
+
         @Override
         public void onPreExecute() {
             if (DEBUG) Log.d(TAG, "SearchTask: onPreExecute()");
@@ -349,9 +354,9 @@ public class SearchVenuesActivity extends TabActivity {
                 if (DEBUG) Log.d(TAG, "Searching with location: " + location);
                 int radius;
                 if (location.hasAccuracy()) {
-                    radius = Float.valueOf(location.getAccuracy()).intValue();
+                    radius = (int)Math.round(location.getAccuracy() / (double)METERS_PER_MILE);
                 } else {
-                    radius = 10;
+                    radius = 1;
                 }
                 Group venues = foursquare.venues(mSearchHolder.query, String.valueOf(location
                         .getLatitude()), String.valueOf(location.getLongitude()), radius, 1);
