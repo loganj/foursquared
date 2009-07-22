@@ -2,15 +2,15 @@
  * Copyright 2009 Joe LaPenna
  */
 
-package com.joelapenna.foursquared.foursquare;
+package com.joelapenna.foursquare;
 
 import com.joelapenna.foursquared.Foursquared;
-import com.joelapenna.foursquared.foursquare.error.FoursquareError;
-import com.joelapenna.foursquared.foursquare.error.FoursquareParseException;
-import com.joelapenna.foursquared.foursquare.types.Auth;
-import com.joelapenna.foursquared.foursquare.types.Group;
-import com.joelapenna.foursquared.foursquare.types.IncomingCheckin;
-import com.joelapenna.foursquared.foursquare.types.Venue;
+import com.joelapenna.foursquare.error.FoursquareError;
+import com.joelapenna.foursquare.error.FoursquareParseException;
+import com.joelapenna.foursquare.types.Auth;
+import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.IncomingCheckin;
+import com.joelapenna.foursquare.types.Venue;
 
 import android.util.Log;
 

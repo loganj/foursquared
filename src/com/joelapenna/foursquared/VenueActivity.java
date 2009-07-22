@@ -4,7 +4,7 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquared.foursquare.types.Venue;
+import com.joelapenna.foursquare.types.Venue;
 
 import android.app.TabActivity;
 import android.content.Intent;

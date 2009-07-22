@@ -2,22 +2,22 @@
  * Copyright 2009 Joe LaPenna
  */
 
-package com.joelapenna.foursquared.foursquare;
+package com.joelapenna.foursquare;
 
-import com.joelapenna.foursquared.foursquare.error.FoursquareError;
-import com.joelapenna.foursquared.foursquare.error.FoursquareParseException;
-import com.joelapenna.foursquared.foursquare.parsers.AuthParser;
-import com.joelapenna.foursquared.foursquare.parsers.CheckinParser;
-import com.joelapenna.foursquared.foursquare.parsers.GroupParser;
-import com.joelapenna.foursquared.foursquare.parsers.IncomingCheckinResponseParser;
-import com.joelapenna.foursquared.foursquare.parsers.Parser;
-import com.joelapenna.foursquared.foursquare.parsers.TipParser;
-import com.joelapenna.foursquared.foursquare.parsers.VenueParser;
-import com.joelapenna.foursquared.foursquare.types.Auth;
-import com.joelapenna.foursquared.foursquare.types.FoursquareType;
-import com.joelapenna.foursquared.foursquare.types.Group;
-import com.joelapenna.foursquared.foursquare.types.IncomingCheckin;
-import com.joelapenna.foursquared.foursquare.types.Venue;
+import com.joelapenna.foursquare.error.FoursquareError;
+import com.joelapenna.foursquare.error.FoursquareParseException;
+import com.joelapenna.foursquare.parsers.AuthParser;
+import com.joelapenna.foursquare.parsers.CheckinParser;
+import com.joelapenna.foursquare.parsers.GroupParser;
+import com.joelapenna.foursquare.parsers.IncomingCheckinResponseParser;
+import com.joelapenna.foursquare.parsers.Parser;
+import com.joelapenna.foursquare.parsers.TipParser;
+import com.joelapenna.foursquare.parsers.VenueParser;
+import com.joelapenna.foursquare.types.Auth;
+import com.joelapenna.foursquare.types.FoursquareType;
+import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.IncomingCheckin;
+import com.joelapenna.foursquare.types.Venue;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;

@@ -2,16 +2,15 @@
  * Copyright 2009 Joe LaPenna
  */
 
-package com.joelapenna.foursquared.foursquare.error;
+package com.joelapenna.foursquare.error;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-class FoursquareException extends Exception {
+public class FoursquareParseException extends FoursquareException {
     private static final long serialVersionUID = 1L;
 
-    public FoursquareException(String message) {
+    public FoursquareParseException(String message) {
         super(message);
     }
-
 }

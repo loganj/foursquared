@@ -2,7 +2,7 @@
  * Copyright 2009 Joe LaPenna
  */
 
-package com.joelapenna.foursquared.foursquare.error;
+package com.joelapenna.foursquare.error;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)

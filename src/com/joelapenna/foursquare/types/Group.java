@@ -1,7 +1,7 @@
 /**
  * Copyright 2009 Joe LaPenna
  */
-package com.joelapenna.foursquared.foursquare.types;
+package com.joelapenna.foursquare.types;
 
 import java.util.ArrayList;
 

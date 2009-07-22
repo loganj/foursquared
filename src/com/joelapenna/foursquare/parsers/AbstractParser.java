@@ -2,12 +2,12 @@
  * Copyright 2009 Joe LaPenna
  */
 
-package com.joelapenna.foursquared.foursquare.parsers;
+package com.joelapenna.foursquare.parsers;
 
-import com.joelapenna.foursquared.foursquare.Foursquare;
-import com.joelapenna.foursquared.foursquare.error.FoursquareError;
-import com.joelapenna.foursquared.foursquare.error.FoursquareParseException;
-import com.joelapenna.foursquared.foursquare.types.FoursquareType;
+import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.error.FoursquareError;
+import com.joelapenna.foursquare.error.FoursquareParseException;
+import com.joelapenna.foursquare.types.FoursquareType;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -32,7 +32,7 @@ public abstract class AbstractParser<T extends FoursquareType> implements Parser
 
     /*
      * (non-Javadoc)
-     * @see com.joelapenna.foursquared.foursquare.parsers.Parser#parse(java.io.InputStream)
+     * @see com.joelapenna.foursquare.parsers.Parser#parse(java.io.InputStream)
      */
     final public T parse(XmlPullParser parser) throws FoursquareError, FoursquareParseException {
         try {

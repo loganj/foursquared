@@ -4,14 +4,14 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquared.foursquare.Foursquare;
-import com.joelapenna.foursquared.foursquare.error.FoursquareError;
-import com.joelapenna.foursquared.foursquare.error.FoursquareParseException;
-import com.joelapenna.foursquared.foursquare.types.Checkin;
-import com.joelapenna.foursquared.foursquare.types.Group;
-import com.joelapenna.foursquared.foursquare.types.IncomingCheckin;
-import com.joelapenna.foursquared.foursquare.types.Tip;
-import com.joelapenna.foursquared.foursquare.types.Venue;
+import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.error.FoursquareError;
+import com.joelapenna.foursquare.error.FoursquareParseException;
+import com.joelapenna.foursquare.types.Checkin;
+import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.IncomingCheckin;
+import com.joelapenna.foursquare.types.Tip;
+import com.joelapenna.foursquare.types.Venue;
 
 import android.app.Activity;
 import android.os.Bundle;
