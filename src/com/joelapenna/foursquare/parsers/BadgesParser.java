@@ -7,7 +7,6 @@ package com.joelapenna.foursquare.parsers;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
-import com.joelapenna.foursquare.types.Badge;
 import com.joelapenna.foursquare.types.FoursquareType;
 import com.joelapenna.foursquare.types.Group;
 
