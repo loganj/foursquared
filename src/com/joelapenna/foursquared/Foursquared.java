@@ -27,7 +27,7 @@ import java.util.Date;
  */
 public class Foursquared extends Application {
     public static final String TAG = "Foursquared";
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final boolean API_DEBUG = false;
 
     public static final int LAST_LOCATION_UPDATE_THRESHOLD = 1000 * 60 * 60;

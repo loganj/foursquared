@@ -83,7 +83,9 @@ public class VenueSearchMapActivity extends MapActivity {
         mMapView.getOverlays().add(mMyLocationOverlay);
         mMyLocationOverlay.runOnFirstFix(new Runnable() {
             public void run() {
+                if (DEBUG) Log.d(TAG, "runOnFirstFix()");
                 mMapView.getController().animateTo(mMyLocationOverlay.getMyLocation());
+                mMapView.getController().setZoom(16);
             }
         });
     }
@@ -131,12 +133,16 @@ public class VenueSearchMapActivity extends MapActivity {
 
     private void updateMap() {
         GeoPoint center = mMyLocationOverlay.getMyLocation();
-        if (center == null && mVenuesOverlay.size() > 0) {
-            center = mVenuesOverlay.getCenter();
-        }
         if (center != null) {
-            mMapController.setZoom(12);
             mMapController.animateTo(center);
+            mMapController.setZoom(16);
+            return;
+        }
+        if (mVenuesOverlay.size() > 0) {
+            center = mVenuesOverlay.getCenter();
+            mMapController.animateTo(center);
+            mMapController.setZoom(12);
+            return;
         }
     }
 
