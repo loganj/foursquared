@@ -11,20 +11,6 @@
     android:apiKey="@string/google_maps_api_key"
     android:clickable="true" />
 
-  <LinearLayout
-    android:id="@+id/zoomView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignBottom="@id/mapView"
-    android:layout_centerHorizontal="true" />
-
-  <!--
-    <TableLayout android:id="@+id/buttonBar" android:layout_height="wrap_content"
-    android:layout_width="fill_parent" android:layout_alignParentTop="true"
-    android:layout_above="@id/mapView" android:background="#AA000000"> <TableRow> <Button
-    android:id="@+id/yelpButton" android:layout_height="wrap_content" android:layout_width="0dip"
-    android:layout_weight="1" android:text="Yelp!" /> </TableRow> </TableLayout>
-  -->
   <Button
   android:id="@+id/yelpButton"
     android:layout_width="wrap_content"

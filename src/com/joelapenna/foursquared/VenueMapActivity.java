@@ -114,9 +114,7 @@ public class VenueMapActivity extends MapActivity {
 
         mOverlay = new SimpleItemizedOverlay(this.getResources().getDrawable(R.drawable.reddot));
         mMapView.getOverlays().add(mOverlay);
-
-        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.zoomView);
-        linearLayout.addView(mMapView.getZoomControls());
+        mMapView.setBuiltInZoomControls(true);
     }
 
     @Override
