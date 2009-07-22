@@ -8,6 +8,7 @@ import com.joelapenna.foursquared.foursquare.Foursquare;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 
 public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";
@@ -20,7 +21,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        mFoursquare = new Foursquare("testuser@joelapenna.com", "ci9ahXa9");
-        mFoursquare.login();
+        mFoursquare = new Foursquare("4158303607", "ci9ahXa9");
+        Log.d(TAG, String.valueOf(mFoursquare.login()));
     }
 }

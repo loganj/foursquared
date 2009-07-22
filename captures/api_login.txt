@@ -1,0 +1,28 @@
+GET /api/login?phone=4158303607&pass=ci9ahXa9 HTTP/1.1
+Host: playfoursquare.com
+User-Agent: foursquare1.0 CFNetwork/441.0.2 Darwin/10.0.0d3
+X_foursquare_client_version: iPhone 20090301
+Accept: */*
+Accept-Language: en-us
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+
+HTTP/1.1 200 OK
+Date: Tue, 07 Apr 2009 06:47:17 GMT
+Server: Apache
+Content-Length: 347
+Keep-Alive: timeout=15, max=100
+Connection: Keep-Alive
+Content-Type: application/xml; charset=utf-8
+
+<?xml version="1.0" encoding="UTF-8"?><data>.<auth>
+..<status>1</status>
+..<message>logged in as testuser</message>
+..<id>9711</id>
+..<firstname>Testuser</firstname>
+..<lastname>Lapenna</lastname>
+..<email>testuser@joelapenna.com</email>
+..<phone>4158303607</phone>
+..<photo>http://www.playfoursquare.com/userpix/blank.jpg</photo>
+.</auth>
+</data>

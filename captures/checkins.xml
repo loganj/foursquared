@@ -1,0 +1,56 @@
+<user><id>9711</id><firstname>Testuser</firstname><lastname>Lapenna</lastname><cityshortname>SF</cityshortname><cityid>23</cityid><gender>male</gender><sendtwitter>false</sendtwitter><checkin><checkinid>67781</checkinid><venueid></venueid><aliasid>142755</aliasid><venuename>Bobby&apos;s place2</venuename><address></address><crossstreet></crossstreet><shout></shout><geolat></geolat><geolong></geolong><xdatetime>2009-04-06 21:11:30</xdatetime><relative_time>10 mins ago</relative_time></checkin><badges><badge><name>Newbie</name><icon>newbie_on.png</icon><description>Congrats on your first check-in!</description></badge><badge><name>Adventurer</name><icon>default_off.png</icon><description></description></badge><badge><name>Explorer</name><icon>default_off.png</icon><description></description></badge><badge><name>Superstar</name><icon>default_off.png</icon><description></description></badge><badge><name>Bender</name><icon>default_off.png</icon><description></description></badge><badge><name>Crunked</name><icon>default_off.png</icon><description></description></badge><badge><name>Local</name><icon>default_off.png</icon><description></description></badge><badge><name>Super User</name><icon>default_off.png</icon><description></description></badge><badge><name>Player Please!</name><icon>default_off.png</icon><description></description></badge><badge><name>School Night</name><icon>default_off.png</icon><description></description></badge><badge><name>Photogenic</name><icon>default_off.png</icon><description></description></badge><badge><name>Socialite</name><icon>default_off.png</icon><description></description></badge></badges></user><checkins><group type="Me">
+<checkin>
+<userid>142755</userid>
+<firstname>testuser</firstname>
+<lastname>lapenna</lastname>
+<cityid>23</cityid>
+<city_name>SF</city_name>
+<email>testuser@joelapenna.com</email>
+<phone>4158303607</phone>
+<photo>http://playfoursquare.com/userpix/blank_boy.png</photo>
+<gender>male</gender>
+<show_twitter>1</show_twitter>
+<twitter_default>0</twitter_default>
+<show_dball>0</show_dball>
+<dball_default>0</dball_default>
+<checkinid>67781</checkinid>
+<venueid></venueid>
+<aliasid>142755</aliasid>
+<venuename>Bobby&apos;s place2</venuename>
+<address></address>
+<crossstreet></crossstreet>
+<shout></shout>
+<geolat></geolat>
+<geolong></geolong>
+<xdatetime>2009-04-06 21:11:30</xdatetime>
+<relative_time>10 mins ago</relative_time>
+		<stats>
+		</stats>
+<alert>
+</alert>
+</checkin>
+</group>
+<group type="Last 3 Hours">
+<checkin>
+<checkinid>67781</checkinid>
+<userid>9711</userid>
+<firstname>testuser</firstname>
+<lastname>lapenna</lastname>
+<email>testuser@joelapenna.com</email>
+<phone>4158303607</phone>
+<photo>http://playfoursquare.com/userpix/blank_boy.png</photo>
+<gender>male</gender>
+<venueid></venueid>
+<aliasid>142755</aliasid>
+<display>testuser l. @ Bobby&apos;s place2</display>
+<venuename>Bobby&apos;s place2</venuename>
+<address></address>
+<crossstreet></crossstreet>
+<shout></shout>
+<geolat></geolat>
+<geolong></geolong>
+<xdatetime>2009-04-06 21:11:30</xdatetime>
+<relative_time>10 mins ago</relative_time>
+</checkin>
+	</group>
+</checkins>

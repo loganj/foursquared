@@ -1,0 +1,76 @@
+/**
+ * Copyright 2009 Joe LaPenna
+ */
+
+package com.joelapenna.foursquared.foursquare.parsers;
+
+import com.joelapenna.foursquared.foursquare.Foursquare;
+import com.joelapenna.foursquared.foursquare.error.FoursquareException;
+import com.joelapenna.foursquared.foursquare.types.Auth;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import android.util.Log;
+
+import java.io.IOException;
+
+/**
+ * @author Joe LaPenna (joe@joelapenna.com)
+ * @param <T>
+ */
+public class AuthParser extends Parser<Auth> {
+    private static final String TAG = "AuthParser";
+    private static final boolean DEBUG = Foursquare.DEBUG;
+
+    @Override
+    public Auth parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
+            FoursquareException {
+        Auth auth = new Auth();
+        int eventType = parser.nextToken();
+        while (eventType != XmlPullParser.END_DOCUMENT) {
+            switch (eventType) {
+                case XmlPullParser.START_TAG:
+                    if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
+                    String name = parser.getName();
+
+                    if ("error".equals(name)) {
+                        throw new FoursquareException(parser.getText());
+                    } else if ("auth".equals(name)) {
+                        parseAuthTag(parser, auth);
+                    }
+
+                default:
+                    if (DEBUG) Log.d(TAG, "Unhandled Event");
+            }
+            eventType = parser.nextToken();
+        }
+        return auth;
+    }
+
+    public void parseAuthTag(XmlPullParser parser, Auth auth) throws XmlPullParserException,
+            IOException {
+        assert parser.getName() == "auth";
+        if (DEBUG) Log.d(TAG, "parsing auth stanza");
+        while (parser.nextTag() != XmlPullParser.END_TAG) {
+            String name = parser.getName();
+            if ("status".equals(name)) {
+                auth.setSuccessful(parser.nextText().equals("1") ? true : false);
+            } else if ("message".equals(name)) {
+                auth.setMessage(parser.nextText());
+            } else if ("id".equals(name)) {
+                auth.setId(parser.nextText());
+            } else if ("firstname".equals(name)) {
+                auth.setFirstname(parser.nextText());
+            } else if ("lastname".equals(name)) {
+                auth.setLastname(parser.nextText());
+            } else if ("email".equals(name)) {
+                auth.setEmail(parser.nextText());
+            } else if ("phone".equals(name)) {
+                auth.setPhone(parser.nextText());
+            } else if ("photo".equals(name)) {
+                auth.setPhoto(parser.nextText());
+            }
+        }
+    }
+}
