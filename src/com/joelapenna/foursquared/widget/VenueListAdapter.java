@@ -67,9 +67,9 @@ public class VenueListAdapter extends BaseVenueAdapter {
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.name = (TextView)convertView.findViewById(R.id.name);
-            holder.locationLine1 = (TextView)convertView.findViewById(R.id.locationLine1);
-            holder.locationLine2 = (TextView)convertView.findViewById(R.id.locationLine2);
+            holder.venueName = (TextView)convertView.findViewById(R.id.venueName);
+            holder.locationLine1 = (TextView)convertView.findViewById(R.id.venueLocationLine1);
+            holder.locationLine2 = (TextView)convertView.findViewById(R.id.venueLocationLine2);
 
             convertView.setTag(holder);
         } else {
@@ -80,7 +80,7 @@ public class VenueListAdapter extends BaseVenueAdapter {
 
         Venue venue = (Venue)getItem(position);
         if (DEBUG) Log.d(TAG, "getView() is: " + venue);
-        holder.name.setText(venue.getName());
+        holder.venueName.setText(venue.getName());
         holder.locationLine1.setText(venue.getAddress());
         String line2 = StringFormatters.getVenueLocationCrossStreetOrCity(venue);
         if (line2 == null) {
@@ -105,10 +105,14 @@ public class VenueListAdapter extends BaseVenueAdapter {
     }
 
     private static class ViewHolder {
+<<<<<<< HEAD:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
 =======
     private class ViewHolder {
 >>>>>>> d021be6... Extract out a base adapter for venues and checkins:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
         TextView name;
+=======
+        TextView venueName;
+>>>>>>> 5adad04... Unifify venue item display.:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
         TextView locationLine1;
         TextView locationLine2;
     }

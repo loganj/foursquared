@@ -19,31 +19,13 @@
         android:id="@android:id/tabs"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
-      <TextView
-        android:id="@+id/venueName"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:textAppearance="@android:style/TextAppearance.Large" />
-      <TextView
-        android:id="@+id/venueLocationLine1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/venueName"
-        android:textAppearance="@android:style/TextAppearance.Small" />
-      <TextView
-        android:id="@+id/venueLocationLine2"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/venueLocationLine1"
-        android:textAppearance="@android:style/TextAppearance.Small" />
+      <include
+        layout="@layout/venue_list_item" />
       <FrameLayout
         android:id="@android:id/tabcontent"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:layout_marginTop="3dip">
       </FrameLayout>
     </LinearLayout>
   </TabHost>

@@ -299,10 +299,10 @@ public class UserActivity extends Activity {
             Checkin checkin = user.getCheckin();
             if (checkin != null && checkin.getVenue() != null) {
                 final Venue venue = user.getCheckin().getVenue();
-                ((TextView)mVenueLayout.findViewById(R.id.name)).setText(venue.getName());
-                ((TextView)mVenueLayout.findViewById(R.id.locationLine1)).setText(venue
+                ((TextView)mVenueLayout.findViewById(R.id.venueName)).setText(venue.getName());
+                ((TextView)mVenueLayout.findViewById(R.id.venueLocationLine1)).setText(venue
                         .getAddress());
-                ((TextView)mVenueLayout.findViewById(R.id.locationLine2)).setText(StringFormatters
+                ((TextView)mVenueLayout.findViewById(R.id.venueLocationLine2)).setText(StringFormatters
                         .getVenueLocationCrossStreetOrCity(venue));
                 ((TextView)findViewById(R.id.venueHeader)).setVisibility(TextView.VISIBLE);
 
