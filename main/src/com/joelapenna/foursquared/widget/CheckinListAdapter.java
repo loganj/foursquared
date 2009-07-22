@@ -12,7 +12,6 @@ import com.joelapenna.foursquared.R;
 import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.content.Context;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,9 +66,8 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
 
         if (checkin.getShout() != null) {
             holder.shoutTextView.setText(checkin.getShout());
-            holder.shoutTextView.setVisibility(TextView.VISIBLE);
         } else {
-            holder.shoutTextView.setVisibility(TextView.GONE);
+            holder.shoutTextView.setText("");
         }
 
         return convertView;

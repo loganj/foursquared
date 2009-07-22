@@ -60,6 +60,6 @@
 
     android:maxLines="1"
     android:scrollHorizontally="true"
-    android:ellipsize="marquee" />
+    android:ellipsize="end" />
 
 </RelativeLayout>
