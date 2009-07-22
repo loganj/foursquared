@@ -5,30 +5,13 @@
 package com.joelapenna.foursquare;
 
 import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.http.HttpApi;
-import com.joelapenna.foursquare.parsers.GroupParser;
-import com.joelapenna.foursquare.parsers.TipParser;
 import com.joelapenna.foursquare.types.Auth;
-import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-
-import oauth.signpost.OAuthConsumer;
-import oauth.signpost.exception.OAuthMessageSignerException;
-import oauth.signpost.impl.DefaultOAuthConsumer;
-import oauth.signpost.signature.SignatureMethod;
-
 import android.test.suitebuilder.annotation.LargeTest;
 import android.test.suitebuilder.annotation.SmallTest;
-import android.util.Log;
 
 import java.io.IOException;
 

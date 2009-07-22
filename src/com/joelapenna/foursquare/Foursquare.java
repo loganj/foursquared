@@ -67,6 +67,7 @@ public class Foursquare {
         return hasCredentials() && ((v1) ? mFoursquareV1.hasCredentials() : true);
     }
 
+    @V1
     public Credentials authExchange() throws FoursquareException, FoursquareError,
             FoursquareCredentialsError, IOException {
         if (mFoursquareV1 == null) {
@@ -76,6 +77,7 @@ public class Foursquare {
         return mFoursquareV1.authExchange(mPhone, mPassword);
     }
 
+    @Classic
     public Auth login() throws FoursquareException, FoursquareError, FoursquareCredentialsError,
             IOException {
         if (DEBUG) Log.d(TAG, "login()");
@@ -83,52 +85,76 @@ public class Foursquare {
 
     }
 
+    @Classic
     public Data addTip(String text, String vid, String lat, String lng, String cityId)
             throws FoursquareException, FoursquareError, IOException {
         return mFoursquare.add("top", text, vid, lat, lng, cityId);
     }
 
+    @Classic
     public Data addTodo(String text, String vid, String lat, String lng, String cityId)
             throws FoursquareException, FoursquareError, IOException {
         return mFoursquare.add("todo", text, vid, lat, lng, cityId);
     }
 
+    @Classic
     public Checkin checkin(String venue, boolean silent, boolean twitter, String lat, String lng)
             throws FoursquareException, FoursquareError, IOException {
         return mFoursquare.checkin(mPhone, venue, silent, twitter, lat, lng, null);
     }
 
+    @Classic
     public Group checkins(String cityId, String lat, String lng) throws FoursquareException,
             FoursquareError, IOException {
         return mFoursquare.checkins(cityId, lat, lng);
     }
 
     @Deprecated
+    @Classic
     public Group todos(String cityId, String lat, String lng) throws FoursquareException,
             FoursquareError, IOException {
         return mFoursquare.todos(cityId, lat, lng);
     }
 
+    @V1
     public Group tips(String geolat, String geolong, int limit) throws FoursquareException,
             FoursquareError, IOException {
         return mFoursquareV1.tips(geolat, geolong, limit);
     }
 
+    @Classic
     public Data update(String status, String tipid) throws FoursquareException, FoursquareError,
             IOException {
         return mFoursquare.update(status, tipid);
     }
 
+    @Classic
     public User user() throws FoursquareException, FoursquareError, IOException {
         return mFoursquare.user();
     }
 
+    @Classic
     public Venue venue(String id) throws FoursquareException, FoursquareError, IOException {
         return mFoursquare.venue(id);
     }
 
+    @Classic
     public Group venues(String query, String lat, String lng, int radius, int length)
             throws FoursquareException, FoursquareError, IOException {
         return mFoursquare.venues(query, lat, lng, radius, length);
     }
+
+    /**
+     * This api is supported in the V1 !PI documented at:
+     * http://groups.google.com/group/foursquare-api/web/api-documentation
+     */
+    @interface V1 {
+    }
+
+    /**
+     * This api was reverse engineered from the iPhone app.
+     */
+    @interface Classic {
+    }
+
 }
