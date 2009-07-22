@@ -1,6 +1,10 @@
-bin/
-gen/
-R.java
-.project
-res/values/credentials.xml
-tests/com/joelapenna/foursquare/TestCredentials.java
+main/bin/
+tests/bin/
+main/gen/
+tests/gen/
+main/R.java
+tests/R.java
+main/.project
+tests/.project
+main/res/values/credentials.xml
+tests/src/com/joelapenna/foursquare/TestCredentials.java
