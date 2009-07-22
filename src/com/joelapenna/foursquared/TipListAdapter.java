@@ -89,8 +89,8 @@ class TipListAdapter extends BaseAdapter {
         Tip tip = (Tip)getItem(position);
         // Popping from string->html fixes things like "&amp;" converting it back to a string
         // prevents a stack overflow in cupcake.
-        holder.firstLine.setText(Html.fromHtml(tip.getStatusText()).toString());
-        holder.secondLine.setText(Html.fromHtml(tip.getText()).toString());
+        holder.firstLine.setText(Html.fromHtml(tip.getText()).toString());
+        holder.secondLine.setText(Html.fromHtml(tip.getStatusText()).toString());
         holder.checkbox.setChecked(tip.getUserStatus().equals("done") ? true : false);
 
         return convertView;

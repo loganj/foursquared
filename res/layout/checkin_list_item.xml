@@ -4,8 +4,7 @@
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
-  android:layout_height="?android:attr/listPreferredItemHeight"
-  android:padding="6dip">
+  android:layout_height="?android:attr/listPreferredItemHeight">
 
   <TextView
     android:id="@+id/firstLine"
@@ -33,7 +32,9 @@
     android:layout_alignParentRight="true"
     android:layout_below="@id/firstLine"
 
+    android:gravity="right"
     android:textAppearance="@android:style/TextAppearance.Small"
+    android:textStyle="italic"
 
     android:singleLine="true"
     android:ellipsize="marquee" />

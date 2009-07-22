@@ -4,8 +4,7 @@
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
-  android:layout_height="?android:attr/listPreferredItemHeight"
-  android:padding="6dip">
+  android:layout_height="wrap_content">
 
   <CheckBox
     android:id="@+id/checkbox"
@@ -30,8 +29,9 @@
     android:layout_alignParentTop="true"
     android:layout_alignWithParentIfMissing="true"
 
-    android:textAppearance="@android:style/TextAppearance.Large"
+    android:textSize="16sp"
 
+    android:maxLines="3"
     android:gravity="center_vertical" />
 
   <TextView
@@ -43,12 +43,14 @@
     android:layout_toRightOf="@id/checkbox"
     android:layout_alignParentBottom="true"
     android:layout_alignParentRight="true"
+    android:layout_alignWithParentIfMissing="true"
     android:layout_below="@id/firstLine"
 
+    android:gravity="right"
     android:textAppearance="@android:style/TextAppearance.Small"
+    android:textStyle="italic"
 
-    android:maxLines="3"
+    android:singleLine="true"
     android:ellipsize="marquee" />
-
 
 </RelativeLayout>
