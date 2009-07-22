@@ -28,6 +28,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.IOException;
 import java.util.Date;
@@ -109,16 +110,19 @@ public class VenueCheckinActivity extends ListActivity {
             try {
                 final Venue venue = params[0];
                 if (DEBUG) Log.d(TAG, "Checking in to: " + venue.getVenuename());
+
+                boolean silent = ((ToggleButton)findViewById(R.id.silentToggle)).isChecked();
+                boolean twitter = ((ToggleButton)findViewById(R.id.twitterToggle)).isChecked();
                 Location location = ((Foursquared)getApplication()).getLocation();
                 if (location == null) {
                     return ((Foursquared)getApplication()).getFoursquare().checkin(
-                            venue.getVenuename(), false, false, null, null);
+                            venue.getVenuename(), silent, twitter, null, null);
                 } else {
                     // I wonder if this could result in the backend logic to mis-calculate which
                     // venue you're at because the phone gave too coarse or inaccurate location
                     // information.
                     return ((Foursquared)getApplication()).getFoursquare().checkin(
-                            venue.getVenuename(), false, false,
+                            venue.getVenuename(), silent, twitter,
                             String.valueOf(location.getLatitude()),
                             String.valueOf(location.getLongitude()));
                 }
