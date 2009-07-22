@@ -13,7 +13,7 @@ import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.CheckinItemizedOverlay;
-import com.joelapenna.foursquared.util.InfiniteIterator;
+import com.joelapenna.foursquared.maps.IconsIterator;
 import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.content.Intent;
@@ -35,10 +35,7 @@ public class CheckinsMapActivity extends MapActivity {
     public static final String TAG = "CheckinsMapActivity";
     public static final boolean DEBUG = Foursquared.DEBUG;
 
-    private static final int[] MAP_NEW_ICONS = {
-            R.drawable.reddot, R.drawable.bluedot, R.drawable.greendot,
-    };
-    private static final InfiniteIterator MAP_ICONS_ITERATOR = new InfiniteIterator(MAP_NEW_ICONS);
+    private final IconsIterator mIconIterator = new IconsIterator();
 
     private Venue mTappedVenue;
 
@@ -124,7 +121,7 @@ public class CheckinsMapActivity extends MapActivity {
         }
         if (DEBUG) Log.d(TAG, "Loading search results");
 
-        MAP_ICONS_ITERATOR.reset();
+        mIconIterator.allIcons.reset();
 
         // One CheckinItemizedOverlay per group!
         CheckinItemizedOverlay mappableCheckinsOverlay = createMappableCheckinsOverlay(checkins);
@@ -169,7 +166,8 @@ public class CheckinsMapActivity extends MapActivity {
         if (mappableCheckins.size() > 0) {
             CheckinItemizedOverlay mappableCheckinsOverlay = new CheckinItemizedOverlayWithButton( //
                     this.getResources()
-                            .getDrawable(((Integer)MAP_ICONS_ITERATOR.next()).intValue()));
+                            .getDrawable(
+                            ((Integer)mIconIterator.allIcons.next()).intValue()));
             mappableCheckinsOverlay.setGroup(mappableCheckins);
             return mappableCheckinsOverlay;
         } else {

@@ -6,13 +6,13 @@ package com.joelapenna.foursquared.util;
 import java.util.Iterator;
 
 @SuppressWarnings("unchecked")
-public class InfiniteIterator implements Iterator {
+public class InfiniteIterator<T> implements Iterator {
 
-    private int[] mArray;
+    private T[] mArray;
     private int mLength;
     private int mCount;
 
-    public InfiniteIterator(int[] array) {
+    public InfiniteIterator(T[] array) {
         mArray = array;
         mLength = array.length;
         mCount = 0;
@@ -24,8 +24,8 @@ public class InfiniteIterator implements Iterator {
     }
 
     @Override
-    public Object next() {
-        int toReturn = mArray[mCount];
+    public T next() {
+        T toReturn = mArray[mCount];
         mCount++;
         if (mCount == mLength) {
             mCount = 0;

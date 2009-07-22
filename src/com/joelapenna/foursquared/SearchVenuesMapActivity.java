@@ -12,8 +12,8 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.maps.IconsIterator;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
-import com.joelapenna.foursquared.util.InfiniteIterator;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -33,18 +33,9 @@ import java.util.Observer;
 public class SearchVenuesMapActivity extends MapActivity {
     public static final String TAG = "SearchVenuesMapActivity";
     public static final boolean DEBUG = Foursquared.DEBUG;
-
-    private static final int[] MAP_NEW_ICONS = {
-            R.drawable.reddot, R.drawable.bluedot, R.drawable.greendot,
-    };
-    private static final InfiniteIterator MAP_NEW_ICONS_ITERATOR = new InfiniteIterator(
-            MAP_NEW_ICONS);
-
-    private static final int[] MAP_BEEN_THERE_ICONS = {
-            R.drawable.pinkdot, R.drawable.ltbluedot, R.drawable.yellowdot,
-    };
-    private static final InfiniteIterator MAP_BEEN_THERE_ICONS_ITERATOR = new InfiniteIterator(
-            MAP_BEEN_THERE_ICONS);
+    
+    private final IconsIterator mIconsIterator = new IconsIterator();
+    
     private Venue mTappedVenue;
 
     private Observer mSearchResultsObserver;
@@ -136,8 +127,8 @@ public class SearchVenuesMapActivity extends MapActivity {
         }
         if (DEBUG) Log.d(TAG, "Loading search results");
 
-        MAP_NEW_ICONS_ITERATOR.reset();
-        MAP_BEEN_THERE_ICONS_ITERATOR.reset();
+        mIconsIterator.icons.reset();
+        mIconsIterator.beenthereIcons.reset();
 
         final int groupCount = searchResults.size();
         for (int groupIndex = 0; groupIndex < groupCount; groupIndex++) {
@@ -187,9 +178,9 @@ public class SearchVenuesMapActivity extends MapActivity {
         if (mappableVenues.size() > 0) {
             VenueItemizedOverlay mappableVenuesOverlay = new VenueItemizedOverlayWithButton( //
                     this.getResources().getDrawable(
-                            ((Integer)MAP_NEW_ICONS_ITERATOR.next()).intValue()), //
+                            ((Integer)mIconsIterator.icons.next()).intValue()), //
                     this.getResources().getDrawable(
-                            ((Integer)MAP_BEEN_THERE_ICONS_ITERATOR.next()).intValue()));
+                            ((Integer)mIconsIterator.beenthereIcons.next()).intValue()));
             mappableVenuesOverlay.setGroup(mappableVenues);
             return mappableVenuesOverlay;
         } else {
