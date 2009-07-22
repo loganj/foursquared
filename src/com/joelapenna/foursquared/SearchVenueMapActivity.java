@@ -196,17 +196,7 @@ public class SearchVenueMapActivity extends MapActivity {
 
     private void recenterMap() {
         GeoPoint center = mMyLocationOverlay.getMyLocation();
-        if (center != null) {
-            if (DEBUG) Log.d(TAG, "recenterMap via MyLocation overlay");
-            mMapController.animateTo(center);
-            mMapController.setZoom(16);
-            return;
-        } else if (true) { // This is because the real else isn't working at the moment.
-            if (DEBUG) Log.d(TAG, "recenterMap via venues overlay center.");
-            VenueItemizedOverlay newestOverlay = mVenuesGroupOverlays.get(0);
-            mMapController.animateTo(newestOverlay.getCenter());
-            mMapController.setZoom(10);
-        } else if (mVenuesGroupOverlays.size() > 0) {
+        if (mVenuesGroupOverlays.size() > 0) {
             if (DEBUG) Log.d(TAG, "recenterMap via venues overlay span.");
             VenueItemizedOverlay newestOverlay = mVenuesGroupOverlays.get(0);
             if (DEBUG) {
@@ -215,6 +205,12 @@ public class SearchVenueMapActivity extends MapActivity {
             }
             // For some reason, this is zooming us to some weird spot!.
             mMapController.zoomToSpan(newestOverlay.getLatSpanE6(), newestOverlay.getLonSpanE6());
+            mMapController.animateTo(newestOverlay.getCenter());
+        } else if (center != null) {
+            if (DEBUG) Log.d(TAG, "recenterMap via MyLocation overlay");
+            mMapController.animateTo(center);
+            mMapController.setZoom(16);
+            return;
         }
         if (DEBUG) Log.d(TAG, "Could not re-center; No known user location.");
     }

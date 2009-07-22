@@ -86,12 +86,12 @@ public class SearchVenueActivity extends TabActivity {
         if (getLastNonConfigurationInstance() != null) {
             if (DEBUG) Log.d(TAG, "Restoring state.");
             StateHolder holder = (StateHolder)getLastNonConfigurationInstance();
-            if (holder.results == null) {
+            if (holder.searchResults == null) {
                 executeSearchTask(holder.query);
             } else {
                 mQuery = holder.query;
-                setSearchResults(holder.results);
-                putGroupsInAdapter(holder.results);
+                setSearchResults(holder.searchResults);
+                putGroupsInAdapter(holder.searchResults);
             }
         } else {
             if (DEBUG) Log.d(TAG, "Running new intent.");
@@ -150,7 +150,7 @@ public class SearchVenueActivity extends TabActivity {
     public Object onRetainNonConfigurationInstance() {
         StateHolder holder = new StateHolder();
         holder.query = mQuery;
-        holder.results = mSearchResults;
+        holder.searchResults = mSearchResults;
         return holder;
     }
 
@@ -226,7 +226,7 @@ public class SearchVenueActivity extends TabActivity {
         if (DEBUG) Log.d(TAG, "firing venue activity for venue");
         Intent intent = new Intent(SearchVenueActivity.this, VenueActivity.class);
         intent.setAction(Intent.ACTION_VIEW);
-        intent.putExtra("venue", venue);
+        intent.putExtra(VenueActivity.EXTRA_VENUE, venue);
         startActivity(intent);
     }
 
@@ -359,7 +359,7 @@ public class SearchVenueActivity extends TabActivity {
     }
 
     private static class StateHolder {
-        Group results;
+        Group searchResults;
         String query;
     }
 
