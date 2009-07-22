@@ -18,6 +18,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,6 +29,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -293,13 +295,23 @@ public class UserActivity extends Activity {
         private void displayCheckin(User user) {
             Checkin checkin = user.getCheckin();
             if (checkin != null && checkin.getVenue() != null) {
-                Venue venue = user.getCheckin().getVenue();
+                final Venue venue = user.getCheckin().getVenue();
                 ((TextView)mVenueLayout.findViewById(R.id.name)).setText(venue.getName());
                 ((TextView)mVenueLayout.findViewById(R.id.locationLine1)).setText(venue
                         .getAddress());
                 ((TextView)mVenueLayout.findViewById(R.id.locationLine2)).setText(StringFormatters
                         .getVenueLocationCrossStreetOrCity(venue));
                 ((TextView)findViewById(R.id.venueHeader)).setVisibility(TextView.VISIBLE);
+
+                // Hell, I'm not even sure if this is the right place to put this... Whatever.
+                mVenueLayout.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(UserActivity.this, VenueActivity.class);
+                        intent.putExtra(VenueActivity.EXTRA_VENUE, venue.getId());
+                        startActivity(intent);
+                    }
+                });
             } else {
                 // If we don't have a checkin location, clear it from the UI so it doesn't take up
                 // space.

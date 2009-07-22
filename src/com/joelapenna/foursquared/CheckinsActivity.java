@@ -6,9 +6,9 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Checkin;
-import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
@@ -191,14 +191,6 @@ public class CheckinsActivity extends TabActivity {
         mSearchTask = (SearchTask)new SearchTask().execute();
     }
 
-    void startItemActivity(Venue venue) {
-        if (DEBUG) Log.d(TAG, "firing venue activity for venue");
-        Intent intent = new Intent(CheckinsActivity.this, VenueActivity.class);
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.putExtra(VenueActivity.EXTRA_VENUE, venue.getId());
-        startActivity(intent);
-    }
-
     private void ensureSearchResults() {
         if (mListAdapter.getCount() > 0) {
             mEmpty.setVisibility(View.GONE);
@@ -222,8 +214,11 @@ public class CheckinsActivity extends TabActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Checkin checkin = (Checkin)parent.getAdapter().getItem(position);
-                if (checkin.getVenue() != null) {
-                    startItemActivity(checkin.getVenue());
+                if (checkin.getUser() != null) {
+                    if (DEBUG) Log.d(TAG, "firing venue activity for venue");
+                    Intent intent = new Intent(CheckinsActivity.this, UserActivity.class);
+                    intent.putExtra(UserActivity.EXTRA_USER, checkin.getUser().getId());
+                    startActivity(intent);
                 }
             }
         });
