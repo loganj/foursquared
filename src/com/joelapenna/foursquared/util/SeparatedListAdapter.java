@@ -108,14 +108,9 @@ public class SeparatedListAdapter extends BaseAdapter {
             Adapter adapter = sections.get(section);
             int size = adapter.getCount() + 1;
 
-            // check if position inside this section
-            try {
-                // The second argument is null because if it were convertView, things would crash.
-                if (position == 0) return headers.getView(sectionnum, null, parent);
-                if (position < size) return adapter.getView(position - 1, null, parent);
-            } catch (Exception e) {
-                Log.d("Uhhh.", "UHHH?");
-            }
+            // The second argument is null because if it were convertView, things crash.
+            if (position == 0) return headers.getView(sectionnum, null, parent);
+            if (position < size) return adapter.getView(position - 1, null, parent);
 
             // otherwise jump into next section
             position -= size;
