@@ -12,6 +12,7 @@ import com.joelapenna.foursquared.util.UserTask;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -95,8 +96,15 @@ public class VenueSearchActivity extends ListActivity {
         @Override
         public Group doInBackground(String... params) {
             try {
-                return ((Foursquared)getApplication()).getFoursquare().venues(params[0], null,
-                        null, 10, 1);
+                Location location = ((Foursquared)getApplication()).getLocation();
+                if (location == null) {
+                    return ((Foursquared)getApplication()).getFoursquare().venues(params[0], null,
+                            null, 10, 1);
+                } else {
+                    return ((Foursquared)getApplication()).getFoursquare().venues(params[0],
+                            String.valueOf(location.getLatitude()),
+                            String.valueOf(location.getLongitude()), 10, 1);
+                }
             } catch (FoursquareError e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "FoursquareError", e);

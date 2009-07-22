@@ -13,6 +13,11 @@ import com.joelapenna.foursquared.util.UserTask;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
+import android.content.Context;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
@@ -25,6 +30,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -103,8 +109,19 @@ public class VenueCheckinActivity extends ListActivity {
             try {
                 final Venue venue = params[0];
                 if (DEBUG) Log.d(TAG, "Checking in to: " + venue.getVenuename());
-                return ((Foursquared)getApplication()).getFoursquare().checkin(
-                        venue.getVenuename(), false, false, null, null);
+                Location location = ((Foursquared)getApplication()).getLocation();
+                if (location == null) {
+                    return ((Foursquared)getApplication()).getFoursquare().checkin(
+                            venue.getVenuename(), false, false, null, null);
+                } else {
+                    // I wonder if this could result in the backend logic to mis-calculate which
+                    // venue you're at because the phone gave too coarse or inaccurate location
+                    // information.
+                    return ((Foursquared)getApplication()).getFoursquare().checkin(
+                            venue.getVenuename(), false, false,
+                            String.valueOf(location.getLatitude()),
+                            String.valueOf(location.getLongitude()));
+                }
             } catch (FoursquareError e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "FoursquareError", e);
@@ -126,6 +143,7 @@ public class VenueCheckinActivity extends ListActivity {
                     mCheckinButton.setEnabled(true);
                     Toast.makeText(VenueCheckinActivity.this, "Unable to checkin! (FIX THIS!)",
                             Toast.LENGTH_LONG).show();
+                    return;
                 }
                 showDialog(DIALOG_CHECKIN);
             } finally {

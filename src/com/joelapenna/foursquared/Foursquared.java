@@ -8,10 +8,18 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquared.error.FoursquaredCredentialsError;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
+
+import java.util.Date;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -41,6 +49,26 @@ public class Foursquared extends Application {
     public Foursquare getFoursquare() {
         return mFoursquare;
     }
+
+    public Location getLocation() {
+        LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setCostAllowed(true);
+
+        String providerName = manager.getBestProvider(criteria, true);
+        LocationProvider provider = manager.getProvider(providerName);
+        if (DEBUG) Log.d(TAG, "Have Provider: " + provider.getName());
+        Location location = manager.getLastKnownLocation(providerName);
+        long timeDelta = new Date().getTime() - location.getTime();
+        if (timeDelta > 1000 * 60 * 20) {
+            if (DEBUG) Log.d(TAG, "Last known position is too old! " + String.valueOf(timeDelta));
+            return null;
+        }
+        if (DEBUG) Log.d(TAG, "got Location: " + location);
+        return location;
+    }
+
 
     public void loadCredentials() throws FoursquaredCredentialsError {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);

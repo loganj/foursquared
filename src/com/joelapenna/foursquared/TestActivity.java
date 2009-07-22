@@ -13,10 +13,17 @@ import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 
 import android.app.Activity;
+import android.content.Context;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 public class TestActivity extends Activity {
     private static final String TAG = "TestActivity";
@@ -37,7 +44,8 @@ public class TestActivity extends Activity {
             // testCheckins();
             // testTodos();
             // testBreakdown();
-            testCheckin();
+            // testCheckin();
+            testLocation();
         } catch (FoursquareError e) {
             // TODO Auto-generated catch block
             if (DEBUG) Log.d(TAG, "FoursquaredCredentialsError", e);
@@ -48,6 +56,23 @@ public class TestActivity extends Activity {
             // TODO Auto-generated catch block
             if (DEBUG) Log.d(TAG, "IOException", e);
         }
+    }
+
+    private void testLocation() throws FoursquareError, FoursquareParseException, IOException {
+        LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setCostAllowed(true);
+
+        String providerName = manager.getBestProvider(criteria, true);
+        LocationProvider provider = manager.getProvider(providerName);
+        if (DEBUG) Log.d(TAG, "Have Provider: " + provider.getName());
+        Location location = manager.getLastKnownLocation(providerName);
+        long timeDelta = new Date().getTime() - location.getTime();
+        if (timeDelta > 1000 * 60 * 20) {
+            if (DEBUG) Log.d(TAG, "Last known position is too old! " + String.valueOf(timeDelta));
+        }
+        if (DEBUG) Log.d(TAG, "got Location: " + location);
     }
 
     private void testTodos() throws FoursquareError, FoursquareParseException, IOException {
@@ -74,7 +99,8 @@ public class TestActivity extends Activity {
             Log.d(TAG, "CheckinGroup:" + checkins.getType());
             for (int j = 0; j < checkins.size(); j++) {
                 Checkin checkin = (Checkin)checkins.get(j);
-                Log.d(TAG, "Checkin at: " + checkin.getVenuename() + "(" + checkin.getCheckinid() + ")");
+                Log.d(TAG, "Checkin at: " + checkin.getVenuename() + "(" + checkin.getCheckinid()
+                        + ")");
             }
         }
     }
