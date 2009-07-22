@@ -2,8 +2,9 @@
  * Copyright 2009 Joe LaPenna
  */
 
-package com.joelapenna.foursquare;
+package com.joelapenna.foursquare.http;
 
+import com.joelapenna.foursquare.TestCredentials;
 import com.joelapenna.foursquare.http.HttpApiWithOAuth;
 
 import org.apache.http.Header;
