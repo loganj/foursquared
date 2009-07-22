@@ -12,8 +12,8 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.maps.IconsIterator;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
+import com.joelapenna.foursquared.util.IconsIterator;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;

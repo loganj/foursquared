@@ -2,10 +2,9 @@
  * Copyright 2009 Joe LaPenna
  */
 
-package com.joelapenna.foursquared.maps;
+package com.joelapenna.foursquared.util;
 
 import com.joelapenna.foursquared.R;
-import com.joelapenna.foursquared.util.InfiniteIterator;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)

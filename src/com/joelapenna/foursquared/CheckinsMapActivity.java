@@ -13,7 +13,7 @@ import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.CheckinItemizedOverlay;
-import com.joelapenna.foursquared.maps.IconsIterator;
+import com.joelapenna.foursquared.util.IconsIterator;
 import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.content.Intent;

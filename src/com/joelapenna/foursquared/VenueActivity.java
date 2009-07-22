@@ -119,7 +119,7 @@ public class VenueActivity extends TabActivity {
         name.setText(venue.getName());
         locationLine1.setText(venue.getAddress());
 
-        String line2 = StringFormatters.getVenueLocationLine2(venue);
+        String line2 = StringFormatters.getVenueLocationCrossStreetOrCity(venue);
         if (line2 != null) {
             locationLine2.setText(line2);
         }

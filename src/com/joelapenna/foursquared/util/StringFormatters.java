@@ -12,7 +12,7 @@ import android.text.TextUtils;
 
 public class StringFormatters {
 
-    public static String getVenueLocationLine2(Venue venue) {
+    public static String getVenueLocationCrossStreetOrCity(Venue venue) {
         if (!TextUtils.isEmpty(venue.getCrossstreet())) {
             if (venue.getCrossstreet().startsWith("at")) {
                 return "(" + venue.getCrossstreet() + ")";

@@ -10,6 +10,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
+import com.joelapenna.foursquared.util.IconsIterator;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
 
@@ -54,17 +55,16 @@ public class SearchVenuesActivity extends TabActivity {
 
     private static final int MENU_GROUP_SEARCH = 0;
 
-    private SearchTask mSearchTask;
-
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
 
+    private SearchTask mSearchTask;
     private SearchHolder mSearchHolder = new SearchHolder();
 
-    private TextView mEmpty;
-    private SeparatedListAdapter mListAdapter;
     private ListView mListView;
+    private TextView mEmpty;
     private TabHost mTabHost;
+    private SeparatedListAdapter mListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
