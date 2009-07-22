@@ -35,7 +35,7 @@ import java.io.IOException;
  */
 public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
     private static final String TAG = "%(type_name)sParser";
-    private static final boolean DEBUG = Foursquare.DEBUG;
+    private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
     public %(type_name)s parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,

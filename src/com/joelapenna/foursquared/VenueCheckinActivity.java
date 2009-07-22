@@ -309,10 +309,10 @@ public class VenueCheckinActivity extends ListActivity {
 
         @Override
         public void onPostExecute(Group checkins) {
+            if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
             try {
                 setCheckins(checkins);
             } finally {
-                if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
                 ((VenueActivity)getParent()).stopProgressBar(PROGRESS_BAR_TASK_ID);
                 if (getListAdapter().getCount() <= 0) {
                     mEmpty.setText("No checkins for this venue! Add one!");

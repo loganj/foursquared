@@ -59,10 +59,11 @@ public class VenueMapActivity extends MapActivity {
 
         initMap();
 
-        if (((VenueActivity)getParent()).venueObservable.getVenue() != null) {
-            setVenue(((VenueActivity)getParent()).venueObservable.getVenue());
+        Venue venue = ((VenueActivity)getParent()).venueObservable.getVenue();
+        if (venue != null) {
+            setVenue(venue);
             updateMap();
-            
+
         } else {
             mVenueObserver = new Observer() {
                 @Override
