@@ -42,10 +42,10 @@ public class VenueActivity extends TabActivity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.venue_activity);
 
-        setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
-        //setVenue(FoursquaredTest.createTestVenue("Anonymous"));
-        //Venue venue = FoursquaredTest.createTestVenue("A");
-        //setVenue(venue);
+        // setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
+        setVenue(FoursquaredTest.createTestVenue("Test"));
+        // Venue venue = FoursquaredTest.createTestVenue("A");
+        // setVenue(venue);
 
         // We register this early (not in onStart) because our children might end up calling out to
         // this.
@@ -121,7 +121,8 @@ public class VenueActivity extends TabActivity {
         intent.putExtra(Foursquared.EXTRAS_VENUE_KEY, mVenue);
         tabHost.addTab(tabHost.newTabSpec(tag)
                 // Info Tab
-                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_info_details))
+                .setIndicator("",
+                        getResources().getDrawable(android.R.drawable.ic_menu_info_details))
                 .setContent(intent) // The contained activity
                 );
     }

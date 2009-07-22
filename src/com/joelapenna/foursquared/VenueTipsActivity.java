@@ -4,21 +4,32 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
+import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -33,11 +44,21 @@ public class VenueTipsActivity extends ListActivity {
     public static final String TAG = "VenueTipsActivity";
     public static final boolean DEBUG = Foursquared.DEBUG;
 
+    public static final int DIALOG_TODO = 0;
+    private static final int DIALOG_TIP = 1;
+    private static final int DIALOG_FAIL_MESSAGE = 2;
+    private static final int DIALOG_SHOW_MESSAGE = 3;
+
     private Venue mVenue;
+    private Data mResult;
 
     private TipsAsyncTask mTipsTask;
+    private AddTipAsyncTask mAddTipAsyncTask;
+
     private TextView mEmpty;
     private Group mTipGroups;
+    private Button mTipButton;
+    private Button mTodoButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +75,27 @@ public class VenueTipsActivity extends ListActivity {
 
         mEmpty = (TextView)findViewById(android.R.id.empty);
 
+        mTipButton = (Button)findViewById(R.id.tipButton);
+        mTipButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(DIALOG_TIP);
+            }
+        });
+        mTodoButton = (Button)findViewById(R.id.todoButton);
+        mTodoButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(DIALOG_TODO);
+            }
+        });
+
         setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
 
         if (getLastNonConfigurationInstance() != null) {
             setTipGroups((Group)getLastNonConfigurationInstance());
         } else {
-            mTipsTask = (TipsAsyncTask)new TipsAsyncTask().execute();
+            lookupTipGroups();
         }
     }
 
@@ -74,6 +110,78 @@ public class VenueTipsActivity extends ListActivity {
     @Override
     public Object onRetainNonConfigurationInstance() {
         return mTipGroups;
+    }
+
+    @Override
+    public Dialog onCreateDialog(int id) {
+        if (DEBUG) Log.d(TAG, "onCreateDialog: " + String.valueOf(id));
+        String title = null;
+        String message = null;
+        DialogInterface.OnClickListener listener = null;
+        final EditText editText = new EditText(this);
+        editText.setSingleLine(true);
+        editText.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.FILL_PARENT,
+                LayoutParams.WRAP_CONTENT));
+
+        switch (id) {
+            case DIALOG_FAIL_MESSAGE:
+                return new AlertDialog.Builder(VenueTipsActivity.this) //
+                        .setTitle("Sorry!") //
+                        .setIcon(android.R.drawable.ic_dialog_alert) //
+                        .setMessage("Failed to add your tip.") //
+                        .create();
+
+            case DIALOG_SHOW_MESSAGE:
+                return new AlertDialog.Builder(VenueTipsActivity.this) //
+                        .setTitle("Added!").setIcon(android.R.drawable.ic_dialog_info) //
+                        .setMessage(mResult.getMessage()) //
+                        .create();
+
+            case DIALOG_TODO:
+                title = "Add a Todo!";
+                message = "I want to...";
+                listener = new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String text = editText.getText().toString();
+                        if (!TextUtils.isEmpty(text)) {
+                            addTodo(text);
+                        }
+                    }
+                };
+                break;
+
+            case DIALOG_TIP:
+                title = "Add a Tip!";
+                message = "I did this...";
+                listener = new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String text = editText.getText().toString();
+                        if (!TextUtils.isEmpty(text)) {
+                            addTip(text);
+                        }
+                    }
+                };
+                break;
+        }
+
+        if (title == null || message == null || listener == null) {
+            return null;
+        } else {
+            return new AlertDialog.Builder(VenueTipsActivity.this) //
+                    .setView(editText) //
+                    .setTitle(title) //
+                    .setIcon(android.R.drawable.ic_dialog_info) //
+                    .setMessage(message) //
+                    .setPositiveButton("Add", listener) //
+                    .create();
+        }
+    }
+
+    private void addTip(String tip) {
+        mAddTipAsyncTask = (AddTipAsyncTask)new AddTipAsyncTask().execute(tip);
+    }
+
+    private void addTodo(String todo) {
     }
 
     /**
@@ -150,14 +258,26 @@ public class VenueTipsActivity extends ListActivity {
         mVenue = venue;
     }
 
+    private void startProgressBar(String taskId) {
+        Intent intent = new Intent(VenueActivity.ACTION_PROGRESS_BAR_START);
+        intent.putExtra(VenueActivity.EXTRA_TASK_ID, taskId);
+        sendBroadcast(intent);
+    }
+
+    private void stopProgressBar(String taskId) {
+        Intent intent = new Intent(VenueActivity.ACTION_PROGRESS_BAR_STOP);
+        intent.putExtra(VenueActivity.EXTRA_TASK_ID, taskId);
+        sendBroadcast(intent);
+    }
+
     private class TipsAsyncTask extends AsyncTask<Void, Void, Group> {
 
-        private static final String VENUE_ACTIVITY_PROGRESS_BAR_TASK_ID = TAG + "TipsAsyncTask";
+        private static final String PROGRESS_BAR_TASK_ID = TAG + "TipsAsyncTask";
 
         @Override
         public void onPreExecute() {
             if (DEBUG) Log.d(TAG, "TipsTask: onPreExecute()");
-            startProgressBar();
+            startProgressBar(PROGRESS_BAR_TASK_ID);
         }
 
         @Override
@@ -193,7 +313,7 @@ public class VenueTipsActivity extends ListActivity {
                 setTipGroups(groups);
             } finally {
                 if (DEBUG) Log.d(TAG, "TipsTask: onPostExecute()");
-                stopProgressBar();
+                stopProgressBar(PROGRESS_BAR_TASK_ID);
                 if (getListAdapter().getCount() <= 0) {
                     mEmpty.setText("No tips for this venue! Add one!");
                 }
@@ -202,19 +322,63 @@ public class VenueTipsActivity extends ListActivity {
 
         @Override
         public void onCancelled() {
-            stopProgressBar();
+            stopProgressBar(PROGRESS_BAR_TASK_ID);
         }
 
-        private void startProgressBar() {
-            Intent intent = new Intent(VenueActivity.ACTION_PROGRESS_BAR_START);
-            intent.putExtra(VenueActivity.EXTRA_TASK_ID, VENUE_ACTIVITY_PROGRESS_BAR_TASK_ID);
-            sendBroadcast(intent);
+    }
+
+    private class AddTipAsyncTask extends AsyncTask<String, Void, Data> {
+
+        private static final String PROGRESS_BAR_TASK_ID = TAG + "AddTipAsyncTask";
+
+        @Override
+        public void onPreExecute() {
+            if (DEBUG) Log.d(TAG, "AddTipTask: onPreExecute()");
+            startProgressBar(PROGRESS_BAR_TASK_ID);
         }
 
-        private void stopProgressBar() {
-            Intent intent = new Intent(VenueActivity.ACTION_PROGRESS_BAR_STOP);
-            intent.putExtra(VenueActivity.EXTRA_TASK_ID, VENUE_ACTIVITY_PROGRESS_BAR_TASK_ID);
-            sendBroadcast(intent);
+        @Override
+        public Data doInBackground(String... params) {
+            try {
+                Location location = ((Foursquared)getApplication()).getLocation();
+                Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
+                if (location == null) {
+                    if (DEBUG) Log.d(TAG, "Adding Tip without Location");
+                    return foursquare.addTip((String)params[0], mVenue.getVenueid(), null, null, null);
+                } else {
+                    if (DEBUG) Log.d(TAG, "Adding Tip with Location: " + location);
+                    String lat = String.valueOf(location.getLatitude());
+                    String lng = String.valueOf(location.getLongitude());
+                    return foursquare.addTip((String)params[0], mVenue.getVenueid(), lat, lng, null);
+                }
+            } catch (FoursquareError e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "FoursquareError", e);
+            } catch (FoursquareParseException e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "FoursquareParseException", e);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "IOException", e);
+            }
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(Data result) {
+            if (DEBUG) Log.d(TAG, "AddTipTask: onPostExecute: " + result);
+            mResult = result;
+            if (result == null) {
+                showDialog(DIALOG_FAIL_MESSAGE);
+            } else {
+                showDialog(DIALOG_SHOW_MESSAGE);
+            }
+            stopProgressBar(PROGRESS_BAR_TASK_ID);
+        }
+
+        @Override
+        public void onCancelled() {
+            stopProgressBar(PROGRESS_BAR_TASK_ID);
         }
     }
 }
