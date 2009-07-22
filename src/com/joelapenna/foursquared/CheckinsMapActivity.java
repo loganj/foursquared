@@ -11,7 +11,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.classic.Checkin;
-import com.joelapenna.foursquare.types.classic.Venue;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.CheckinItemizedOverlay;
 import com.joelapenna.foursquared.util.InfiniteIterator;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
@@ -157,7 +157,7 @@ public class CheckinsMapActivity extends MapActivity {
 
     /**
      * Create an overlay that contains a specific group's list of mappable checkins.
-     *
+     * 
      * @param group
      * @return
      */

@@ -11,7 +11,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.classic.Venue;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
 import com.joelapenna.foursquared.util.InfiniteIterator;
 
@@ -180,7 +180,7 @@ public class SearchVenuesMapActivity extends MapActivity {
         for (int venueIndex = 0; venueIndex < venueCount; venueIndex++) {
             Venue venue = (Venue)group.get(venueIndex);
             if (VenueItemizedOverlay.isVenueMappable(venue)) {
-                if (DEBUG) Log.d(TAG, "adding venue: " + venue.getVenuename());
+                if (DEBUG) Log.d(TAG, "adding venue: " + venue.getName());
                 mappableVenues.add(venue);
             }
         }
@@ -238,7 +238,7 @@ public class SearchVenuesMapActivity extends MapActivity {
         @Override
         public OverlayItem createItem(int i) {
             VenueOverlayItem item = (VenueOverlayItem)super.createItem(i);
-            if (item.getVenue().beenhereMe()) {
+            if (item.getVenue().getStats().getBeenhere().me()) {
                 if (DEBUG) Log.d(TAG, "using the beenThereMarker for: " + item.getVenue());
                 item.setMarker(mBeenThereMarker);
             }
@@ -257,8 +257,8 @@ public class SearchVenuesMapActivity extends MapActivity {
             if (DEBUG) Log.d(TAG, "onTap: " + this + " " + i);
             VenueOverlayItem item = (VenueOverlayItem)getItem(i);
             mTappedVenue = item.getVenue();
-            if (DEBUG) Log.d(TAG, "onTap: " + item.getVenue().getVenuename());
-            mVenueButton.setText(item.getVenue().getVenuename());
+            if (DEBUG) Log.d(TAG, "onTap: " + item.getVenue().getName());
+            mVenueButton.setText(item.getVenue().getName());
             mVenueButton.setVisibility(View.VISIBLE);
             return true;
         }

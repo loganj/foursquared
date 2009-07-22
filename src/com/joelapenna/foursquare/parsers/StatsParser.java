@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-06-09 22:40:21.657056
+ * Auto-generated: 2009-06-10 00:51:03.548746
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -38,7 +38,7 @@ public class StatsParser extends AbstractParser<Stats> {
 
             String name = parser.getName();
             if ("beenhere".equals(name)) {
-                stats.setBeenhere(parser.nextText());
+                stats.setBeenhere(new BeenhereParser().parse(parser));
 
             } else if ("checkins".equals(name)) {
                 stats.setCheckins(parser.nextText());

@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-06-09 22:40:21.298396
+ * Auto-generated: 2009-06-10 00:51:03.133826
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -44,7 +44,7 @@ public class DataParser extends AbstractParser<Data> {
                 data.setMessage(parser.nextText());
 
             } else if ("status".equals(name)) {
-                data.setStatus(parser.nextText());
+                data.setStatus(parser.nextText().equals("1"));
 
             } else {
                 // Consume something we don't understand.

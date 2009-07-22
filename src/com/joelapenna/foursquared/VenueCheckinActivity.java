@@ -5,10 +5,9 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.filters.VenueFilter;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.types.classic.Checkin;
-import com.joelapenna.foursquare.types.classic.Venue;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
 
@@ -166,11 +165,13 @@ public class VenueCheckinActivity extends ListActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        if (mVenue != null) {
-            mGroups = VenueFilter.filter(groups, mVenue);
-        } else {
-            mGroups = groups;
-        }
+        // TODO(jlapenna): Filter all checkins by venue.
+        // if (mVenue != null) {
+        // mGroups = VenueFilter.filter(groups, mVenue);
+        // } else {
+        // mGroups = groups;
+        // }
+        mGroups = groups;
         putGroupsInAdapter(mGroups);
     }
 
@@ -214,20 +215,20 @@ public class VenueCheckinActivity extends ListActivity {
         public Checkin doInBackground(Venue... params) {
             try {
                 final Venue venue = params[0];
-                if (DEBUG) Log.d(TAG, "Checking in to: " + venue.getVenuename());
+                if (DEBUG) Log.d(TAG, "Checking in to: " + venue.getName());
 
                 boolean silent = ((ToggleButton)findViewById(R.id.silentToggle)).isChecked();
                 boolean twitter = ((ToggleButton)findViewById(R.id.twitterToggle)).isChecked();
                 Location location = ((Foursquared)getApplication()).getLastKnownLocation();
                 if (location == null) {
                     return Foursquared.getFoursquare().checkin(
-                            venue.getVenuename(), silent, twitter, null, null);
+                            venue.getName(), silent, twitter, null, null);
                 } else {
                     // I wonder if this could result in the backend logic to mis-calculate which
                     // venue you're at because the phone gave too coarse or inaccurate location
                     // information.
                     return Foursquared.getFoursquare().checkin(
-                            venue.getVenuename(), silent, twitter,
+                            venue.getName(), silent, twitter,
                             String.valueOf(location.getLatitude()),
                             String.valueOf(location.getLongitude()));
                 }

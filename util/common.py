@@ -23,21 +23,22 @@ DEFAULT_CLASS_IMPORTS = [
 ]
 
 CLASS_IMPORTS = {
-    'Checkin': DEFAULT_CLASS_IMPORTS + [
-        'import com.joelapenna.foursquare.filters.VenueFilterable'
-    ],
-    'Venue': DEFAULT_CLASS_IMPORTS + [
-        'import com.joelapenna.foursquare.filters.VenueFilterable'
-    ],
-    'Tip': DEFAULT_CLASS_IMPORTS + [
-        'import com.joelapenna.foursquare.filters.VenueFilterable'
-    ],
+#    'Checkin': DEFAULT_CLASS_IMPORTS + [
+#        'import com.joelapenna.foursquare.filters.VenueFilterable'
+#    ],
+#    'Venue': DEFAULT_CLASS_IMPORTS + [
+#        'import com.joelapenna.foursquare.filters.VenueFilterable'
+#    ],
+#    'Tip': DEFAULT_CLASS_IMPORTS + [
+#        'import com.joelapenna.foursquare.filters.VenueFilterable'
+#    ],
 }
 
 
 COMPLEX = [
     'Group',
     'Badge',
+    'Beenhere',
     'Checkin',
     'City',
     'Credentials',
@@ -97,8 +98,11 @@ def WalkNodesForAttributes(path):
       if typ in COMPLEX:
         logging.warn('Found Complex: ' + node.tagName)
         level = 1
-      else:
+      elif typ not in TYPES:
+        logging.warn('Found String: ' + typ)
         typ = STRING
+      else:
+        logging.warn('Found Type: ' + typ)
       logging.warn('Adding: ' + str((node, typ)))
       attributes.setdefault(node.tagName, typ)
   logging.warn('Attr: ' + str((type_name, top_node_name, attributes)))

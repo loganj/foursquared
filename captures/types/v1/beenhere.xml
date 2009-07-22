@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<beenhere>
+  <me type="boolean">true</me>
+  <friends type="boolean">true</friends>
+</beenhere>

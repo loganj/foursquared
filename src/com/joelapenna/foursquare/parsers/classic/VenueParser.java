@@ -22,6 +22,7 @@ import java.io.IOException;
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
+@SuppressWarnings("deprecation")
 public class VenueParser extends AbstractParser<Venue> {
     private static final String TAG = "VenueParser";
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;

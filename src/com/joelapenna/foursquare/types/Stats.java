@@ -8,24 +8,24 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Auto-generated: 2009-06-09 22:40:21.739999
+ * Auto-generated: 2009-06-10 00:51:03.638352
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Stats implements Parcelable, FoursquareType {
 
-    private String mBeenhere;
+    private Beenhere mBeenhere;
     private String mCheckins;
     private Mayor mMayor;
     
     public Stats() {
     }
     
-    public String getBeenhere() {
+    public Beenhere getBeenhere() {
         return mBeenhere;
     }
     
-    public void setBeenhere(String beenhere) {
+    public void setBeenhere(Beenhere beenhere) {
         mBeenhere = beenhere;
     }
     
@@ -58,7 +58,7 @@ public class Stats implements Parcelable, FoursquareType {
         
         };
         dest.writeBooleanArray(booleanArray);
-        dest.writeString(this.mBeenhere);    
+        dest.writeParcelable(this.mBeenhere, 0);    
         dest.writeString(this.mCheckins);    
         dest.writeParcelable(this.mMayor, 0);
     }
@@ -66,7 +66,7 @@ public class Stats implements Parcelable, FoursquareType {
     private void readFromParcel(Parcel source) {
         boolean[] booleanArray = new boolean[0];
         source.readBooleanArray(booleanArray);
-        this.mBeenhere = source.readString();    
+        this.mBeenhere = source.readParcelable(null);    
         this.mCheckins = source.readString();    
         this.mMayor = source.readParcelable(null);
     }

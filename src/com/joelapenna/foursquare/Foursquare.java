@@ -24,6 +24,7 @@ import java.io.IOException;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
+@SuppressWarnings("deprecation")
 public class Foursquare {
     private static final String TAG = "Foursquare";
     public static final boolean DEBUG = Foursquared.API_DEBUG;
@@ -138,10 +139,10 @@ public class Foursquare {
         return mFoursquare.venue(id);
     }
 
-    @Classic
-    public Group venues(String query, String lat, String lng, int radius, int length)
+    @V1
+    public Group venues(String geolat, String geolong, String query, int radius, int limit)
             throws FoursquareException, FoursquareError, IOException {
-        return mFoursquare.venues(query, lat, lng, radius, length);
+        return mFoursquareV1.venues(geolat, geolong, query, radius, limit);
     }
 
     /**

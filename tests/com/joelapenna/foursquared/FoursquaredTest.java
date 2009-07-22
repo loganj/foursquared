@@ -5,9 +5,10 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Stats;
 import com.joelapenna.foursquare.types.classic.Checkin;
 import com.joelapenna.foursquare.types.classic.Tip;
-import com.joelapenna.foursquare.types.classic.Venue;
+import com.joelapenna.foursquare.types.Venue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class FoursquaredTest {
     public static Checkin createCheckin(String id, Venue venue) {
         Checkin checkin = new Checkin();
         checkin.setCheckinid(id);
-        checkin.setDisplay("Test2 U. @ " + venue.getVenuename());
+        checkin.setDisplay("Test2 U. @ " + venue.getName());
         checkin.setEmail("email@email.com");
         checkin.setFirstname("2");
         checkin.setGender("female");
@@ -42,8 +43,8 @@ public class FoursquaredTest {
         checkin.setCrossstreet(venue.getCrossstreet());
         checkin.setGeolat(venue.getGeolat());
         checkin.setGeolong(venue.getGeolong());
-        checkin.setVenueid(venue.getVenueid());
-        checkin.setVenuename(venue.getVenuename());
+        checkin.setVenueid(venue.getId());
+        checkin.setVenuename(venue.getName());
 
         return checkin;
     }
@@ -90,7 +91,7 @@ public class FoursquaredTest {
 
         venue.setGeolat(String.valueOf(Float.valueOf(venue.getGeolat()) + mRandom.nextFloat()));
         venue.setGeolong(String.valueOf(Float.valueOf(venue.getGeolong()) + mRandom.nextFloat()));
-        venue.setBeenhereMe(mRandom.nextBoolean());
+        venue.getStats().getBeenhere().setMe(mRandom.nextBoolean());
 
         return venue;
     }
@@ -151,27 +152,20 @@ public class FoursquaredTest {
     public static Venue createVenue(String id) {
         Venue venue = new Venue();
         if (id == null) {
-            venue.setVenueid("44794");
-            venue.setVenuename("Bobby's Place");
+            venue.setId("44794");
+            venue.setName("Bobby's Place");
         } else {
-            venue.setVenueid(id);
-            venue.setVenuename("Bobby's Place " + id);
+            venue.setId(id);
+            venue.setName("Bobby's Place " + id);
         }
         venue.setAddress("123 Fake St.");
         venue.setCity("San Francisco");
         venue.setState("CA");
         venue.setZip("94117");
         venue.setCrossstreet("Imaginary");
-        venue.setDistance("0.1m");
-        venue.setNumCheckins("10");
-        venue
-                .setYelp("http://mobile.yelp.com/search?find_desc=Bobby%27s+place&amp;find_loc=San+Francisco%2CCA&amp;find_submit=Search");
-        venue.setGeolat("37.7722");
+        venue.setDistance("0.1m");venue.setGeolat("37.7722");
         venue.setGeolong("-122.437");
-        venue
-                .setMap("http://maps.google.com/staticmap?zoom=15&amp;size=280x100&amp;markers=0,0&amp;maptype=mobile");
-        venue.setMapurl("http://maps.google.com/maps?q=123+Fake+St.%2CSan+Francisco%2CCA%2C");
-        venue.setNewVenue(true);
+        venue.setStats(new Stats());
         return venue;
     }
 

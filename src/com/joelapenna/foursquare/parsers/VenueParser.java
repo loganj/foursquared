@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-06-09 22:40:22.172418
+ * Auto-generated: 2009-06-10 00:51:04.223196
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -46,6 +46,9 @@ public class VenueParser extends AbstractParser<Venue> {
             } else if ("crossstreet".equals(name)) {
                 venue.setCrossstreet(parser.nextText());
 
+            } else if ("distance".equals(name)) {
+                venue.setDistance(parser.nextText());
+
             } else if ("geolat".equals(name)) {
                 venue.setGeolat(parser.nextText());
 
@@ -65,7 +68,7 @@ public class VenueParser extends AbstractParser<Venue> {
                 venue.setState(parser.nextText());
 
             } else if ("stats".equals(name)) {
-                venue.setStats(parser.nextText());
+                venue.setStats(new StatsParser().parse(parser));
 
             } else if ("tips".equals(name)) {
                 venue.setTips(new GroupParser(new TipParser()).parse(parser));

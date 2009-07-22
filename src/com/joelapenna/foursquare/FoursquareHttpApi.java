@@ -41,6 +41,7 @@ import java.io.IOException;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
+@SuppressWarnings("deprecation")
 class FoursquareHttpApi {
     private static final String TAG = "FoursquareHttpApi";
     private static final boolean DEBUG = Foursquared.API_DEBUG;

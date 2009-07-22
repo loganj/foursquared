@@ -7,7 +7,7 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.classic.Venue;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
@@ -229,6 +229,7 @@ public class SearchVenuesActivity extends TabActivity {
         Intent intent = new Intent(SearchVenuesActivity.this, VenueActivity.class);
         intent.setAction(Intent.ACTION_VIEW);
         intent.putExtra(VenueActivity.EXTRA_VENUE, venue);
+        intent.setExtrasClassLoader(getClassLoader());
         startActivity(intent);
     }
 
@@ -304,9 +305,6 @@ public class SearchVenuesActivity extends TabActivity {
 
     private class SearchTask extends AsyncTask<Void, Void, Group> {
 
-        /**
-         *
-         */
         private static final int METERS_PER_MILE = 1609;
 
         @Override
@@ -347,7 +345,7 @@ public class SearchVenuesActivity extends TabActivity {
             Foursquare foursquare = Foursquared.getFoursquare();
             if (location == null) {
                 if (DEBUG) Log.d(TAG, "Searching without location.");
-                return foursquare.venues(mSearchHolder.query, null, null, 10, 1);
+                return foursquare.venues(null, null, mSearchHolder.query, 1, 10);
             } else {
                 // Try to make the search radius to be the same as our
                 // accuracy.
@@ -358,8 +356,8 @@ public class SearchVenuesActivity extends TabActivity {
                 } else {
                     radius = 1;
                 }
-                Group venues = foursquare.venues(mSearchHolder.query, String.valueOf(location
-                        .getLatitude()), String.valueOf(location.getLongitude()), radius, 1);
+                Group venues = foursquare.venues(String.valueOf(location.getLatitude()), String
+                        .valueOf(location.getLongitude()), mSearchHolder.query, radius, 1);
                 return venues;
             }
         }

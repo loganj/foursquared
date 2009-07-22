@@ -7,7 +7,7 @@ package com.joelapenna.foursquare.parsers;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
-import com.joelapenna.foursquare.types.Tip;
+import com.joelapenna.foursquare.types.Beenhere;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -17,43 +17,31 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-06-10 00:51:03.744065
+ * Auto-generated: 2009-06-10 00:51:02.296135
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
-public class TipParser extends AbstractParser<Tip> {
-    private static final String TAG = "TipParser";
+public class BeenhereParser extends AbstractParser<Beenhere> {
+    private static final String TAG = "BeenhereParser";
     private static final boolean DEBUG = Foursquare.DEBUG;
 
     @Override
-    public Tip parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
+    public Beenhere parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "tip");
+        parser.require(XmlPullParser.START_TAG, null, "beenhere");
 
-        Tip tip = new Tip();
+        Beenhere beenhere = new Beenhere();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
             if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
 
             String name = parser.getName();
-            if ("created".equals(name)) {
-                tip.setCreated(parser.nextText());
+            if ("friends".equals(name)) {
+                beenhere.setFriends(parser.nextText().equals("1"));
 
-            } else if ("distance".equals(name)) {
-                tip.setDistance(parser.nextText());
-
-            } else if ("id".equals(name)) {
-                tip.setId(parser.nextText());
-
-            } else if ("text".equals(name)) {
-                tip.setText(parser.nextText());
-
-            } else if ("user".equals(name)) {
-                tip.setUser(new UserParser().parse(parser));
-
-            } else if ("venue".equals(name)) {
-                tip.setVenue(new VenueParser().parse(parser));
+            } else if ("me".equals(name)) {
+                beenhere.setMe(parser.nextText().equals("1"));
 
             } else {
                 // Consume something we don't understand.
@@ -61,6 +49,6 @@ public class TipParser extends AbstractParser<Tip> {
                 skipSubTree(parser);
             }
         }
-        return tip;
+        return beenhere;
     }
 }

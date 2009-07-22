@@ -14,6 +14,7 @@ import com.joelapenna.foursquare.types.FoursquareType;
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
+@Deprecated
 public class Venue implements Parcelable, FoursquareType, VenueFilterable {
 
     private String mAddress;

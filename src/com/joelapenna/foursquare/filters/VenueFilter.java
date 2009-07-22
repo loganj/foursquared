@@ -12,6 +12,7 @@ import java.util.ArrayList;
  * @author Joe LaPenna (joe@joelapenna.com)
  *
  */
+@Deprecated
 public class VenueFilter {
 
     public static Group filter(Group groups, Venue venue) {

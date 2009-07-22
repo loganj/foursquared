@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Auto-generated: 2009-06-09 22:40:21.388480
+ * Auto-generated: 2009-06-10 00:51:03.238654
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
@@ -16,7 +16,7 @@ public class Data implements Parcelable, FoursquareType {
 
     private String mCityid;
     private String mMessage;
-    private String mStatus;
+    private boolean mStatus;
     
     public Data() {
     }
@@ -37,11 +37,11 @@ public class Data implements Parcelable, FoursquareType {
         mMessage = message;
     }
     
-    public String getStatus() {
+    public boolean status() {
         return mStatus;
     }
     
-    public void setStatus(String status) {
+    public void setStatus(boolean status) {
         mStatus = status;
     }
     
@@ -55,20 +55,19 @@ public class Data implements Parcelable, FoursquareType {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         boolean[] booleanArray = {
-        
+            mStatus,
         };
         dest.writeBooleanArray(booleanArray);
         dest.writeString(this.mCityid);    
-        dest.writeString(this.mMessage);    
-        dest.writeString(this.mStatus);
+        dest.writeString(this.mMessage);
     }
     
     private void readFromParcel(Parcel source) {
-        boolean[] booleanArray = new boolean[0];
+        boolean[] booleanArray = new boolean[1];
         source.readBooleanArray(booleanArray);
+        this.mStatus = booleanArray[0];    
         this.mCityid = source.readString();    
-        this.mMessage = source.readString();    
-        this.mStatus = source.readString();
+        this.mMessage = source.readString();
     }
     
     public static final Parcelable.Creator<Data> CREATOR = new Parcelable.Creator<Data>() {

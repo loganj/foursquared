@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <stats>
   <checkins>77</checkins>
-  <beenhere type="boolean"></beenhere>
+  <beenhere type="Beenhere"></beenhere>
   <mayor type="Mayor"></mayor>
 </stats>

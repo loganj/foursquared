@@ -4,7 +4,7 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.types.classic.Venue;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.app.TabActivity;
@@ -147,13 +147,13 @@ public class VenueActivity extends TabActivity {
     }
 
     private void setVenue(Venue venue) {
-        if (DEBUG) Log.d(TAG, "loading venue:" + venue.getVenuename());
-        setTitle(venue.getVenuename() + " - Foursquared");
+        if (DEBUG) Log.d(TAG, "loading venue:" + venue.getName());
+        setTitle(venue.getName() + " - Foursquared");
         TextView name = (TextView)findViewById(R.id.venueName);
         TextView locationLine1 = (TextView)findViewById(R.id.venueLocationLine1);
         TextView locationLine2 = (TextView)findViewById(R.id.venueLocationLine2);
 
-        name.setText(venue.getVenuename());
+        name.setText(venue.getName());
         locationLine1.setText(venue.getAddress());
 
         String line2 = StringFormatters.getVenueLocationLine2(venue);

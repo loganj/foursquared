@@ -8,7 +8,6 @@ import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.classic.Auth;
 import com.joelapenna.foursquare.types.classic.User;
-import com.joelapenna.foursquare.types.classic.Venue;
 
 import android.test.suitebuilder.annotation.LargeTest;
 import android.test.suitebuilder.annotation.SmallTest;
@@ -20,6 +19,7 @@ import junit.framework.TestCase;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
+@SuppressWarnings("deprecation")
 public class FoursquareTestCase extends TestCase {
 
     /**
@@ -97,7 +97,7 @@ public class FoursquareTestCase extends TestCase {
     public void test_venue() throws FoursquareException, IOException {
         Foursquare foursquare = getFoursquareForTest();
 
-        Venue venue = foursquare.venue("23035");
+        com.joelapenna.foursquare.types.classic.Venue venue = foursquare.venue("23035");
         assertNotNull(venue);
     }
 
@@ -105,7 +105,7 @@ public class FoursquareTestCase extends TestCase {
     public void test_venues() throws FoursquareException, IOException {
         Foursquare foursquare = getFoursquareForTest();
 
-        Group venues = foursquare.venues("coffee", null, null, 1, 10);
+        Group venues = foursquare.venues(null, null, "coffee", 1, 10);
         assertNotNull(venues);
     }
 

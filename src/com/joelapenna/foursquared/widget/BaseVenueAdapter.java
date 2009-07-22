@@ -5,7 +5,7 @@
 package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.classic.Venue;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared;
 
 import android.content.Context;
@@ -25,6 +25,6 @@ abstract public class BaseVenueAdapter extends BaseGroupAdapter<Venue> {
     @Override
     public long getItemId(int position) {
         if (DEBUG) Log.d(TAG, "getItemId() called: " + String.valueOf(position));
-        return Long.valueOf(((Venue)group.get(position)).getVenueid());
+        return Long.valueOf(((Venue)group.get(position)).getId());
     }
 }

@@ -2,6 +2,7 @@
 <venue>
   <id>40450</id>
   <name>On the Corner</name>
+  <distance>0.1</distance>
   <address>359 Divisadero St</address>
   <crossstreet>at Oak</crossstreet>
   <city>San Francisco</city>
@@ -10,7 +11,7 @@
   <phone/>
   <geolat>37.7729</geolat>
   <geolong>-122.437</geolong>
-  <stats></stats>
+  <stats type="Stats"></stats>
   <tips type="Group">
     <tip type="Tip"></tip>
   </tips>

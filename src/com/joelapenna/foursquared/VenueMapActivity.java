@@ -10,7 +10,7 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.classic.Venue;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
 
 import android.content.Intent;
@@ -44,7 +44,9 @@ public class VenueMapActivity extends MapActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(mVenue.getYelp()));
+                // TODO(jlapenna): Construct a useful Yelp URI!
+                intent.setData(Uri.parse( //
+                        "http://yelp.com/biz/" + mVenue.getName() + "-" + mVenue.getCity()));
                 startActivity(intent);
 
             }
@@ -60,7 +62,7 @@ public class VenueMapActivity extends MapActivity {
     public void onResume() {
         super.onResume();
         mMyLocationOverlay.enableMyLocation();
-        //mMyLocationOverlay.enableCompass();  // Disabled due to a sdk 1.5 emulator bug
+        // mMyLocationOverlay.enableCompass(); // Disabled due to a sdk 1.5 emulator bug
     }
 
     @Override

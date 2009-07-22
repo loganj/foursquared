@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Auto-generated: 2009-06-09 22:40:22.253961
+ * Auto-generated: 2009-06-10 00:51:04.311563
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
@@ -17,13 +17,14 @@ public class Venue implements Parcelable, FoursquareType {
     private String mAddress;
     private String mCity;
     private String mCrossstreet;
+    private String mDistance;
     private String mGeolat;
     private String mGeolong;
     private String mId;
     private String mName;
     private String mPhone;
     private String mState;
-    private String mStats;
+    private Stats mStats;
     private Group mTips;
     private String mZip;
     
@@ -52,6 +53,14 @@ public class Venue implements Parcelable, FoursquareType {
     
     public void setCrossstreet(String crossstreet) {
         mCrossstreet = crossstreet;
+    }
+    
+    public String getDistance() {
+        return mDistance;
+    }
+    
+    public void setDistance(String distance) {
+        mDistance = distance;
     }
     
     public String getGeolat() {
@@ -102,11 +111,11 @@ public class Venue implements Parcelable, FoursquareType {
         mState = state;
     }
     
-    public String getStats() {
+    public Stats getStats() {
         return mStats;
     }
     
-    public void setStats(String stats) {
+    public void setStats(Stats stats) {
         mStats = stats;
     }
     
@@ -142,13 +151,14 @@ public class Venue implements Parcelable, FoursquareType {
         dest.writeString(this.mAddress);    
         dest.writeString(this.mCity);    
         dest.writeString(this.mCrossstreet);    
+        dest.writeString(this.mDistance);    
         dest.writeString(this.mGeolat);    
         dest.writeString(this.mGeolong);    
         dest.writeString(this.mId);    
         dest.writeString(this.mName);    
         dest.writeString(this.mPhone);    
         dest.writeString(this.mState);    
-        dest.writeString(this.mStats);    
+        dest.writeParcelable(this.mStats, 0);    
         dest.writeParcelable((Parcelable)this.mTips, flags);    
         dest.writeString(this.mZip);
     }
@@ -159,13 +169,14 @@ public class Venue implements Parcelable, FoursquareType {
         this.mAddress = source.readString();    
         this.mCity = source.readString();    
         this.mCrossstreet = source.readString();    
+        this.mDistance = source.readString();    
         this.mGeolat = source.readString();    
         this.mGeolong = source.readString();    
         this.mId = source.readString();    
         this.mName = source.readString();    
         this.mPhone = source.readString();    
         this.mState = source.readString();    
-        this.mStats = source.readString();    
+        this.mStats = source.readParcelable(null);    
         this.mTips = (Group)source.readParcelable(null);    
         this.mZip = source.readString();
     }

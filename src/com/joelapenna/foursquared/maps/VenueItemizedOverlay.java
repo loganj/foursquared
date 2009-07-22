@@ -7,7 +7,7 @@ package com.joelapenna.foursquared.maps;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
-import com.joelapenna.foursquare.types.classic.Venue;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared;
 
 import android.graphics.drawable.Drawable;
@@ -27,7 +27,7 @@ public class VenueItemizedOverlay extends BaseGroupItemizedOverlay {
     @Override
     protected OverlayItem createItem(int i) {
         Venue venue = (Venue)group.get(i);
-        if (DEBUG) Log.d(TAG, "creating venue overlayItem: " + venue.getVenuename());
+        if (DEBUG) Log.d(TAG, "creating venue overlayItem: " + venue.getName());
         int lat = (int)(Double.parseDouble(venue.getGeolat()) * 1E6);
         int lng = (int)(Double.parseDouble(venue.getGeolong()) * 1E6);
         GeoPoint point = new GeoPoint(lat, lng);
@@ -56,7 +56,7 @@ public class VenueItemizedOverlay extends BaseGroupItemizedOverlay {
         private Venue mVenue;
 
         public VenueOverlayItem(GeoPoint point, Venue venue) {
-            super(point, venue.getVenuename(), venue.getAddress());
+            super(point, venue.getName(), venue.getAddress());
             mVenue = venue;
         }
 

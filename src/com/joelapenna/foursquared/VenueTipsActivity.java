@@ -6,11 +6,10 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.filters.VenueFilter;
 import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.classic.Tip;
-import com.joelapenna.foursquare.types.classic.Venue;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.TipListAdapter;
 
@@ -272,7 +271,9 @@ public class VenueTipsActivity extends ListActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        mGroups = VenueFilter.filter(groups, mVenue);
+        // TODO(jlapenna): Filter tips for only this venue!
+        // mGroups = VenueFilter.filter(groups, mVenue);
+        mGroups = groups;
         putGroupsInAdapter(mGroups);
     }
 
@@ -390,9 +391,9 @@ public class VenueTipsActivity extends ListActivity {
             try {
                 Foursquare foursquare = Foursquared.getFoursquare();
                 if (type == TIP) {
-                    return foursquare.addTip(text, mVenue.getVenueid(), lat, lng, null);
+                    return foursquare.addTip(text, mVenue.getId(), lat, lng, null);
                 } else if (type == TODO) {
-                    return foursquare.addTodo(text, mVenue.getVenueid(), lat, lng, null);
+                    return foursquare.addTodo(text, mVenue.getId(), lat, lng, null);
                 }
             } catch (FoursquareException e) {
                 // TODO Auto-generated catch block
