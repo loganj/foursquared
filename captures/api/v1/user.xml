@@ -1,0 +1,182 @@
+<?xml version="1.0" ?>
+<user>
+  <id>
+    9711
+  </id>
+  <firstname>
+    Testuser
+  </firstname>
+  <lastname>
+    Lapenna
+  </lastname>
+  <city>
+    <id>
+      23
+    </id>
+    <shortname>
+      SF
+    </shortname>
+  </city>
+  <checkin>
+    <id>
+      341140
+    </id>
+    <venueid>
+      44794
+    </venueid>
+    <venuename>
+      Bobby's place
+    </venuename>
+    <address>
+      123 Fake St
+    </address>
+    <crossstreet>
+      Imaginary
+    </crossstreet>
+    <shout/>
+    <geolat>
+      0
+    </geolat>
+    <geolong>
+      0
+    </geolong>
+    <created>
+      Mon, 08 Jun 09 23:56:15 +0000
+    </created>
+  </checkin>
+  <badges>
+    <badge>
+      <name>
+        Newbie
+      </name>
+      <icon>
+        http://playfoursquare.com/images/badges/newbie_on.png
+      </icon>
+      <description>
+        Congrats on your first check-in!
+      </description>
+    </badge>
+    <badge>
+      <name>
+        Newbie
+      </name>
+      <icon>
+        http://playfoursquare.com/images/badges/newbie_on.png
+      </icon>
+      <description>
+        Congrats on your first check-in!
+      </description>
+    </badge>
+    <badge>
+      <name>
+        Newbie
+      </name>
+      <icon>
+        http://playfoursquare.com/images/badges/newbie_on.png
+      </icon>
+      <description>
+        Congrats on your first check-in!
+      </description>
+    </badge>
+    <badge>
+      <name>
+        Newbie
+      </name>
+      <icon>
+        http://playfoursquare.com/images/badges/newbie_on.png
+      </icon>
+      <description>
+        Congrats on your first check-in!
+      </description>
+    </badge>
+    <badge>
+      <name>
+        Newbie
+      </name>
+      <icon>
+        http://playfoursquare.com/images/badges/newbie_on.png
+      </icon>
+      <description>
+        Congrats on your first check-in!
+      </description>
+    </badge>
+    <badge>
+      <name>
+        Newbie
+      </name>
+      <icon>
+        http://playfoursquare.com/images/badges/newbie_on.png
+      </icon>
+      <description>
+        Congrats on your first check-in!
+      </description>
+    </badge>
+    <badge>
+      <name>
+        Local
+      </name>
+      <icon>
+        http://playfoursquare.com/images/badges/local_on.png
+      </icon>
+      <description>
+        You've been at the same place 3x in one week!
+      </description>
+    </badge>
+    <badge>
+      <name>
+        Local
+      </name>
+      <icon>
+        http://playfoursquare.com/images/badges/local_on.png
+      </icon>
+      <description>
+        You've been at the same place 3x in one week!
+      </description>
+    </badge>
+    <badge>
+      <name>
+        Local
+      </name>
+      <icon>
+        http://playfoursquare.com/images/badges/local_on.png
+      </icon>
+      <description>
+        You've been at the same place 3x in one week!
+      </description>
+    </badge>
+    <badge>
+      <name>
+        Local
+      </name>
+      <icon>
+        http://playfoursquare.com/images/badges/local_on.png
+      </icon>
+      <description>
+        You've been at the same place 3x in one week!
+      </description>
+    </badge>
+    <badge>
+      <name>
+        Local
+      </name>
+      <icon>
+        http://playfoursquare.com/images/badges/local_on.png
+      </icon>
+      <description>
+        You've been at the same place 3x in one week!
+      </description>
+    </badge>
+    <badge>
+      <name>
+        Local
+      </name>
+      <icon>
+        http://playfoursquare.com/images/badges/local_on.png
+      </icon>
+      <description>
+        You've been at the same place 3x in one week!
+      </description>
+    </badge>
+  </badges>
+</user>
+

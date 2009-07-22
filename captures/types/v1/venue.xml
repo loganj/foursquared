@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<venue>
+  <id>40450</id>
+  <name>On the Corner</name>
+  <address>359 Divisadero St</address>
+  <crossstreet>at Oak</crossstreet>
+  <city>San Francisco</city>
+  <state>CA</state>
+  <zip>94117</zip>
+  <phone/>
+  <geolat>37.7729</geolat>
+  <geolong>-122.437</geolong>
+  <stats></stats>
+  <tips>
+    <tip></tip>
+  </tips>
+</venue>
+
