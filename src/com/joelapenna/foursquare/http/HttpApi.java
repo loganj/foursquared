@@ -19,6 +19,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.conn.ClientConnectionManager;
@@ -51,12 +52,13 @@ public class HttpApi {
     private static final String CLIENT_VERSION = "iPhone 20090301";
     private static final String CLIENT_VERSION_HEADER = "X_foursquare_client_version";
 
-    private DefaultHttpClient mHttpClient;
+    DefaultHttpClient mHttpClient;
 
     public HttpApi(DefaultHttpClient httpClient) {
         mHttpClient = httpClient;
     }
 
+<<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
 <<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
     public FoursquareType doHttpPost(String url,
             Parser<? extends FoursquareType> abstractParser, NameValuePair... nameValuePairs)
@@ -68,6 +70,11 @@ public class HttpApi {
         if (DEBUG) Log.d(TAG, "doHttpPost: " + url);
         HttpPost httpPost = createHttpPost(url, nameValuePairs);
 
+=======
+    public FoursquareType doHttpPost(HttpPost httpPost, Parser<? extends FoursquareType> parser)
+            throws FoursquareException, IOException {
+        if (DEBUG) Log.d(TAG, "doHttpPost: " + httpPost.getURI());
+>>>>>>> c72392a... Refactor doHttpPost to support soon to land HttpGet support. Add what:src/com/joelapenna/foursquare/http/HttpApi.java
         HttpResponse response = executeHttpPost(httpPost);
         if (response == null) {
             if (DEBUG) Log.d(TAG, "execute() call for the httpPost generated an exception;");
@@ -121,7 +128,7 @@ public class HttpApi {
 
     /**
      * execute() an httpPost catching exceptions and returning null instead.
-     *
+     * 
      * @param httpPost
      * @return
      */
@@ -138,6 +145,12 @@ public class HttpApi {
             return null;
         }
         return response;
+    }
+
+    public HttpGet createHttpGet(String url, NameValuePair... nameValuePairs) {
+        if (DEBUG) Log.d(TAG, "creating HttpPost for: " + url);
+        HttpGet httpGet = new HttpGet(url);
+        return httpGet;
     }
 
     public HttpPost createHttpPost(String url, NameValuePair... nameValuePairs) {
@@ -159,7 +172,7 @@ public class HttpApi {
     /**
      * Create a thread-safe client. This client does not do redirecting, to allow us to capture
      * correct "error" codes.
-     *
+     * 
      * @return HttpClient
      */
     public static final DefaultHttpClient createHttpClient() {

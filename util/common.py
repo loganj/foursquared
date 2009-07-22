@@ -23,11 +23,21 @@ DEFAULT_CLASS_IMPORTS = [
 ]
 
 CLASS_IMPORTS = {
-    'Checkin': DEFAULT_CLASS_IMPORTS + ['import com.joelapenna.foursquare.filters.VenueFilterable'],
-    'User': DEFAULT_CLASS_IMPORTS + ['import com.joelapenna.foursquare.types.Group'],
-    'Tip': DEFAULT_CLASS_IMPORTS + ['import com.joelapenna.foursquare.types.Group'],
-    'Venue': DEFAULT_CLASS_IMPORTS + ['import com.joelapenna.foursquare.filters.VenueFilterable'],
-    'Tip': DEFAULT_CLASS_IMPORTS + ['import com.joelapenna.foursquare.filters.VenueFilterable'],
+    'Checkin': DEFAULT_CLASS_IMPORTS + [
+        'import com.joelapenna.foursquare.filters.VenueFilterable'
+    ],
+    'User': DEFAULT_CLASS_IMPORTS + [
+        'import com.joelapenna.foursquare.types.Group'
+    ],
+    'Tip': DEFAULT_CLASS_IMPORTS + [
+        'import com.joelapenna.foursquare.types.Group'
+    ],
+    'Venue': DEFAULT_CLASS_IMPORTS + [
+        'import com.joelapenna.foursquare.filters.VenueFilterable'
+    ],
+    'Tip': DEFAULT_CLASS_IMPORTS + [
+        'import com.joelapenna.foursquare.filters.VenueFilterable'
+    ],
 }
 
 
@@ -78,6 +88,8 @@ def WalkNodesForAttributes(path):
       else:
         value = None
 
+      if node.tagName in TYPES:
+        typ = TYPES[node.tagName]
       if value in ["0", "1", "true", "false"]:
         typ = BOOLEAN
       elif node.hasChildNodes() and has_complex_child:

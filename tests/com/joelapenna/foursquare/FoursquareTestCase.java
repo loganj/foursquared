@@ -30,17 +30,18 @@ public class FoursquareTestCase extends TestCase {
      */
     @SmallTest
     public void test_hasCredentials() {
-        Foursquare foursquare = new Foursquare(TestCredentials.oAuthConsumerKey,
-                TestCredentials.oAuthConsumerSecret);
-        assertFalse(foursquare.hasCredentials());
+        Foursquare foursquare = new Foursquare();
 
+        // Test classic API behavior.
+        assertFalse(foursquare.hasCredentials());
         foursquare.setCredentials("phone", "password");
         assertTrue(foursquare.hasCredentials());
 
         // check for v1/oauth credentials
         assertFalse(foursquare.hasCredentials(true));
-
-        foursquare.setCredentials("a", "b", "c", "d");
+        foursquare.setOAuthConsumerCredentials(TestCredentials.oAuthConsumerKey,
+                TestCredentials.oAuthConsumerSecret);
+        foursquare.setCredentials("phone", "password", "token", "secret");
         assertTrue(foursquare.hasCredentials(true));
 
     }
@@ -77,6 +78,14 @@ public class FoursquareTestCase extends TestCase {
     }
 
     @LargeTest
+    public void test_tips() throws FoursquareException, IOException {
+        Foursquare foursquare = getFoursquareForTest();
+
+        Group tips = foursquare.tips("37.770900", "-122.436987", 1);
+        assertNotNull(tips);
+    }
+
+    @LargeTest
     public void test_user() throws FoursquareException, IOException {
         Foursquare foursquare = getFoursquareForTest();
 
@@ -101,9 +110,11 @@ public class FoursquareTestCase extends TestCase {
     }
 
     private static final Foursquare getFoursquareForTest() {
-        Foursquare foursquare = new Foursquare();
+        Foursquare foursquare = new Foursquare(TestCredentials.oAuthConsumerKey,
+                TestCredentials.oAuthConsumerSecret);
         foursquare.setCredentials(TestCredentials.testFoursquarePhone,
-                TestCredentials.testFoursquarePassword);
+                TestCredentials.testFoursquarePassword, TestCredentials.oAuthToken,
+                TestCredentials.oAuthTokenSecret);
         return foursquare;
     }
 }

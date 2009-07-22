@@ -43,7 +43,6 @@ public class GroupParser extends AbstractParser<Group> {
             FoursquareType item = this.mSubParser.parse(parser);
             if (DEBUG) Log.d(TAG, "adding item: " + item);
             group.add(item);
-
         }
         return group;
     }

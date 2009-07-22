@@ -52,7 +52,7 @@ public class Foursquare {
 
     public void setCredentials(String phone, String password, String token, String secret) {
         setCredentials(phone, password);
-        mFoursquareV1.setCredentials(token, secret);
+        mFoursquareV1.setOAuthTokenWithSecret(token, secret);
     }
 
     public void setOAuthConsumerCredentials(String oAuthConsumerKey, String oAuthConsumerSecret) {
@@ -106,6 +106,11 @@ public class Foursquare {
     public Group todos(String cityId, String lat, String lng) throws FoursquareException,
             FoursquareError, IOException {
         return mFoursquare.todos(cityId, lat, lng);
+    }
+
+    public Group tips(String geolat, String geolong, int limit) throws FoursquareException,
+            FoursquareError, IOException {
+        return mFoursquareV1.tips(geolat, geolong, limit);
     }
 
     public Data update(String status, String tipid) throws FoursquareException, FoursquareError,
