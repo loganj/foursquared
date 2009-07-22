@@ -6,6 +6,7 @@
   android:orientation="vertical"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
+  android:padding="5dip"
   android:background="@drawable/foursquare_gradient">
   <ImageView
     android:layout_width="fill_parent"
@@ -47,4 +48,14 @@
       android:textAppearance="@android:style/TextAppearance.Large"
       android:text="Log-in" />
   </LinearLayout>
+  <TextView
+    android:id="@+id/newAccountTextView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentRight="true"
+    android:layout_above="@+id/controls"
+    android:paddingBottom="2dip"
+    android:textAppearance="@android:style/TextAppearance.Large"
+    android:textColor="#0000ee"
+    android:text="Create an account?" />
 </RelativeLayout>

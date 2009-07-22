@@ -18,6 +18,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -28,6 +29,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -41,8 +43,11 @@ public class LoginActivity extends Activity {
 
     private SharedPreferences mPrefs;
     private AsyncTask<Void, Void, Boolean> mLoginTask;
+
+    private TextView mNewAccountTextView;
     private EditText mPhoneEditText;
     private EditText mPasswordEditText;
+
     private ProgressDialog mProgressDialog;
     private LocationListener mLocationListener;
     private LocationManager mLocationManager;
@@ -120,8 +125,17 @@ public class LoginActivity extends Activity {
 
     private void ensureUi() {
         setContentView(R.layout.login_activity);
+        mNewAccountTextView = (TextView)findViewById(R.id.newAccountTextView);
         mPhoneEditText = ((EditText)findViewById(R.id.phoneEditText));
         mPasswordEditText = ((EditText)findViewById(R.id.passwordEditText));
+
+        mNewAccountTextView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent( //
+                        Intent.ACTION_VIEW, Uri.parse("http://m.playfoursquare.com/signup")));
+            }
+        });
 
         ensurePhoneNumber();
 
