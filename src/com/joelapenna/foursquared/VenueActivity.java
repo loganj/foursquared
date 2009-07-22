@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.app.TabActivity;
 import android.content.BroadcastReceiver;
@@ -152,7 +153,7 @@ public class VenueActivity extends TabActivity {
         name.setText(venue.getVenuename());
         locationLine1.setText(venue.getAddress());
 
-        String line2 = Foursquared.getVenueLocationLine2(venue);
+        String line2 = StringFormatters.getVenueLocationLine2(venue);
         if (line2 != null) {
             locationLine2.setText(line2);
         }

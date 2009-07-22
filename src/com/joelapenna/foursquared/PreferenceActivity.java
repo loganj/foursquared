@@ -4,8 +4,6 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquared.error.FoursquaredCredentialsError;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -14,10 +12,9 @@ import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
- * @author jlapenna
+ * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class PreferenceActivity extends android.preference.PreferenceActivity {
     private static final String TAG = "PreferenceActivity";
@@ -37,18 +34,6 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         super.onStart();
         // Look up the phone number if its not set.
         setPhoneNumber();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (DEBUG) Log.d(TAG, "onStop()");
-        try {
-            ((Foursquared)getApplication()).loadCredentials();
-        } catch (FoursquaredCredentialsError e) {
-            if (DEBUG) Log.d(TAG, e.getMessage());
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
     }
 
     private void setPhoneNumber() {

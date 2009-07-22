@@ -5,13 +5,17 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.error.FoursquareError;
+import com.joelapenna.foursquare.error.FoursquareParseException;
+import com.joelapenna.foursquare.types.Auth;
 import com.joelapenna.foursquared.error.FoursquaredCredentialsError;
 
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -21,6 +25,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -28,8 +33,7 @@ import java.util.Date;
  */
 public class Foursquared extends Application {
     public static final String TAG = "Foursquared";
-    public static final boolean DEBUG = true;
-
+    public static final boolean DEBUG = false;
     public static final boolean API_DEBUG = false;
 
     public static final int LAST_LOCATION_UPDATE_THRESHOLD = 1000 * 60 * 60;
@@ -43,19 +47,40 @@ public class Foursquared extends Application {
 
     // Hidden preferences
     public static final String PREFERENCE_EMAIL = "email";
+    public static final String PREFERENCE_FIRST = "first_name";
+    public static final String PREFERENCE_LAST = "last_name";
+    public static final String PREFERENCE_PHOTO = "photo";
 
     // Common menu items
     private static final int MENU_PREFERENCES = -1;
 
-    private Foursquare mFoursquare;
+    private Foursquare mFoursquare = new Foursquare();
+    private SharedPreferences mSharedPrefs;
+    private OnSharedPreferenceChangeListener mOnSharedPreferenceChangeListener;
 
     public void onCreate() {
+        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mOnSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                if (key.equals(PREFERENCE_PHONE) || key.equals(PREFERENCE_PASSWORD)) {
+                    Log.d(TAG, key + " preference was changed");
+                    try {
+                        loadCredentials();
+                    } catch (FoursquaredCredentialsError e) {
+                        if (DEBUG) Log.d(TAG, "Clearing credentials", e);
+                        mFoursquare.setCredentials(null, null);
+                    }
+                }
+            }
+        };
+        mSharedPrefs.registerOnSharedPreferenceChangeListener(mOnSharedPreferenceChangeListener);
+
         try {
             loadCredentials();
         } catch (FoursquaredCredentialsError e) {
             // We're not doing anything because hopefully our related activities
-            // will handle the
-            // failure. This is simply convenience.
+            // will handle the failure. This is simply convenience.
         }
     }
 
@@ -88,30 +113,33 @@ public class Foursquared extends Application {
         return location;
     }
 
-    public void loadCredentials() throws FoursquaredCredentialsError {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        String phoneNumber = settings.getString(Foursquared.PREFERENCE_PHONE, null);
-        String password = settings.getString(Foursquared.PREFERENCE_PASSWORD, null);
+    private void loadCredentials() throws FoursquaredCredentialsError {
+        if (DEBUG) Log.d(TAG, "loadCredentials()");
+        String phoneNumber = mSharedPrefs.getString(Foursquared.PREFERENCE_PHONE, null);
+        String password = mSharedPrefs.getString(Foursquared.PREFERENCE_PASSWORD, null);
 
         if (TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(password)) {
             throw new FoursquaredCredentialsError(
                     "Phone number or password not set in preferences.");
         }
-        mFoursquare = new Foursquare(phoneNumber, password);
-    }
-
-    public static String getVenueLocationLine2(Venue venue) {
-        if (!TextUtils.isEmpty(venue.getCrossstreet())) {
-            if (venue.getCrossstreet().startsWith("at")) {
-                return "(" + venue.getCrossstreet() + ")";
-            } else {
-                return "(at " + venue.getCrossstreet() + ")";
+        mFoursquare.setCredentials(phoneNumber, password);
+        try {
+            if (DEBUG) Log.d(TAG, "Trying to log in.");
+            Auth auth = mFoursquare.login();
+            if (auth != null && auth.status()) {
+                Editor editor = mSharedPrefs.edit();
+                editor.putString(PREFERENCE_EMAIL, auth.getEmail());
+                editor.putString(PREFERENCE_FIRST, auth.getFirstname());
+                editor.putString(PREFERENCE_LAST, auth.getLastname());
+                editor.putString(PREFERENCE_PHOTO, auth.getPhoto());
+                editor.commit();
             }
-        } else if (!TextUtils.isEmpty(venue.getCity()) && !TextUtils.isEmpty(venue.getState())
-                && !TextUtils.isEmpty(venue.getZip())) {
-            return venue.getCity() + ", " + venue.getState() + " " + venue.getZip();
-        } else {
-            return null;
+        } catch (FoursquareError e) {
+            throw new FoursquaredCredentialsError(e.getMessage());
+        } catch (FoursquareParseException e) {
+            throw new FoursquaredCredentialsError(e.getMessage());
+        } catch (IOException e) {
+            throw new FoursquaredCredentialsError(e.getMessage());
         }
     }
 

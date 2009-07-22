@@ -4,8 +4,6 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquared.error.FoursquaredCredentialsError;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
@@ -23,30 +21,21 @@ public class MainActivity extends Activity {
 
     private boolean mStartedPreferences;
 
-    public void startDefaultActivity() {
-        startActivity(new Intent(MainActivity.this, SearchVenueActivity.class));
-    }
-
-    public void startPreferencesActivity() {
-        mStartedPreferences = true;
-        startActivity(new Intent(MainActivity.this, PreferenceActivity.class));
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
         if (DEBUG) Log.d(TAG, "onStart()");
-        try {
-            ((Foursquared)getApplication()).loadCredentials();
+
+        if (((Foursquared)getApplication()).getFoursquare().hasCredentials()) {
             startDefaultActivity();
             finish();
-        } catch (FoursquaredCredentialsError e) {
-            if (!mStartedPreferences) {
-                startPreferencesActivity();
-            } else {
-                ensureViews();
-                Toast.makeText(this, "Go set your settings!", Toast.LENGTH_SHORT);
-            }
+        } else if (!mStartedPreferences) {
+            if (DEBUG) Log.d(TAG, "No credentials set, starting preferences.");
+            startPreferencesActivity();
+        } else {
+            if (DEBUG) Log.d(TAG, "Already forced the user to preferences, not trying again.");
+            ensureViews();
+            Toast.makeText(this, "Set your phone and password!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -61,4 +50,12 @@ public class MainActivity extends Activity {
         });
     }
 
+    private void startDefaultActivity() {
+        startActivity(new Intent(MainActivity.this, SearchVenueActivity.class));
+    }
+
+    private void startPreferencesActivity() {
+        mStartedPreferences = true;
+        startActivity(new Intent(MainActivity.this, PreferenceActivity.class));
+    }
 }

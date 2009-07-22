@@ -30,6 +30,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.IOException;
@@ -72,8 +73,14 @@ class FoursquareHttpApi extends HttpApi {
     }
 
     void setCredentials(String phone, String password) {
-        mHttpClient.getCredentialsProvider().setCredentials(new AuthScope(DOMAIN, 80),
-                new UsernamePasswordCredentials(phone, password));
+        if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(password)) {
+            if (DEBUG) Log.d(TAG, "Clearing Credentials");
+            mHttpClient.getCredentialsProvider().clear();
+        } else {
+            if (DEBUG) Log.d(TAG, "Setting Credentials");
+            mHttpClient.getCredentialsProvider().setCredentials(new AuthScope(DOMAIN, 80),
+                    new UsernamePasswordCredentials(phone, password));
+        }
     }
 
     Auth login(String phone, String password) throws FoursquareError, FoursquareParseException,

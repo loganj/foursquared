@@ -6,6 +6,7 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.content.Context;
 import android.util.Log;
@@ -93,7 +94,7 @@ class VenueListAdapter extends BaseAdapter {
         if (DEBUG) Log.d(TAG, "getView() is: " + venue);
         holder.name.setText(venue.getVenuename());
         holder.locationLine1.setText(venue.getAddress());
-        String line2 = Foursquared.getVenueLocationLine2(venue);
+        String line2 = StringFormatters.getVenueLocationLine2(venue);
         if (line2 == null) {
             holder.locationLine2.setVisibility(View.GONE);
         } else {

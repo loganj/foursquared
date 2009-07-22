@@ -14,6 +14,7 @@ import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.IOException;
@@ -29,9 +30,17 @@ public class Foursquare {
     private String mPassword;
     private FoursquareHttpApi mFoursquare;
 
-    public Foursquare(String phone, String password) {
+    public Foursquare() {
         mFoursquare = new FoursquareHttpApi(FoursquareHttpApi.createHttpClient());
+    }
+
+    public Foursquare(String phone, String password) {
+        super();
         setCredentials(phone, password);
+    }
+
+    public boolean hasCredentials() {
+        return !(TextUtils.isEmpty(mPhone) && TextUtils.isEmpty(mPassword));
     }
 
     public void setCredentials(String phone, String password) {
@@ -40,10 +49,9 @@ public class Foursquare {
         mFoursquare.setCredentials(phone, password);
     }
 
-    public boolean login() throws FoursquareError, FoursquareParseException, IOException {
+    public Auth login() throws FoursquareError, FoursquareParseException, IOException {
         if (DEBUG) Log.d(TAG, "login()");
-        Auth auth = mFoursquare.login(mPhone, mPassword);
-        return (auth != null && auth.status());
+        return mFoursquare.login(mPhone, mPassword);
 
     }
 
