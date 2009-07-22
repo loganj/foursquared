@@ -202,12 +202,6 @@ public class CheckinsActivity extends TabActivity {
             // Try to make the search radius to be the same as our
             // accuracy.
             if (DEBUG) Log.d(TAG, "Searching with location: " + location);
-            int radius;
-            if (location.hasAccuracy()) {
-                radius = Float.valueOf(location.getAccuracy()).intValue();
-            } else {
-                radius = 10;
-            }
             return foursquare.checkins(null, String.valueOf(location.getLatitude()), String
                     .valueOf(location.getLongitude()));
         }
