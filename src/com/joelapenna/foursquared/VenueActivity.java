@@ -32,7 +32,9 @@ public class VenueActivity extends TabActivity {
 
     public static final String ACTION_PROGRESS_BAR_START = "com.joelapenna.foursquared.VenueActivity.PROGRESS_BAR_START";
     public static final String ACTION_PROGRESS_BAR_STOP = "com.joelapenna.foursquared.VenueActivity.PROGRESS_BAR_STOP";
+
     public static final String EXTRA_TASK_ID = "task_id";
+    public static final String EXTRA_VENUE = "venue";
 
     Venue mVenue;
 
