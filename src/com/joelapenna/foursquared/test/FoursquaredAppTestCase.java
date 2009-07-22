@@ -1,6 +1,7 @@
 /**
  * Copyright 2009 Joe LaPenna
  */
+
 package com.joelapenna.foursquared.test;
 
 import com.joelapenna.foursquare.Foursquare;
@@ -12,7 +13,6 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
- *
  */
 public class FoursquaredAppTestCase extends ApplicationTestCase<Foursquared> {
 
@@ -31,7 +31,7 @@ public class FoursquaredAppTestCase extends ApplicationTestCase<Foursquared> {
     public void testPreferences() {
         createApplication();
         Foursquared foursquared = getApplication();
-        Foursquare foursquare = foursquared.getFoursquare();
+        foursquared.getFoursquare();
         // ... to be continued.
     }
 }
