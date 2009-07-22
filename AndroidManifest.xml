@@ -138,6 +138,21 @@
 
 
     <activity
+      android:name=".TipsActivity"
+      android:label="@string/tips_activity_name"
+      android:launchMode="singleTop">
+      <intent-filter>
+        <action
+          android:name="android.intent.action.MAIN" />
+      </intent-filter>
+    </activity>
+
+    <activity
+      android:name=".TipsMapActivity">
+    </activity>
+
+
+    <activity
       android:name=".UserActivity"
       android:theme="@android:style/Theme.Dialog">
       <intent-filter>
