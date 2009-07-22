@@ -366,8 +366,17 @@ public class VenueActivity extends TabActivity {
 
         @Override
         protected void onPostExecute(Venue venue) {
-            stopProgressBar(PROGRESS_BAR_TASK_ID);
-            setVenue(venue);
+            try {
+                if (venue == null) {
+                    Toast.makeText(VenueActivity.this, "Unable to lookup the venue.",
+                            Toast.LENGTH_LONG).show();
+                    finish();
+                } else {
+                    setVenue(venue);
+                }
+            } finally {
+                stopProgressBar(PROGRESS_BAR_TASK_ID);
+            }
         }
 
         @Override

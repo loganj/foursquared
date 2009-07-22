@@ -52,7 +52,9 @@ public class Foursquared extends Application {
     public void onCreate() {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (FoursquaredSettings.USE_DUMPCATCHER) setupDumpcatcher();
+        if (FoursquaredSettings.USE_DUMPCATCHER) {
+            setupDumpcatcher();
+        }
         // Set the oauth credentials.
         sFoursquare.setOAuthConsumerCredentials( //
                 getResources().getString(R.string.oauth_consumer_key), //

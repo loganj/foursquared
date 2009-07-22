@@ -70,6 +70,7 @@ As long as they are named like this, the provided .project files should work.
    * A FoursquareType with child FoursquareType will not be able to load the Parcelable when reconstructing it with the ParcelableCreator:
       " android.os.BadParcelableException: ClassNotFoundException when unmarshalling"
    * Fix unittesting to actually work in split package mode.
+   * Use a decorator for dumpcatcher to allow pushing /any/ exception, not just uncaught ones to the dumpcatcher.
 
 
 == RELEASE BLOCKERS ==
@@ -77,4 +78,3 @@ As long as they are named like this, the provided .project files should work.
    * auth_exchange timestamps invalidate all clients.
       - Option 1: Fix serverside
 	  - Option 2: Ditch oAuth
-   * /checkin returns data with attributes instead of children.
