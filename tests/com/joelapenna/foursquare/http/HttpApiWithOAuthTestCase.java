@@ -7,7 +7,6 @@ package com.joelapenna.foursquare.http;
 import com.joelapenna.foursquare.TestCredentials;
 
 import oauth.signpost.OAuthConsumer;
-import oauth.signpost.basic.DefaultOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;

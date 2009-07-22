@@ -17,7 +17,6 @@ import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
-import oauth.signpost.OAuthConsumer;
 import oauth.signpost.signature.SignatureMethod;
 
 import org.apache.http.HttpResponse;
