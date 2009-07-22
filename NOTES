@@ -77,5 +77,4 @@ As long as they are named like this, the provided .project files should work.
    * auth_exchange timestamps invalidate all clients.
       - Option 1: Fix serverside
 	  - Option 2: Ditch oAuth
-
-   * Create "first-time-user" setup screen.
+   * /checkin returns data with attributes instead of children.
