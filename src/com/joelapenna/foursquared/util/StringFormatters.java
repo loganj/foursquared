@@ -7,7 +7,6 @@ package com.joelapenna.foursquared.util;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Venue;
 
-import android.content.Context;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 

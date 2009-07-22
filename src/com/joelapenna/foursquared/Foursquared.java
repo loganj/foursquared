@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.googlecode.dumpcatcher.logging.Dumpcatcher;
+import com.googlecode.dumpcatcher.logging.DumpcatcherUncaughtExceptionHandler;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquared.maps.BestLocationListener;
@@ -113,9 +114,9 @@ public class Foursquared extends Application {
                     getResources().getString(R.string.dumpcatcher_url), client, 5);
         }
 
-        UncaughtExceptionHandler handler = mDumpcatcher.createUncaughtExceptionHandler();
-        // This can hang the app starving android of its ability to properly kill threads.
-        // Thread.setDefaultUncaughtExceptionHandler(handler);
+        UncaughtExceptionHandler handler = new DefaultUnhandledExceptionHandler(mDumpcatcher);
+        // This can hang the app starving android of its ability to properly kill threads... maybe.
+        Thread.setDefaultUncaughtExceptionHandler(handler);
         Thread.currentThread().setUncaughtExceptionHandler(handler);
 
         // TODO(jlapenna): Usage related, async sendCrashes should be pooled together or something.
@@ -188,5 +189,22 @@ public class Foursquared extends Application {
             if (DEBUG) Log.d(TAG, "onLocationChanged: " + location);
             getBetterLocation(location);
         }
+    }
+
+    private static final class DefaultUnhandledExceptionHandler extends
+            DumpcatcherUncaughtExceptionHandler {
+
+        private static final UncaughtExceptionHandler mOriginalExceptionHandler = Thread
+                .getDefaultUncaughtExceptionHandler();
+
+        DefaultUnhandledExceptionHandler(Dumpcatcher dumpcatcher) {
+            super(dumpcatcher);
+        }
+
+        public void uncaughtException(Thread t, Throwable e) {
+            super.uncaughtException(t, e);
+            mOriginalExceptionHandler.uncaughtException(t, e);
+        }
+
     }
 }
