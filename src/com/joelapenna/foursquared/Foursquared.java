@@ -8,6 +8,7 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Auth;
+import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.error.FoursquaredCredentialsError;
 import com.joelapenna.foursquared.maps.BestLocationListener;
 
@@ -23,6 +24,7 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.List;
@@ -45,8 +47,11 @@ public class Foursquared extends Application {
     public static final String PREFERENCE_SILENT_CHECKIN = "silent_checkin";
 
     // Hidden preferences
+    public static final String PREFERENCE_CITY_ID = "city_id";
     public static final String PREFERENCE_EMAIL = "email";
     public static final String PREFERENCE_FIRST = "first_name";
+    public static final String PREFERENCE_GENDER = "gender";
+    public static final String PREFERENCE_ID = "id";
     public static final String PREFERENCE_LAST = "last_name";
     public static final String PREFERENCE_PHOTO = "photo";
 
@@ -110,19 +115,36 @@ public class Foursquared extends Application {
                     "Phone number or password not set in preferences.");
         }
         mFoursquare.setCredentials(phoneNumber, password);
-        // tryLogin();
+        new Thread() {
+            public void run() {
+                try {
+                    Foursquared.this.getUserInfo();
+                } catch (FoursquaredCredentialsError e) {
+                    Toast.makeText(Foursquared.this,
+                            "Unable to log in. Please check your phone number and password.",
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        }.start();
     }
 
-    private void tryLogin() throws FoursquaredCredentialsError {
+    private void getUserInfo() throws FoursquaredCredentialsError {
         try {
             if (DEBUG) Log.d(TAG, "Trying to log in.");
             Auth auth = mFoursquare.login();
-            if (auth != null && auth.status()) {
+            User user = mFoursquare.user();
+            if (auth != null && auth.status() && user != null) {
                 Editor editor = mSharedPrefs.edit();
+
                 editor.putString(PREFERENCE_EMAIL, auth.getEmail());
                 editor.putString(PREFERENCE_FIRST, auth.getFirstname());
                 editor.putString(PREFERENCE_LAST, auth.getLastname());
                 editor.putString(PREFERENCE_PHOTO, auth.getPhoto());
+
+                editor.putString(PREFERENCE_CITY_ID, user.getCityid());
+                editor.putString(PREFERENCE_ID, user.getId());
+                editor.putString(PREFERENCE_GENDER, user.getGender());
+
                 editor.commit();
             }
         } catch (FoursquareError e) {
@@ -130,7 +152,6 @@ public class Foursquared extends Application {
         } catch (FoursquareParseException e) {
             throw new FoursquaredCredentialsError(e.getMessage());
         } catch (IOException e) {
-            throw new FoursquaredCredentialsError(e.getMessage());
         }
     }
 
