@@ -12,6 +12,7 @@
     <TableRow>
       <Button
         android:id="@+id/tipButton"
+        android:enabled="false"
         android:layout_height="wrap_content"
         android:layout_width="0px"
         android:layout_weight="1"
@@ -19,6 +20,7 @@
         android:textAppearance="@android:style/TextAppearance.Medium" />
       <Button
         android:id="@+id/todoButton"
+        android:enabled="false"
         android:layout_height="wrap_content"
         android:layout_width="0px"
         android:layout_weight="1"

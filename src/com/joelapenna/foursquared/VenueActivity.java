@@ -64,7 +64,7 @@ public class VenueActivity extends TabActivity {
 
     private MenuItem mShareToggle;
     private MenuItem mTwitterToggle;
-    private MenuItem mCheckinMenu;
+    private MenuItem mCheckinMenuItem;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,6 +77,7 @@ public class VenueActivity extends TabActivity {
         initTabHost();
 
         StateHolder holder = (StateHolder)getLastNonConfigurationInstance();
+
         if (holder != null) {
             if (holder.venueId != null) {
                 mVenueId = holder.venueId;
@@ -101,8 +102,10 @@ public class VenueActivity extends TabActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        mCheckinMenu = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN, Menu.NONE, "Checkin").setIcon(
-                android.R.drawable.ic_menu_add);
+
+        mCheckinMenuItem = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN, Menu.NONE, "Checkin") //
+                .setIcon(android.R.drawable.ic_menu_add);
+
         mTwitterToggle = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN_TWITTER, Menu.NONE, "Twitter")
                 .setCheckable(true);
         mShareToggle = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN_SILENT, Menu.NONE, "Share")
@@ -122,8 +125,8 @@ public class VenueActivity extends TabActivity {
         if (DEBUG) Log.d(TAG, "onPrepareOptions: mTwitterToggle: " + mTwitterToggle.isChecked());
         if (DEBUG) Log.d(TAG, "onPrepareOptions: mShareToggle: " + mShareToggle.isChecked());
 
-        // TODO(jlapenna): This needs to be enabled or disabled depending on if the venue has been
-        // retrieved yet!
+        mCheckinMenuItem.setEnabled((mVenue != null));
+
         if (mTwitterToggle.isChecked()) {
             mTwitterToggle.setIcon(android.R.drawable.button_onoff_indicator_on);
             mTwitterToggle.setTitle("Sending Tweet");
@@ -244,8 +247,8 @@ public class VenueActivity extends TabActivity {
 
     }
 
-    private void displayVenue(Venue venue) {
-        if (DEBUG) Log.d(TAG, "loading venue:" + venue.getName());
+    private void onVenueSet(Venue venue) {
+        if (DEBUG) Log.d(TAG, "onVenueSet:" + venue.getName());
         setTitle(venue.getName() + " - Foursquared");
         TextView name = (TextView)findViewById(R.id.venueName);
         TextView locationLine1 = (TextView)findViewById(R.id.venueLocationLine1);
@@ -263,7 +266,8 @@ public class VenueActivity extends TabActivity {
     private void setVenue(Venue venue) {
         mVenue = venue;
         venueObservable.notifyObservers(venue);
-        displayVenue(mVenue);
+        onVenueSet(mVenue);
+
     }
 
     private void setCheckins(Group checkins) {
@@ -346,7 +350,7 @@ public class VenueActivity extends TabActivity {
 
         @Override
         public void onPreExecute() {
-            mCheckinMenu.setEnabled(false);
+            mCheckinMenuItem.setEnabled(false);
             mShareToggle.setEnabled(false);
             mTwitterToggle.setEnabled(false);
             if (DEBUG) Log.d(TAG, "CheckinTask: onPreExecute()");
@@ -389,7 +393,7 @@ public class VenueActivity extends TabActivity {
             try {
                 mCheckin = checkin;
                 if (checkin == null) {
-                    mCheckinMenu.setEnabled(true);
+                    mCheckinMenuItem.setEnabled(true);
                     Toast.makeText(VenueActivity.this, "Unable to checkin! (FIX THIS!)",
                             Toast.LENGTH_LONG).show();
                     return;

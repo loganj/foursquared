@@ -58,7 +58,7 @@ public class VenueTipsActivity extends ListActivity {
 
     private Button mTipButton;
     private Button mTodoButton;
-    private Observer mVenueObserver;
+    private Observer mVenueObserver = new VenueObserver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,11 +81,8 @@ public class VenueTipsActivity extends ListActivity {
 
         VenueActivity parent = (VenueActivity)getParent();
         if (parent.venueObservable.getVenue() != null) {
-            mVenue = ((VenueActivity)getParent()).venueObservable.getVenue();
-            setTipGroups(tipsAndTodos(mVenue));
-
+            mVenueObserver.update(parent.venueObservable, mVenue);
         } else {
-            mVenueObserver = new VenueObserver();
             parent.venueObservable.addObserver(mVenueObserver);
         }
     }
@@ -277,6 +274,8 @@ public class VenueTipsActivity extends ListActivity {
         public void update(Observable observable, Object data) {
             mVenue = (Venue)data;
             setTipGroups(tipsAndTodos(mVenue));
+            findViewById(R.id.tipButton).setEnabled(true);
+            findViewById(R.id.todoButton).setEnabled(true);
         }
     }
 
