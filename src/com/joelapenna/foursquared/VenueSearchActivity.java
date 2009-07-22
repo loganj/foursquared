@@ -12,8 +12,8 @@ import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 
-import android.app.ListActivity;
 import android.app.SearchManager;
+import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -28,17 +28,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Observable;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class VenueSearchActivity extends ListActivity {
+public class VenueSearchActivity extends TabActivity {
     private static final String TAG = "VenueSearchActivity";
     private static final boolean DEBUG = Foursquared.DEBUG;
 
@@ -53,37 +56,49 @@ public class VenueSearchActivity extends ListActivity {
     private static final long MAX_LOCATION_UPDATE_DELTA_THRESHOLD = 1000 * 60 * 5;
 
     private SearchAsyncTask mSearchTask;
+
     private LocationManager mLocationManager;
     private BestLocationListener mLocationListener;
     private Location mLocation;
 
     private String mQuery;
-    private Group mResults;
+    Group mSearchResults;
 
     private TextView mEmpty;
+    private SeparatedListAdapter mListAdapter;
+    private ListView mListView;
+    private TabHost mTabHost;
+
+    public static SearchResultsObservable searchResultsObservable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.d(TAG, "onCreate");
-
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.venue_search_activity);
+
+        searchResultsObservable = new SearchResultsObservable();
+
+        initTabHost();
 
         mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         mLocationListener = new BestLocationListener();
         mLocation = ((Foursquared)getApplication()).getLocation();
 
-        setListAdapter(new SeparatedListAdapter(this));
-        getListView().setOnItemClickListener(new OnItemClickListener() {
+        mEmpty = (TextView)findViewById(R.id.empty);
+
+        mListView = (ListView)findViewById(R.id.list);
+        mListAdapter = new SeparatedListAdapter(this);
+
+        mListView.setAdapter(mListAdapter);
+        mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Venue venue = (Venue)parent.getAdapter().getItem(position);
                 fireVenueActivityIntent(venue);
             }
         });
-
-        mEmpty = (TextView)findViewById(android.R.id.empty);
 
         if (getLastNonConfigurationInstance() != null) {
             if (DEBUG) Log.d(TAG, "Restoring state.");
@@ -92,7 +107,7 @@ public class VenueSearchActivity extends ListActivity {
                 startQuery(holder.query);
             } else {
                 mQuery = holder.query;
-                mResults = holder.results;
+                setSearchResults(holder.results);
                 putGroupsInAdapter(holder.results);
             }
         } else {
@@ -148,7 +163,7 @@ public class VenueSearchActivity extends ListActivity {
     public Object onRetainNonConfigurationInstance() {
         StateHolder holder = new StateHolder();
         holder.query = mQuery;
-        holder.results = mResults;
+        holder.results = mSearchResults;
         return holder;
     }
 
@@ -170,10 +185,37 @@ public class VenueSearchActivity extends ListActivity {
         }
     }
 
+    private void initTabHost() {
+        mTabHost = getTabHost();
+
+        // Results tab
+        mTabHost.addTab(mTabHost.newTabSpec("results")
+                // Checkin Tab
+                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_search))
+                .setContent(R.id.listviewLayout) //
+                );
+
+        // Maps tab
+        Intent intent = new Intent(this, VenueSearchMapActivity.class);
+        mTabHost.addTab(mTabHost.newTabSpec("map")
+                // Map Tab
+                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_mapmode))
+                .setContent(intent) // The contained activity
+                );
+        mTabHost.setCurrentTab(0);
+    }
+
+    void setSearchResults(Group searchResults) {
+        if (DEBUG) Log.d(TAG, "Setting search results.");
+        mSearchResults = searchResults;
+        searchResultsObservable.notifyObservers();
+    }
+
     void startQuery(String query) {
         if (DEBUG) Log.d(TAG, "sendQuery()");
         mQuery = query;
-        mResults = null;
+        // not going through set* because we don't want to notify search result observers.
+        mSearchResults = null;
 
         // If a task is already running, don't start a new one.
         if (mSearchTask != null && mSearchTask.getStatus() != AsyncTask.Status.FINISHED) {
@@ -201,18 +243,17 @@ public class VenueSearchActivity extends ListActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        SeparatedListAdapter mainAdapter = (SeparatedListAdapter)getListAdapter();
-        mainAdapter.clear();
+        mListAdapter.clear();
         int groupCount = groups.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
             Group group = (Group)groups.get(groupsIndex);
             if (group.size() > 0) {
                 VenueListAdapter groupAdapter = new VenueListAdapter(this, group);
                 if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
-                mainAdapter.addSection(group.getType(), groupAdapter);
+                mListAdapter.addSection(group.getType(), groupAdapter);
             }
         }
-        mainAdapter.notifyDataSetInvalidated();
+        mListAdapter.notifyDataSetInvalidated();
     }
 
     private class SearchAsyncTask extends AsyncTask<Void, Void, Group> {
@@ -264,8 +305,8 @@ public class VenueSearchActivity extends ListActivity {
         @Override
         public void onPostExecute(Group groups) {
             try {
+                setSearchResults(groups);
                 putGroupsInAdapter(groups);
-                mResults = groups;
             } finally {
                 setProgressBarIndeterminateVisibility(false);
                 if (mQuery == QUERY_NEARBY) {
@@ -273,14 +314,17 @@ public class VenueSearchActivity extends ListActivity {
                 } else {
                     setTitle(mQuery + " - Foursquared");
                 }
-                if (getListAdapter().getCount() <= 0) {
+                if (mListAdapter.getCount() > 0) {
+                    mEmpty.setVisibility(View.GONE);
+                } else {
                     mEmpty.setText("No results found! Try another search!");
+                    mEmpty.setVisibility(View.VISIBLE);
                 }
             }
         }
     }
 
-    public class BestLocationListener implements LocationListener {
+    private class BestLocationListener implements LocationListener {
 
         @Override
         public void onLocationChanged(Location location) {
@@ -356,4 +400,16 @@ public class VenueSearchActivity extends ListActivity {
         Group results;
         String query;
     }
+
+    class SearchResultsObservable extends Observable {
+
+        public void notifyObservers(Object data) {
+            setChanged();
+            super.notifyObservers(data);
+        }
+
+        public Group getSearchResults() {
+            return mSearchResults;
+        }
+    };
 }
