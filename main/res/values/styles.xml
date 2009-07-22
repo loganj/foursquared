@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <!-- Copyright 2009 Joe LaPenna -->
+
+<resources>
+  <style
+    name="FoursquareTheme"
+    parent="android:Theme">
+    <!--
+      <item name="android:windowNoTitle">true</item> <item
+      name="android:windowBackground">@color/translucent_blue</item> <item
+      name="android:listViewStyle">@style/MyListView</item>
+    -->
+    <item
+      name="android:listSeparatorTextViewStyle">@style/listSeparatorTextViewStyle</item>
+  </style>
+
+  <style
+    name="listSeparatorTextViewStyle"
+    parent="@android:attr/listSeparatorTextViewStyle">
+    <item
+      name="android:layout_height">wrap_content</item>
+    <item
+      name="android:layout_width">fill_parent</item>
+    <item
+      name="android:paddingTop">5dip</item>
+    <item
+      name="android:paddingBottom">5dip</item>
+    <item
+      name="android:paddingLeft">5dip</item>
+    <item
+      name="android:background">@drawable/foursquare_gradient</item>
+    <item
+      name="android:textAppearance">@android:style/TextAppearance.Medium.Inverse</item>
+  </style>
+
+  <!--
+    <style name="MyListView" parent="@android:style/Widget.ListView"> <item
+    name="android:listSelector">@drawable/list_selector</item> </style>
+  -->
+</resources>
+

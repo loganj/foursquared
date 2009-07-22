@@ -5,15 +5,15 @@
   <string
     name="add_venue_activity_name">Add a New Venue</string>
   <string
-    name="checkins_activity_name">Foursquare Checkins</string>
+    name="checkins_activity_name">Foursquare Friends</string>
   <string
-    name="preference_activity_name">Preferences!</string>
+    name="preference_activity_name">Foursquare Preferences</string>
   <string
-    name="tips_activity_name">Tips!</string>
+    name="tips_activity_name">foursquare Venue Tips</string>
   <string
-    name="venue_checkin_activity_name">Check-In</string>
+    name="venue_checkin_activity_name">Foursquare Venue Check-In</string>
   <string
-    name="venue_info_activity_name">Info</string>
+    name="venue_info_activity_name">Foursquare Venue</string>
   <string
     name="venue_search_activity_name">Foursquare Search</string>
   <string
@@ -31,7 +31,7 @@
     name="refresh_address_label">Refresh Address</string>
 
   <string
-    name="checkins_label">Checkins</string>
+    name="checkins_label">Friends</string>
   <string
     name="me_label">My Info</string>
   <string
@@ -41,12 +41,12 @@
   <string
     name="search_label">Search</string>
   <string
-    name="stats_label">Scoreboard</string>
+    name="stats_label">Leaderboard</string>
 
   <string
     name="search_hint">Search for something...</string>
-    
-    <string
+
+  <string
     name="tip_add_spinner_prompt">Select a List</string>
 
 </resources>

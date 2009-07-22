@@ -22,13 +22,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Address"
-
-        android:layout_marginTop="4dip"
-        android:paddingTop="2dip"
-        android:paddingBottom="2dip"
-        android:paddingLeft="5dip"
-
-        style="?android:attr/listSeparatorTextViewStyle" />
+        style="@style/listSeparatorTextViewStyle" />
 
       <EditText
         android:id="@+id/addressEditText"
@@ -75,13 +69,7 @@
         android:id="@+id/phoneLabel"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-
-        android:layout_marginTop="4dip"
-        android:paddingTop="2dip"
-        android:paddingBottom="2dip"
-        android:paddingLeft="5dip"
-
-        style="?android:attr/listSeparatorTextViewStyle"
+        style="@style/listSeparatorTextViewStyle"
 
         android:text="Phone" />
 

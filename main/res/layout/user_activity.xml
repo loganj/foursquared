@@ -64,13 +64,7 @@
     android:layout_alignParentRight="true"
     android:layout_alignParentLeft="true"
     android:layout_below="@id/photo"
-
-    android:layout_marginTop="4dip"
-    android:paddingTop="2dip"
-    android:paddingBottom="2dip"
-    android:paddingLeft="5dip"
-
-    style="?android:attr/listSeparatorTextViewStyle" />
+    style="@style/listSeparatorTextViewStyle" />
 
   <include
     android:id="@+id/venue"
@@ -97,12 +91,7 @@
     android:layout_alignParentLeft="true"
     android:layout_below="@id/venue"
 
-    android:layout_marginTop="8dip"
-    android:paddingTop="2dip"
-    android:paddingBottom="2dip"
-    android:paddingLeft="5dip"
-
-    style="?android:attr/listSeparatorTextViewStyle" />
+    style="@style/listSeparatorTextViewStyle" />
 
   <GridView
     android:id="@+id/badgesGrid"
