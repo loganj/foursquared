@@ -115,7 +115,7 @@ public class SearchVenuesActivity extends TabActivity {
         menu.add(Menu.NONE, MENU_ADD_VENUE, Menu.NONE, R.string.add_venue_label) //
                 .setIcon(android.R.drawable.ic_menu_add);
         menu.add(MENU_GROUP_ACTIVITIES, MENU_CHECKINS, Menu.NONE, R.string.checkins_label) //
-                .setIcon(android.R.drawable.ic_menu_agenda);
+                .setIcon(R.drawable.ic_menu_friends);
         menu.add(MENU_GROUP_ACTIVITIES, MENU_ME, Menu.NONE, R.string.me_label) //
                 .setIcon(android.R.drawable.ic_menu_info_details);
         Foursquared.addPreferencesToMenu(this, menu);
