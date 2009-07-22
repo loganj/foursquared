@@ -181,7 +181,7 @@ public class AddVenueActivity extends Activity {
         protected void onPostExecute(Venue venue) {
             setProgressBarIndeterminateVisibility(false);
             if (venue == null) {
-                Toast.makeText(AddVenueActivity.this, "Unable to add venue!", Toast.LENGTH_LONG);
+                Toast.makeText(AddVenueActivity.this, "Unable to add venue!", Toast.LENGTH_LONG).show();
             } else {
                 Intent intent = new Intent(AddVenueActivity.this, VenueActivity.class);
                 intent.putExtra(VenueActivity.EXTRA_VENUE, venue.getId());

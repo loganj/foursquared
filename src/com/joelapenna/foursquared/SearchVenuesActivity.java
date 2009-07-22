@@ -50,8 +50,9 @@ public class SearchVenuesActivity extends TabActivity {
     private static final int MENU_SEARCH = 0;
     private static final int MENU_REFRESH = 1;
     private static final int MENU_NEARBY = 2;
-    private static final int MENU_CHECKINS = 3;
-    private static final int MENU_ME = 4;
+    private static final int MENU_ADD_VENUE = 3;
+    private static final int MENU_CHECKINS = 4;
+    private static final int MENU_ME = 5;
 
     private static final int MENU_GROUP_SEARCH = 0;
     private static final int MENU_GROUP_ACTIVITIES = 1;
@@ -106,6 +107,8 @@ public class SearchVenuesActivity extends TabActivity {
                 .setIcon(android.R.drawable.ic_menu_compass);
         menu.add(MENU_GROUP_SEARCH, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
                 .setIcon(R.drawable.ic_menu_refresh);
+        menu.add(Menu.NONE, MENU_ADD_VENUE, Menu.NONE, R.string.add_venue_label) //
+                .setIcon(android.R.drawable.ic_menu_add);
         menu.add(MENU_GROUP_ACTIVITIES, MENU_CHECKINS, Menu.NONE, R.string.checkins_label) //
                 .setIcon(android.R.drawable.ic_menu_agenda);
         menu.add(MENU_GROUP_ACTIVITIES, MENU_ME, Menu.NONE, R.string.me_label) //
@@ -125,6 +128,9 @@ public class SearchVenuesActivity extends TabActivity {
                 return true;
             case MENU_REFRESH:
                 executeSearchTask(mSearchHolder.query);
+                return true;
+            case MENU_ADD_VENUE:
+                startActivity(new Intent(SearchVenuesActivity.this, AddVenueActivity.class));
                 return true;
             case MENU_CHECKINS:
                 if (DEBUG) Log.d(TAG, "firing checkins activity");
