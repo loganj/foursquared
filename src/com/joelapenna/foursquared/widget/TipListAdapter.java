@@ -2,10 +2,12 @@
  * Copyright 2008 Joe LaPenna
  */
 
-package com.joelapenna.foursquared;
+package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
+import com.joelapenna.foursquared.Foursquared;
+import com.joelapenna.foursquared.R;
 
 import android.content.Context;
 import android.text.Html;
@@ -20,7 +22,7 @@ import android.widget.TextView;
 /**
  * @author jlapenna
  */
-class TipListAdapter extends BaseAdapter {
+public class TipListAdapter extends BaseAdapter {
     private static final String TAG = "TipListAdapter";
     private static final boolean DEBUG = Foursquared.DEBUG;
 

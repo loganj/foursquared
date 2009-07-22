@@ -13,6 +13,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
+import com.joelapenna.foursquared.widget.TipListAdapter;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

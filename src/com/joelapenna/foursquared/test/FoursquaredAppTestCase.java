@@ -4,7 +4,6 @@
 
 package com.joelapenna.foursquared.test;
 
-import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquared.Foursquared;
 
 import android.test.ApplicationTestCase;
