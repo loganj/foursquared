@@ -3,10 +3,9 @@
 import sys
 import textwrap
 
-from xml.dom import pulldom
+import common
 
-BOOLEAN = "boolean"
-STRING = "String"
+from xml.dom import pulldom
 
 PARSER = """\
 /**
@@ -17,7 +16,7 @@ package com.joelapenna.foursquared.foursquare.parsers;
 
 import com.joelapenna.foursquared.foursquare.Foursquare;
 import com.joelapenna.foursquared.foursquare.error.FoursquareError;
-import com.joelapenna.foursquared.foursquare.types.%(class_name)s;
+import com.joelapenna.foursquared.foursquare.types.%(type_name)s;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -30,14 +29,14 @@ import java.io.IOException;
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
-public class %(class_name)sParser extends AbstractParser<%(class_name)s> {
-    private static final String TAG = "%(class_name)sParser";
+public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
+    private static final String TAG = "%(type_name)sParser";
     private static final boolean DEBUG = Foursquare.DEBUG;
 
     @Override
-    public %(class_name)s parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
+    public %(type_name)s parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError {
-        %(class_name)s %(top_node_name)s = new %(class_name)s();
+        %(type_name)s %(top_node_name)s = new %(type_name)s();
         int eventType = parser.nextToken();
 
         while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -49,7 +48,8 @@ public class %(class_name)sParser extends AbstractParser<%(class_name)s> {
                     if ("error".equals(name)) {
                         throw new FoursquareError(parser.getText());
                     } else if ("%(top_node_name)s".equals(name)) {
-                        parse%(class_name)sTag(parser, %(top_node_name)s);
+                        parse%(type_name)sTag(parser, %(top_node_name)s);
+                        break;
                     }
 
                 default:
@@ -60,16 +60,21 @@ public class %(class_name)sParser extends AbstractParser<%(class_name)s> {
         return %(top_node_name)s;
     }
 
-    public void parse%(class_name)sTag(XmlPullParser parser, %(class_name)s %(top_node_name)s) throws XmlPullParserException,
+    public void parse%(type_name)sTag(XmlPullParser parser, %(type_name)s %(top_node_name)s) throws XmlPullParserException,
             IOException {
         assert parser.getName() == "%(top_node_name)s";
         if (DEBUG) Log.d(TAG, "parsing %(top_node_name)s stanza");
         while (parser.nextTag() != XmlPullParser.END_TAG) {
+            if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
             String name = parser.getName();
 %(stanzas)s            }
         }
     }
 }
+"""
+BOOLEAN_STANZA = """\
+            } else if ("%(name)s".equals(name)) {
+                %(top_node_name)s.set%(camel_name)s(parser.nextText().equals("1"));
 """
 STANZA = """\
             } else if ("%(name)s".equals(name)) {
@@ -78,34 +83,20 @@ STANZA = """\
 
 
 def main():
-  doc = pulldom.parse(sys.argv[1])
-
-  class_name = None
-  attributes = {}
-
-  for event, node in doc:
-    if event == pulldom.START_ELEMENT:
-      if class_name is None:
-        top_node_name = node.localName
-        class_name = node.localName.capitalize()
-        continue
-      elif node.nodeValue is not None and node.nodeValue in ["0", "1"]:
-        typ = BOOLEAN
-      elif node.hasChildNodes():
-        typ = node.nodeValue.capitalize()
-      else:
-        typ = STRING
-      attributes.setdefault(node.localName, typ)
-
-  GenerateClass(top_node_name, class_name, attributes)
+  type_name, top_node_name, attributes = common.WalkNodesForAttributes(
+      sys.argv[1])
+  GenerateClass(type_name, top_node_name, attributes)
 
 
-def GenerateClass(top_node_name, class_name, attributes):
+def GenerateClass(type_name, top_node_name, attributes):
   stanzas = []
   for name in sorted(attributes):
     typ = attributes[name]
     replacements = Replacements(top_node_name, name, typ)
-    stanzas.append(STANZA % replacements)
+    if typ == common.BOOLEAN:
+      stanzas.append(BOOLEAN_STANZA % replacements)
+    else:
+      stanzas.append(STANZA % replacements)
   if stanzas:
     stanzas[0] = stanzas[0].replace('} else ', '', 1)
 
@@ -116,7 +107,7 @@ def GenerateClass(top_node_name, class_name, attributes):
 
 def Replacements(top_node_name, name, typ):
   # CameCaseClassName
-  class_name = ''.join([word.capitalize() for word in top_node_name.split('_')])
+  type_name = ''.join([word.capitalize() for word in top_node_name.split('_')])
   # CamelCaseClassName
   camel_name = ''.join([word.capitalize() for word in name.split('_')])
   # camelCaseLocalName
@@ -125,7 +116,7 @@ def Replacements(top_node_name, name, typ):
   field_name = 'm' + camel_name
 
   return {
-      'class_name': class_name,
+      'type_name': type_name,
       'name': name,
       'top_node_name': top_node_name,
       'camel_name': camel_name,
