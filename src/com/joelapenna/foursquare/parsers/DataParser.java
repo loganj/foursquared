@@ -5,6 +5,7 @@
 package com.joelapenna.foursquare.parsers;
 
 import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Data;
 
@@ -16,18 +17,18 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-06-02 23:02:36.288171
+ * Auto-generated: 2009-06-09 22:40:21.298396
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
 public class DataParser extends AbstractParser<Data> {
     private static final String TAG = "DataParser";
-    private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
+    private static final boolean DEBUG = Foursquare.DEBUG;
 
     @Override
     public Data parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
-            FoursquareParseException {
+            FoursquareError, FoursquareParseException {
         parser.require(XmlPullParser.START_TAG, null, "data");
 
         Data data = new Data();
@@ -43,7 +44,8 @@ public class DataParser extends AbstractParser<Data> {
                 data.setMessage(parser.nextText());
 
             } else if ("status".equals(name)) {
-                data.setStatus(parser.nextText().equals("1"));
+                data.setStatus(parser.nextText());
+
             } else {
                 // Consume something we don't understand.
                 if (DEBUG) Log.d(TAG, "Found tag that we don't recognize: " + name);

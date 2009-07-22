@@ -5,6 +5,7 @@
 package com.joelapenna.foursquare.parsers;
 
 import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Badge;
 
@@ -16,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-06-02 23:02:35.637856
+ * Auto-generated: 2009-06-09 22:40:20.617208
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -27,7 +28,7 @@ public class BadgeParser extends AbstractParser<Badge> {
 
     @Override
     public Badge parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
-            FoursquareParseException {
+            FoursquareError, FoursquareParseException {
         parser.require(XmlPullParser.START_TAG, null, "badge");
 
         Badge badge = new Badge();
@@ -44,6 +45,7 @@ public class BadgeParser extends AbstractParser<Badge> {
 
             } else if ("name".equals(name)) {
                 badge.setName(parser.nextText());
+
             } else {
                 // Consume something we don't understand.
                 if (DEBUG) Log.d(TAG, "Found tag that we don't recognize: " + name);
