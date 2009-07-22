@@ -10,6 +10,7 @@ import com.joelapenna.foursquare.types.Auth;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared;
 
@@ -84,6 +85,10 @@ public class Foursquare {
     public Group checkins(String cityId, String lat, String lng) throws FoursquareError,
             FoursquareParseException, IOException {
         return mFoursquare.checkins(cityId, lat, lng);
+    }
+
+    public User user() throws FoursquareError, FoursquareParseException, IOException {
+        return mFoursquare.user();
     }
 
     public Venue venue(String id) throws FoursquareError, FoursquareParseException, IOException {

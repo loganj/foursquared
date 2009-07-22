@@ -12,11 +12,13 @@ import com.joelapenna.foursquare.parsers.CheckinResponseParser;
 import com.joelapenna.foursquare.parsers.DataParser;
 import com.joelapenna.foursquare.parsers.GroupParser;
 import com.joelapenna.foursquare.parsers.TipParser;
+import com.joelapenna.foursquare.parsers.UserParser;
 import com.joelapenna.foursquare.parsers.VenueParser;
 import com.joelapenna.foursquare.types.Auth;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.error.FoursquaredCredentialsError;
 
@@ -49,6 +51,7 @@ class FoursquareHttpApi extends HttpApi {
     private static final String URL_API_LOGIN = URL_API_BASE + "/login";
     private static final String URL_API_TODO = URL_API_BASE + "/todo";
     private static final String URL_API_UPDATE = URL_API_BASE + "/update";
+    private static final String URL_API_USER = URL_API_BASE + "/user";
     private static final String URL_API_VENUE = URL_API_BASE + "/venue";
     private static final String URL_API_VENUES = URL_API_BASE + "/venues";
 
@@ -170,6 +173,10 @@ class FoursquareHttpApi extends HttpApi {
                 new BasicNameValuePair("status", status), //
                 new BasicNameValuePair("tipid", tipid) //
         );
+    }
+
+    User user() throws FoursquareError, FoursquareParseException, IOException {
+        return (User)doHttpPost(URL_API_USER, new UserParser());
     }
 
     /**
