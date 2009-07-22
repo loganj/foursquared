@@ -171,7 +171,7 @@ public class CheckinsMapActivity extends MapActivity {
     private void recenterMap() {
         GeoPoint center = mMyLocationOverlay.getMyLocation();
         if (center != null
-                && SearchVenuesActivity.searchResultsObservable.getQuery() == SearchVenuesActivity.QUERY_NEARBY) {
+                && CheckinsActivity.searchResultsObservable.getQuery() == CheckinsActivity.QUERY_NEARBY) {
             if (DEBUG) Log.d(TAG, "recenterMap via MyLocation as we are doing a nearby search");
             mMapController.animateTo(center);
             mMapController.setZoom(16);
