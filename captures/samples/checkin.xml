@@ -25,6 +25,7 @@
     <relative_time>2 hrs ago</relative_time>
     <stats></stats>
     <alert></alert>
+    <display></display>
     <!-- Used after an incoming.php based checkin. -->
     <url>http://playfoursquare.com/incoming/breakdown?cid=67889&amp;uid=9232&amp;client=iphone</url>
     <status>0</status>

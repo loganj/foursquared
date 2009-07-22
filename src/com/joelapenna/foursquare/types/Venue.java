@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Auto-generated: 2009-05-03 01:06:11.478097
+ * Auto-generated: 2009-05-03 01:13:16.154141
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Venue implements Parcelable, FoursquareType {
@@ -27,6 +27,7 @@ public class Venue implements Parcelable, FoursquareType {
     private boolean mNewVenue;
     private String mNumCheckins;
     private String mState;
+    private String mTag;
     private String mVenueid;
     private String mVenuename;
     private String mYelp;
@@ -147,6 +148,14 @@ public class Venue implements Parcelable, FoursquareType {
         mState = state;
     }
     
+    public String getTag() {
+        return mTag;
+    }
+    
+    public void setTag(String tag) {
+        mTag = tag;
+    }
+    
     public String getVenueid() {
         return mVenueid;
     }
@@ -205,6 +214,7 @@ public class Venue implements Parcelable, FoursquareType {
         dest.writeString(this.mMapurl);    
         dest.writeString(this.mNumCheckins);    
         dest.writeString(this.mState);    
+        dest.writeString(this.mTag);    
         dest.writeString(this.mVenueid);    
         dest.writeString(this.mVenuename);    
         dest.writeString(this.mYelp);    
@@ -228,6 +238,7 @@ public class Venue implements Parcelable, FoursquareType {
         this.mMapurl = source.readString();    
         this.mNumCheckins = source.readString();    
         this.mState = source.readString();    
+        this.mTag = source.readString();    
         this.mVenueid = source.readString();    
         this.mVenuename = source.readString();    
         this.mYelp = source.readString();    

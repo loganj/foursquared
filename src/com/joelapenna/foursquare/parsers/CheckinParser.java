@@ -6,6 +6,7 @@ package com.joelapenna.foursquare.parsers;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
+import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Checkin;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -16,6 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
+ * Auto-generated: 2009-05-03 01:13:37.268358
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -25,7 +27,7 @@ public class CheckinParser extends AbstractParser<Checkin> {
 
     @Override
     public Checkin parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
-            FoursquareError {
+            FoursquareError, FoursquareParseException {
         Checkin checkin = new Checkin();
         int eventType = parser.getEventType();
 
@@ -41,6 +43,7 @@ public class CheckinParser extends AbstractParser<Checkin> {
                         parseCheckinTag(parser, checkin);
                         return checkin;
                     }
+                    break;
 
                 default:
                     if (DEBUG) Log.d(TAG, "Unhandled Event");
@@ -51,7 +54,7 @@ public class CheckinParser extends AbstractParser<Checkin> {
     }
 
     public void parseCheckinTag(XmlPullParser parser, Checkin checkin) throws XmlPullParserException,
-            IOException {
+            IOException, FoursquareError, FoursquareParseException {
         assert parser.getName() == "checkin";
         if (DEBUG) Log.d(TAG, "parsing checkin stanza");
 
@@ -82,6 +85,9 @@ public class CheckinParser extends AbstractParser<Checkin> {
 
             } else if ("dball_default".equals(name)) {
                 checkin.setDballDefault(parser.nextText().equals("1"));
+
+            } else if ("display".equals(name)) {
+                checkin.setDisplay(parser.nextText());
 
             } else if ("email".equals(name)) {
                 checkin.setEmail(parser.nextText());
