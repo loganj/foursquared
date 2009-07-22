@@ -51,6 +51,7 @@ public class GroupParser extends AbstractParser<Group> {
                         parseGroupTag(parser, items);
                         groups.add(items);
                     }
+                    break;
 
                 default:
                     if (DEBUG) Log.d(TAG, "Unhandled Event");
