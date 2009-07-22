@@ -89,42 +89,6 @@ public class Preferences {
         return true;
     }
 
-    /**
-     * Read credentials from preferences and attempt to log in.
-     * 
-     * @param preferences
-     * @param foursquare
-     * @param doAuthExchange
-     * @return
-     * @throws FoursquareCredentialsError
-     * @throws FoursquareException
-     * @throws IOException
-     */
-    static User verifyCredentials(Resources resources, SharedPreferences preferences,
-            boolean doAuthExchange) throws FoursquareCredentialsError, FoursquareException,
-            IOException {
-        if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "verifyCredentials()");
-
-        String phoneNumber = preferences.getString(PREFERENCE_PHONE, null);
-        String password = preferences.getString(PREFERENCE_PASSWORD, null);
-
-        if (TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(password)) {
-            throw new FoursquareCredentialsError("Phone number or password not set in preferences.");
-        }
-
-        Foursquare foursquare = new Foursquare( //
-                resources.getString(R.string.oauth_consumer_key), //
-                resources.getString(R.string.oauth_consumer_secret));
-        foursquare.setCredentials(phoneNumber, password);
-
-        String oAuthConsumerKey = preferences.getString(PREFERENCE_OAUTH_TOKEN, null);
-        String oAuthConsumerSecret = preferences.getString(PREFERENCE_OAUTH_TOKEN, null);
-
-        foursquare.setOAuthConsumerCredentials(oAuthConsumerKey, oAuthConsumerSecret);
-
-        return foursquare.user(null, false, false);
-    }
-
     static void storeAuthExchangeCredentials(final Editor editor, Credentials credentials)
             throws FoursquareCredentialsError {
         if (credentials != null && credentials.getOauthToken() != null
