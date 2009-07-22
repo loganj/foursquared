@@ -8,7 +8,6 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
@@ -316,9 +315,7 @@ public class SearchVenuesActivity extends TabActivity {
         mTabHost.addTab(mTabHost.newTabSpec("map")
                 // Map Tab
                 .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_mapmode))
-                .setContent(intent) // The
-                // contained
-                // activity
+                .setContent(intent) // The contained activity
                 );
         mTabHost.setCurrentTab(0);
     }

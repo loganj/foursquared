@@ -14,7 +14,6 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Stats;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
-import com.joelapenna.foursquared.util.IconsIterator;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -34,8 +33,6 @@ import java.util.Observer;
 public class SearchVenuesMapActivity extends MapActivity {
     public static final String TAG = "SearchVenuesMapActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
-
-    private final IconsIterator mIconsIterator = new IconsIterator();
 
     private Venue mTappedVenue;
 
@@ -128,9 +125,6 @@ public class SearchVenuesMapActivity extends MapActivity {
         }
         if (DEBUG) Log.d(TAG, "Loading search results");
 
-        mIconsIterator.icons.reset();
-        mIconsIterator.beenthereIcons.reset();
-
         final int groupCount = searchResults.size();
         for (int groupIndex = 0; groupIndex < groupCount; groupIndex++) {
             Group group = (Group)searchResults.get(groupIndex);
@@ -159,7 +153,7 @@ public class SearchVenuesMapActivity extends MapActivity {
 
     /**
      * Create an overlay that contains a specific group's list of mappable venues.
-     * 
+     *
      * @param group
      * @return
      */
@@ -178,10 +172,8 @@ public class SearchVenuesMapActivity extends MapActivity {
         }
         if (mappableVenues.size() > 0) {
             VenueItemizedOverlay mappableVenuesOverlay = new VenueItemizedOverlayWithButton( //
-                    this.getResources().getDrawable(
-                            ((Integer)mIconsIterator.icons.next()).intValue()), //
-                    this.getResources().getDrawable(
-                            ((Integer)mIconsIterator.beenthereIcons.next()).intValue()));
+                    this.getResources().getDrawable(R.drawable.map_marker_blue), //
+                    this.getResources().getDrawable(R.drawable.map_marker_blue_muted));
             mappableVenuesOverlay.setGroup(mappableVenues);
             return mappableVenuesOverlay;
         } else {

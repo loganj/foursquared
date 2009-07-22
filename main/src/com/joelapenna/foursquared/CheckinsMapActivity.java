@@ -13,7 +13,6 @@ import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.CheckinItemizedOverlay;
-import com.joelapenna.foursquared.util.IconsIterator;
 import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.content.Intent;
@@ -34,8 +33,6 @@ import java.util.Observer;
 public class CheckinsMapActivity extends MapActivity {
     public static final String TAG = "CheckinsMapActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
-
-    private final IconsIterator mIconsIterator = new IconsIterator();
 
     private Venue mTappedVenue;
 
@@ -121,8 +118,6 @@ public class CheckinsMapActivity extends MapActivity {
         }
         if (DEBUG) Log.d(TAG, "Loading search results");
 
-        mIconsIterator.allIcons.reset();
-
         // One CheckinItemizedOverlay per group!
         CheckinItemizedOverlay mappableCheckinsOverlay = createMappableCheckinsOverlay(checkins);
 
@@ -165,9 +160,7 @@ public class CheckinsMapActivity extends MapActivity {
         }
         if (mappableCheckins.size() > 0) {
             CheckinItemizedOverlay mappableCheckinsOverlay = new CheckinItemizedOverlayWithButton( //
-                    this.getResources()
-                            .getDrawable(
-                            ((Integer)mIconsIterator.allIcons.next()).intValue()));
+                    this.getResources().getDrawable(R.drawable.map_marker_blue));
             mappableCheckinsOverlay.setGroup(mappableCheckins);
             return mappableCheckinsOverlay;
         } else {
