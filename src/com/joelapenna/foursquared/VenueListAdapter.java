@@ -32,7 +32,7 @@ class VenueListAdapter extends BaseAdapter {
 
     /**
      * The number of items in the list is determined by the number of venues in our array.
-     * 
+     *
      * @see android.widget.ListAdapter#getCount()
      */
     @Override
@@ -48,7 +48,7 @@ class VenueListAdapter extends BaseAdapter {
 
     /**
      * Use the position index as a unique id.
-     * 
+     *
      * @see android.widget.ListAdapter#getItemId(int)
      */
     @Override
@@ -59,7 +59,7 @@ class VenueListAdapter extends BaseAdapter {
 
     /**
      * Make a view to hold each row.
-     * 
+     *
      * @see android.widget.ListAdapter#getView(int, android.view.View, android.view.ViewGroup)
      */
     @Override
@@ -89,7 +89,6 @@ class VenueListAdapter extends BaseAdapter {
             holder = (ViewHolder)convertView.getTag();
         }
 
-        Log.d(TAG, holder.toString());
         Venue venue = (Venue)getItem(position);
         if (DEBUG) Log.d(TAG, "getView() is: " + venue);
         holder.name.setText(venue.getVenuename());
