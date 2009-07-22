@@ -20,7 +20,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,15 +51,12 @@ public class VenueActivity extends TabActivity {
     private static final int MENU_CHECKIN_TWITTER = 2;
     private static final int MENU_CHECKIN_SILENT = 3;
 
-    VenueObservable venueObservable = new VenueObservable();
-    CheckinsObservable checkinsObservable = new CheckinsObservable();
+    final VenueObservable venueObservable = new VenueObservable();
+    final CheckinsObservable checkinsObservable = new CheckinsObservable();
 
-    private String mVenueId = null;
-    private Venue mVenue = null;
-    private Group mCheckins = null;
-    private com.joelapenna.foursquare.types.classic.Checkin mCheckin = null;
+    private final StateHolder mStateHolder = new StateHolder();
 
-    private HashSet<Object> mProgressBarTasks = new HashSet<Object>();
+    private final HashSet<Object> mProgressBarTasks = new HashSet<Object>();
 
     private MenuItem mShareToggle;
     private MenuItem mTwitterToggle;
@@ -72,29 +68,27 @@ public class VenueActivity extends TabActivity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.venue_activity);
 
-        mVenueId = getIntent().getExtras().getString(EXTRA_VENUE);
-
         initTabHost();
 
         StateHolder holder = (StateHolder)getLastNonConfigurationInstance();
 
         if (holder != null) {
-            if (holder.venueId != null) {
-                mVenueId = holder.venueId;
-            }
-            if (holder.venue != null) {
-                setVenue(holder.venue);
+            if (holder.venue == null) {
+                new VenueTask().execute(mStateHolder.venueId);
             } else {
-                new VenueTask().execute(mVenueId);
+                if (DEBUG) Log.d(TAG, "Restoring Venue: " + holder.venue);
+                setVenue(holder.venue);
             }
 
-            if (holder.checkins != null) {
-                setCheckins(holder.checkins);
-            } else {
+            if (holder.checkins == null) {
                 new CheckinsTask().execute();
+            } else {
+                if (DEBUG) Log.d(TAG, "Restoring checkins: " + holder.checkins);
+                setCheckins(holder.checkins);
             }
         } else {
-            new VenueTask().execute(mVenueId);
+            mStateHolder.venueId = getIntent().getExtras().getString(EXTRA_VENUE);
+            new VenueTask().execute(mStateHolder.venueId);
             new CheckinsTask().execute();
         }
     }
@@ -126,7 +120,7 @@ public class VenueActivity extends TabActivity {
         if (DEBUG) Log.d(TAG, "onPrepareOptions: mTwitterToggle: " + mTwitterToggle.isChecked());
         if (DEBUG) Log.d(TAG, "onPrepareOptions: mShareToggle: " + mShareToggle.isChecked());
 
-        mCheckinMenuItem.setEnabled((mVenue != null));
+        mCheckinMenuItem.setEnabled((mStateHolder.venue != null));
 
         if (mTwitterToggle.isChecked()) {
             mTwitterToggle.setIcon(android.R.drawable.button_onoff_indicator_on);
@@ -158,7 +152,7 @@ public class VenueActivity extends TabActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_CHECKIN:
-                new VenueCheckinTask().execute(mVenue);
+                new VenueCheckinTask().execute(mStateHolder.venue);
                 return true;
             case MENU_CHECKIN_TWITTER:
                 item.setChecked(!item.isChecked());
@@ -175,28 +169,23 @@ public class VenueActivity extends TabActivity {
     public Dialog onCreateDialog(int id) {
         switch (id) {
             case DIALOG_CHECKIN:
-                com.joelapenna.foursquare.types.classic.Checkin checkin = mCheckin;
+                com.joelapenna.foursquare.types.classic.Checkin checkin = mStateHolder.checkin;
 
                 WebView webView = new WebView(this);
                 webView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
                         LayoutParams.FILL_PARENT));
                 webView.loadUrl(checkin.getUrl());
-                Spanned title = Html.fromHtml(checkin.getMessage());
                 return new AlertDialog.Builder(this) // the builder
                         .setView(webView) // use a web view
                         .setIcon(android.R.drawable.ic_dialog_info) // show an icon
-                        .setTitle(title).create(); // return it.
+                        .setTitle(Html.fromHtml(checkin.getMessage())).create(); // return it.
         }
         return null;
     }
 
     @Override
     public Object onRetainNonConfigurationInstance() {
-        StateHolder holder = new StateHolder();
-        holder.venue = mVenue;
-        holder.venueId = mVenueId;
-        holder.checkins = mCheckins;
-        return holder;
+        return mStateHolder;
     }
 
     public void startProgressBar(String taskId) {
@@ -265,27 +254,15 @@ public class VenueActivity extends TabActivity {
     }
 
     private void setVenue(Venue venue) {
-        mVenue = venue;
+        mStateHolder.venue = venue;
         venueObservable.notifyObservers(venue);
-        onVenueSet(mVenue);
+        onVenueSet(mStateHolder.venue);
 
     }
 
     private void setCheckins(Group checkins) {
-        Group filteredCheckins = new Group();
-        if (checkins == null) {
-            filteredCheckins.setType("Recent Checkins");
-        } else {
-            filteredCheckins.setType(checkins.getType());
-            for (int i = 0; i < checkins.size(); i++) {
-                Checkin checkin = (Checkin)checkins.get(i);
-                if (checkin.getVenue() != null && checkin.getVenue().getId().equals(mVenueId)) {
-                    filteredCheckins.add(checkin);
-                }
-            }
-        }
-        mCheckins = filteredCheckins;
-        checkinsObservable.notifyObservers(mCheckins);
+        mStateHolder.checkins = checkins;
+        checkinsObservable.notifyObservers(checkins);
     }
 
     class VenueObservable extends Observable {
@@ -295,7 +272,7 @@ public class VenueActivity extends TabActivity {
         }
 
         public Venue getVenue() {
-            return mVenue;
+            return mStateHolder.venue;
         }
     }
 
@@ -306,7 +283,7 @@ public class VenueActivity extends TabActivity {
         }
 
         public Group getCheckins() {
-            return mCheckins;
+            return mStateHolder.checkins;
         }
     }
 
@@ -390,7 +367,7 @@ public class VenueActivity extends TabActivity {
         @Override
         public void onPostExecute(com.joelapenna.foursquare.types.classic.Checkin checkin) {
             try {
-                mCheckin = checkin;
+                mStateHolder.checkin = checkin;
                 if (checkin == null) {
                     mCheckinMenuItem.setEnabled(true);
                     Toast.makeText(VenueActivity.this, "Unable to checkin! (FIX THIS!)",
@@ -441,7 +418,7 @@ public class VenueActivity extends TabActivity {
         public void onPostExecute(Group checkins) {
             if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
             try {
-                setCheckins(checkins);
+                setCheckins(filterCheckins(checkins));
             } finally {
                 stopProgressBar(PROGRESS_BAR_TASK_ID);
             }
@@ -452,11 +429,30 @@ public class VenueActivity extends TabActivity {
             stopProgressBar(PROGRESS_BAR_TASK_ID);
         }
 
+        private Group filterCheckins(Group checkins) {
+            Group filteredCheckins = new Group();
+            if (checkins == null) {
+                Log.d(TAG, "setCheckins provided null, faking it.");
+                filteredCheckins.setType("Recent Checkins");
+            } else {
+                filteredCheckins.setType(checkins.getType());
+                for (int i = 0; i < checkins.size(); i++) {
+                    Checkin checkin = (Checkin)checkins.get(i);
+                    if (checkin.getVenue() != null
+                            && checkin.getVenue().getId().equals(mStateHolder.venueId)) {
+                        filteredCheckins.add(checkin);
+                    }
+                }
+            }
+            return filteredCheckins;
+        }
+
     }
 
     private static final class StateHolder {
-        Venue venue;
-        String venueId;
-        Group checkins;
+        Venue venue = null;
+        String venueId = null;
+        Group checkins = null;
+        com.joelapenna.foursquare.types.classic.Checkin checkin = null;
     }
 }
