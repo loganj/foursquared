@@ -41,17 +41,17 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         String phoneNumber = settings.getString(Foursquared.PREFERENCE_PHONE, null);
 
-        if (phoneNumber == null || TextUtils.isEmpty(phoneNumber)) {
+        if (TextUtils.isEmpty(phoneNumber)) {
+            if (DEBUG) Log.d(TAG, "Phone number not found.");
             TelephonyManager telephony = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
             phoneNumber = telephony.getLine1Number();
-            if (phoneNumber.startsWith("1")) {
+            if (!TextUtils.isEmpty(phoneNumber) && phoneNumber.startsWith("1")) {
                 phoneNumber = phoneNumber.substring(1);
+                if (DEBUG) Log.d(TAG, "Phone number not found. Setting it: " + phoneNumber);
+                Editor editor = settings.edit();
+                editor.putString(Foursquared.PREFERENCE_PHONE, phoneNumber);
+                editor.commit();
             }
-
-            if (DEBUG) Log.d(TAG, "Phone number not found. Setting it: " + phoneNumber);
-            Editor editor = settings.edit();
-            editor.putString(Foursquared.PREFERENCE_PHONE, phoneNumber);
-            editor.commit();
         }
     }
 }
