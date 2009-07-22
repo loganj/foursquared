@@ -37,5 +37,5 @@
       android:summaryOn="By default, tweet your checkins."
       android:summaryOff="By default, do not tweet your checkins." />
   </PreferenceCategory>
-  
+
 </PreferenceScreen>
