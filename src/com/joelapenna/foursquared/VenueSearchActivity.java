@@ -10,7 +10,6 @@ import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
-import com.joelapenna.foursquared.test.FoursquaredTest;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 
 import android.app.ListActivity;

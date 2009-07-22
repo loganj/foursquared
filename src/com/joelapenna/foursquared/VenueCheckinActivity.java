@@ -29,10 +29,12 @@ import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import java.io.IOException;
 
@@ -118,9 +120,22 @@ public class VenueCheckinActivity extends ListActivity {
         });
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        mSilentToggle = (ToggleButton)findViewById(R.id.silentToggle);
-        mSilentToggle.setChecked(settings.getBoolean(Foursquared.PREFERENCE_SILENT_CHECKIN, false));
+
         mTwitterToggle = (ToggleButton)findViewById(R.id.twitterToggle);
+        mSilentToggle = (ToggleButton)findViewById(R.id.silentToggle);
+        mSilentToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mTwitterToggle.setChecked(false);
+                    mTwitterToggle.setEnabled(false);
+                } else {
+                    mTwitterToggle.setEnabled(true);
+                }
+            }
+        });
+        
+        mSilentToggle.setChecked(settings.getBoolean(Foursquared.PREFERENCE_SILENT_CHECKIN, false));
         mTwitterToggle.setChecked(settings
                 .getBoolean(Foursquared.PREFERENCE_TWITTER_CHECKIN, false));
     }
