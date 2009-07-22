@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-  <!-- Copyright 2008 Romain Guy -->
+  <!-- Copyright 2009 Joe LaPenna -->
 
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
@@ -7,7 +7,6 @@
   android:layout_height="?android:attr/listPreferredItemHeight"
   android:padding="6dip">
 
-  <!--  For now! We don't support any kind of image so make the visibility "gone." -->
   <CheckBox
     android:id="@+id/checkbox"
 
@@ -16,7 +15,9 @@
 
     android:layout_alignParentTop="true"
     android:layout_alignParentBottom="true"
-    android:layout_marginRight="6dip" />
+    android:layout_marginRight="6dip"
+
+    android:enabled="false" />
 
   <TextView
     android:id="@+id/firstLine"

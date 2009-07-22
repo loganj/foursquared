@@ -18,8 +18,7 @@
         android:text="Check-in here" />
     </TableRow>
 
-    <TableRow
-      android:paddingTop="16dip">
+    <TableRow>
       <ToggleButton
         android:id="@+id/silentToggle"
         android:layout_height="wrap_content"

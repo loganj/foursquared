@@ -37,7 +37,7 @@ public class VenueSearchActivity extends ListActivity {
     private static final int MENU_SEARCH = 0;
     private static final int MENU_REFRESH = 1;
     private static final int MENU_NEARBY = 2;
-    
+
     private static final String QUERY_NEARBY = null;
 
     private SearchAsyncTask mSearchTask;
@@ -76,9 +76,9 @@ public class VenueSearchActivity extends ListActivity {
         menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.search_label) // More stuff.
                 .setIcon(android.R.drawable.ic_menu_search);
         menu.add(Menu.NONE, MENU_NEARBY, Menu.NONE, R.string.nearby_label) // More stuff.
-        .setIcon(android.R.drawable.ic_menu_compass);
+                .setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, MENU_REFRESH, Menu.NONE, R.string.refresh_label) // More stuff.
-        .setIcon(android.R.drawable.ic_search_category_default);
+                .setIcon(android.R.drawable.ic_search_category_default);
         return true;
     }
 
@@ -113,7 +113,7 @@ public class VenueSearchActivity extends ListActivity {
     public Object onRetainNonConfigurationInstance() {
         return mQuery;
     }
-    
+
     @Override
     public void onStop() {
         super.onStop();
@@ -166,14 +166,16 @@ public class VenueSearchActivity extends ListActivity {
         int groupCount = groups.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
             Group group = (Group)groups.get(groupsIndex);
-            VenueListAdapter groupAdapter = new VenueListAdapter(this, group);
-            if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
-            mainAdapter.addSection(group.getType(), groupAdapter);
+            if (group.size() > 0) {
+                VenueListAdapter groupAdapter = new VenueListAdapter(this, group);
+                if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
+                mainAdapter.addSection(group.getType(), groupAdapter);
+            }
         }
         mainAdapter.notifyDataSetInvalidated();
     }
 
-    class SearchAsyncTask extends AsyncTask<Void, Void, Group> {
+    private class SearchAsyncTask extends AsyncTask<Void, Void, Group> {
 
         @Override
         public void onPreExecute() {

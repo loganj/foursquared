@@ -7,11 +7,19 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.types.Venue;
 
 import android.app.TabActivity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import android.view.Window;
 import android.widget.TabHost;
 import android.widget.TextView;
+
+import java.util.HashSet;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -20,22 +28,74 @@ public class VenueActivity extends TabActivity {
     private static final String TAG = "VenueActivity";
     private static final boolean DEBUG = Foursquared.DEBUG;
 
+    public static final String ACTION_PROGRESS_BAR_START = "com.joelapenna.foursquared.VenueActivity.PROGRESS_BAR_START";
+    public static final String ACTION_PROGRESS_BAR_STOP = "com.joelapenna.foursquared.VenueActivity.PROGRESS_BAR_STOP";
+    public static final String EXTRA_TASK_ID = "task_id";
     Venue mVenue;
+
+    ProgressBarHandler mProgressBarHandler = new ProgressBarHandler();
+    BroadcastReceiver mBroadcastReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.venue_activity);
 
         setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
-        //Venue venue = FoursquaredTest.createTestVenue("A");
-        //venue.setGeolat("0");
-        //venue.setGeolong("0");
-        //setVenue(venue);
-        setupTabHost();
+        //setVenue(FoursquaredTest.createTestVenue("Anonymous"));
+        // Venue venue = FoursquaredTest.createTestVenue("A");
+        // venue.setGeolat("0");
+        // venue.setGeolong("0");
+        // setVenue(venue);
+
+        // We register this early (not in onStart) because our children might end up calling out to
+        // this.
+        initBroadcastReceiver();
+
+        initTabHost();
     }
 
-    private void setupTabHost() {
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (DEBUG) Log.d(TAG, "onStart()");
+    }
+
+    private void initBroadcastReceiver() {
+        if (DEBUG) Log.d(TAG, "initBroadcastReceiver()");
+        mBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (DEBUG) Log.d(TAG, "BrodcastReceiver: onReceive() " + intent);
+                if (ACTION_PROGRESS_BAR_START.equals(intent.getAction())) {
+                    Message msg = mProgressBarHandler
+                            .obtainMessage(ProgressBarHandler.MESSAGE_PROGRESS_BAR_START);
+                    msg.obj = intent.getStringExtra(EXTRA_TASK_ID);
+                    msg.sendToTarget();
+                } else if (ACTION_PROGRESS_BAR_STOP.equals(intent.getAction())) {
+                    Message msg = mProgressBarHandler
+                            .obtainMessage(ProgressBarHandler.MESSAGE_PROGRESS_BAR_STOP);
+                    msg.obj = intent.getStringExtra(EXTRA_TASK_ID);
+                    msg.sendToTarget();
+                }
+            }
+        };
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_PROGRESS_BAR_STOP);
+        filter.addAction(ACTION_PROGRESS_BAR_START);
+        registerReceiver(mBroadcastReceiver, filter);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStart();
+        if (DEBUG) Log.d(TAG, "onStop()");
+        unregisterReceiver(mBroadcastReceiver);
+    }
+
+    private void initTabHost() {
         final TabHost tabHost = this.getTabHost();
         String tag;
         Intent intent;
@@ -76,4 +136,33 @@ public class VenueActivity extends TabActivity {
         mVenue = venue;
     }
 
+    private class ProgressBarHandler extends Handler {
+
+        static final int MESSAGE_PROGRESS_BAR_START = 0;
+        static final int MESSAGE_PROGRESS_BAR_STOP = 1;
+
+        private HashSet<Object> mTasks = new HashSet<Object>();
+
+        @Override
+        public void handleMessage(Message msg) {
+            if (DEBUG) Log.d(TAG, "Recieved message:" + msg.toString());
+            switch (msg.what) {
+                case MESSAGE_PROGRESS_BAR_START:
+                    boolean added = mTasks.add(msg.obj);
+                    if (!added) {
+                        throw new IllegalStateException("Task already being tracked: " + msg.obj);
+                    }
+                    setProgressBarIndeterminateVisibility(true);
+                    break;
+                case MESSAGE_PROGRESS_BAR_STOP:
+                    boolean removed = mTasks.remove(msg.obj);
+                    if (!removed) {
+                        throw new IllegalStateException("Task not being tracked: " + msg.obj);
+                    } else if (mTasks.isEmpty()) {
+                        setProgressBarIndeterminateVisibility(false);
+                    }
+                    break;
+            }
+        }
+    }
 }

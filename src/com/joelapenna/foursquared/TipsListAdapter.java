@@ -4,11 +4,11 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
 
 import android.content.Context;
 import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,30 +17,24 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author jlapenna
  */
 class TipsListAdapter extends BaseAdapter {
-    private static final String TAG = "TipsListAdapter";
+    private static final String TAG = "TipListAdapter";
     private static final boolean DEBUG = Foursquared.DEBUG;
 
     private LayoutInflater mInflater;
-    private List<Tip> mTips = new ArrayList<Tip>();
+    private Group mTips;
 
-    // Converting a string to an html span is actually pretty resource intensive, use a cache...
-    // This causes a startup delay, might not want to do this on the UI thread.
-    private List<Spanned> mHtmlCache = new ArrayList<Spanned>();
-
-    public TipsListAdapter(Context context) {
+    public TipsListAdapter(Context context, Group tips) {
         mInflater = LayoutInflater.from(context);
+        mTips = tips;
     }
 
     /**
      * The number of items in the list is determined by the number of tips in our array.
-     * 
+     *
      * @see android.widget.ListAdapter#getCount()
      */
     @Override
@@ -50,26 +44,21 @@ class TipsListAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        if (DEBUG) Log.d(TAG, "getItem() called");
+        if (DEBUG) Log.d(TAG, "getItem() called: " + String.valueOf(position));
         return mTips.get(position);
     }
 
     /**
      * Use the position index as a unique id.
-     * 
+     *
      * @see android.widget.ListAdapter#getItemId(int)
      */
     @Override
     public long getItemId(int position) {
-        if (DEBUG) Log.d(TAG, "getItemId() called");
+        if (DEBUG) Log.d(TAG, "getItemId() called: " + String.valueOf(position));
         return position;
     }
 
-    /**
-     * Make a view to hold each row.
-     * 
-     * @see android.widget.ListAdapter#getView(int, android.view.View, android.view.ViewGroup)
-     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (DEBUG) Log.d(TAG, "getView() called for position: " + position);
@@ -98,8 +87,10 @@ class TipsListAdapter extends BaseAdapter {
         }
 
         Tip tip = (Tip)getItem(position);
-        holder.firstLine.setText(tip.getFirstname() + " " + tip.getLastname() + " did this...");
-        holder.secondLine.setText(mHtmlCache.get(position));
+        // Popping from string->html fixes things like "&amp;" converting it back to a string
+        // prevents a stack overflow in cupcake.
+        holder.firstLine.setText(Html.fromHtml(tip.getStatusText()).toString());
+        holder.secondLine.setText(Html.fromHtml(tip.getText()).toString());
         holder.checkbox.setChecked(tip.getUserStatus().equals("done") ? true : false);
 
         return convertView;
@@ -116,13 +107,7 @@ class TipsListAdapter extends BaseAdapter {
         return (mTips.size() <= 0);
     }
 
-    public void add(Tip tip) {
-        mTips.add(tip);
-        mHtmlCache.add(Html.fromHtml(tip.getText()));
-        notifyDataSetChanged();
-    }
-
-    private static class ViewHolder {
+    private class ViewHolder {
         TextView firstLine;
         TextView secondLine;
         CheckBox checkbox;

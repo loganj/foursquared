@@ -21,6 +21,7 @@ public class FoursquaredTest {
 
     public static Venue createTestVenue(String id) {
         Venue venue = new Venue();
+        venue.setVenueid("19265");
         venue.setVenuename("Named " + id);
         venue.setAddress("298 Divisadero St.");
         venue.setCity("San Francisco");
@@ -93,7 +94,7 @@ public class FoursquaredTest {
         return checkin;
 
     }
-    
+
     public static Group createVenueGroup(String type) {
         Group tlg = new Group();
         tlg.setType(type);
@@ -106,6 +107,6 @@ public class FoursquaredTest {
         tlg.add(createTestVenue("7"));
         tlg.add(createTestVenue("8"));
         tlg.add(createTestVenue("9"));
-        return tlg;        
+        return tlg;
     }
 }
