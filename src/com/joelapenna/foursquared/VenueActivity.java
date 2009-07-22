@@ -28,6 +28,10 @@ public class VenueActivity extends TabActivity {
         setContentView(R.layout.venue_activity);
 
         setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
+        //Venue venue = FoursquaredTest.createTestVenue("A");
+        //venue.setGeolat("0");
+        //venue.setGeolong("0");
+        //setVenue(venue);
         setupTabHost();
     }
 

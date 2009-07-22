@@ -22,7 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -37,8 +36,8 @@ public class VenueSearchActivity extends ListActivity {
 
     private static final int MENU_SEARCH = 0;
 
-    private String mQuery;
     private SearchAsyncTask mSearchTask;
+    private String mQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +56,14 @@ public class VenueSearchActivity extends ListActivity {
             }
         });
 
-        onNewIntent(getIntent());
+        if (getLastNonConfigurationInstance() != null) {
+            if (DEBUG) Log.d(TAG, "Restoring configuration.");
+            mQuery = (String)getLastNonConfigurationInstance();
+            startQuery(mQuery);
+        } else {
+            if (DEBUG) Log.d(TAG, "Running new intent.");
+            onNewIntent(getIntent());
+        }
     }
 
     @Override
@@ -85,9 +91,21 @@ public class VenueSearchActivity extends ListActivity {
             if (DEBUG) Log.d(TAG, "No intent to search, querying default.");
         } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             if (DEBUG) Log.d(TAG, "onNewIntent received search intent");
-            mQuery = intent.getStringExtra(SearchManager.QUERY);
         }
-        startQuery(mQuery);
+        startQuery(intent.getStringExtra(SearchManager.QUERY));
+    }
+
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return mQuery;
+    }
+    
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mSearchTask != null) {
+            mSearchTask.cancel(true);
+        }
     }
 
     void testStuff() {
@@ -100,13 +118,16 @@ public class VenueSearchActivity extends ListActivity {
     }
 
     void startQuery(String query) {
-        mQuery = query;
         if (DEBUG) Log.d(TAG, "sendQuery()");
+        mQuery = query;
+
+        // If a task is already running, don't start a new one.
         if (mSearchTask != null && mSearchTask.getStatus() != AsyncTask.Status.FINISHED) {
             if (DEBUG) Log.d(TAG, "Query already running attempting to cancel: " + mSearchTask);
             if (!mSearchTask.cancel(true) && !mSearchTask.isCancelled()) {
                 if (DEBUG) Log.d(TAG, "Unable to cancel search? Notifying the user.");
                 Toast.makeText(this, "A search is already in progress.", Toast.LENGTH_SHORT);
+                return;
             }
         }
         mSearchTask = (SearchAsyncTask)new SearchAsyncTask().execute();
@@ -142,11 +163,12 @@ public class VenueSearchActivity extends ListActivity {
 
         @Override
         public void onPreExecute() {
+            if (DEBUG) Log.d(TAG, "SearchTask: onPreExecute()");
             setProgressBarIndeterminateVisibility(true);
             if (mQuery == null) {
-                setTitle("Nearby - Foursquared");
+                setTitle("Searching Nearby - Foursquared");
             } else {
-                setTitle(mQuery + "- Foursquared");
+                setTitle("Searching \"" + mQuery + "\" - Foursquared");
             }
         }
 
@@ -184,7 +206,7 @@ public class VenueSearchActivity extends ListActivity {
                 if (mQuery == null) {
                     setTitle("Searching Nearby");
                 } else {
-                    setTitle("Searching: " + mQuery);
+                    setTitle(mQuery + " - Foursquared");
                 }
             }
         }

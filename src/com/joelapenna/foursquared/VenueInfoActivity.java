@@ -49,40 +49,53 @@ public class VenueInfoActivity extends MapActivity {
 
             }
         });
-        
+
         setupMapView();
 
         setUser();
         setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
         setMap();
     }
-    
+
     private void setUser() {
         Location location = ((Foursquared)getApplication()).getLocation();
-        int lat = (int)(location.getLatitude() * 1E6);
-        int lng = (int)(location.getLongitude() * 1E6);
-        GeoPoint point = new GeoPoint(lat, lng);
+        if (location != null) {
+            int lat = (int)(location.getLatitude() * 1E6);
+            int lng = (int)(location.getLongitude() * 1E6);
+            GeoPoint point = new GeoPoint(lat, lng);
+            mUserOverlay.addOverlay(new OverlayItem(point, "You are here!", ""));
+        }
 
-        mUserOverlay = new SimpleItemizedOverlay(this.getResources().getDrawable(R.drawable.blueman));
-        mUserOverlay.addOverlay(new OverlayItem(point, "You are here!", ""));
-        mMapView.getOverlays().add(mUserOverlay);
-        
     }
 
     private void setVenue(Venue venue) {
         mVenue = venue;
 
-        int lat = (int)(Double.parseDouble(venue.getGeolat()) * 1E6);
-        int lng = (int)(Double.parseDouble(venue.getGeolong()) * 1E6);
-        GeoPoint point = new GeoPoint(lat, lng);
+        // If our venue information is not displayable...
+        if ((venue.getGeolat() == null || venue.getGeolong() == null) //
+                || venue.getGeolat().equals("0") || venue.getGeolong().equals("0")) {
+            return;
+        }
 
-        mVenueOverlay = new SimpleItemizedOverlay(this.getResources().getDrawable(R.drawable.reddot));
-        mVenueOverlay.addOverlay(new OverlayItem(point, venue.getVenuename(), ""));
-        mMapView.getOverlays().add(mVenueOverlay);
+        // Otherwise...
+        if (!("0".equals(venue.getGeolat()) && "0".equals(venue.getGeolong()))) {
+            int lat = (int)(Double.parseDouble(venue.getGeolat()) * 1E6);
+            int lng = (int)(Double.parseDouble(venue.getGeolong()) * 1E6);
+            GeoPoint point = new GeoPoint(lat, lng);
+            mVenueOverlay.addOverlay(new OverlayItem(point, venue.getVenuename(), ""));
+        }
     }
 
     private void setMap() {
-        mMapController.animateTo(mVenueOverlay.getCenter());
+        GeoPoint center;
+        if (mVenueOverlay.size() > 0) {
+            center = mVenueOverlay.getCenter();
+        } else if (mUserOverlay.size() > 0) {
+            center = mUserOverlay.getCenter();
+        } else {
+            return;
+        }
+        mMapController.animateTo(center);
         mMapController.setZoom(14);
     }
 
@@ -92,6 +105,14 @@ public class VenueInfoActivity extends MapActivity {
     private void setupMapView() {
         mMapView = (MapView)findViewById(R.id.mapView);
         mMapController = mMapView.getController();
+
+        mUserOverlay = new SimpleItemizedOverlay(this.getResources()
+                .getDrawable(R.drawable.blueman));
+        mMapView.getOverlays().add(mUserOverlay);
+
+        mVenueOverlay = new SimpleItemizedOverlay(this.getResources()
+                .getDrawable(R.drawable.reddot));
+        mMapView.getOverlays().add(mVenueOverlay);
     }
 
     @Override
