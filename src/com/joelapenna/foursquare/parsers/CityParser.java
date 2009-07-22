@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-06-10 02:19:21.923033
+ * Auto-generated: 2009-06-14 22:48:11.476413
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -42,6 +42,9 @@ public class CityParser extends AbstractParser<City> {
 
             } else if ("name".equals(name)) {
                 city.setName(parser.nextText());
+
+            } else if ("shortname".equals(name)) {
+                city.setShortname(parser.nextText());
 
             } else if ("timezone".equals(name)) {
                 city.setTimezone(parser.nextText());

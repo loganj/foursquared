@@ -51,8 +51,10 @@ public class SearchVenuesActivity extends TabActivity {
     private static final int MENU_REFRESH = 1;
     private static final int MENU_NEARBY = 2;
     private static final int MENU_CHECKINS = 3;
+    private static final int MENU_ME = 4;
 
     private static final int MENU_GROUP_SEARCH = 0;
+    private static final int MENU_GROUP_ACTIVITIES = 1;
 
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
@@ -104,8 +106,10 @@ public class SearchVenuesActivity extends TabActivity {
                 .setIcon(android.R.drawable.ic_menu_compass);
         menu.add(MENU_GROUP_SEARCH, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
                 .setIcon(R.drawable.ic_menu_refresh);
-        menu.add(Menu.NONE, MENU_CHECKINS, Menu.NONE, R.string.checkins_label) //
+        menu.add(MENU_GROUP_ACTIVITIES, MENU_CHECKINS, Menu.NONE, R.string.checkins_label) //
                 .setIcon(android.R.drawable.ic_menu_agenda);
+        menu.add(MENU_GROUP_ACTIVITIES, MENU_ME, Menu.NONE, R.string.me_label) //
+                .setIcon(android.R.drawable.ic_menu_info_details);
         Foursquared.addPreferencesToMenu(this, menu);
         return true;
     }
@@ -127,6 +131,10 @@ public class SearchVenuesActivity extends TabActivity {
                 Intent intent = new Intent(SearchVenuesActivity.this, CheckinsActivity.class);
                 intent.setAction(Intent.ACTION_SEARCH);
                 startActivity(intent);
+                return true;
+            case MENU_ME:
+                if (DEBUG) Log.d(TAG, "firing user activity");
+                startActivity(new Intent(SearchVenuesActivity.this, UserActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);

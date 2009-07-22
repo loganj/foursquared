@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Auto-generated: 2009-06-10 02:19:22.013336
+ * Auto-generated: 2009-06-14 22:47:59.983921
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
@@ -16,6 +16,7 @@ public class City implements Parcelable, FoursquareType {
 
     private String mId;
     private String mName;
+    private String mShortname;
     private String mTimezone;
     
     public City() {
@@ -35,6 +36,14 @@ public class City implements Parcelable, FoursquareType {
     
     public void setName(String name) {
         mName = name;
+    }
+    
+    public String getShortname() {
+        return mShortname;
+    }
+    
+    public void setShortname(String shortname) {
+        mShortname = shortname;
     }
     
     public String getTimezone() {
@@ -60,6 +69,7 @@ public class City implements Parcelable, FoursquareType {
         dest.writeBooleanArray(booleanArray);
         dest.writeString(this.mId);    
         dest.writeString(this.mName);    
+        dest.writeString(this.mShortname);    
         dest.writeString(this.mTimezone);
     }
     
@@ -68,6 +78,7 @@ public class City implements Parcelable, FoursquareType {
         source.readBooleanArray(booleanArray);
         this.mId = source.readString();    
         this.mName = source.readString();    
+        this.mShortname = source.readString();    
         this.mTimezone = source.readString();
     }
     

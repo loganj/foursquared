@@ -71,15 +71,6 @@
 
 
     <activity
-      android:name=".TestUserActivity">
-      <intent-filter>
-        <action
-          android:name="android.intent.action.MAIN" />
-      </intent-filter>
-    </activity>
-
-
-    <activity
       android:name=".CheckinsActivity"
       android:label="@string/checkins_activity_name"
       android:launchMode="singleTop">
@@ -128,7 +119,8 @@
 
 
     <activity
-      android:name=".UserActivity">
+      android:name=".UserActivity"
+      android:theme="@android:style/Theme.Dialog">
       <intent-filter>
         <action
           android:name="android.intent.action.MAIN" />

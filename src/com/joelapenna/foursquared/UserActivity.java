@@ -5,23 +5,32 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.types.Badge;
+import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.IOException;
 import java.util.Observable;
@@ -37,19 +46,19 @@ public class UserActivity extends Activity {
     private RemoteResourceManager mUserPhotoManager = new RemoteResourceManager("user_photo");
     private RemoteResourceManager mBadgeIconManager = new RemoteResourceManager("badges");
 
+    private Dialog mProgressDialog;
+    private AlertDialog mBadgeDialog;
+
     private User mUser = null;
     private UserObservable mUserObservable = new UserObservable();
     private UserObserver mUserObserver = new UserObserver();
-
-    private AsyncTask<Void, Void, User> mUserTask;
-    private AsyncTask<Uri, Void, Uri> mUserPhotoTask;
 
     private GridView mBadgesGrid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.user_activity);
 
         mBadgesGrid = (GridView)findViewById(R.id.badgesGrid);
@@ -57,14 +66,64 @@ public class UserActivity extends Activity {
         mUserObservable.addObserver(mUserObserver);
 
         if (getLastNonConfigurationInstance() == null) {
-            mUserTask = new UserTask().execute();
+            new UserTask().execute();
         } else {
             User user = (User)getLastNonConfigurationInstance();
             setUser(user);
         }
     }
 
-    void setPhotoImageView(Uri photo) {
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return mUser;
+    }
+
+    private Dialog showProgressDialog() {
+        if (mProgressDialog == null) {
+            ProgressDialog dialog = new ProgressDialog(this);
+            dialog.setTitle("Loading");
+            dialog.setMessage("Please wait while we retrieve some information");
+            dialog.setIndeterminate(true);
+            dialog.setCancelable(true);
+            mProgressDialog = dialog;
+        }
+        mProgressDialog.show();
+        return mProgressDialog;
+    }
+
+    private Dialog showBadgeDialog(Badge badge) {
+        if (mBadgeDialog == null) {
+            AlertDialog dialog = new AlertDialog.Builder(UserActivity.this) //
+                    .setTitle("Loading") //
+                    .setMessage("Please wait while retrieve some information") //
+                    .setCancelable(true) //
+                    .create();
+            mBadgeDialog = dialog;
+        }
+        mBadgeDialog.setTitle(badge.getName());
+        mBadgeDialog.setMessage(badge.getDescription());
+
+        try {
+            Uri icon = Uri.parse(badge.getIcon());
+            if (DEBUG) Log.d(TAG, icon.toString());
+            mBadgeDialog.setIcon(new BitmapDrawable(mBadgeIconManager.getInputStream(icon)));
+        } catch (IOException e) {
+            if (DEBUG) Log.d(TAG, "IOException", e);
+            mBadgeDialog.setIcon(R.drawable.default_on);
+        }
+        mBadgeDialog.show();
+        return mBadgeDialog;
+    }
+
+    private void dismissProgressDialog() {
+        try {
+            mProgressDialog.dismiss();
+        } catch (IllegalArgumentException e) {
+            // We don't mind. android cleared it for us.
+        }
+    }
+
+    void setPhotoImageUri(Uri photo) {
         try {
             Bitmap bitmap = BitmapFactory.decodeStream(//
                     mUserPhotoManager.getInputStream(photo));
@@ -82,26 +141,26 @@ public class UserActivity extends Activity {
     private void displayUser(User user) {
         if (DEBUG) Log.d(TAG, "loading user");
         String fullName = user.getFirstname() + " " + user.getLastname();
-        setTitle(fullName + " - Foursquared");
         TextView name = (TextView)findViewById(R.id.name);
         TextView city = (TextView)findViewById(R.id.city);
 
         name.setText(fullName);
-        city.setText(user.getCity().getName());
+        city.setText(user.getCity().getShortname());
 
         ensureUserPhoto(user);
     }
 
     private void ensureUserPhoto(User user) {
         if (user.getPhoto() == null) {
+            ((ImageView)findViewById(R.id.photo)).setImageResource(R.drawable.blank_boy);
             return;
         }
         Uri photo = Uri.parse(user.getPhoto());
         if (photo != null) {
             if (mUserPhotoManager.getFile(photo).exists()) {
-                setPhotoImageView(photo);
+                setPhotoImageUri(photo);
             } else {
-                mUserPhotoTask = new UserPhotoTask().execute(Uri.parse(user.getPhoto()));
+                new UserPhotoTask().execute(Uri.parse(user.getPhoto()));
             }
         }
     }
@@ -129,7 +188,7 @@ public class UserActivity extends Activity {
         @Override
         protected void onPostExecute(Uri uri) {
             setProgressBarIndeterminateVisibility(false);
-            setPhotoImageView(uri);
+            setPhotoImageUri(uri);
         }
     }
 
@@ -138,12 +197,14 @@ public class UserActivity extends Activity {
         @Override
         protected void onPreExecute() {
             setProgressBarIndeterminateVisibility(true);
+            showProgressDialog();
         }
 
         @Override
         protected User doInBackground(Void... params) {
             try {
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(UserActivity.this);
+                SharedPreferences prefs = PreferenceManager
+                        .getDefaultSharedPreferences(UserActivity.this);
                 String uid = prefs.getString(Preferences.PREFERENCE_ID, null);
                 return Foursquared.getFoursquare().user(uid, false, true);
             } catch (FoursquareException e) {
@@ -160,6 +221,7 @@ public class UserActivity extends Activity {
         protected void onPostExecute(User user) {
             setProgressBarIndeterminateVisibility(false);
             setUser(user);
+            dismissProgressDialog();
         }
 
         @Override
@@ -187,6 +249,13 @@ public class UserActivity extends Activity {
             if (user.getBadges() != null) {
                 mBadgesGrid.setAdapter(new BadgeWithIconListAdapter(UserActivity.this, user
                         .getBadges(), mBadgeIconManager));
+                mBadgesGrid.setOnItemClickListener(new OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Badge badge = (Badge)parent.getAdapter().getItem(position);
+                        showBadgeDialog(badge);
+                    }
+                });
             }
         }
     }

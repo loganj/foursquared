@@ -17,9 +17,7 @@
     android:layout_alignParentLeft="true"
     android:layout_marginRight="6dip"
 
-    android:scaleType="fitXY"
-
-    android:src="@drawable/blank_boy" />
+    android:scaleType="fitXY" />
 
   <TextView
     android:id="@+id/name"

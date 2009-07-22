@@ -25,6 +25,8 @@
   <string
     name="checkins_label">Checkins</string>
   <string
+    name="me_label">My Info</string>
+  <string
     name="nearby_label">Nearby</string>
   <string
     name="refresh_label">Refresh</string>
