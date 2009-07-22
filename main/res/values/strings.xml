@@ -45,5 +45,8 @@
 
   <string
     name="search_hint">Search for something...</string>
+    
+    <string
+    name="tip_add_spinner_prompt">Select a List</string>
 
 </resources>

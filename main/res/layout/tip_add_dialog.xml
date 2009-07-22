@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <!-- Copyright 2009 Joe LaPenna -->
+
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/layout_root"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:paddingTop="9dip"
+  android:paddingBottom="3dip"
+  android:paddingLeft="3dip"
+  android:paddingRight="1dip">
+  <Spinner
+    android:id="@+id/spinner"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:prompt="@string/tip_add_spinner_prompt"
+    android:entries="@array/tipLists" />
+  <EditText
+    android:id="@+id/editText"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:lines="3" />
+</LinearLayout>

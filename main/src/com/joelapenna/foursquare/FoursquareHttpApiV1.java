@@ -22,6 +22,7 @@ import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Checkin;
+import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 
@@ -107,13 +108,13 @@ public class FoursquareHttpApiV1 {
     /*
      * /addtip?vid=1234&text=I%20added%20a%20tip&type=todo (type defaults "tip")
      */
-    Data addtip(String vid, String text, String type) throws FoursquareException,
+    Tip addtip(String vid, String text, String type) throws FoursquareException,
             FoursquareCredentialsError, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(URL_API_ADDTIP, //
                 new BasicNameValuePair("vid", vid), //
                 new BasicNameValuePair("text", text), //
                 new BasicNameValuePair("type", type));
-        return (Data)mHttpApi.doHttpRequest(httpPost, new DataParser());
+        return (Tip)mHttpApi.doHttpRequest(httpPost, new TipParser());
     }
 
     /**

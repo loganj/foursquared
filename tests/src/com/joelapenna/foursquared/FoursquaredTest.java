@@ -9,7 +9,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Stats;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.User;
-import com.joelapenna.foursquare.types.classic.Tip;
+import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 
 import java.util.ArrayList;
@@ -19,7 +19,6 @@ import java.util.Random;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-@SuppressWarnings("deprecation")
 public class FoursquaredTest {
     public static final boolean DEBUG = true;
     private static final Random mRandom = new Random();
@@ -102,24 +101,24 @@ public class FoursquaredTest {
 
     public static Tip createTip() {
         Tip tip = new Tip();
-        tip.setUserid("1058");
-        tip.setFirstname("Shannon");
-        tip.setLastname("Clark");
-        tip.setPhoto("1058_1237850027.jpg");
-        tip.setTipid("4272");
-        tip
-                .setText("Play games here - both on their games night every Wed but the &quot;advanced&quot; tip is they have a phenomenal library of games you can request to borrow - a serious gamer&apos;s library");
-        tip.setVenueid("40450");
-        tip.setVenuename("On the Corner");
-        tip.setAddress("359 Divisadero St.");
-        tip.setCrossstreet("Oak St");
-        tip.setUrl("");
+        tip.setCreated("Mon, 12 May 09 06:15:00 GMT");
+        tip.setVenue(createRandomVenue("Random"));
+
+        tip.setId("4272");
+        tip.setText( //
+                "Play games here - both on their games night every Wed but the "
+                        + " &quot;advanced&quot;"
+                        + " tip is they have a phenomenal library of games you can request"
+                        + " to borrow - a serious gamer&apos;s library");
         tip.setDistance("0.1m");
-        tip.setStatusText("From Shanon C&apos;s Top 12");
-        tip.setRelativeDate("Mar 25, 2009");
-        tip.setIstodoable(true);
-        tip.setCreatorStatus("done");
-        tip.setUserStatus("");
+
+        User user = new User();
+        user.setId("1058");
+        user.setFirstname("Shannon");
+        user.setLastname("Clark");
+        user.setPhoto("1058_1237850027.jpg");
+        tip.setUser(user);
+
         return tip;
     }
 

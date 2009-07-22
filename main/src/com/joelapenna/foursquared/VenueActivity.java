@@ -7,12 +7,15 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.StringFormatters;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -21,11 +24,16 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebView;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,15 +49,17 @@ public class VenueActivity extends TabActivity {
     private static final String TAG = "VenueActivity";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    public static final String EXTRA_VENUE = "com.joelapenna.foursquared.VenueId";
+    public static final String EXTRA_VENUE = "com.joelapenna.foursquared.VenueActivity.VenueId";
 
     private static final int DIALOG_CHECKIN = 0;
+    private static final int DIALOG_TIPADD = 1;
 
     private static final int MENU_GROUP_CHECKIN = 0;
 
     private static final int MENU_CHECKIN = 1;
     private static final int MENU_CHECKIN_TWITTER = 2;
     private static final int MENU_CHECKIN_SILENT = 3;
+    private static final int MENU_TIPADD = 4;
 
     final VenueObservable venueObservable = new VenueObservable();
     final CheckinsObservable checkinsObservable = new CheckinsObservable();
@@ -61,6 +71,7 @@ public class VenueActivity extends TabActivity {
     private MenuItem mShareToggle;
     private MenuItem mTwitterToggle;
     private MenuItem mCheckinMenuItem;
+    private MenuItem mAddTipMenuItem;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -105,6 +116,9 @@ public class VenueActivity extends TabActivity {
         mShareToggle = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN_SILENT, Menu.NONE, "Share")
                 .setCheckable(true);
 
+        mAddTipMenuItem = menu.add(Menu.NONE, MENU_TIPADD, Menu.NONE, "Add Tip") //
+                .setIcon(android.R.drawable.ic_menu_set_as);
+
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         mTwitterToggle.setChecked(settings
                 .getBoolean(Preferences.PREFERENCE_TWITTER_CHECKIN, false));
@@ -120,7 +134,11 @@ public class VenueActivity extends TabActivity {
         if (DEBUG) Log.d(TAG, "onPrepareOptions: mTwitterToggle: " + mTwitterToggle.isChecked());
         if (DEBUG) Log.d(TAG, "onPrepareOptions: mShareToggle: " + mShareToggle.isChecked());
 
-        mCheckinMenuItem.setEnabled((mStateHolder.venue != null));
+        boolean hasVenue = (mStateHolder.venue != null);
+        mCheckinMenuItem.setEnabled(hasVenue);
+        mShareToggle.setEnabled(hasVenue);
+        mTwitterToggle.setEnabled(hasVenue);
+        mAddTipMenuItem.setEnabled(false);
 
         if (mTwitterToggle.isChecked()) {
             mTwitterToggle.setIcon(android.R.drawable.button_onoff_indicator_on);
@@ -160,6 +178,8 @@ public class VenueActivity extends TabActivity {
             case MENU_CHECKIN_SILENT:
                 item.setChecked(!item.isChecked());
                 return true;
+            case MENU_TIPADD:
+                showDialog(DIALOG_TIPADD);
             default:
                 return false;
         }
@@ -178,7 +198,39 @@ public class VenueActivity extends TabActivity {
                 return new AlertDialog.Builder(this) // the builder
                         .setView(webView) // use a web view
                         .setIcon(android.R.drawable.ic_dialog_info) // show an icon
-                        .setTitle(Html.fromHtml(checkin.getMessage())).create(); // return it.
+                        .setTitle(Html.fromHtml(checkin.getMessage())) // title
+                        .create(); // return it.
+
+            case DIALOG_TIPADD:
+                LayoutInflater inflater = (LayoutInflater)getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+                View layout = inflater.inflate(R.layout.tip_add_dialog,
+                        (ViewGroup)findViewById(R.id.layout_root));
+
+                final EditText editText = (EditText)layout.findViewById(R.id.editText);
+                final Spinner spinner = (Spinner)layout.findViewById(R.id.spinner);
+
+                return new AlertDialog.Builder(this) //
+                        .setView(layout) //
+                        .setIcon(android.R.drawable.ic_dialog_alert) // icon
+                        .setTitle("Add a Tip") // title
+                        .setPositiveButton("Add", new Dialog.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String tip = editText.getText().toString();
+                                String type = ((String)spinner.getSelectedItem()).toLowerCase();
+                                editText.setText("");
+                                spinner.setSelection(0);
+                                new TipAddTask().execute(tip, type);
+                            }
+                        }) //
+                        .setNegativeButton("Cancel", new Dialog.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                editText.setText("");
+                                spinner.setSelection(0);
+                                dismissDialog(DIALOG_TIPADD);
+                            }
+                        }).create();
         }
         return null;
     }
@@ -389,8 +441,57 @@ public class VenueActivity extends TabActivity {
         }
     }
 
-    private class CheckinsTask extends AsyncTask<Void, Void, Group> {
+    private class TipAddTask extends AsyncTask<String, Void, Tip> {
+        private static final String PROGRESS_BAR_TASK_ID = TAG + "TipAddTask";
 
+        @Override
+        public void onPreExecute() {
+            if (DEBUG) Log.d(TAG, "CheckinsTask: onPreExecute()");
+            startProgressBar(PROGRESS_BAR_TASK_ID);
+        }
+
+        @Override
+        public Tip doInBackground(String... params) {
+            if (DEBUG) Log.d(TAG, "CheckinsTask: doInBackground()");
+            try {
+                assert params.length == 2;
+                String tip = params[0];
+                String type = params[1];
+                return Foursquared.getFoursquare().addTip(mStateHolder.venueId, tip, type);
+            } catch (FoursquareException e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "FoursquareError", e);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "IOException", e);
+            }
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(Tip tip) {
+            if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
+            try {
+                if (tip != null) {
+                    // Intent intent = new Intent(VenueActivity.this, TipActivity.class);
+                    // intent.putExtra(TipActivity.EXTRA_TIP, tip);
+                    // startActivity(intent);
+                } else {
+                    Toast.makeText(VenueActivity.this, "Unable to add your tip! (Sorry!)",
+                            Toast.LENGTH_LONG).show();
+                }
+            } finally {
+                stopProgressBar(PROGRESS_BAR_TASK_ID);
+            }
+        }
+
+        @Override
+        public void onCancelled() {
+            stopProgressBar(PROGRESS_BAR_TASK_ID);
+        }
+    }
+
+    private class CheckinsTask extends AsyncTask<Void, Void, Group> {
         private static final String PROGRESS_BAR_TASK_ID = TAG + "CheckinsTask";
 
         @Override

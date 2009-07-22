@@ -11,6 +11,7 @@ import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.classic.Auth;
 import com.joelapenna.foursquare.types.classic.Checkin;
 import com.joelapenna.foursquare.types.User;
@@ -95,15 +96,15 @@ public class Foursquare {
     }
 
     @V1
-    public Data addTip(String vid, String text, String type) throws FoursquareException,
+    public Tip addTip(String vid, String text, String type) throws FoursquareException,
             FoursquareError, IOException {
         return mFoursquareV1.addtip(vid, text, type);
     }
 
     @V1
-    public Venue addVenue(String name, String address, String crossstreet, String city, String state,
-            String zip, String cityid, String phone) throws FoursquareException, FoursquareError,
-            IOException {
+    public Venue addVenue(String name, String address, String crossstreet, String city,
+            String state, String zip, String cityid, String phone) throws FoursquareException,
+            FoursquareError, IOException {
         return mFoursquareV1.addvenue(name, address, crossstreet, city, state, zip, cityid, phone);
     }
 
@@ -119,8 +120,8 @@ public class Foursquare {
     }
 
     @V1
-    public City checkCity(String geolat, String geolong) throws FoursquareException, FoursquareError,
-            IOException {
+    public City checkCity(String geolat, String geolong) throws FoursquareException,
+            FoursquareError, IOException {
         return mFoursquareV1.checkcity(geolat, geolong);
     }
 
