@@ -138,7 +138,7 @@ public class VenueActivity extends TabActivity {
         mCheckinMenuItem.setEnabled(hasVenue);
         mShareToggle.setEnabled(hasVenue);
         mTwitterToggle.setEnabled(hasVenue);
-        mAddTipMenuItem.setEnabled(false);
+        mAddTipMenuItem.setEnabled(hasVenue);
 
         if (mTwitterToggle.isChecked()) {
             mTwitterToggle.setIcon(android.R.drawable.button_onoff_indicator_on);
@@ -473,9 +473,8 @@ public class VenueActivity extends TabActivity {
             if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
             try {
                 if (tip != null) {
-                    // Intent intent = new Intent(VenueActivity.this, TipActivity.class);
-                    // intent.putExtra(TipActivity.EXTRA_TIP, tip);
-                    // startActivity(intent);
+                    String tipToastString = "Added Tip #" + tip.getId() + " " + tip.getText();
+                    Toast.makeText(VenueActivity.this, tipToastString, Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(VenueActivity.this, "Unable to add your tip! (Sorry!)",
                             Toast.LENGTH_LONG).show();
