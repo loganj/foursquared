@@ -2,7 +2,7 @@
  * Copyright 2008 Joe LaPenna
  */
 
-package com.joelapenna.foursquared;
+package com.joelapenna.foursquared.test;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
@@ -12,6 +12,8 @@ import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.Foursquared;
+import com.joelapenna.foursquared.R;
 
 import android.app.Activity;
 import android.content.Context;

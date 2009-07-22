@@ -11,7 +11,6 @@ import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.Foursquared;
 
 import android.util.Log;
 

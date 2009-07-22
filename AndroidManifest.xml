@@ -23,7 +23,7 @@
       android:name="com.google.android.maps" />
 
     <activity
-      android:name=".TestActivity"
+      android:name=".test.TestActivity"
       android:label="Testing Activity"
       android:launchMode="singleTop">
       <intent-filter>

@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.test.FoursquaredTest;
 
 import android.app.TabActivity;
 import android.content.BroadcastReceiver;
