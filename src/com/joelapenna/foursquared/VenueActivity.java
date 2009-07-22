@@ -166,14 +166,14 @@ public class VenueActivity extends TabActivity {
                 case MESSAGE_PROGRESS_BAR_START:
                     boolean added = mTasks.add(msg.obj);
                     if (!added) {
-                        throw new IllegalStateException("Task already being tracked: " + msg.obj);
+                        if (DEBUG) Log.d(TAG, "Received start for already tracked task. Ignoring");
                     }
                     setProgressBarIndeterminateVisibility(true);
                     break;
                 case MESSAGE_PROGRESS_BAR_STOP:
                     boolean removed = mTasks.remove(msg.obj);
                     if (!removed) {
-                        throw new IllegalStateException("Task not being tracked: " + msg.obj);
+                        if (DEBUG) Log.d(TAG, "Received stop for untracked task. Ignoring");
                     } else if (mTasks.isEmpty()) {
                         setProgressBarIndeterminateVisibility(false);
                     }
