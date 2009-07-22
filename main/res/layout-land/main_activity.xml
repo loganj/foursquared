@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <!-- Copyright 2009 Joe LaPenna -->
+
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="@android:color/white">
+  <ImageView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:layout_alignWithParentIfMissing="true"
+    android:layout_weight="1"
+    android:padding="3dip"
+    android:scaleType="centerInside"
+    android:src="@drawable/main_logo" />
+  <LinearLayout
+    android:id="@+id/controls"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:layout_weight="2"
+    android:orientation="vertical"
+    android:layout_alignParentBottom="true">
+    <TableLayout
+      android:id="@+id/buttonBar"
+      android:layout_height="wrap_content"
+      android:layout_width="fill_parent">
+      <TableRow>
+        <EditText
+          android:id="@+id/phoneEditText"
+          android:layout_width="0px"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:lines="1"
+          android:singleLine="true"
+          android:textAppearance="@android:style/TextAppearance.Large"
+          android:hint="Phone Number" />
+        <EditText
+          android:id="@+id/passwordEditText"
+          android:layout_width="0px"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:lines="1"
+          android:singleLine="true"
+          android:password="true"
+          android:textAppearance="@android:style/TextAppearance.Large"
+          android:hint="Password" />
+      </TableRow>
+    </TableLayout>
+    <Button
+      android:id="@+id/button"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:textAppearance="@android:style/TextAppearance.Large"
+      android:text="Log-in" />
+  </LinearLayout>
+</RelativeLayout>
