@@ -27,7 +27,7 @@ public class RemoteResourceManager extends Observable {
     private FetcherObserver mFetcherObserver = new FetcherObserver();
 
     public RemoteResourceManager(String cacheName) {
-        mDiskCache = new BaseDiskCache("foursquared", cacheName);
+        mDiskCache = new BaseDiskCache("foursquare", cacheName);
 
         mRemoteResourceFetcher = new RemoteResourceFetcher(mDiskCache);
         mRemoteResourceFetcher.addObserver(mFetcherObserver);
