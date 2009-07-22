@@ -36,7 +36,7 @@
           android:layout_width="fill_parent"
           android:layout_gravity="center|fill"
           android:gravity="center"
-          android:text="Searching for venues!" />
+          android:text="Searching..." />
       </LinearLayout>
     </FrameLayout>
   </TabHost>

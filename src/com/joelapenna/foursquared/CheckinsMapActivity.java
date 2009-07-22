@@ -50,7 +50,7 @@ public class CheckinsMapActivity extends MapActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.checkins_map_activity);
+        setContentView(R.layout.search_map_activity);
 
         mCheckinButton = (Button)findViewById(R.id.venueButton);
         mCheckinButton.setOnClickListener(new OnClickListener() {
@@ -146,7 +146,7 @@ public class CheckinsMapActivity extends MapActivity {
 
     /**
      * Create an overlay that contains a specific group's list of mappable checkins.
-     * 
+     *
      * @param group
      * @return
      */

@@ -67,7 +67,7 @@ public class CheckinsActivity extends TabActivity {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.d(TAG, "onCreate");
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setContentView(R.layout.checkins_activity);
+        setContentView(R.layout.search_activity);
 
         mLocationListener = ((Foursquared)getApplication()).getLocationListener();
         mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
