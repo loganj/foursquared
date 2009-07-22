@@ -21,7 +21,7 @@ public class TestCheckinsActivity extends CheckinsActivity {
     @Override
     public void handleOnCreateIntent() {
         if (DEBUG) Log.d(TAG, "Running new intent.");
-        Group fakeResults = FoursquaredTest.createRandomCheckinGroups("Root");
+        Group fakeResults = FoursquaredTest.createRandomCheckinGroup("Checkins");
         setSearchResults(fakeResults);
         putSearchResultsInAdapter(fakeResults);
     }

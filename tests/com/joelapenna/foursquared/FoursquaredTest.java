@@ -4,9 +4,11 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.types.Beenhere;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Stats;
-import com.joelapenna.foursquare.types.classic.Checkin;
+import com.joelapenna.foursquare.types.Checkin;
+import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.classic.Tip;
 import com.joelapenna.foursquare.types.Venue;
 
@@ -25,32 +27,20 @@ public class FoursquaredTest {
 
     public static Checkin createCheckin(String id, Venue venue) {
         Checkin checkin = new Checkin();
-        checkin.setCheckinid(id);
-        checkin.setDisplay("Test2 U. @ " + venue.getName());
-        checkin.setEmail("email@email.com");
-        checkin.setFirstname("2");
-        checkin.setGender("female");
-        checkin.setLastname("User2");
-        checkin.setMessage("message");
-        checkin.setPhone("5554202");
-        checkin.setPhoto("http://photourl.com");
-        checkin.setRelativeTime("2 relative minutes");
-        checkin.setShout("shout");
-        checkin.setUserid("9923");
-        checkin.setAddress(venue.getAddress());
-        checkin.setCityid(venue.getCity());
-        checkin.setCityName(venue.getCity());
-        checkin.setCrossstreet(venue.getCrossstreet());
-        checkin.setGeolat(venue.getGeolat());
-        checkin.setGeolong(venue.getGeolong());
-        checkin.setVenueid(venue.getId());
-        checkin.setVenuename(venue.getName());
+        checkin.setVenue(venue);
+        User user = new User();
+        user.setFirstname("2");
+        user.setLastname("User2");
+        // user.setPhoto("http://photourl.com");
+        user.setId("9923");
+        checkin.setUser(user);
+        checkin.setId(id);
 
         return checkin;
     }
 
-    public static Checkin createIncomingCheckin() {
-        Checkin checkin = new Checkin();
+    public static com.joelapenna.foursquare.types.classic.Checkin createIncomingCheckin() {
+        com.joelapenna.foursquare.types.classic.Checkin checkin = new com.joelapenna.foursquare.types.classic.Checkin();
         checkin.setCheckinid("67889");
         checkin.setMessage("OK! We&apos;ve got you @ The Page.");
         checkin.setStatus(true);
@@ -91,7 +81,9 @@ public class FoursquaredTest {
 
         venue.setGeolat(String.valueOf(Float.valueOf(venue.getGeolat()) + mRandom.nextFloat()));
         venue.setGeolong(String.valueOf(Float.valueOf(venue.getGeolong()) + mRandom.nextFloat()));
-        venue.getStats().getBeenhere().setMe(mRandom.nextBoolean());
+        Beenhere beenhere = new Beenhere();
+        beenhere.setMe(mRandom.nextBoolean());
+        venue.getStats().setBeenhere(beenhere);
 
         return venue;
     }
