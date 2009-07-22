@@ -1,34 +1,57 @@
 /**
  * Copyright 2009 Joe LaPenna
  */
+
 package com.joelapenna.foursquared;
 
-import android.app.Activity;
+import com.joelapenna.foursquare.types.Checkin;
+
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ListActivity;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spanned;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.webkit.WebView;
+import android.widget.Button;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
- *
  */
-public class VenueCheckinActivity extends Activity {
+public class VenueCheckinActivity extends ListActivity {
 
-    private WebView mWebView;
+    private static final int DIALOG_CHECKIN = 0;
 
     @Override
-    protected void  onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.venue_checkin_activity);
 
-        setupWebView();
+        setListAdapter(new TipsListAdapter(this, Foursquared.createTestTips()));
+        Button checkinButton = (Button)findViewById(R.id.checkinButton);
+        checkinButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                showDialog(DIALOG_CHECKIN);
+                v.setEnabled(false);
+            }
+        });
     }
 
-    /**
-     *
-     */
-    private void setupWebView() {
-        mWebView = (WebView)findViewById(R.id.webView);
-        mWebView.loadUrl("http://playfoursquare.com/incoming/breakdown?cid=67889&uid=9232&client=iphone");
-
+    @Override
+    public Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DIALOG_CHECKIN:
+                Checkin checkin = Foursquared.createIncomingCheckin();
+                WebView webView = new WebView(this);
+                webView.loadUrl(checkin.getUrl());
+                Spanned title = Html.fromHtml(checkin.getMessage());
+                return new AlertDialog.Builder(this) // the builder
+                        .setView(webView) // use a web view
+                        .setIcon(android.R.drawable.ic_dialog_info) // show an icon
+                        .setTitle(title).create(); // return it.
+        }
+        return null;
     }
 }

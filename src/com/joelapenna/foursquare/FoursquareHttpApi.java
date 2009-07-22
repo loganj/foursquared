@@ -14,9 +14,9 @@ import com.joelapenna.foursquare.parsers.Parser;
 import com.joelapenna.foursquare.parsers.TipParser;
 import com.joelapenna.foursquare.parsers.VenueParser;
 import com.joelapenna.foursquare.types.Auth;
+import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.FoursquareType;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.IncomingCheckin;
 import com.joelapenna.foursquare.types.Venue;
 
 import org.apache.http.HttpResponse;
@@ -124,10 +124,10 @@ class FoursquareHttpApi {
         return auth;
     }
 
-    IncomingCheckin checkin(String phone, String venue, boolean silent, boolean twitter,
+    Checkin checkin(String phone, String venue, boolean silent, boolean twitter,
             String lat, String lng, String cityid) throws FoursquareError,
             FoursquareParseException, IOException {
-        return (IncomingCheckin)doHttpPost(URL_API_INCOMING, new IncomingCheckinResponseParser(),
+        return (Checkin)doHttpPost(URL_API_INCOMING, new IncomingCheckinResponseParser(),
                 new BasicNameValuePair("number", phone), // phone
                 new BasicNameValuePair("message", "@" + venue), // venue
                 new BasicNameValuePair("silent", (silent) ? "1" : "0"), // silent
@@ -139,7 +139,7 @@ class FoursquareHttpApi {
 
     /**
      * /api/checkins?lat=37.770653&lng=-122.436929&r=1&l=10
-     * 
+     *
      * @return
      */
     Group checkins(String cityId) throws FoursquareError, FoursquareParseException, IOException {
@@ -149,7 +149,7 @@ class FoursquareHttpApi {
 
     /**
      * /api/todo?cityid=23&lat=37.770900&lng=-122.436987
-     * 
+     *
      * @throws IOException
      * @throws FoursquareParseException
      * @throws FoursquareError
@@ -165,7 +165,7 @@ class FoursquareHttpApi {
 
     /**
      * /api/venues?lat=37.770653&lng=-122.436929&r=1&l=10
-     * 
+     *
      * @return
      */
     Group venues(String lat, String lng, int radius, int length) throws FoursquareError,
@@ -180,7 +180,7 @@ class FoursquareHttpApi {
 
     /**
      * /api/venue?vid=1234
-     * 
+     *
      * @return
      */
     Venue venue(String id) throws FoursquareError, FoursquareParseException, IOException {
@@ -275,7 +275,7 @@ class FoursquareHttpApi {
 
     /**
      * execute() an httpPost catching exceptions and returning null instead.
-     * 
+     *
      * @param httpPost
      * @return
      */
@@ -297,7 +297,7 @@ class FoursquareHttpApi {
     /**
      * Create a thread-safe client. This client does not do redirecting, to allow us to capture
      * correct "error" codes.
-     * 
+     *
      * @return HttpClient
      */
     public static final DefaultHttpClient createHttpClient() {

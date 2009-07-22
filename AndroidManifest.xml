@@ -36,18 +36,14 @@
 
     <activity
       android:name=".VenueCheckinActivity">
-      <intent-filter>
-        <action
-          android:name="android.intent.action.MAIN" />
-      </intent-filter>
     </activity>
 
     <activity
       android:name=".VenueInfoActivity">
-      <intent-filter>
-        <action
-          android:name="android.intent.action.MAIN" />
-      </intent-filter>
+    </activity>
+
+    <activity
+      android:name=".VenueYelpActivity">
     </activity>
 
   </application>

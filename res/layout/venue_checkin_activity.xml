@@ -25,10 +25,17 @@
     </TableRow>
   </TableLayout>
 
-  <WebView
-    android:id="@+id/webView"
+  <ListView
+    android:id="@android:id/list"
     android:layout_height="fill_parent"
-    android:layout_width="fill_parent"
-    android:background="#CCCCCC" />
+    android:layout_width="fill_parent" />
+
+  <ProgressBar
+    android:id="@android:id/empty"
+    android:layout_height="128dip"
+    android:layout_width="128dip"
+    android:layout_gravity="center"
+    android:paddingTop="32dip"
+    android:indeterminate="true" />
 
 </LinearLayout>

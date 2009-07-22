@@ -9,7 +9,7 @@ import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Auth;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.IncomingCheckin;
+import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Venue;
 
 import android.util.Log;
@@ -50,11 +50,11 @@ public class Foursquare {
         return mFoursquare.breakdown(userId, checkinId);
     }
 
-    public IncomingCheckin checkin(String venue, boolean silent, boolean twitter, String lat,
+    public Checkin checkin(String venue, boolean silent, boolean twitter, String lat,
             String lng) throws FoursquareError, FoursquareParseException, IOException {
         return mFoursquare.checkin(mPhone, venue, silent, twitter, lat, lng, null);
     }
-    
+
     public Group todos(String cityId, String lat, String lng) throws FoursquareError,
     FoursquareParseException, IOException {
         return mFoursquare.todos(cityId, lat, lng);

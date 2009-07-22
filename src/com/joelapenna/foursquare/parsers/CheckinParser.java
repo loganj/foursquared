@@ -126,7 +126,7 @@ public class CheckinParser extends AbstractParser<Checkin> {
                 checkin.setStats(parser.nextText());
 
             } else if ("status".equals(name)) {
-                checkin.setStatus(parser.nextText());
+                checkin.setStatus(parser.nextText().equals("1"));
 
             } else if ("twitter_default".equals(name)) {
                 checkin.setTwitterDefault(parser.nextText().equals("1"));

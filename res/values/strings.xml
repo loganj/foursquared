@@ -6,4 +6,6 @@
     name="venue_checkin_activity_name">Check-In</string>
   <string
     name="venue_info_activity_name">Info</string>
+  <string
+    name="venue_yelp_activity_name">Yelp!</string>
 </resources>

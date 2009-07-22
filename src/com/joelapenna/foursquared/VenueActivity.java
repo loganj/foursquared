@@ -32,16 +32,16 @@ public class VenueActivity extends TabActivity {
         final TabHost tabHost = this.getTabHost();
         String tag;
 
-        tag = (String)this.getText(R.string.venue_info_activity_name);
-        tabHost.addTab(tabHost.newTabSpec(tag) // Info Tab
-                .setIndicator(tag) // The Name
-                .setContent(new Intent(this, VenueInfoActivity.class)) // The contained activity
-                );
-
         tag = (String)this.getText(R.string.venue_checkin_activity_name);
         tabHost.addTab(tabHost.newTabSpec(tag) // Checkin Tab
                 .setIndicator(tag) // The Name
                 .setContent(new Intent(this, VenueCheckinActivity.class)) // The contained activity
+                );
+
+        tag = (String)this.getText(R.string.venue_info_activity_name);
+        tabHost.addTab(tabHost.newTabSpec(tag) // Info Tab
+                .setIndicator(tag) // The Name
+                .setContent(new Intent(this, VenueInfoActivity.class)) // The contained activity
                 );
     }
 

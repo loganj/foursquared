@@ -26,7 +26,7 @@
     <stats></stats>
     <alert></alert>
     <!-- Used after an incoming.php based checkin. -->
-    <url></url>
-    <status></status>
-    <message></message>
+    <url>http://playfoursquare.com/incoming/breakdown?cid=67889&amp;uid=9232&amp;client=iphone</url>
+    <status>0</status>
+    <message>OK! We&apos;ve got you @ The Page.</message>
   </checkin>

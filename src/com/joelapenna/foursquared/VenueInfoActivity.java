@@ -5,7 +5,6 @@
 package com.joelapenna.foursquared;
 
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
@@ -25,7 +24,6 @@ public class VenueInfoActivity extends MapActivity {
     private MapView mMapView;
     private MapController mMapController;
     private SimpleItemizedOverlay mOverlay;
-    private Venue mVenue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

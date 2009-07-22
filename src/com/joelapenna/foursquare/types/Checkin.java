@@ -31,7 +31,7 @@ public class Checkin implements FoursquareType {
     private boolean mShowDball;
     private boolean mShowTwitter;
     private String mStats;
-    private String mStatus;
+    private boolean mStatus;
     private boolean mTwitterDefault;
     private String mUrl;
     private String mUserid;
@@ -218,11 +218,11 @@ public class Checkin implements FoursquareType {
         mStats = stats;
     }
 
-    public String getStatus() {
+    public boolean status() {
         return mStatus;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(boolean status) {
         mStatus = status;
     }
 

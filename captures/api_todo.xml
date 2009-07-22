@@ -1,606 +1,586 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tips>
   <group type="Me">
-</group>
- <group type="Friends' To-Do">
-</group>
- <group type="Nearby Tips">
-<tip>
-<userid>1058</userid>
-<firstname>Shannon</firstname>
-<lastname>Clark</lastname>
-<photo>1058_1237850027.jpg</photo>
-<tipid>4272</tipid>
-<text>Play games here - both on their games night every Wed but the &quot;advanced&quot; tip is they have a phenomenal library of games you can request to borrow - a serious gamer&apos;s library</text>
-<venueid>40450</venueid>
-<venuename>On the Corner</venuename>
-<address>359 Divisadero St</address>
-<crossstreet>Oak St</crossstreet>
-<url></url>
-<distance>0.1m</distance>
-<date>Mar 25, 2009</date>
-<status_text>From Shannon C&apos;s Top 12</status_text>
-<relative_date>Mar 25, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>359</userid>
-<firstname>alice</firstname>
-<lastname>tiara</lastname>
-<photo>359_1236287154.jpg</photo>
-<tipid>905</tipid>
-<text>Their chocolate-chip cookies are freaking awesome.</text>
-<venueid>40450</venueid>
-<venuename>On the Corner</venuename>
-<address>359 Divisadero St</address>
-<crossstreet>Oak St</crossstreet>
-<url></url>
-</distance>
-<date>Mar 5, 2009</date>
-<status_text>From Alice T&apos;s Top 12</status_text>
-<relative_date>Mar 5, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>7266</userid>
-<firstname>Claudine</firstname>
-<lastname>Co</lastname>
-<photo>7266_1237759522.jpg</photo>
-<tipid>4145</tipid>
-<text>order from their handy takeout window! no wait!</text>
-<venueid>41897</venueid>
-<venuename>Nopalito</venuename>
-<address>306 Broderick Street</address>
-<crossstreet>Oak Stret</crossstreet>
-<url></url>
-<distance>0.2m</distance>
-<date>Mar 24, 2009</date>
-<status_text>From Claudine C&apos;s Top 12</status_text>
-<relative_date>Mar 24, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>4983</userid>
-<firstname>Paul</firstname>
-<lastname>Poppleton</lastname>
-<photo>4983_1237413349.jpg</photo>
-<tipid>3248</tipid>
-<text>Get a infused vodka drink.  I like the Lola or just cucumber vodka with some soda and a lime.</text>
-<venueid>21058</venueid>
-<venuename>Madrone Lounge</venuename>
-<address>500 Divisadero</address>
-<crossstreet>at Fell</crossstreet>
-<url></url>
-<distance>0.2m</distance>
-<date>Mar 18, 2009</date>
-<status_text>From Paul P&apos;s Top 12</status_text>
-<relative_date>Mar 18, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status></user_status>
-</tip>
-<tip>
-<userid>1983</userid>
-<firstname>courtney</firstname>
-<lastname>sexton</lastname>
-<photo></photo>
-<tipid>4764</tipid>
-<text>Divisadero Art Walk - Selected Thursday evenings at multiple venues on Divisadero street between Geary and Haight. Madrone is about in the middle of the walk on Fell.</text>
-<venueid>21058</venueid>
-<venuename>Madrone Lounge</venuename>
-<address>500 Divisadero</address>
-<crossstreet>at Fell</crossstreet>
-<url></url>
-<distance>0.2m</distance>
-<date>Mar 28, 2009</date>
-<status_text>From Courtney S&apos;s Top 12</status_text>
-<relative_date>Mar 28, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>477</userid>
-<firstname>mat</firstname>
-<lastname>honan</lastname>
-<photo>477_1236306734.jpg</photo>
-<tipid>5448</tipid>
-<text>Go out on the roof and try not to get vertigo.</text>
-<venueid>44206</venueid>
-<venuename>Mat&apos;s flat</venuename>
-<address>Page Street</address>
-<crossstreet>Baker</crossstreet>
-<url></url>
-<distance>0.2m</distance>
-<date>Apr 3, 2009</date>
-<status_text>From Mat H&apos;s Top 12</status_text>
-<relative_date>Apr 3, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>3726</userid>
-<firstname>Chris</firstname>
-<lastname>Dunphy</lastname>
-<photo></photo>
-<tipid>2574</tipid>
-<texspy veggie tacos. Amazing!!!</text>
-<venueid>33421</venueid>
-<venuename>Herbivore - divisadero</venuename>
-<address>531 Divisadero St</address>
-<crossstreet>Fell St</crossstreet>
-<url></url>
-<distance>0.3m</distance>
-<date>Mar 16, 2009</date>
-<status_text>From Chris D&apos;s Top 12</status_text>
-<relative_date>Mar 16, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>275</userid>
-<firstname>Christine</firstname>
-<lastname>Brumback</lastname>
-<photo>275_1236923397.jpg</photo>
-<tipid>846</tipid>
-<text>try the &quot;blood and sand&quot; which looks like an old fashioned with vermouth instead of bittahs</text>
-<venueid>24252</venueid>
-<venuename>nopa</venuename>
-<address>560 Divisadero St</address>
-<crossstreet>at Hayes</crossstreet>
-<url></url>
-<distance>0.3m</distance>
-<date>Feb 27, 2009</date>
-<status_text>From Christine B&apos;s Top 12</status_text>
-<relative_date>Feb 27, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>1759</userid>
-<firstname>Dinah</firstname>
-<lastname>Sanders</lastname>
-<photo>1759_1236973290.jpg</photo>
-<tipid>1843</tipid>
-<text>Go to Nopa, sit at the bar, order the flatbread and trust your bartender.</text>
-<venueid>24252</venueid>
-<venuename>nopa</venuename>
-<address>560 Divisadero St</address>
-<crossstreet>at Hayes</crl></url>
-<distance>0.3m</distance>
-<date>Mar 13, 2009</date>
-<status_text>From Dinah S&apos;s Top 12</status_text>
-<relative_date>Mar 13, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>392</userid>
-<firstname>Courtney</firstname>
-<lastname>Patubo</lastname>
-<photo>392_1236294664.jpg</photo>
-<tipid>942</tipid>
-<text>Dine at the chef&apos;s counter and watch the magic happen right before your eyes.</text>
-<venueid>24252</venueid>
-<venuename>nopa</venuename>
-<address>560 Divisadero St</address>
-<crossstreet>at Hayes</crossstreet>
-<url></url>
-<distance>0.3m</distance>
-<date>Mar 5, 2009</date>
-<status_text>From Courtney P&apos;s Top 12</status_text>
-<relative_date>Mar 5, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>6605</userid>
-<firstname>Andy</firstname>
-<lastname>Szybalski</lastname>
-<photo></photo>
-<tipid>5522</tipid>
-<text>Get a $1.90 beer. Stand around like a vulture waiting for a seat to open up.</text>
-<venueid>22326</venueid>
-<venuename>Bean Bag Cafe</venuename>
-<address>601 Divisadero St</address>
-<crossstreet>at Hayes St</crossstreet>
-<url></url>
-<distance>0.3m</distance>
-<date>Apr 4, 2009</date>
-<status_text>From Andy S&apos;s Top 12</status_text>
-<relative_date>Apr 4, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_stator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>8673</userid>
-<firstname>Phanfasm</firstname>
-<lastname>-</lastname>
-<photo></photo>
-<tipid>5575</tipid>
-<text>easiest shop to brows comics in SF -love their organization &amp; display.</text>
-<venueid></venueid>
-<venuename>Go to Comix Experience for some 4color shoppin&apos;</venuename>
-<address></address>
-<crossstreet></crossstreet>
-<url></url>
-<distance>0.3m</distance>
-<date>Apr 4, 2009</date>
-<status_text>From Phanfasm -&apos;s Top 12</status_text>
-<relative_date>Apr 4, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>477</userid>
-<firstname>mat</firstname>
-<lastname>honan</lastname>
-<photo>477_1236306734.jpg</photo>
-<tipid>1214</tipid>
-<text>Don&apos;t feel like heading all the way to the Mission for your Gibraltar? Mojo makes a superb one, as well as other espresso drinks. Enjoy in the charming sunny garden out back</text>
-<venueid></venueid>
-<venuename>Mojo Bicycle Cafe</venuename>
-<address>639 Divisadero Street, san francisco, ca 94117</address>
-<crossstreet></crossstreet>
-<url></url>
-<distance>0.3m</distance>
-<date>Mar 9, 2009</date>
-<status_text>From Mat H&apos;s Top 12</status_text>
-<relative_date>Mar 9, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>1347</userid>
-<firstirstname>
-<lastname>Zmievski</lastname>
-<photo>1347_1236963503.jpg</photo>
-<tipid>5498</tipid>
-<text>Ask for their bottle menu - they have some really good Belgian and Belgian-style beers. Order La Folie if you want to splurge and impress.</text>
-<venueid>2905</venueid>
-<venuename>Toronado</venuename>
-<address>547 Haight St</address>
-<crossstreet>btw Fillmore and Steiner</crossstreet>
-<url></url>
-<distance>0.3m</distance>
-<date>Apr 4, 2009</date>
-<status_text>From Andrei Z&apos;s Top 12</status_text>
-<relative_date>Apr 4, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>3581</userid>
-<firstname>Sig</firstname>
-<lastname>L</lastname>
-<photo></photo>
-<tipid>2528</tipid>
-<text>get the hop stoopid</text>
-<venueid>2905</venueid>
-<venuename>Toronado</venuename>
-<address>547 Haight St</address>
-<crossstreet>btw Fillmore and Steiner</crossstreet>
-<url></url>
-<distance>0.3m</distance>
-<date>Mar 15, 2009</date>
-<status_text>From Sig L&apos;s Top 12</status_text>
-<relative_date>Mar 15, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>6553</userid>
-<firstname>Jessica</firstname>
-<lastname>Nguyen</lastname>
-<photo>6553_1237879634.jpg</photo>
-<tipid>3483</tipid>
-<text>I love surly yet knowledgeable bartenders.</text>
-<venueid>2905</venueid>
-<venuename>Toroe>
-<address>547 Haight St</address>
-<crossstreet>btw Fillmore and Steiner</crossstreet>
-<url></url>
-<distance>0.3m</distance>
-<date>Mar 19, 2009</date>
-<status_text>From Jessica N&apos;s Top 12</status_text>
-<relative_date>Mar 19, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>4116</userid>
-<firstname>Jason</firstname>
-<lastname>Untulis</lastname>
-<photo>4116_1237855946.jpg</photo>
-<tipid>4267</tipid>
-<text>If its busy, know what you want. If you don&apos;t know, don&apos;t come in when its busy. Look at the board straight ahead when you walk in. Don&apos;t order Bud, Heineken, Stella, Guinness.</text>
-<venueid>2905</venueid>
-<venuename>Toronado</venuename>
-<address>547 Haight St</address>
-<crossstreet>btw Fillmore and Steiner</crossstreet>
-<url></url>
-<distance>0.3m</distance>
-<date>Mar 25, 2009</date>
-<status_text>From Jason U&apos;s Top 12</status_text>
-<relative_date>Mar 25, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>8371</userid>
-<firstname>andrea</firstname>
-<lastname>cohan</lastname>
-<photo>8371_1238025579.jpg</photo>
-<tipid>4410</tipid>
-<text>Alligash white-mmmm!</text>
-<venueid>2905</venueid>
-<venuename>Toronado</venuename>
-<address>547 Haight St</address>
-<crossstreet>btw Fillmore and Steiner</crossstreet>
-<url></url>
-<distaance>
-<date>Mar 25, 2009</date>
-<status_text>From Andrea C&apos;s Top 12</status_text>
-<relative_date>Mar 25, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>6580</userid>
-<firstname>john</firstname>
-<lastname>foster</lastname>
-<photo>6580_1237495145.jpg</photo>
-<tipid>4979</tipid>
-<text>DO NOT turn to your friends to ask &quot;whatyawant&quot; when have the bartenders attention. be ready with your whole order.</text>
-<venueid>2905</venueid>
-<venuename>Toronado</venuename>
-<address>547 Haight St</address>
-<crossstreet>btw Fillmore and Steiner</crossstreet>
-<url></url>
-<distance>0.3m</distance>
-<date>Mar 30, 2009</date>
-<status_text>From John F&apos;s Top 12</status_text>
-<relative_date>Mar 30, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>4549</userid>
-<firstname>Fitch</firstname>
-<lastname>.</lastname>
-<photo>4549_1237539432.jpg</photo>
-<tipid>4064</tipid>
-<text>make a dirty Olson Twins joke while looking at the Painted Ladies</text>
-<venueid>24220</venueid>
-<venuename>Alamo Square</venuename>
-<address>Hayes St</address>
-<crossstreet>at Steiner</crossstreet>
-<url></url>
-<distance>0.4m</distance>
-<date>Mar 23, 2009</date>
-<status_text>From Fitch .&apos;s Top 12</status_text>
-<relative_date>Mar 23, 2009</relative_date>
-<istodoable>1</istodr_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>5545</userid>
-<firstname>Megan Allison</firstname>
-<lastname>Wade</lastname>
-<photo>5545_1237339343.jpg</photo>
-<tipid>4946</tipid>
-<text>beer, veggie croissant, turkey melt, cute boy!</text>
-<venueid>22618</venueid>
-<venuename>Cafe du Soleil</venuename>
-<address>200 Fillmore St</address>
-<crossstreet>at Waller</crossstreet>
-<url></url>
-<distance>0.4m</distance>
-<date>Mar 29, 2009</date>
-<status_text>From Megan Allison W&apos;s Top 12</status_text>
-<relative_date>Mar 29, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>9242</userid>
-<firstname>Cyan</firstname>
-<lastname>Banister</lastname>
-<photo>9242_1238547390.jpg</photo>
-<tipid>5674</tipid>
-<text>I once saw Danny Glover eating tasty Indian Food here and he brought in a gallon of milk (no joke), so I think we should start a trend. The Glover trend. Bring in a quart of milk!</text>
-<venueid>19265</venueid>
-<venuename>Indian Oven</venuename>
-<address>233 Fillmore St</address>
-<crossstreet>at Haight St</crossstreet>
-<url></url>
-<distance>0.4m</distance>
-<date>Apr 5, 2009</date>
-<status_text>From Cyan B&apos;s Top 12</status_text>
-<relative_date>Apr 5, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>440</userid>
-<f</firstname>
-<lastname>Stearns</lastname>
-<photo>440_1236705732.jpg</photo>
-<tipid>1320</tipid>
-<text>Very tasty Indian food!</text>
-<venueid>19265</venueid>
-<venuename>Indian Oven</venuename>
-<address>233 Fillmore St</address>
-<crossstreet>at Haight St</crossstreet>
-<url></url>
-<distance>0.4m</distance>
-<date>Mar 10, 2009</date>
-<status_text>From Geoff S&apos;s Top 12</status_text>
-<relative_date>Mar 10, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>2277</userid>
-<firstname>Aubrey</firstname>
-<lastname>Sabala</lastname>
-<photo></photo>
-<tipid>5504</tipid>
-<text>One of about four places that serve the best beer in the city, Poppy Jasper. And their soundtrack (chosen by staff) is unparalleled.</text>
-<venueid>5002</venueid>
-<venuename>Fly Bar</venuename>
-<address>762 Divisadero St</address>
-<crossstreet>at Fulton</crossstreet>
-<url></url>
-<distance>0.4m</distance>
-<date>Apr 4, 2009</date>
-<status_text>From Aubrey S&apos;s Top 12</status_text>
-<relative_date>Apr 4, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>7784</userid>
-<firstname>Scotty</firstname>
-<lastname>Gainer</lastname>
-<photo>7784_1237865276.jpg</photo>
-<tipid>4111</tipid>
-<text>happy hour, 3-6:30 get the danno bookem&apos; pizza and a pint for less than 10$!!</text>
-<venueid>
-<venuename>Fly Bar</venuename>
-<address>762 Divisadero St</address>
-<crossstreet>at Fulton</crossstreet>
-<url></url>
-<distance>0.4m</distance>
-<date>Mar 24, 2009</date>
-<status_text>From Scotty G&apos;s Top 12</status_text>
-<relative_date>Mar 24, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>7784</userid>
-<firstname>Scotty</firstname>
-<lastname>Gainer</lastname>
-<photo>7784_1237865276.jpg</photo>
-<tipid>4132</tipid>
-<text>Grab some coffee and leave with some high end sake from corkscrew... fiya!!!</text>
-<venueid>17634</venueid>
-<venuename>Cafe Abir</venuename>
-<address>1300 Fulton</address>
-<crossstreet>at Divisidero</crossstreet>
-<url></url>
-<distance>0.4m</distance>
-<date>Mar 24, 2009</date>
-<status_text>From Scotty G&apos;s Top 12</status_text>
-<relative_date>Mar 24, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>477</userid>
-<firstname>mat</firstname>
-<lastname>honan</lastname>
-<photo>477_1236306734.jpg</photo>
-<tipid>5171</tipid>
-<text>When it&apos;s in season, don&apos;t miss the Oysterhead Stout. Brewed with Marin county oysters (really). No, it doesn&apos;t taste like oyster. (But it does taste good with oysters.)</text>
-<venueid>2916</venueid>
-<venuename>Magnolia Pub and Brewery</venuename>
-<address>1398 Haight St</address>
-<cMasonic Avenue</crossstreet>
-<url></url>
-<distance>0.4m</distance>
-<date>Apr 1, 2009</date>
-<status_text>From Mat H&apos;s Top 12</status_text>
-<relative_date>Apr 1, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>1249</userid>
-<firstname>Jeff</firstname>
-<lastname>McC</lastname>
-<photo>1249_1236960939.jpg</photo>
-<tipid>1686</tipid>
-<text>Get the Proving Ground IPA.</text>
-<venueid>2916</venueid>
-<venuename>Magnolia Pub and Brewery</venuename>
-<address>1398 Haight St</address>
-<crossstreet>at Masonic Avenue</crossstreet>
-<url></url>
-<distance>0.4m</distance>
-<date>Mar 13, 2009</date>
-<status_text>From Jeff M&apos;s Top 12</status_text>
-<relative_date>Mar 13, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>6580</userid>
-<firstname>john</firstname>
-<lastname>foster</lastname>
-<photo>6580_1237495145.jpg</photo>
-<tipid>4980</tipid>
-<text>sit at the Great Table and introduce yourself to everyone there.</text>
-<venueid>2916</venueid>
-<venuename>Magnolia Pub and Brewery</venuename>
-<address>1398 Haight St</address>
-<crossstreet>at Masonic Avenue</crossstreet>
-<url></url>
-<distance>0.4m</distance>
-<date>Mar 30, 2009</date>
-<status_text>From John F&apos;s Top 12</status_text>
-<relative_date>Mar 30, 2009</relative_date>
-<istodoable>1</istodoable>
-<cdone</creator_status>
-<user_status></user_status>
-</tip>
-<tip>
-<userid>385</userid>
-<firstname>Eran</firstname>
-<lastname>Globen</lastname>
-<photo>385_1236295472.jpg</photo>
-<tipid>975</tipid>
-<text>Take over the couches in the back, take out the laptops and books and spend the day co-pretend-working with some friends.</text>
-<venueid>20990</venueid>
-<venuename>Coffee to the People</venuename>
-<address>1206 Masonic Ave</address>
-<crossstreet>at Haight</crossstreet>
-<url></url>
-<distance>0.4m</distance>
-<date>Mar 6, 2009</date>
-<status_text>From Eran G&apos;s Top 12</status_text>
-<relative_date>Mar 6, 2009</relative_date>
-<istodoable>1</istodoable>
-<creator_status>done</creator_status>
-<user_status></user_status>
-</tip>
-</group>
+  </group>
+  <group type="Friends' To-Do">
+  </group>
+  <group type="Nearby Tips">
+    <tip>
+      <userid>1058</userid>
+      <firstname>Shannon</firstname>
+      <lastname>Clark</lastname>
+      <photo>1058_1237850027.jpg</photo>
+      <tipid>4272</tipid>
+      <text>Play games here - both on their games night every Wed but the &quot;advanced&quot; tip is they have a phenomenal library of games you can request to borrow - a serious gamer&apos;s library</text>
+      <venueid>40450</venueid>
+      <venuename>On the Corner</venuename>
+      <address>359 Divisadero St</address>
+      <crossstreet>Oak St</crossstreet>
+      <url></url>
+      <distance>0.1m</distance>
+      <date>Mar 25, 2009</date>
+      <status_text>From Shannon C&apos;s Top 12</status_text>
+      <relative_date>Mar 25, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>359</userid>
+      <firstname>alice</firstname>
+      <lastname>tiara</lastname>
+      <photo>359_1236287154.jpg</photo>
+      <tipid>905</tipid>
+      <text>Their chocolate-chip cookies are freaking awesome.</text>
+      <venueid>40450</venueid>
+      <venuename>On the Corner</venuename>
+      <address>359 Divisadero St</address>
+      <crossstreet>Oak St</crossstreet>
+      <url></url>
+      </distance>
+      <date>Mar 5, 2009</date>
+      <status_text>From Alice T&apos;s Top 12</status_text>
+      <relative_date>Mar 5, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>7266</userid>
+      <firstname>Claudine</firstname>
+      <lastname>Co</lastname>
+      <photo>7266_1237759522.jpg</photo>
+      <tipid>4145</tipid>
+      <text>order from their handy takeout window! no wait!</text>
+      <venueid>41897</venueid>
+      <venuename>Nopalito</venuename>
+      <address>306 Broderick Street</address>
+      <crossstreet>Oak Stret</crossstreet>
+      <url></url>
+      <distance>0.2m</distance>
+      <date>Mar 24, 2009</date>
+      <status_text>From Claudine C&apos;s Top 12</status_text>
+      <relative_date>Mar 24, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>4983</userid>
+      <firstname>Paul</firstname>
+      <lastname>Poppleton</lastname>
+      <photo>4983_1237413349.jpg</photo>
+      <tipid>3248</tipid>
+      <text>Get a infused vodka drink.  I like the Lola or just cucumber vodka with some soda and a lime.</text>
+      <venueid>21058</venueid>
+      <venuename>Madrone Lounge</venuename>
+      <address>500 Divisadero</address>
+      <crossstreet>at Fell</crossstreet>
+      <url></url>
+      <distance>0.2m</distance>
+      <date>Mar 18, 2009</date>
+      <status_text>From Paul P&apos;s Top 12</status_text>
+      <relative_date>Mar 18, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status></user_status>
+    </tip>
+    <tip>
+      <userid>1983</userid>
+      <firstname>courtney</firstname>
+      <lastname>sexton</lastname>
+      <photo></photo>
+      <tipid>4764</tipid>
+      <text>Divisadero Art Walk - Selected Thursday evenings at multiple venues on Divisadero street between Geary and Haight. Madrone is about in the middle of the walk on Fell.</text>
+      <venueid>21058</venueid>
+      <venuename>Madrone Lounge</venuename>
+      <address>500 Divisadero</address>
+      <crossstreet>at Fell</crossstreet>
+      <url></url>
+      <distance>0.2m</distance>
+      <date>Mar 28, 2009</date>
+      <status_text>From Courtney S&apos;s Top 12</status_text>
+      <relative_date>Mar 28, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>477</userid>
+      <firstname>mat</firstname>
+      <lastname>honan</lastname>
+      <photo>477_1236306734.jpg</photo>
+      <tipid>5448</tipid>
+      <text>Go out on the roof and try not to get vertigo.</text>
+      <venueid>44206</venueid>
+      <venuename>Mat&apos;s flat</venuename>
+      <address>Page Street</address>
+      <crossstreet>Baker</crossstreet>
+      <url></url>
+      <distance>0.2m</distance>
+      <date>Apr 3, 2009</date>
+      <status_text>From Mat H&apos;s Top 12</status_text>
+      <relative_date>Apr 3, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>3726</userid>
+      <firstname>Chris</firstname>
+      <lastname>Dunphy</lastname>
+      <photo></photo>
+      <tipid>2574</tipid>
+      <texspy veggie tacos. Amazing!!!</text>
+      <venueid>33421</venueid>
+      <venuename>Herbivore - divisadero</venuename>
+      <address>531 Divisadero St</address>
+      <crossstreet>Fell St</crossstreet>
+      <url></url>
+      <distance>0.3m</distance>
+      <date>Mar 16, 2009</date>
+      <status_text>From Chris D&apos;s Top 12</status_text>
+      <relative_date>Mar 16, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>275</userid>
+      <firstname>Christine</firstname>
+      <lastname>Brumback</lastname>
+      <photo>275_1236923397.jpg</photo>
+      <tipid>846</tipid>
+      <text>try the &quot;blood and sand&quot; which looks like an old fashioned with vermouth instead of bittahs</text>
+      <venueid>24252</venueid>
+      <venuename>nopa</venuename>
+      <address>560 Divisadero St</address>
+      <crossstreet>at Hayes</crossstreet>
+      <url></url>
+      <distance>0.3m</distance>
+      <date>Feb 27, 2009</date>
+      <status_text>From Christine B&apos;s Top 12</status_text>
+      <relative_date>Feb 27, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>1759</userid>
+      <firstname>Dinah</firstname>
+      <lastname>Sanders</lastname>
+      <photo>1759_1236973290.jpg</photo>
+      <tipid>1843</tipid>
+      <text>Go to Nopa, sit at the bar, order the flatbread and trust your bartender.</text>
+      <venueid>24252</venueid>
+      <venuename>nopa</venuename>
+      <address>560 Divisadero St</address>
+      <crossstreet>at Hayes</crl></url>
+      <distance>0.3m</distance>
+      <date>Mar 13, 2009</date>
+      <status_text>From Dinah S&apos;s Top 12</status_text>
+      <relative_date>Mar 13, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>392</userid>
+      <firstname>Courtney</firstname>
+      <lastname>Patubo</lastname>
+      <photo>392_1236294664.jpg</photo>
+      <tipid>942</tipid>
+      <text>Dine at the chef&apos;s counter and watch the magic happen right before your eyes.</text>
+      <venueid>24252</venueid>
+      <venuename>nopa</venuename>
+      <address>560 Divisadero St</address>
+      <crossstreet>at Hayes</crossstreet>
+      <url></url>
+      <distance>0.3m</distance>
+      <date>Mar 5, 2009</date>
+      <status_text>From Courtney P&apos;s Top 12</status_text>
+      <relative_date>Mar 5, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>6605</userid>
+      <firstname>Andy</firstname>
+      <lastname>Szybalski</lastname>
+      <photo></photo>
+      <tipid>5522</tipid>
+      <text>Get a $1.90 beer. Stand around like a vulture waiting for a seat to open up.</text>
+      <venueid>22326</venueid>
+      <venuename>Bean Bag Cafe</venuename>
+      <address>601 Divisadero St</address>
+      <crossstreet>at Hayes St</crossstreet>
+      <url></url>
+      <distance>0.3m</distance>
+      <date>Apr 4, 2009</date>
+      <status_text>From Andy S&apos;s Top 12</status_text>
+      <relative_date>Apr 4, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_stator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>8673</userid>
+      <firstname>Phanfasm</firstname>
+      <lastname>-</lastname>
+      <photo></photo>
+      <tipid>5575</tipid>
+      <text>easiest shop to brows comics in SF -love their organization &amp; display.</text>
+      <venueid></venueid>
+      <venuename>Go to Comix Experience for some 4color shoppin&apos;</venuename>
+      <address></address>
+      <crossstreet></crossstreet>
+      <url></url>
+      <distance>0.3m</distance>
+      <date>Apr 4, 2009</date>
+      <status_text>From Phanfasm -&apos;s Top 12</status_text>
+      <relative_date>Apr 4, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>477</userid>
+      <firstname>mat</firstname>
+      <lastname>honan</lastname>
+      <photo>477_1236306734.jpg</photo>
+      <tipid>1214</tipid>
+      <text>Don&apos;t feel like heading all the way to the Mission for your Gibraltar? Mojo makes a superb one, as well as other espresso drinks. Enjoy in the charming sunny garden out back</text>
+      <venueid></venueid>
+      <venuename>Mojo Bicycle Cafe</venuename>
+      <address>639 Divisadero Street, san francisco, ca 94117</address>
+      <crossstreet></crossstreet>
+      <url></url>
+      <distance>0.3m</distance>
+      <date>Mar 9, 2009</date>
+      <status_text>From Mat H&apos;s Top 12</status_text>
+      <relative_date>Mar 9, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>1347</userid>
+      <firstirstname>
+      <lastname>Zmievski</lastname>
+      <photo>1347_1236963503.jpg</photo>
+      <tipid>5498</tipid>
+      <text>Ask for their bottle menu - they have some really good Belgian and Belgian-style beers. Order La Folie if you want to splurge and impress.</text>
+      <venueid>2905</venueid>
+      <venuename>Toronado</venuename>
+      <address>547 Haight St</address>
+      <crossstreet>btw Fillmore and Steiner</crossstreet>
+      <url></url>
+      <distance>0.3m</distance>
+      <date>Apr 4, 2009</date>
+      <status_text>From Andrei Z&apos;s Top 12</status_text>
+      <relative_date>Apr 4, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>3581</userid>
+      <firstname>Sig</firstname>
+      <lastname>L</lastname>
+      <photo></photo>
+      <tipid>2528</tipid>
+      <text>get the hop stoopid</text>
+      <venueid>2905</venueid>
+      <venuename>Toronado</venuename>
+      <address>547 Haight St</address>
+      <crossstreet>btw Fillmore and Steiner</crossstreet>
+      <url></url>
+      <distance>0.3m</distance>
+      <date>Mar 15, 2009</date>
+      <status_text>From Sig L&apos;s Top 12</status_text>
+      <relative_date>Mar 15, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>6553</userid>
+      <firstname>Jessica</firstname>
+      <lastname>Nguyen</lastname>
+      <photo>6553_1237879634.jpg</photo>
+      <tipid>3483</tipid>
+      <text>I love surly yet knowledgeable bartenders.</text>
+      <venueid>2905</venueid>
+      <venuename>Toroe>
+      <address>547 Haight St</address>
+      <crossstreet>btw Fillmore and Steiner</crossstreet>
+      <url></url>
+      <distance>0.3m</distance>
+      <date>Mar 19, 2009</date>
+      <status_text>From Jessica N&apos;s Top 12</status_text>
+      <relative_date>Mar 19, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>4116</userid>
+      <firstname>Jason</firstname>
+      <lastname>Untulis</lastname>
+      <photo>4116_1237855946.jpg</photo>
+      <tipid>4267</tipid>
+      <text>If its busy, know what you want. If you don&apos;t know, don&apos;t come in when its busy. Look at the board straight ahead when you walk in. Don&apos;t order Bud, Heineken, Stella, Guinness.</text>
+      <venueid>2905</venueid>
+      <venuename>Toronado</venuename>
+      <address>547 Haight St</address>
+      <crossstreet>btw Fillmore and Steiner</crossstreet>
+      <url></url>
+      <distance>0.3m</distance>
+      <date>Mar 25, 2009</date>
+      <status_text>From Jason U&apos;s Top 12</status_text>
+      <relative_date>Mar 25, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>8371</userid>
+      <firstname>andrea</firstname>
+      <lastname>cohan</lastname>
+      <photo>8371_1238025579.jpg</photo>
+      <tipid>4410</tipid>
+      <text>Alligash white-mmmm!</text>
+      <venueid>2905</venueid>
+      <venuename>Toronado</venuename>
+      <address>547 Haight St</address>
+      <crossstreet>btw Fillmore and Steiner</crossstreet>
+      <url></url>
+      <distaance>
+      <date>Mar 25, 2009</date>
+      <status_text>From Andrea C&apos;s Top 12</status_text>
+      <relative_date>Mar 25, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>6580</userid>
+      <firstname>john</firstname>
+      <lastname>foster</lastname>
+      <photo>6580_1237495145.jpg</photo>
+      <tipid>4979</tipid>
+      <text>DO NOT turn to your friends to ask &quot;whatyawant&quot; when have the bartenders attention. be ready with your whole order.</text>
+      <venueid>2905</venueid>
+      <venuename>Toronado</venuename>
+      <address>547 Haight St</address>
+      <crossstreet>btw Fillmore and Steiner</crossstreet>
+      <url></url>
+      <distance>0.3m</distance>
+      <date>Mar 30, 2009</date>
+      <status_text>From John F&apos;s Top 12</status_text>
+      <relative_date>Mar 30, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>4549</userid>
+      <firstname>Fitch</firstname>
+      <lastname>.</lastname>
+      <photo>4549_1237539432.jpg</photo>
+      <tipid>4064</tipid>
+      <text>make a dirty Olson Twins joke while looking at the Painted Ladies</text>
+      <venueid>24220</venueid>
+      <venuename>Alamo Square</venuename>
+      <address>Hayes St</address>
+      <crossstreet>at Steiner</crossstreet>
+      <url></url>
+      <distance>0.4m</distance>
+      <date>Mar 23, 2009</date>
+      <status_text>From Fitch .&apos;s Top 12</status_text>
+      <relative_date>Mar 23, 2009</relative_date>
+      <istodoable>1</istodr_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>5545</userid>
+      <firstname>Megan Allison</firstname>
+      <lastname>Wade</lastname>
+      <photo>5545_1237339343.jpg</photo>
+      <tipid>4946</tipid>
+      <text>beer, veggie croissant, turkey melt, cute boy!</text>
+      <venueid>22618</venueid>
+      <venuename>Cafe du Soleil</venuename>
+      <address>200 Fillmore St</address>
+      <crossstreet>at Waller</crossstreet>
+      <url></url>
+      <distance>0.4m</distance>
+      <date>Mar 29, 2009</date>
+      <status_text>From Megan Allison W&apos;s Top 12</status_text>
+      <relative_date>Mar 29, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>9242</userid>
+      <firstname>Cyan</firstname>
+      <lastname>Banister</lastname>
+      <photo>9242_1238547390.jpg</photo>
+      <tipid>5674</tipid>
+      <text>I once saw Danny Glover eating tasty Indian Food here and he brought in a gallon of milk (no joke), so I think we should start a trend. The Glover trend. Bring in a quart of milk!</text>
+      <venueid>19265</venueid>
+      <venuename>Indian Oven</venuename>
+      <address>233 Fillmore St</address>
+      <crossstreet>at Haight St</crossstreet>
+      <url></url>
+      <distance>0.4m</distance>
+      <date>Apr 5, 2009</date>
+      <status_text>From Cyan B&apos;s Top 12</status_text>
+      <relative_date>Apr 5, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>440</userid>
+      <f</firstname>
+      <lastname>Stearns</lastname>
+      <photo>440_1236705732.jpg</photo>
+      <tipid>1320</tipid>
+      <text>Very tasty Indian food!</text>
+      <venueid>19265</venueid>
+      <venuename>Indian Oven</venuename>
+      <address>233 Fillmore St</address>
+      <crossstreet>at Haight St</crossstreet>
+      <url></url>
+      <distance>0.4m</distance>
+      <date>Mar 10, 2009</date>
+      <status_text>From Geoff S&apos;s Top 12</status_text>
+      <relative_date>Mar 10, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>2277</userid>
+      <firstname>Aubrey</firstname>
+      <lastname>Sabala</lastname>
+      <photo></photo>
+      <tipid>5504</tipid>
+      <text>One of about four places that serve the best beer in the city, Poppy Jasper. And their soundtrack (chosen by staff) is unparalleled.</text>
+      <venueid>5002</venueid>
+      <venuename>Fly Bar</venuename>
+      <address>762 Divisadero St</address>
+      <crossstreet>at Fulton</crossstreet>
+      <url></url>
+      <distance>0.4m</distance>
+      <date>Apr 4, 2009</date>
+      <status_text>From Aubrey S&apos;s Top 12</status_text>
+      <relative_date>Apr 4, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>7784</userid>
+      <firstname>Scotty</firstname>
+      <lastname>Gainer</lastname>
+      <photo>7784_1237865276.jpg</photo>
+      <tipid>4111</tipid>
+      <text>happy hour, 3-6:30 get the danno bookem&apos; pizza and a pint for less than 10$!!</text>
+      <venueid>
+      <venuename>Fly Bar</venuename>
+      <address>762 Divisadero St</address>
+      <crossstreet>at Fulton</crossstreet>
+      <url></url>
+      <distance>0.4m</distance>
+      <date>Mar 24, 2009</date>
+      <status_text>From Scotty G&apos;s Top 12</status_text>
+      <relative_date>Mar 24, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>7784</userid>
+      <firstname>Scotty</firstname>
+      <lastname>Gainer</lastname>
+      <photo>7784_1237865276.jpg</photo>
+      <tipid>4132</tipid>
+      <text>Grab some coffee and leave with some high end sake from corkscrew... fiya!!!</text>
+      <venueid>17634</venueid>
+      <venuename>Cafe Abir</venuename>
+      <address>1300 Fulton</address>
+      <crossstreet>at Divisidero</crossstreet>
+      <url></url>
+      <distance>0.4m</distance>
+      <date>Mar 24, 2009</date>
+      <status_text>From Scotty G&apos;s Top 12</status_text>
+      <relative_date>Mar 24, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>477</userid>
+      <firstname>mat</firstname>
+      <lastname>honan</lastname>
+      <photo>477_1236306734.jpg</photo>
+      <tipid>5171</tipid>
+      <text>When it&apos;s in season, don&apos;t miss the Oysterhead Stout. Brewed with Marin county oysters (really). No, it doesn&apos;t taste like oyster. (But it does taste good with oysters.)</text>
+      <venueid>2916</venueid>
+      <venuename>Magnolia Pub and Brewery</venuename>
+      <address>1398 Haight St</address>
+      <cMasonic Avenue</crossstreet>
+      <url></url>
+      <distance>0.4m</distance>
+      <date>Apr 1, 2009</date>
+      <status_text>From Mat H&apos;s Top 12</status_text>
+      <relative_date>Apr 1, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>1249</userid>
+      <firstname>Jeff</firstname>
+      <lastname>McC</lastname>
+      <photo>1249_1236960939.jpg</photo>
+      <tipid>1686</tipid>
+      <text>Get the Proving Ground IPA.</text>
+      <venueid>2916</venueid>
+      <venuename>Magnolia Pub and Brewery</venuename>
+      <address>1398 Haight St</address>
+      <crossstreet>at Masonic Avenue</crossstreet>
+      <url></url>
+      <distance>0.4m</distance>
+      <date>Mar 13, 2009</date>
+      <status_text>From Jeff M&apos;s Top 12</status_text>
+      <relative_date>Mar 13, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+    <tip>
+      <userid>385</userid>
+      <firstname>Eran</firstname>
+      <lastname>Globen</lastname>
+      <photo>385_1236295472.jpg</photo>
+      <tipid>975</tipid>
+      <text>Take over the couches in the back, take out the laptops and books and spend the day co-pretend-working with some friends.</text>
+      <venueid>20990</venueid>
+      <venuename>Coffee to the People</venuename>
+      <address>1206 Masonic Ave</address>
+      <crossstreet>at Haight</crossstreet>
+      <url></url>
+      <distance>0.4m</distance>
+      <date>Mar 6, 2009</date>
+      <status_text>From Eran G&apos;s Top 12</status_text>
+      <relative_date>Mar 6, 2009</relative_date>
+      <istodoable>1</istodoable>
+      <creator_status>done</creator_status>
+      <user_status></user_status>
+    </tip>
+  </group>
 </tips>

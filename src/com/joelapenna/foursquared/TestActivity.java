@@ -9,7 +9,6 @@ import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.IncomingCheckin;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 
@@ -93,8 +92,8 @@ public class TestActivity extends Activity {
 
     private void testCheckin() throws FoursquareError, FoursquareParseException, IOException {
         Log.d(TAG, "testCheckin");
-        IncomingCheckin checkin = mFoursquare.checkin("Bobby's place", false, false, "", "");
-        Log.d(TAG, "IncomingCheckin userid: " + checkin.getUserId());
+        Checkin checkin = mFoursquare.checkin("Bobby's place", false, false, "", "");
+        Log.d(TAG, "IncomingCheckin userid: " + checkin.getUserid());
         Log.d(TAG, "IncomingCheckin message: " + checkin.getMessage());
         Log.d(TAG, "IncomingCheckin url: " + checkin.getUrl());
 
