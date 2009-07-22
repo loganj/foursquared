@@ -153,7 +153,8 @@ public class Foursquared extends Application {
 
     public static void addPreferencesToMenu(Context context, Menu menu) {
         Intent intent = new Intent(context, PreferenceActivity.class);
-        menu.add(MENU_GROUP_SYSTEM, MENU_PREFERENCES, Menu.NONE, R.string.preferences_label) //
+        menu.add(MENU_GROUP_SYSTEM, MENU_PREFERENCES, Menu.CATEGORY_SECONDARY,
+                R.string.preferences_label) //
                 .setIcon(android.R.drawable.ic_menu_preferences).setIntent(intent);
     }
 

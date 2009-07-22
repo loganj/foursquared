@@ -54,7 +54,7 @@ public class VenueActivity extends TabActivity {
     private static final int DIALOG_CHECKIN = 0;
     private static final int DIALOG_TIPADD = 1;
 
-    private static final int MENU_GROUP_CHECKIN = 0;
+    private static final int MENU_GROUP_CHECKIN = 1;
 
     private static final int MENU_CHECKIN = 1;
     private static final int MENU_CHECKIN_TWITTER = 2;
@@ -111,21 +111,21 @@ public class VenueActivity extends TabActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        mCheckinMenuItem = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN, Menu.NONE, "Checkin") //
+        mCheckinMenuItem = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN, 1, "Checkin") //
                 .setIcon(android.R.drawable.ic_menu_add);
 
-        mTwitterToggle = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN_TWITTER, Menu.NONE, "Twitter")
-                .setCheckable(true);
-        mShareToggle = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN_SILENT, Menu.NONE, "Share")
+        mShareToggle = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN_SILENT, 2, "Share").setCheckable(
+                true);
+        mTwitterToggle = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN_TWITTER, 3, "Twitter")
                 .setCheckable(true);
 
-        mAddTipMenuItem = menu.add(Menu.NONE, MENU_TIPADD, Menu.NONE, "Add Tip") //
+        mAddTipMenuItem = menu.add(Menu.NONE, MENU_TIPADD, 4, "Add Tip") //
                 .setIcon(android.R.drawable.ic_menu_set_as);
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        mShareToggle.setChecked(settings.getBoolean(Preferences.PREFERENCE_SHARE_CHECKIN, true));
         mTwitterToggle.setChecked(settings
                 .getBoolean(Preferences.PREFERENCE_TWITTER_CHECKIN, false));
-        mShareToggle.setChecked(settings.getBoolean(Preferences.PREFERENCE_SHARE_CHECKIN, true));
 
         Foursquared.addPreferencesToMenu(this, menu);
         return true;
@@ -134,14 +134,10 @@ public class VenueActivity extends TabActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        if (DEBUG) Log.d(TAG, "onPrepareOptions: mTwitterToggle: " + mTwitterToggle.isChecked());
-        if (DEBUG) Log.d(TAG, "onPrepareOptions: mShareToggle: " + mShareToggle.isChecked());
 
-        boolean hasVenue = (mStateHolder.venue != null);
-        mCheckinMenuItem.setEnabled(hasVenue);
-        mShareToggle.setEnabled(hasVenue);
-        mTwitterToggle.setEnabled(hasVenue);
-        mAddTipMenuItem.setEnabled(hasVenue);
+        boolean checkinEnabled = (mStateHolder.venue != null) && (mStateHolder.checkin == null);
+        menu.setGroupEnabled(mCheckinMenuItem.getGroupId(), checkinEnabled);
+        mAddTipMenuItem.setEnabled(checkinEnabled);
 
         if (mTwitterToggle.isChecked()) {
             mTwitterToggle.setIcon(android.R.drawable.button_onoff_indicator_on);
@@ -159,7 +155,7 @@ public class VenueActivity extends TabActivity {
             mShareToggle.setTitle("Hiding checkin");
         }
 
-        if (mShareToggle.isChecked()) {
+        if (mShareToggle.isChecked() && checkinEnabled) {
             mTwitterToggle.setEnabled(true);
         } else {
             mTwitterToggle.setChecked(false);
@@ -198,6 +194,7 @@ public class VenueActivity extends TabActivity {
                 webView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
                         LayoutParams.FILL_PARENT));
                 webView.loadUrl(checkin.getUrl());
+
                 return new AlertDialog.Builder(this) // the builder
                         .setView(webView) // use a web view
                         .setIcon(android.R.drawable.ic_dialog_info) // show an icon
@@ -439,10 +436,10 @@ public class VenueActivity extends TabActivity {
                     Toast.makeText(VenueActivity.this, "Unable to checkin! (FIX THIS!)",
                             Toast.LENGTH_LONG).show();
                     return;
+                } else {
+                    showDialog(DIALOG_CHECKIN);
                 }
-                showDialog(DIALOG_CHECKIN);
-                // TODO(jlapenna): Re-enable this
-                // lookupCheckinGroups();
+                new CheckinsTask().execute();
             } finally {
                 if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
                 stopProgressBar(PROGRESS_BAR_TASK_ID);
@@ -460,7 +457,7 @@ public class VenueActivity extends TabActivity {
 
         @Override
         public void onPreExecute() {
-            if (DEBUG) Log.d(TAG, "CheckinsTask: onPreExecute()");
+            if (DEBUG) Log.d(TAG, "TipAddTask: onPreExecute()");
             startProgressBar(PROGRESS_BAR_TASK_ID);
         }
 
@@ -484,7 +481,7 @@ public class VenueActivity extends TabActivity {
 
         @Override
         public void onPostExecute(Tip tip) {
-            if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
+            if (DEBUG) Log.d(TAG, "TipAddTask: onPostExecute()");
             try {
                 if (tip != null) {
                     String tipToastString = "Added Tip #" + tip.getId() + " " + tip.getText();

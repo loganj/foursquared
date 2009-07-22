@@ -161,11 +161,14 @@ public class AddVenueActivity extends Activity {
         protected Venue doInBackground(Void... params) {
             // name, address, crossstreet, city, state, zip, cityid, phone
             try {
-                return Foursquared.getFoursquare().addVenue(mNameEditText.getText().toString(),
-                        mAddressEditText.getText().toString(),
-                        mCrossstreetEditText.getText().toString(),
-                        mCityEditText.getText().toString(), mStateEditText.getText().toString(),
-                        mZipEditText.getText().toString(), mFieldsHolder.foursquareCity.getId(),
+                return Foursquared.getFoursquare().addVenue( //
+                        mNameEditText.getText().toString(), //
+                        mAddressEditText.getText().toString(), //
+                        mCrossstreetEditText.getText().toString(), //
+                        mCityEditText.getText().toString(), //
+                        mStateEditText.getText().toString(), //
+                        mZipEditText.getText().toString(), //
+                        mFieldsHolder.foursquareCity.getId(), //
                         mPhoneEditText.getText().toString());
             } catch (FoursquareException e) {
                 // TODO Auto-generated catch block
@@ -181,7 +184,8 @@ public class AddVenueActivity extends Activity {
         protected void onPostExecute(Venue venue) {
             setProgressBarIndeterminateVisibility(false);
             if (venue == null) {
-                Toast.makeText(AddVenueActivity.this, "Unable to add venue!", Toast.LENGTH_LONG).show();
+                Toast.makeText(AddVenueActivity.this, "Unable to add venue!", Toast.LENGTH_LONG)
+                        .show();
             } else {
                 Intent intent = new Intent(AddVenueActivity.this, VenueActivity.class);
                 intent.putExtra(VenueActivity.EXTRA_VENUE, venue.getId());
@@ -231,7 +235,20 @@ public class AddVenueActivity extends Activity {
         @Override
         protected void onPostExecute(FieldsHolder fields) {
             setProgressBarIndeterminateVisibility(false);
-            setFields(fields);
+
+            try {
+                if (fields == null) {
+                    Toast.makeText(AddVenueActivity.this,
+                            "Unable to lookup venue city. Try again later.", Toast.LENGTH_LONG)
+                            .show();
+                    finish();
+                } else {
+                    setFields(fields);
+                }
+            } finally {
+                setProgressBarIndeterminateVisibility(false);
+
+            }
         }
 
         @Override
