@@ -31,6 +31,11 @@ abstract class BaseGroupAdapter<T> extends BaseAdapter {
     }
 
     @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
     public boolean hasStableIds() {
         return true;
     }

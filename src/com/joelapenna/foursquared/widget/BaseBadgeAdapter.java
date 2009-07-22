@@ -17,9 +17,4 @@ abstract public class BaseBadgeAdapter extends BaseGroupAdapter<Badge> {
     public BaseBadgeAdapter(Context context, Group badges) {
         super(context, badges);
     }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
 }
