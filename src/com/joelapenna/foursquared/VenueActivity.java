@@ -56,15 +56,9 @@ public class VenueActivity extends TabActivity {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (DEBUG) Log.d(TAG, "onStart()");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStart();
-        if (DEBUG) Log.d(TAG, "onStop()");
+    public void onDestroy() {
+        super.onDestroy();
+        if (DEBUG) Log.d(TAG, "onDestroy()");
         unregisterReceiver(mBroadcastReceiver);
     }
 
