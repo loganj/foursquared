@@ -351,8 +351,6 @@ public class VenueActivity extends TabActivity {
         @Override
         public void onPreExecute() {
             mCheckinMenuItem.setEnabled(false);
-            mShareToggle.setEnabled(false);
-            mTwitterToggle.setEnabled(false);
             if (DEBUG) Log.d(TAG, "CheckinTask: onPreExecute()");
             startProgressBar(PROGRESS_BAR_TASK_ID);
 
