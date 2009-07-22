@@ -20,7 +20,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
