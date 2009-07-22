@@ -10,11 +10,11 @@
     <EditTextPreference
       android:key="phone"
       android:persistent="true"
-      android:title="Phone or Username"
+      android:title="Phone Number"
       android:hint="5558675309"
       android:phoneNumber="true"
       android:singleLine="true"
-      android:summary="Your Foursquare username or phone number." />
+      android:summary="Your Foursquare phone number, without country code or punctuation." />
     <EditTextPreference
       android:key="password"
       android:persistent="true"

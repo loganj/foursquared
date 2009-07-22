@@ -26,7 +26,7 @@ public class MainActivity extends Activity {
         super.onStart();
         if (DEBUG) Log.d(TAG, "onStart()");
 
-        if (Foursquared.getFoursquare().hasCredentials()) {
+        if (Foursquared.getFoursquare().hasCredentials(true)) {
             startDefaultActivity();
             finish();
         } else if (!mStartedPreferences) {

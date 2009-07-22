@@ -8,6 +8,8 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquare.error.FoursquareException;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -32,6 +34,8 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     static final boolean DEBUG = Foursquared.DEBUG;
 
     private static final int MENU_CLEAR = 0;
+
+    private static final int DIALOG_LOGGING_IN = 0;
 
     private AsyncTask<Void, Void, Boolean> mLoginTask = null;
     private SharedPreferences mPrefs;
@@ -68,6 +72,11 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
             }
         };
         mPrefs.registerOnSharedPreferenceChangeListener(mOnSharedPreferenceChangeListener);
+
+        if (getLastNonConfigurationInstance() != null) {
+            if (DEBUG) Log.d(TAG, "Restoring state.");
+            mLoginTask = (LoginTask)getLastNonConfigurationInstance();
+        };
     }
 
     @Override
@@ -75,6 +84,21 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         super.onStart();
         // Look up the phone number if its not set.
         setPhoneNumber();
+    }
+
+    @Override
+    public Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DIALOG_LOGGING_IN:
+                ProgressDialog dialog = new ProgressDialog(this);
+                dialog.setTitle("Logging in");
+                dialog.setMessage("Please wait while logging into Foursquare...");
+                dialog.setIndeterminate(true);
+                dialog.setCancelable(true);
+                return dialog;
+            default:
+                return null;
+        }
     }
 
     @Override
@@ -93,9 +117,15 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                 Editor editor = mPrefs.edit();
                 editor.clear();
                 editor.commit();
+                Foursquared.getFoursquare().setCredentials(null, null, null, null);
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return mLoginTask;
     }
 
     private void setPhoneNumber() {
@@ -123,6 +153,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         @Override
         protected void onPreExecute() {
             if (DEBUG) Log.d(TAG, "onPreExecute()");
+            showDialog(DIALOG_LOGGING_IN);
         }
 
         @Override
@@ -148,6 +179,8 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         @Override
         protected void onPostExecute(Boolean loggedIn) {
             if (DEBUG) Log.d(TAG, "onPostExecute(): " + loggedIn);
+            dismissDialog(DIALOG_LOGGING_IN);
+
             if (loggedIn) {
                 Toast.makeText(PreferenceActivity.this, "Welcome back to Foursquare.",
                         Toast.LENGTH_LONG).show();

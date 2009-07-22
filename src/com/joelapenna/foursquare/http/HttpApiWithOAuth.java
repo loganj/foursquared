@@ -46,8 +46,13 @@ public class HttpApiWithOAuth extends HttpApi {
         mConsumer = new DefaultOAuthConsumer(key, secret, SignatureMethod.HMAC_SHA1);
     }
 
-    public void setOAuthTokenWithSecret(String token, String secret) {
-        mConsumer.setTokenWithSecret(token, secret);
+    public void setOAuthTokenWithSecret(String token, String tokenSecret) {
+        if (token == null && tokenSecret == null) {
+            String consumerKey = mConsumer.getConsumerKey();
+            String consumerSecret = mConsumer.getConsumerSecret();
+            mConsumer = new DefaultOAuthConsumer(consumerKey, consumerSecret,
+                    SignatureMethod.HMAC_SHA1);
+        }
     }
 
     public boolean hasOAuthTokenWithSecret() {
