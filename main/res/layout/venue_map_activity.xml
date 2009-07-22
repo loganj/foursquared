@@ -12,24 +12,30 @@
     android:clickable="true" />
 
   <Button
-    android:id="@+id/mapsButton"
+    android:id="@+id/yelpButton"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentTop="true"
     android:layout_alignParentRight="true"
-    android:paddingTop="10dip"
-    android:paddingBottom="10dip"
-    android:background="@android:drawable/ic_menu_compass" />
+    android:layout_marginTop="10dip"
+    android:layout_marginRight="10dip"
+    android:background="@drawable/venue_map_button_right" />
 
   <Button
-    android:id="@+id/yelpButton"
+    android:id="@+id/mapsButton"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentRight="true"
-    android:layout_toLeftOf="@id/mapsButton"
-    android:paddingTop="10dip"
-    android:paddingBottom="10dip"
-    android:text="yelp!" />
+    android:layout_alignParentTop="true"
+    android:layout_toLeftOf="@id/yelpButton"
+    android:layout_marginTop="10dip"
+    android:background="@drawable/venue_map_button_left" />
+
+  <LinearLayout
+    android:id="@+id/zoomView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignTop="@id/mapView"
+    android:layout_alignParentLeft="true"
+    android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
