@@ -32,7 +32,7 @@ public class SearchVenueMapActivity extends MapActivity {
     public static final String TAG = "SearchVenueMapActivity";
     public static final boolean DEBUG = Foursquared.DEBUG;
 
-    private Venue mVenue;
+    private Venue mTappedVenue;
 
     private MapView mMapView;
     private MapController mMapController;
@@ -50,7 +50,7 @@ public class SearchVenueMapActivity extends MapActivity {
         mVenueButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                startVenueActivity(mVenue);
+                startVenueActivity(mTappedVenue);
             }
         });
 
@@ -211,7 +211,7 @@ public class SearchVenueMapActivity extends MapActivity {
         protected boolean onTap(int i) {
             if (DEBUG) Log.d(TAG, "onTap: " + i);
             VenueOverlayItem item = (VenueOverlayItem)getItem(i);
-            mVenue = item.getVenue();
+            mTappedVenue = item.getVenue();
             mVenueButton.setText(item.getVenue().getVenuename());
             mVenueButton.setVisibility(View.VISIBLE);
             return super.onTap(i);
