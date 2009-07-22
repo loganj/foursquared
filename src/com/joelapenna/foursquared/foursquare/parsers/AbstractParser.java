@@ -32,11 +32,9 @@ public abstract class AbstractParser<T extends FoursquareType> implements Parser
 
     /*
      * (non-Javadoc)
-     * @seecom.joelapenna.foursquared.foursquare.parsers.Parser#parse(java.io.
-     * InputStream)
+     * @see com.joelapenna.foursquared.foursquare.parsers.Parser#parse(java.io.InputStream)
      */
     final public T parse(XmlPullParser parser) throws FoursquareError, FoursquareParseException {
-        if (DEBUG) Log.d(TAG, "parse()ing");
         try {
             return parseInner(parser);
         } catch (IOException e) {
@@ -47,7 +45,7 @@ public abstract class AbstractParser<T extends FoursquareType> implements Parser
         }
     }
 
-    public static XmlPullParser createParser(InputStream is) {
+    final public static XmlPullParser createParser(InputStream is) {
         XmlPullParser parser;
         try {
             parser = mFactory.newPullParser();
@@ -58,7 +56,7 @@ public abstract class AbstractParser<T extends FoursquareType> implements Parser
         return parser;
     }
 
-    protected static XmlPullParserFactory setFactory() {
+    final static XmlPullParserFactory setFactory() {
         if (mFactory == null) {
             try {
                 mFactory = XmlPullParserFactory.newInstance();

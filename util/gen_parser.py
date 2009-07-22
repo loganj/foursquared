@@ -69,7 +69,12 @@ public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
             if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
 
             String name = parser.getName();
-%(stanzas)s            }
+            %(stanzas)s
+            } else {
+                // Consume something we don't understand.
+                if (DEBUG) Log.d(TAG, "Found tag that we don't recognize: " + name);
+                parser.nextText();
+            }
         }
         parser.nextToken();
     }
@@ -101,10 +106,11 @@ def GenerateClass(type_name, top_node_name, attributes):
     else:
       stanzas.append(STANZA % replacements)
   if stanzas:
+    # pop off the extranious } else for the first conditional stanza.
     stanzas[0] = stanzas[0].replace('} else ', '', 1)
 
   replacements = Replacements(top_node_name, name, typ)
-  replacements['stanzas'] = '\n'.join(stanzas)
+  replacements['stanzas'] = '\n'.join(stanzas).strip()
   print PARSER % replacements
 
 

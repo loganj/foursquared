@@ -17,7 +17,7 @@ package com.joelapenna.foursquared.foursquare.types;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class %s extends FoursquareType {
+public class %s implements FoursquareType {
 """
 
 

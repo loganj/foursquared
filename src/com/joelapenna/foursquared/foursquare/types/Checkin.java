@@ -9,203 +9,269 @@ package com.joelapenna.foursquared.foursquare.types;
  */
 public class Checkin implements FoursquareType {
 
-    private String mCheckinId;
-    private String mVenueId;
-    private String mAliasId;
-    private String mVenueName;
     private String mAddress;
-    private String mCrossStreet;
-    private String mShout;
-    private String mGeoLat;
-    private String mGeoLong;
-    private String mXDateTime;
+    private String mAlert;
+    private String mAliasid;
+    private String mCheckinid;
+    private String mCityName;
+    private String mCityid;
+    private String mCrossstreet;
+    private boolean mDballDefault;
+    private String mEmail;
+    private String mFirstname;
+    private String mGender;
+    private String mGeolat;
+    private String mGeolong;
+    private String mLastname;
+    private String mMessage;
+    private String mPhone;
+    private String mPhoto;
     private String mRelativeTime;
-    private boolean mCheckinComplete;
-    private String mCheckinCompleteMessage;
+    private String mShout;
+    private boolean mShowDball;
+    private boolean mShowTwitter;
+    private String mStats;
+    private String mStatus;
+    private boolean mTwitterDefault;
+    private String mUrl;
+    private String mUserid;
+    private String mVenueid;
+    private String mVenuename;
+    private String mXdatetime;
 
     public Checkin() {
     }
 
-    /**
-     * @param Id the Id to set
-     */
-    public void setId(String mId) {
-        this.mCheckinId = mId;
-    }
-
-    /**
-     * @return the Id
-     */
-    public String getId() {
-        return mCheckinId;
-    }
-
-    /**
-     * @param VenueId the VenueId to set
-     */
-    public void setVenueId(String mVenueId) {
-        this.mVenueId = mVenueId;
-    }
-
-    /**
-     * @return the VenueId
-     */
-    public String getVenueId() {
-        return mVenueId;
-    }
-
-    /**
-     * @param VenueName the VenueName to set
-     */
-    public void setVenueName(String mVenueName) {
-        this.mVenueName = mVenueName;
-    }
-
-    /**
-     * @return the VenueName
-     */
-    public String getVenueName() {
-        return mVenueName;
-    }
-
-    /**
-     * @param Address the Address to set
-     */
-    public void setAddress(String mAddress) {
-        this.mAddress = mAddress;
-    }
-
-    /**
-     * @return the Address
-     */
     public String getAddress() {
         return mAddress;
     }
 
-    /**
-     * @param CrossStreet the CrossStreet to set
-     */
-    public void setCrossStreet(String mCrossStreet) {
-        this.mCrossStreet = mCrossStreet;
+    public void setAddress(String address) {
+        mAddress = address;
     }
 
-    /**
-     * @return the CrossStreet
-     */
-    public String getCrossStreet() {
-        return mCrossStreet;
+    public String getAlert() {
+        return mAlert;
     }
 
-    /**
-     * @param Shout the Shout to set
-     */
-    public void setShout(String mShout) {
-        this.mShout = mShout;
+    public void setAlert(String alert) {
+        mAlert = alert;
     }
 
-    /**
-     * @return the Shout
-     */
-    public String getShout() {
-        return mShout;
+    public String getAliasid() {
+        return mAliasid;
     }
 
-    /**
-     * @param GeoLat the GeoLat to set
-     */
-    public void setGeoLat(String mGeoLat) {
-        this.mGeoLat = mGeoLat;
+    public void setAliasid(String aliasid) {
+        mAliasid = aliasid;
     }
 
-    /**
-     * @return the GeoLat
-     */
-    public String getGeoLat() {
-        return mGeoLat;
+    public String getCheckinid() {
+        return mCheckinid;
     }
 
-    /**
-     * @param GeoLong the GeoLong to set
-     */
-    public void setGeoLong(String mGeoLong) {
-        this.mGeoLong = mGeoLong;
+    public void setCheckinid(String checkinid) {
+        mCheckinid = checkinid;
     }
 
-    /**
-     * @return the GeoLong
-     */
-    public String getGeoLong() {
-        return mGeoLong;
+    public String getCityName() {
+        return mCityName;
     }
 
-    /**
-     * @param XDateTime the XDateTime to set
-     */
-    public void setXDateTime(String mXDateTime) {
-        this.mXDateTime = mXDateTime;
+    public void setCityName(String cityName) {
+        mCityName = cityName;
     }
 
-    /**
-     * @return the XDateTime
-     */
-    public String getXDateTime() {
-        return mXDateTime;
+    public String getCityid() {
+        return mCityid;
     }
 
-    /**
-     * @param RelativeTime the RelativeTime to set
-     */
-    public void setRelativeTime(String mRelativeTime) {
-        this.mRelativeTime = mRelativeTime;
+    public void setCityid(String cityid) {
+        mCityid = cityid;
     }
 
-    /**
-     * @return the RelativeTime
-     */
+    public String getCrossstreet() {
+        return mCrossstreet;
+    }
+
+    public void setCrossstreet(String crossstreet) {
+        mCrossstreet = crossstreet;
+    }
+
+    public boolean dballDefault() {
+        return mDballDefault;
+    }
+
+    public void setDballDefault(boolean dballDefault) {
+        mDballDefault = dballDefault;
+    }
+
+    public String getEmail() {
+        return mEmail;
+    }
+
+    public void setEmail(String email) {
+        mEmail = email;
+    }
+
+    public String getFirstname() {
+        return mFirstname;
+    }
+
+    public void setFirstname(String firstname) {
+        mFirstname = firstname;
+    }
+
+    public String getGender() {
+        return mGender;
+    }
+
+    public void setGender(String gender) {
+        mGender = gender;
+    }
+
+    public String getGeolat() {
+        return mGeolat;
+    }
+
+    public void setGeolat(String geolat) {
+        mGeolat = geolat;
+    }
+
+    public String getGeolong() {
+        return mGeolong;
+    }
+
+    public void setGeolong(String geolong) {
+        mGeolong = geolong;
+    }
+
+    public String getLastname() {
+        return mLastname;
+    }
+
+    public void setLastname(String lastname) {
+        mLastname = lastname;
+    }
+
+    public String getMessage() {
+        return mMessage;
+    }
+
+    public void setMessage(String message) {
+        mMessage = message;
+    }
+
+    public String getPhone() {
+        return mPhone;
+    }
+
+    public void setPhone(String phone) {
+        mPhone = phone;
+    }
+
+    public String getPhoto() {
+        return mPhoto;
+    }
+
+    public void setPhoto(String photo) {
+        mPhoto = photo;
+    }
+
     public String getRelativeTime() {
         return mRelativeTime;
     }
 
-    /**
-     * @param mAliasId the mAliasId to set
-     */
-    public void setAliasId(String mAliasId) {
-        this.mAliasId = mAliasId;
+    public void setRelativeTime(String relativeTime) {
+        mRelativeTime = relativeTime;
     }
 
-    /**
-     * @return the mAliasId
-     */
-    public String getAliasId() {
-        return mAliasId;
+    public String getShout() {
+        return mShout;
     }
 
-    /**
-     * @param CheckinComplete the mCheckinComplete to set
-     */
-    public void setCheckinComplete(boolean mCheckinComplete) {
-        this.mCheckinComplete = mCheckinComplete;
+    public void setShout(String shout) {
+        mShout = shout;
     }
 
-    /**
-     * @return the CheckinComplete
-     */
-    public boolean getCheckinComplete() {
-        return mCheckinComplete;
+    public boolean showDball() {
+        return mShowDball;
     }
 
-    /**
-     * @param CheckinCompleteMessage the mCheckinCompleteMessage to set
-     */
-    public void setCheckinCompleteMessage(String mCheckinCompleteMessage) {
-        this.mCheckinCompleteMessage = mCheckinCompleteMessage;
+    public void setShowDball(boolean showDball) {
+        mShowDball = showDball;
     }
 
-    /**
-     * @return the CheckinCompleteMessage
-     */
-    public String getCheckinCompleteMessage() {
-        return mCheckinCompleteMessage;
+    public boolean showTwitter() {
+        return mShowTwitter;
+    }
+
+    public void setShowTwitter(boolean showTwitter) {
+        mShowTwitter = showTwitter;
+    }
+
+    public String getStats() {
+        return mStats;
+    }
+
+    public void setStats(String stats) {
+        mStats = stats;
+    }
+
+    public String getStatus() {
+        return mStatus;
+    }
+
+    public void setStatus(String status) {
+        mStatus = status;
+    }
+
+    public boolean twitterDefault() {
+        return mTwitterDefault;
+    }
+
+    public void setTwitterDefault(boolean twitterDefault) {
+        mTwitterDefault = twitterDefault;
+    }
+
+    public String getUrl() {
+        return mUrl;
+    }
+
+    public void setUrl(String url) {
+        mUrl = url;
+    }
+
+    public String getUserid() {
+        return mUserid;
+    }
+
+    public void setUserid(String userid) {
+        mUserid = userid;
+    }
+
+    public String getVenueid() {
+        return mVenueid;
+    }
+
+    public void setVenueid(String venueid) {
+        mVenueid = venueid;
+    }
+
+    public String getVenuename() {
+        return mVenuename;
+    }
+
+    public void setVenuename(String venuename) {
+        mVenuename = venuename;
+    }
+
+    public String getXdatetime() {
+        return mXdatetime;
+    }
+
+    public void setXdatetime(String xdatetime) {
+        mXdatetime = xdatetime;
     }
 
 }

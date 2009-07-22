@@ -4,11 +4,13 @@
 
 package com.joelapenna.foursquared.foursquare;
 
+import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.foursquare.error.FoursquareError;
 import com.joelapenna.foursquared.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquared.foursquare.types.Auth;
+import com.joelapenna.foursquared.foursquare.types.Group;
 import com.joelapenna.foursquared.foursquare.types.IncomingCheckin;
-import com.joelapenna.foursquared.foursquare.types.VenueGroup;
+import com.joelapenna.foursquared.foursquare.types.Venue;
 
 import android.util.Log;
 
@@ -19,7 +21,7 @@ import java.io.IOException;
  */
 public class Foursquare {
     private static final String TAG = "Foursquare";
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = Foursquared.DEBUG;
 
     private String mPhone;
     private String mPassword;
@@ -47,8 +49,17 @@ public class Foursquare {
         return mFoursquare.checkin(mPhone, venue, silent, twitter, lat, lng, null);
     }
 
-    public VenueGroup venues(String lat, String lng, int radius, int length)
+    public Group venues(String lat, String lng, int radius, int length)
             throws FoursquareError, FoursquareParseException, IOException {
         return mFoursquare.venues(lat, lng, radius, length);
+    }
+
+    public Group checkins(String cityId)
+            throws FoursquareError, FoursquareParseException, IOException {
+        return mFoursquare.checkins(cityId);
+    }
+
+    public Venue venue(String id) throws FoursquareError, FoursquareParseException, IOException {
+        return mFoursquare.venue(id);
     }
 }

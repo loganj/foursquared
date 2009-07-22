@@ -1,3 +1,8 @@
+Feature Idea:
+Use your phone to generate a "proxy" authentication credentials and store that on your client. Pass that authentication credential onto another phone, maybe by QRCode and allow others to act on your behalf. Provide UI on your phone to disable that credential by sending an RPC to /api/logout with those credentials.
+
+This will give a user the ability to designate someone else as their notifier. This allows people to form up for a bar crawl, with one person leading the checkins for foursquare.
+
 URL for location suggestion provider.
 curl 'http://playfoursquare.com/venues?q=pie&cityid=23'
 

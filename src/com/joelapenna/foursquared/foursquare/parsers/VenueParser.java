@@ -68,6 +68,9 @@ public class VenueParser extends AbstractParser<Venue> {
             } else if ("beenhere_me".equals(name)) {
                 venue.setBeenhereMe(parser.nextText());
 
+            } else if ("city".equals(name)) {
+                venue.setCity(parser.nextText());
+
             } else if ("crossstreet".equals(name)) {
                 venue.setCrossstreet(parser.nextText());
 
@@ -83,6 +86,9 @@ public class VenueParser extends AbstractParser<Venue> {
             } else if ("geolong".equals(name)) {
                 venue.setGeolong(parser.nextText());
 
+            } else if ("here".equals(name)) {
+                venue.setHere(parser.nextText());
+
             } else if ("map".equals(name)) {
                 venue.setMap(parser.nextText());
 
@@ -95,6 +101,9 @@ public class VenueParser extends AbstractParser<Venue> {
             } else if ("num_checkins".equals(name)) {
                 venue.setNumCheckins(parser.nextText());
 
+            } else if ("state".equals(name)) {
+                venue.setState(parser.nextText());
+
             } else if ("venueid".equals(name)) {
                 venue.setVenueid(parser.nextText());
 
@@ -103,6 +112,13 @@ public class VenueParser extends AbstractParser<Venue> {
 
             } else if ("yelp".equals(name)) {
                 venue.setYelp(parser.nextText());
+
+            } else if ("zip".equals(name)) {
+                venue.setZip(parser.nextText());
+            } else {
+                // Consume something we don't understand.
+                if (DEBUG) Log.d(TAG, "Found tag that we don't recognize: " + name);
+                parser.nextText();
             }
         }
         parser.nextToken();

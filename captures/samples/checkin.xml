@@ -1,0 +1,32 @@
+  <checkin>
+    <userid>118685</userid>
+    <firstname>Kevin</firstname>
+    <lastname>Reedy</lastname>
+    <cityid>23</cityid>
+    <city_name>SF</city_name>
+    <email>kevinreedy@gmail.com</email>
+    <phone>7084219526</phone>
+    <photo>http://playfoursquare.com/userpix/blank_boy.png</photo>
+    <gender>male</gender>
+    <show_twitter>1</show_twitter>
+    <twitter_default>0</twitter_default>
+    <show_dball>0</show_dball>
+    <dball_default>0</dball_default>
+    <checkinid>67715</checkinid>
+    <venueid>40450</venueid>
+    <aliasid>118685</aliasid>
+    <venuename>On the Corner</venuename>
+    <address>359 Divisadero St</address>
+    <crossstreet>Oak St</crossstreet>
+    <shout></shout>
+    <geolat>37.7729</geolat>
+    <geolong>-122.437</geolong>
+    <xdatetime>2009-04-06 20:33:41</xdatetime>
+    <relative_time>2 hrs ago</relative_time>
+    <stats></stats>
+    <alert></alert>
+    <!-- Used after an incoming.php based checkin. -->
+    <url></url>
+    <status></status>
+    <message></message>
+  </checkin>

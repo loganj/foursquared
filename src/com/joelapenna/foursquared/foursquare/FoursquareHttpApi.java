@@ -7,13 +7,16 @@ package com.joelapenna.foursquared.foursquare;
 import com.joelapenna.foursquared.foursquare.error.FoursquareError;
 import com.joelapenna.foursquared.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquared.foursquare.parsers.AuthParser;
+import com.joelapenna.foursquared.foursquare.parsers.CheckinParser;
+import com.joelapenna.foursquared.foursquare.parsers.GroupParser;
 import com.joelapenna.foursquared.foursquare.parsers.IncomingCheckinResponseParser;
 import com.joelapenna.foursquared.foursquare.parsers.Parser;
-import com.joelapenna.foursquared.foursquare.parsers.VenueGroupParser;
+import com.joelapenna.foursquared.foursquare.parsers.VenueParser;
 import com.joelapenna.foursquared.foursquare.types.Auth;
 import com.joelapenna.foursquared.foursquare.types.FoursquareType;
+import com.joelapenna.foursquared.foursquare.types.Group;
 import com.joelapenna.foursquared.foursquare.types.IncomingCheckin;
-import com.joelapenna.foursquared.foursquare.types.VenueGroup;
+import com.joelapenna.foursquared.foursquare.types.Venue;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -57,8 +60,10 @@ class FoursquareHttpApi {
 
     private static final String DOMAIN = "playfoursquare.com";
     private static final String URL_API_BASE = "http://" + DOMAIN + "/api";
+    private static final String URL_API_CHECKINS = URL_API_BASE + "/checkins";
     private static final String URL_API_LOGIN = URL_API_BASE + "/login";
     private static final String URL_API_VENUES = URL_API_BASE + "/venues";
+    private static final String URL_API_VENUE = URL_API_BASE + "/venue";
 
     // Not the normal URL because, well, it doesn't have a normal URL!
     private static final String URL_API_INCOMING = "http://" + DOMAIN + "/incoming/incoming.php";
@@ -112,23 +117,44 @@ class FoursquareHttpApi {
     }
 
     /**
-     * /api/venues?lat=37.770653&lng=-122.436929&r=1&l=10
-     *
+     * /api/checkins?lat=37.770653&lng=-122.436929&r=1&l=10
+     * 
      * @return
      */
-    VenueGroup venues(String lat, String lng, int radius, int length) throws FoursquareError,
+    Group checkins(String cityId) throws FoursquareError,
             FoursquareParseException, IOException {
-        return (VenueGroup)doHttpPost(URL_API_VENUES, new VenueGroupParser(),
+        return (Group)doHttpPost(URL_API_CHECKINS, new GroupParser(new CheckinParser()),
+                new BasicNameValuePair("cityid", cityId));
+    }
+
+    /**
+     * /api/venues?lat=37.770653&lng=-122.436929&r=1&l=10
+     * 
+     * @return
+     */
+    Group venues(String lat, String lng, int radius, int length) throws FoursquareError,
+            FoursquareParseException, IOException {
+        return (Group)doHttpPost(URL_API_VENUES, new GroupParser(new VenueParser()),
                 new BasicNameValuePair("lat", (lat != null) ? lat : ""), // lat
                 new BasicNameValuePair("lng", (lng != null) ? lng : ""), // lng
                 new BasicNameValuePair("r", String.valueOf(radius)), // radius in miles?
                 new BasicNameValuePair("length", String.valueOf(length)));
     }
+    
+    /**
+     * /api/venue?vid=1234
+     * 
+     * @return
+     */
+    Venue venue(String id) throws FoursquareError, FoursquareParseException, IOException {
+        return (Venue)doHttpPost(URL_API_VENUE, new VenueParser(),
+                new BasicNameValuePair("vid", id));
+    }
 
     private FoursquareType doHttpPost(String url, Parser<? extends FoursquareType> abstractParser,
             NameValuePair... nameValuePairs) throws FoursquareError, FoursquareParseException,
             IOException {
-        if (DEBUG) Log.d(TAG, "doHttpPost()");
+        if (DEBUG) Log.d(TAG, "doHttpPost: " + url);
         HttpPost httpPost = createHttpPost(url, Arrays.asList(nameValuePairs));
 
         HttpResponse response = executeHttpPost(httpPost);
@@ -141,7 +167,8 @@ class FoursquareHttpApi {
             case 200:
                 break;
             default:
-                if (DEBUG) Log.d(TAG, "Default case for status code reached.");
+                if (DEBUG) Log.d(TAG, "Default case for status code reached: "
+                        + response.getStatusLine().toString());
                 return null;
         }
 
@@ -150,7 +177,7 @@ class FoursquareHttpApi {
 
     /**
      * execute() an httpPost catching exceptions and returning null instead.
-     *
+     * 
      * @param httpPost
      * @return
      */
@@ -172,7 +199,7 @@ class FoursquareHttpApi {
     /**
      * Create a thread-safe client. This client does not do redirecting, to allow us to capture
      * correct "error" codes.
-     *
+     * 
      * @return HttpClient
      */
     public static final DefaultHttpClient createHttpClient() {
