@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.d(TAG, "onCreate()");
 
-        if (Foursquared.getFoursquare().hasCredentials(true)) {
+        if (Foursquared.getFoursquare().hasCredentials()) {
             startActivity(new Intent(MainActivity.this, SearchVenuesActivity.class));
             finish();
         } else {
@@ -116,7 +116,7 @@ public class MainActivity extends Activity {
 
     private void ensurePhoneNumber() {
         if (TextUtils.isEmpty(mPhoneEditText.getText().toString())) {
-            if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Looking up phone number.");
+            if (PreferenceActivity.DEBUG) Log.d(TAG, "Looking up phone number.");
 
             TelephonyManager telephony = (TelephonyManager)getSystemService(Activity.TELEPHONY_SERVICE);
             String lookup = telephony.getLine1Number();

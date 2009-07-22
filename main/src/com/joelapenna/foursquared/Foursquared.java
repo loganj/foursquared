@@ -18,7 +18,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.location.Location;
 import android.location.LocationManager;
 import android.preference.PreferenceManager;
@@ -47,7 +46,6 @@ public class Foursquared extends Application {
     private LocationListener mLocationListener = new LocationListener();
 
     private SharedPreferences mPrefs;
-    private OnSharedPreferenceChangeListener mOnSharedPreferenceChangeListener;
 
     private static Foursquare sFoursquare = new Foursquare();
 
@@ -60,22 +58,6 @@ public class Foursquared extends Application {
                 getResources().getString(R.string.oauth_consumer_key), //
                 getResources().getString(R.string.oauth_consumer_secret));
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-        mOnSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                if (key.equals(Preferences.PREFERENCE_PHONE)
-                        || key.equals(Preferences.PREFERENCE_PASSWORD)) {
-                    Log.d(TAG, key + " preference was changed");
-                    try {
-                        loadCredentials();
-                    } catch (FoursquareCredentialsError e) {
-                        // pass
-                    }
-                }
-            }
-        };
-        mPrefs.registerOnSharedPreferenceChangeListener(mOnSharedPreferenceChangeListener);
 
         try {
             loadCredentials();
@@ -124,6 +106,7 @@ public class Foursquared extends Application {
         if (FoursquaredSettings.DEBUG) Log.d(TAG, "loadCredentials()");
         String phoneNumber = mPrefs.getString(Preferences.PREFERENCE_PHONE, null);
         String password = mPrefs.getString(Preferences.PREFERENCE_PASSWORD, null);
+
         String oauthToken = mPrefs.getString(Preferences.PREFERENCE_OAUTH_TOKEN, null);
         String oauthTokenSecret = mPrefs.getString(Preferences.PREFERENCE_OAUTH_TOKEN_SECRET, null);
 

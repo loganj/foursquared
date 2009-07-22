@@ -12,13 +12,12 @@ import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
-import com.joelapenna.foursquare.types.classic.Auth;
-import com.joelapenna.foursquare.types.classic.Checkin;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.types.classic.Auth;
+import com.joelapenna.foursquare.types.classic.Checkin;
 import com.joelapenna.foursquared.FoursquaredSettings;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.IOException;
@@ -66,15 +65,10 @@ public class Foursquare {
         mFoursquareV1.setOAuthConsumerCredentials(oAuthConsumerKey, oAuthConsumerSecret);
     }
 
-    @Classic
-    public boolean hasCredentials() {
-        return !(TextUtils.isEmpty(mPhone) && TextUtils.isEmpty(mPassword));
-    }
-
     @V1
     @Classic
-    public boolean hasCredentials(boolean v1) {
-        return hasCredentials() && ((v1) ? mFoursquareV1.hasCredentials() : true);
+    public boolean hasCredentials() {
+        return mFoursquare.hasCredentials() && mFoursquareV1.hasCredentials();
     }
 
     @V1

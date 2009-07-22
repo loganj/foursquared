@@ -76,12 +76,17 @@ class FoursquareHttpApi {
     private final HttpApi mHttpApi;
     private final DefaultHttpClient mHttpClient;
 
+    private String mPhone = null;
+    private String mPassword = null;
+
     public FoursquareHttpApi() {
         mHttpClient = HttpApi.createHttpClient();
         mHttpApi = new HttpApi(mHttpClient);
     }
 
     void setCredentials(String phone, String password) {
+        mPhone = phone;
+        mPassword = password;
         if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(password)) {
             if (DEBUG) Log.d(TAG, "Clearing Credentials");
             mHttpClient.getCredentialsProvider().clear();
@@ -90,6 +95,10 @@ class FoursquareHttpApi {
             mHttpClient.getCredentialsProvider().setCredentials(new AuthScope(DOMAIN, 80),
                     new UsernamePasswordCredentials(phone, password));
         }
+    }
+
+    boolean hasCredentials() {
+        return !(TextUtils.isEmpty(mPhone) || TextUtils.isEmpty(mPassword));
     }
 
     Auth login(String phone, String password) throws FoursquareError, FoursquareParseException,

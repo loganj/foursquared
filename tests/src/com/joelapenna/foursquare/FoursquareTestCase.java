@@ -38,10 +38,10 @@ public class FoursquareTestCase extends TestCase {
         assertTrue(foursquare.hasCredentials());
 
         // check for v1/oauth credentials
-        assertFalse(foursquare.hasCredentials(true));
+        assertFalse(foursquare.hasCredentials());
         foursquare.setCredentials("phone", "password");
         foursquare.setOAuthToken("token", "secret");
-        assertTrue(foursquare.hasCredentials(true));
+        assertTrue(foursquare.hasCredentials());
 
     }
 
