@@ -59,18 +59,25 @@ public class HttpApiWithOAuth extends HttpApi {
 
         switch (response.getStatusLine().getStatusCode()) {
             case 200:
-                break;
+                return parser.parse(AbstractParser.createXmlPullParser( //
+                        response.getEntity().getContent()));
             case 401:
+<<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApiWithOAuth.java
                 bestEffortConsumeContent(response);
+=======
+                response.getEntity().consumeContent();
+>>>>>>> ce6538a... Improve content consumption (so we don't leak threads) in HttpApis.:src/com/joelapenna/foursquare/http/HttpApiWithOAuth.java
                 throw new FoursquareCredentialsError(response.getStatusLine().toString());
             default:
                 if (DEBUG) Log.d(TAG, "Default case for status code reached: "
                         + response.getStatusLine().toString());
+<<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApiWithOAuth.java
                 bestEffortConsumeContent(response);
+=======
+                response.getEntity().consumeContent();
+>>>>>>> ce6538a... Improve content consumption (so we don't leak threads) in HttpApis.:src/com/joelapenna/foursquare/http/HttpApiWithOAuth.java
                 return null;
         }
-
-        return parser.parse(AbstractParser.createXmlPullParser(response.getEntity().getContent()));
     }
 
     @Override

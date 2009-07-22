@@ -51,6 +51,7 @@ public class HttpApi {
 
     private static final String CLIENT_VERSION = "iPhone 20090301";
     private static final String CLIENT_VERSION_HEADER = "X_foursquare_client_version";
+    private static final int TIMEOUT = 10;
 
     DefaultHttpClient mHttpClient;
 
@@ -58,6 +59,7 @@ public class HttpApi {
         mHttpClient = httpClient;
     }
 
+<<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
 <<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
 <<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
 <<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
@@ -85,6 +87,10 @@ public class HttpApi {
     public FoursquareType doHttpRequest(HttpRequestBase httpRequest,
             Parser<? extends FoursquareType> parser) throws FoursquareException, IOException {
 >>>>>>> 9041be0... Some random http client optimizations that may or may not help.:src/com/joelapenna/foursquare/http/HttpApi.java
+=======
+    public FoursquareType doHttpRequest(HttpRequestBase httpRequest,
+            Parser<? extends FoursquareType> parser) throws FoursquareException, IOException {
+>>>>>>> ce6538a... Improve content consumption (so we don't leak threads) in HttpApis.:src/com/joelapenna/foursquare/http/HttpApi.java
         if (DEBUG) Log.d(TAG, "doHttpRequest: " + httpRequest.getURI());
         HttpResponse response = executeHttpRequest(httpRequest);
 >>>>>>> 69171d9... tips() works after realizing that authexchange causes tokens to expire!:src/com/joelapenna/foursquare/http/HttpApi.java
@@ -95,8 +101,10 @@ public class HttpApi {
 
         switch (response.getStatusLine().getStatusCode()) {
             case 200:
-                break;
+                return parser.parse(AbstractParser.createXmlPullParser( //
+                        response.getEntity().getContent()));
             case 401:
+<<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
                 bestEffortConsumeContent(response);
                 throw new FoursquareCredentialsError(response.getStatusLine().toString());
             default:
@@ -111,6 +119,18 @@ public class HttpApi {
 =======
         return parser.parse(AbstractParser.createXmlPullParser(response.getEntity().getContent()));
 >>>>>>> 0b7d5f0... Change around Exception/Error raising, add unittests:src/com/joelapenna/foursquare/http/HttpApi.java
+=======
+                response.getEntity().consumeContent();
+                throw new FoursquareCredentialsError(response.getStatusLine().toString());
+            default:
+                if (DEBUG) {
+                    Log.d(TAG, "Default case for status code reached: "
+                            + response.getStatusLine().toString());
+                }
+                response.getEntity().consumeContent();
+                return null;
+        }
+>>>>>>> ce6538a... Improve content consumption (so we don't leak threads) in HttpApis.:src/com/joelapenna/foursquare/http/HttpApi.java
     }
 
     public String doHttpPost(String url, NameValuePair... nameValuePairs) throws FoursquareError,
@@ -126,25 +146,30 @@ public class HttpApi {
 
         switch (response.getStatusLine().getStatusCode()) {
             case 200:
-                break;
+                try {
+                    return EntityUtils.toString(response.getEntity());
+                } catch (ParseException e) {
+                    throw new FoursquareParseException(e.getMessage());
+                }
             case 401:
+<<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
                 bestEffortConsumeContent(response);
                 throw new FoursquareCredentialsError(response.getStatusLine().toString());
             default:
                 bestEffortConsumeContent(response);
+=======
+                response.getEntity().consumeContent();
+                throw new FoursquareCredentialsError(response.getStatusLine().toString());
+            default:
+                response.getEntity().consumeContent();
+>>>>>>> ce6538a... Improve content consumption (so we don't leak threads) in HttpApis.:src/com/joelapenna/foursquare/http/HttpApi.java
                 throw new FoursquareError(response.getStatusLine().toString());
-        }
-
-        try {
-            return EntityUtils.toString(response.getEntity());
-        } catch (ParseException e) {
-            throw new FoursquareParseException(e.getMessage());
         }
     }
 
     /**
      * execute() an httpRequest catching exceptions and returning null instead.
-     *
+     * 
      * @param httpRequest
      * @return
      */
@@ -191,7 +216,7 @@ public class HttpApi {
     /**
      * Create a thread-safe client. This client does not do redirecting, to allow us to capture
      * correct "error" codes.
-     *
+     * 
      * @return HttpClient
      */
     public static final DefaultHttpClient createHttpClient() {
@@ -221,6 +246,7 @@ public class HttpApi {
         return new DefaultHttpClient(ccm, params);
     }
 
+<<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
     public static void bestEffortConsumeContent(HttpResponse response) {
         try {
             response.getEntity().consumeContent();
@@ -229,5 +255,22 @@ public class HttpApi {
         } catch (NullPointerException e) {
             // This is a-okay too!
         }
+=======
+    /**
+     * Create the default HTTP protocol parameters.
+     */
+    private static final HttpParams createHttpParams() {
+        final HttpParams params = new BasicHttpParams();
+
+        // Turn off stale checking. Our connections break all the time anyway,
+        // and it's not worth it to pay the penalty of checking every time.
+        HttpConnectionParams.setStaleCheckingEnabled(params, false);
+
+        HttpConnectionParams.setConnectionTimeout(params, TIMEOUT * 1000);
+        HttpConnectionParams.setSoTimeout(params, TIMEOUT * 1000);
+        HttpConnectionParams.setSocketBufferSize(params, 8192);
+
+        return params;
+>>>>>>> ce6538a... Improve content consumption (so we don't leak threads) in HttpApis.:src/com/joelapenna/foursquare/http/HttpApi.java
     }
 }
