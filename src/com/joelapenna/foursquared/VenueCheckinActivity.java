@@ -106,6 +106,7 @@ public class VenueCheckinActivity extends ListActivity {
     public Object onRetainNonConfigurationInstance() {
         return mGroups;
     }
+
     private void setupUi() {
         mEmpty = (TextView)findViewById(android.R.id.empty);
 
@@ -115,15 +116,11 @@ public class VenueCheckinActivity extends ListActivity {
                 sendCheckin();
             }
         });
+
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-
-        ToggleButton mSilentToggle = (ToggleButton)findViewById(R.id.silentToggle);
         mSilentToggle.setChecked(settings.getBoolean(Foursquared.PREFERENCE_SILENT_CHECKIN, false));
-
-        ToggleButton mTwitterToggle = (ToggleButton)findViewById(R.id.twitterToggle);
-        mTwitterToggle
-                .setChecked(settings.getBoolean(Foursquared.PREFERENCE_TWITTER_CHECKIN, false));
-
+        mTwitterToggle.setChecked(settings
+                .getBoolean(Foursquared.PREFERENCE_TWITTER_CHECKIN, false));
     }
 
     private void sendCheckin() {
@@ -261,7 +258,8 @@ public class VenueCheckinActivity extends ListActivity {
                 Location location = ((Foursquared)getApplication()).getLocation();
                 if (location == null) {
                     if (DEBUG) Log.d(TAG, "Getting Checkins without Location");
-                    return ((Foursquared)getApplication()).getFoursquare().checkins(null, null, null);
+                    return ((Foursquared)getApplication()).getFoursquare().checkins(null, null,
+                            null);
                 } else {
                     if (DEBUG) Log.d(TAG, "Getting Checkins with Location: " + location);
                     return ((Foursquared)getApplication()).getFoursquare().checkins(null,
