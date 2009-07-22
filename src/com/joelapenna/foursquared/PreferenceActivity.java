@@ -100,12 +100,14 @@ public class PreferenceActivity extends android.preference.PreferenceActivity im
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_CLEAR:
-                // TODO(jlapenna): This does not clear the UI widgets of their settings.
                 Editor editor = mPrefs.edit();
                 editor.clear();
                 editor.commit();
                 Foursquared.getFoursquare().setCredentials(null, null);
                 Foursquared.getFoursquare().setOAuthToken(null, null);
+                // Lame-o hack to force update all the preference views.
+                finish();
+                startActivity(getIntent());
                 return true;
         }
         return false;
