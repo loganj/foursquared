@@ -134,6 +134,9 @@ public class CheckinsMapActivity extends MapActivity {
         final int groupCount = checkins.size();
         for (int groupIndex = 0; groupIndex < groupCount; groupIndex++) {
             Group group = (Group)checkins.get(groupIndex);
+            if (group.getType().equals("Me")) {
+                continue;
+            }
 
             // One CheckinItemizedOverlay per group!
             CheckinItemizedOverlay mappableCheckinsOverlay = createMappableCheckinsOverlay(group);

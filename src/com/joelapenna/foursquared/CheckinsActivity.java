@@ -96,10 +96,10 @@ public class CheckinsActivity extends TabActivity {
             }
         } else {
             if (DEBUG) Log.d(TAG, "Running new intent.");
-            // onNewIntent(getIntent());
-            Group fakeResults = FoursquaredTest.createRandomCheckinGroups("Root");
-            setSearchResults(fakeResults);
-            putGroupsInAdapter(fakeResults);
+            onNewIntent(getIntent());
+            // Group fakeResults = FoursquaredTest.createRandomCheckinGroups("Root");
+            // setSearchResults(fakeResults);
+            // putGroupsInAdapter(fakeResults);
         }
     }
 
@@ -192,12 +192,12 @@ public class CheckinsActivity extends TabActivity {
         mSearchTask = (SearchAsyncTask)new SearchAsyncTask().execute();
     }
 
-    Group searchVenues() throws FoursquareError, FoursquareParseException, IOException {
+    Group search() throws FoursquareError, FoursquareParseException, IOException {
         Location location = mLocationListener.getLastKnownLocation();
         Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
         if (location == null) {
             if (DEBUG) Log.d(TAG, "Searching without location.");
-            return foursquare.venues(mQuery, null, null, 10, 1);
+            return foursquare.checkins(null, null, null);
         } else {
             // Try to make the search radius to be the same as our
             // accuracy.
@@ -208,8 +208,8 @@ public class CheckinsActivity extends TabActivity {
             } else {
                 radius = 10;
             }
-            return foursquare.venues(mQuery, String.valueOf(location.getLatitude()), String
-                    .valueOf(location.getLongitude()), radius, 1);
+            return foursquare.checkins(null, String.valueOf(location.getLatitude()), String
+                    .valueOf(location.getLongitude()));
         }
     }
 
@@ -328,7 +328,7 @@ public class CheckinsActivity extends TabActivity {
         @Override
         public Group doInBackground(Void... params) {
             try {
-                return searchVenues();
+                return search();
             } catch (FoursquareError e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "FoursquareError", e);
