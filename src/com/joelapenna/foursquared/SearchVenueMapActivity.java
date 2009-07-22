@@ -22,8 +22,8 @@ import java.util.Observer;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class VenueSearchMapActivity extends MapActivity {
-    public static final String TAG = "VenueSearchMapActivity";
+public class SearchVenueMapActivity extends MapActivity {
+    public static final String TAG = "SearchVenueMapActivity";
     public static final boolean DEBUG = Foursquared.DEBUG;
 
     private MapView mMapView;
@@ -45,7 +45,7 @@ public class VenueSearchMapActivity extends MapActivity {
             public void update(Observable observable, Object data) {
                 if (DEBUG) Log.d(TAG, "Observed search results change.");
                 clearMap();
-                loadSearchResults(VenueSearchActivity.searchResultsObservable.getSearchResults());
+                loadSearchResults(SearchVenueActivity.searchResultsObservable.getSearchResults());
                 updateMap();
             }
         };
@@ -59,10 +59,10 @@ public class VenueSearchMapActivity extends MapActivity {
         mMyLocationOverlay.enableCompass();
 
         clearMap();
-        loadSearchResults(VenueSearchActivity.searchResultsObservable.getSearchResults());
+        loadSearchResults(SearchVenueActivity.searchResultsObservable.getSearchResults());
         updateMap();
 
-        VenueSearchActivity.searchResultsObservable.addObserver(mSearchResultsObserver);
+        SearchVenueActivity.searchResultsObservable.addObserver(mSearchResultsObserver);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class VenueSearchMapActivity extends MapActivity {
         if (DEBUG) Log.d(TAG, "onPause()");
         mMyLocationOverlay.disableMyLocation();
         mMyLocationOverlay.disableCompass();
-        VenueSearchActivity.searchResultsObservable.deleteObserver(mSearchResultsObserver);
+        SearchVenueActivity.searchResultsObservable.deleteObserver(mSearchResultsObserver);
     }
 
     private void initMap() {

@@ -68,7 +68,7 @@
     </activity>
 
     <activity
-      android:name=".VenueSearchActivity"
+      android:name=".SearchVenueActivity"
       android:label="@string/venue_search_activity_name"
       android:launchMode="singleTop">
       <intent-filter>
@@ -81,14 +81,14 @@
       </intent-filter>
       <meta-data
         android:name="android.app.default_searchable"
-        android:value=".VenueSearchActivity" />
+        android:value=".SearchVenueActivity" />
       <meta-data
         android:name="android.app.searchable"
         android:resource="@xml/searchable" />
     </activity>
-    
+
     <activity
-      android:name=".VenueSearchMapActivity">
+      android:name=".SearchVenueMapActivity">
     </activity>
 
     <activity
