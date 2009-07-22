@@ -72,6 +72,7 @@ public class FoursquaredTest {
         tlg.add(createCheckin(id + " 7", createRandomVenue(id + " 7")));
         tlg.add(createCheckin(id + " 8", createRandomVenue(id + " 8")));
         tlg.add(createCheckin(id + " 9", createRandomVenue(id + " 9")));
+        tlg.add(createCheckin(id + " 10", createRandomVenue(id + " 10")));
         return tlg;
     }
 
@@ -101,6 +102,7 @@ public class FoursquaredTest {
         group.add(FoursquaredTest.createVenueGroup("B"));
         group.add(FoursquaredTest.createVenueGroup("C"));
         group.add(FoursquaredTest.createVenueGroup("D"));
+        group.add(FoursquaredTest.createVenueGroup("E"));
         return group;
     }
 
@@ -148,12 +150,13 @@ public class FoursquaredTest {
 
     public static Venue createVenue(String id) {
         Venue venue = new Venue();
-        if (id != null) {
-            venue.setVenuename("Bobby's Place " + id);
-        } else {
+        if (id == null) {
+            venue.setVenueid("44794");
             venue.setVenuename("Bobby's Place");
+        } else {
+            venue.setVenueid(id);
+            venue.setVenuename("Bobby's Place " + id);
         }
-        venue.setVenueid("44794");
         venue.setAddress("123 Fake St.");
         venue.setCity("San Francisco");
         venue.setState("CA");
@@ -184,6 +187,7 @@ public class FoursquaredTest {
         tlg.add(createRandomVenue(type + " 7"));
         tlg.add(createRandomVenue(type + " 8"));
         tlg.add(createRandomVenue(type + " 9"));
+        tlg.add(createRandomVenue(type + " 10"));
         return tlg;
     }
 }
