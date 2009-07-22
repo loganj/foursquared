@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+  <auth>
+	<status>1</status>
+	<message>logged in as testuser</message>
+	<id>9711</id>
+	<firstname>Testuser</firstname>
+	<lastname>Lapenna</lastname>
+	<email>testuser@joelapenna.com</email>
+	<phone>4158303607</phone>
+	<photo>http://www.playfoursquare.com/userpix/blank.jpg</photo>
+  </auth>
+</data>
