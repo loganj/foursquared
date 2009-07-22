@@ -44,10 +44,11 @@ class FoursquareHttpApi extends HttpApi {
     private static final String URL_DOMAIN = HTTP_SCHEME + DOMAIN;
 
     private static final String URL_API_BASE = URL_DOMAIN + "/api";
-    private static final String URL_API_ADD_TODO = URL_API_BASE + "/add";
+    private static final String URL_API_ADD = URL_API_BASE + "/add";
     private static final String URL_API_CHECKINS = URL_API_BASE + "/checkins";
     private static final String URL_API_LOGIN = URL_API_BASE + "/login";
     private static final String URL_API_TODO = URL_API_BASE + "/todo";
+    private static final String URL_API_UPDATE = URL_API_BASE + "/update";
     private static final String URL_API_VENUE = URL_API_BASE + "/venue";
     private static final String URL_API_VENUES = URL_API_BASE + "/venues";
 
@@ -106,7 +107,7 @@ class FoursquareHttpApi extends HttpApi {
      */
     Data add(String type, String text, String vid, String lat, String lng, String cityid)
             throws FoursquareError, FoursquareParseException, IOException {
-        return (Data)doHttpPost(URL_API_ADD_TODO, new DataParser(), //
+        return (Data)doHttpPost(URL_API_ADD, new DataParser(), //
                 new BasicNameValuePair("type", type), // type
                 new BasicNameValuePair("text", text), // text
                 new BasicNameValuePair("vid", vid), // vid
@@ -157,6 +158,17 @@ class FoursquareHttpApi extends HttpApi {
                 new BasicNameValuePair("cityid", cityid), // city id
                 new BasicNameValuePair("lat", lat), // lat
                 new BasicNameValuePair("lng", lng) // lng
+        );
+    }
+
+    /*
+     * /api/update?tipid=6777&status=ignore /api/update?tipid=6777&status=done
+     */
+    Data update(String status, String tipid) throws FoursquareError, FoursquareParseException,
+            IOException {
+        return (Data)doHttpPost(URL_API_UPDATE, new DataParser(), //
+                new BasicNameValuePair("status", status), //
+                new BasicNameValuePair("tipid", tipid) //
         );
     }
 

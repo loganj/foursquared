@@ -91,6 +91,7 @@ class TipListAdapter extends BaseAdapter {
         // prevents a stack overflow in cupcake.
         holder.firstLine.setText(Html.fromHtml(tip.getText()).toString());
         holder.secondLine.setText(Html.fromHtml(tip.getStatusText()).toString());
+        holder.checkbox.setEnabled(tip.getUserStatus().equals("todo") ? true : false);
         holder.checkbox.setChecked(tip.getUserStatus().equals("done") ? true : false);
 
         return convertView;

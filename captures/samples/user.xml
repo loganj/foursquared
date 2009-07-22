@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<user>
+  <id>9711</id>
+  <firstname>Testuser</firstname>
+  <lastname>Lapenna</lastname>
+  <cityshortname>SF</cityshortname>
+  <cityid>23</cityid>
+  <gender>male</gender>
+  <sendtwitter>false</sendtwitter>
+  <badges>
+    <badge>
+      <name>Newbie</name>
+      <icon>newbie_on.png</icon>
+      <description>Congrats on your first check-in!</description>
+    </badge>
+    <badge>
+      <name>Adventurer</name>
+      <icon>default_off.png</icon>
+      <description></description>
+    </badge>
+    <badge>
+      <name>Explorer</name>
+      <icon>default_off.png</icon>
+      <description></description>
+    </badge>
+    <badge>
+      <name>Superstar</name>
+      <icon>default_off.png</icon>
+      <description></description>
+    </badge>
+    <badge>
+      <name>Bender</name>
+      <icon>default_off.png</icon>
+      <description></description>
+    </badge>
+    <badge>
+      <name>Crunked</name>
+      <icon>default_off.png</icon>
+      <description></description>
+    </badge>
+    <badge>
+      <name>Local</name>
+      <icon>default_off.png</icon>
+      <description></description>
+    </badge>
+    <badge>
+      <name>Super User</name>
+      <icon>default_off.png</icon>
+      <description></description>
+    </badge>
+    <badge>
+      <name>Player Please!</name>
+      <icon>default_off.png</icon>
+      <description></description>
+    </badge>
+    <badge>
+      <name>School Night</name>
+      <icon>default_off.png</icon>
+      <description></description>
+    </badge>
+    <badge>
+      <name>Photogenic</name>
+      <icon>default_off.png</icon>
+      <description></description>
+    </badge>
+    <badge>
+      <name>Socialite</name>
+      <icon>default_off.png</icon>
+      <description></description>
+    </badge>
+  </badges>
+</user>

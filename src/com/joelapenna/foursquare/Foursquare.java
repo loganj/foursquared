@@ -71,13 +71,18 @@ public class Foursquare {
         return mFoursquare.todos(cityId, lat, lng);
     }
 
+    public Data update(String status, String tipid) throws FoursquareError,
+            FoursquareParseException, IOException {
+        return mFoursquare.update(status, tipid);
+    }
+
     public Group venues(String query, String lat, String lng, int radius, int length)
             throws FoursquareError, FoursquareParseException, IOException {
         return mFoursquare.venues(query, lat, lng, radius, length);
     }
 
-    public Group checkins(String cityId, String lat, String lng) throws FoursquareError, FoursquareParseException,
-            IOException {
+    public Group checkins(String cityId, String lat, String lng) throws FoursquareError,
+            FoursquareParseException, IOException {
         return mFoursquare.checkins(cityId, lat, lng);
     }
 

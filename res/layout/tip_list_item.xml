@@ -14,9 +14,7 @@
 
     android:layout_alignParentTop="true"
     android:layout_alignParentBottom="true"
-    android:layout_marginRight="6dip"
-
-    android:enabled="false" />
+    android:layout_marginRight="6dip" />
 
   <TextView
     android:id="@+id/firstLine"
