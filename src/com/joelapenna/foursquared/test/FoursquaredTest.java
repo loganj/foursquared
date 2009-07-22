@@ -11,6 +11,7 @@ import com.joelapenna.foursquare.types.Venue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -18,6 +19,8 @@ import java.util.List;
 public class FoursquaredTest {
     public static final String TAG = "FoursquaredTest";
     public static final boolean DEBUG = true;
+
+    private static final Random mRandom = new Random();
 
     public static Venue createTestVenue(String id) {
         Venue venue = new Venue();
@@ -42,6 +45,16 @@ public class FoursquaredTest {
                 .setMap("http://maps.google.com/staticmap?zoom=15&amp;size=280x100&amp;markers=0,0&amp;maptype=mobile");
         venue.setMapurl("http://maps.google.com/maps?q=123+Fake+St.%2CSan+Francisco%2CCA%2C");
         venue.setNewVenue(true);
+        return venue;
+    }
+
+    public static Venue createRandomTestVenue(String id) {
+        Venue venue = createTestVenue(id);
+
+        venue.setGeolat(String.valueOf(Float.valueOf(venue.getGeolat()) + mRandom.nextFloat()));
+        venue.setGeolong(String.valueOf(Float.valueOf(venue.getGeolong()) + mRandom.nextFloat()));
+        venue.setBeenhereMe(mRandom.nextBoolean());
+
         return venue;
     }
 
@@ -102,15 +115,15 @@ public class FoursquaredTest {
     public static Group createVenueGroup(String type) {
         Group tlg = new Group();
         tlg.setType(type);
-        tlg.add(createTestVenue("1"));
-        tlg.add(createTestVenue("2"));
-        tlg.add(createTestVenue("3"));
-        tlg.add(createTestVenue("4"));
-        tlg.add(createTestVenue("5"));
-        tlg.add(createTestVenue("6"));
-        tlg.add(createTestVenue("7"));
-        tlg.add(createTestVenue("8"));
-        tlg.add(createTestVenue("9"));
+        tlg.add(createRandomTestVenue(type + " 1"));
+        tlg.add(createRandomTestVenue(type + " 2"));
+        tlg.add(createRandomTestVenue(type + " 3"));
+        tlg.add(createRandomTestVenue(type + " 4"));
+        tlg.add(createRandomTestVenue(type + " 5"));
+        tlg.add(createRandomTestVenue(type + " 6"));
+        tlg.add(createRandomTestVenue(type + " 7"));
+        tlg.add(createRandomTestVenue(type + " 8"));
+        tlg.add(createRandomTestVenue(type + " 9"));
         return tlg;
     }
 }
