@@ -73,10 +73,12 @@ class RemoteResourceFetcher extends Observable {
     }
 
     public void shutdown() {
-        mFetcherLooper.quit();
-        mFetcherThread = null;
-        mFetcherHandler = null;
-        mFetcherLooper = null;
+        if (mFetcherLooper != null) {
+            mFetcherLooper.quit();
+            mFetcherThread = null;
+            mFetcherHandler = null;
+            mFetcherLooper = null;
+        }
     }
 
     private void startFetcher() {
