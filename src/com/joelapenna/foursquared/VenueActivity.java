@@ -80,7 +80,8 @@ public class VenueActivity extends TabActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        mCheckinMenu = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN, Menu.NONE, "Checkin").setIcon(android.R.drawable.ic_menu_add);
+        mCheckinMenu = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN, Menu.NONE, "Checkin").setIcon(
+                android.R.drawable.ic_menu_add);
         mTwitterToggle = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN_TWITTER, Menu.NONE, "Twitter")
                 .setCheckable(true);
         mShareToggle = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN_SILENT, Menu.NONE, "Share")
@@ -99,6 +100,9 @@ public class VenueActivity extends TabActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (DEBUG) Log.d(TAG, "onPrepareOptions: mTwitterToggle: " + mTwitterToggle.isChecked());
         if (DEBUG) Log.d(TAG, "onPrepareOptions: mShareToggle: " + mShareToggle.isChecked());
+
+        // TODO(jlapenna): This needs to be enabled or disabled depending on if the venue has been
+        // retrieved yet!
         if (mTwitterToggle.isChecked()) {
             mTwitterToggle.setIcon(android.R.drawable.button_onoff_indicator_on);
             mTwitterToggle.setTitle("Sending Tweet");
@@ -129,7 +133,7 @@ public class VenueActivity extends TabActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_CHECKIN:
-                new VenueCheckinTask().execute();
+                new VenueCheckinTask().execute(mVenue);
                 return true;
             case MENU_CHECKIN_TWITTER:
                 item.setChecked(!item.isChecked());
@@ -299,7 +303,7 @@ public class VenueActivity extends TabActivity {
             mShareToggle.setEnabled(false);
             mTwitterToggle.setEnabled(false);
             if (DEBUG) Log.d(TAG, "CheckinTask: onPreExecute()");
-            ((VenueActivity)getParent()).startProgressBar(PROGRESS_BAR_TASK_ID);
+            startProgressBar(PROGRESS_BAR_TASK_ID);
 
         }
 
@@ -348,13 +352,13 @@ public class VenueActivity extends TabActivity {
                 // lookupCheckinGroups();
             } finally {
                 if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
-                ((VenueActivity)getParent()).stopProgressBar(PROGRESS_BAR_TASK_ID);
+                stopProgressBar(PROGRESS_BAR_TASK_ID);
             }
         }
 
         @Override
         public void onCancelled() {
-            ((VenueActivity)getParent()).stopProgressBar(PROGRESS_BAR_TASK_ID);
+            stopProgressBar(PROGRESS_BAR_TASK_ID);
         }
     }
 }
