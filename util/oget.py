@@ -1,26 +1,12 @@
 #!/usr/bin/python
-"""
-Pull a oAuth protected page from foursquare.
-
-Expects ~/.oget to contain (one on each line):
-CONSUMER_KEY
-CONSUMER_KEY_SECRET
-USERNAME
-PASSWORD
-
-Don't forget to chmod 600 the file!
-"""
 
 import httplib
-import os
 import re
 import sys
 import urllib
 import urllib2
 import urlparse
-import user
 from xml.dom import pulldom
-from xml.dom import minidom
 
 import oauth
 
@@ -45,13 +31,11 @@ SIGNATURE_METHOD = oauth.OAuthSignatureMethod_PLAINTEXT()
 
 AUTHEXCHANGE_URL = 'http://api.playfoursquare.com/v1/authexchange'
 
-CONSUMER_KEY = 'd418b4030b320f6b5ba2810a25075b5204a1bffb5'
-CONSUMER_SECRET = 'fecb671c5edb036e9abb963b67e05d18'
+CONSUMER_KEY = None
+CONSUMER_SECRET = None
 
-FS_USERNAME = 'testuser@joelapenna.com'
-FS_PASSWORD = 'ci9ahXa9'
-
-CITIES_URL = 'http://api.playfoursquare.com/v1/cities'
+FS_USERNAME = None
+FS_PASSWORD = None
 
 
 def parse_auth_response(auth_response):
@@ -76,31 +60,17 @@ def main():
   # Nevermind that the query can have repeated keys.
   parameters = dict(urlparse.parse_qsl(url.query))
 
-  passwd_file = open(os.path.join(user.home, '.oget'))
-  lines = [line.strip() for line in passwd_file.readlines()]
+  consumer = oauth.OAuthConsumer(CONSUMER_KEY, CONSUMER_SECRET)
+  oauth_request = create_signed_oauth_request(consumer)
 
-  if len(lines) == 4:
-    cons_key, cons_key_secret, username, passwd = lines
-    access_token = None
-  else:
-    cons_key, cons_key_secret, username, passwd, token, secret = lines
-    access_token = oauth.OAuthToken(token, secret)
+  connection = httplib.HTTPConnection('api.playfoursquare.com:80')
 
-  consumer = oauth.OAuthConsumer(cons_key, cons_key_secret)
+  connection.request(oauth_request.http_method, oauth_request.to_url(),
+      headers={})
 
-  if not access_token:
-    oauth_request = create_signed_oauth_request(consumer)
-
-    connection = httplib.HTTPConnection('api.playfoursquare.com:80')
-
-    connection.request(oauth_request.http_method, oauth_request.to_url(),
-        headers={})
-
-    auth_response = connection.getresponse().read()
-    token = parse_auth_response(auth_response)
-    access_token = oauth.OAuthToken(*token)
-    open(os.path.join(user.home, '.oget'), 'w').write('\n'.join((
-      cons_key, cons_key_secret, username, passwd, token[0], token[1])))
+  auth_response = connection.getresponse().read()
+  token = parse_auth_response(auth_response)
+  access_token = oauth.OAuthToken(*token)
 
   oauth_request = oauth.OAuthRequest.from_consumer_and_token(consumer,
       access_token, http_method='POST', http_url=url.geturl(),
@@ -110,6 +80,7 @@ def main():
   connection = httplib.HTTPConnection('api.playfoursquare.com:80')
   connection.request(oauth_request.http_method, oauth_request.to_url(),
       body=oauth_request.to_postdata(), headers=CONTENT_TYPE_HEADER)
+  response_body = connection.getresponse().read()
 
   #print connection.getresponse().read()
   print minidom.parse(connection.getresponse()).toprettyxml(indent='  ')
