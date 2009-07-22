@@ -9,7 +9,7 @@ import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.maps.BestLocationListener;
+import com.joelapenna.foursquared.Foursquared.LocationListener;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 
@@ -51,9 +51,9 @@ public class SearchVenueActivity extends TabActivity {
     private static final String QUERY_NEARBY = null;
 
     private SearchAsyncTask mSearchTask;
+
     private LocationManager mLocationManager;
-    private LocationListener mLocationListener = new LocationListener();
-    private Location mLocation;
+    private LocationListener mLocationListener;
 
     private String mQuery;
     private Group mSearchResults;
@@ -76,8 +76,8 @@ public class SearchVenueActivity extends TabActivity {
 
         ensureTabHost();
 
+        mLocationListener = ((Foursquared)getApplication()).getLocationListener();
         mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        mLocation = ((Foursquared)getApplication()).getLocation();
 
         ensureListViewAdapter();
 
@@ -189,7 +189,7 @@ public class SearchVenueActivity extends TabActivity {
     }
 
     Group searchVenues() throws FoursquareError, FoursquareParseException, IOException {
-        Location location = mLocation;
+        Location location = mLocationListener.getLastKnownLocation();
         Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
         if (location == null) {
             if (DEBUG) Log.d(TAG, "Searching without location.");
@@ -347,25 +347,6 @@ public class SearchVenueActivity extends TabActivity {
                 setProgressBarIndeterminateVisibility(false);
                 ensureTitle(true);
                 ensureSearchResults();
-            }
-        }
-    }
-
-    class LocationListener extends BestLocationListener {
-
-        @Override
-        public void onLocationChanged(Location location) {
-            if (DEBUG) Log.d(TAG, "onLocationChanged: " + location.getProvider());
-            if (mLocation == null) {
-                if (DEBUG) Log.d(TAG, "No previous location. using new: " + location);
-                mLocation = location;
-                return;
-            }
-
-            // If we've decided to use the new location.
-            Location newLocation = getBetterLocation(location);
-            if (newLocation != null) {
-                mLocation = newLocation;
             }
         }
     }

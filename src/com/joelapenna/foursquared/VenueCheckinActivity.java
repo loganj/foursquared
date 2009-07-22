@@ -209,7 +209,7 @@ public class VenueCheckinActivity extends ListActivity {
 
                 boolean silent = ((ToggleButton)findViewById(R.id.silentToggle)).isChecked();
                 boolean twitter = ((ToggleButton)findViewById(R.id.twitterToggle)).isChecked();
-                Location location = ((Foursquared)getApplication()).getLocation();
+                Location location = ((Foursquared)getApplication()).getLastKnownLocation();
                 if (location == null) {
                     return ((Foursquared)getApplication()).getFoursquare().checkin(
                             venue.getVenuename(), silent, twitter, null, null);
@@ -272,7 +272,7 @@ public class VenueCheckinActivity extends ListActivity {
         @Override
         public Group doInBackground(Void... params) {
             try {
-                Location location = ((Foursquared)getApplication()).getLocation();
+                Location location = ((Foursquared)getApplication()).getLastKnownLocation();
                 if (location == null) {
                     if (DEBUG) Log.d(TAG, "Getting Checkins without Location");
                     return ((Foursquared)getApplication()).getFoursquare().checkins(null, null,

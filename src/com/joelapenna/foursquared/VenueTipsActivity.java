@@ -302,7 +302,7 @@ public class VenueTipsActivity extends ListActivity {
         @Override
         public Group doInBackground(Void... params) {
             try {
-                Location location = ((Foursquared)getApplication()).getLocation();
+                Location location = ((Foursquared)getApplication()).getLastKnownLocation();
                 if (location == null) {
                     if (DEBUG) Log.d(TAG, "Getting Todos without Location");
                     return ((Foursquared)getApplication()).getFoursquare().todos(null, null, null);
@@ -379,7 +379,7 @@ public class VenueTipsActivity extends ListActivity {
             final String lat;
             final String lng;
 
-            Location location = ((Foursquared)getApplication()).getLocation();
+            Location location = ((Foursquared)getApplication()).getLastKnownLocation();
             if (location == null) {
                 if (DEBUG) Log.d(TAG, "Adding Tip without Location");
                 lat = null;

@@ -9,6 +9,7 @@ import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Auth;
 import com.joelapenna.foursquared.error.FoursquaredCredentialsError;
+import com.joelapenna.foursquared.maps.BestLocationListener;
 
 import android.app.Application;
 import android.content.Context;
@@ -16,17 +17,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 
 import java.io.IOException;
-import java.util.Date;
+import java.util.List;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -34,7 +33,7 @@ import java.util.Date;
 public class Foursquared extends Application {
     public static final String TAG = "Foursquared";
     public static final boolean DEBUG = true;
-    public static final boolean API_DEBUG = true;
+    public static final boolean API_DEBUG = false;
 
     public static final int LAST_LOCATION_UPDATE_THRESHOLD = 1000 * 60 * 60;
 
@@ -54,9 +53,12 @@ public class Foursquared extends Application {
     // Common menu items
     private static final int MENU_PREFERENCES = -1;
 
-    private Foursquare mFoursquare = new Foursquare();
+    private LocationListener mLocationListener = new LocationListener();
+
     private SharedPreferences mSharedPrefs;
     private OnSharedPreferenceChangeListener mOnSharedPreferenceChangeListener;
+
+    private Foursquare mFoursquare = new Foursquare();
 
     public void onCreate() {
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -88,29 +90,13 @@ public class Foursquared extends Application {
         return mFoursquare;
     }
 
-    public Location getLocation() {
-        LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-        criteria.setCostAllowed(true);
+    public Location getLastKnownLocation() {
+        return mLocationListener.getLastKnownLocation();
+    }
 
-        String providerName = manager.getBestProvider(criteria, true);
-        LocationProvider provider = manager.getProvider(providerName);
-        if (DEBUG) Log.d(TAG, "Have Provider: " + provider.getName());
-        Location location = manager.getLastKnownLocation(providerName);
-        if (location != null) {
-            long timeDelta = new Date().getTime() - location.getTime();
-            if (timeDelta > LAST_LOCATION_UPDATE_THRESHOLD) {
-                if (DEBUG) {
-                    Log.d(TAG, "Last known position is too old! " + String.valueOf(timeDelta));
-                }
-                return null;
-            }
-            if (DEBUG) Log.d(TAG, "got Location: " + location);
-        } else {
-            if (DEBUG) Log.d(TAG, "No known location.");
-        }
-        return location;
+    public LocationListener getLocationListener() {
+        primeLocationListner();
+        return mLocationListener;
     }
 
     private void loadCredentials() throws FoursquaredCredentialsError {
@@ -143,9 +129,32 @@ public class Foursquared extends Application {
         }
     }
 
+    private void primeLocationListner() {
+        LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+
+        Location location = null;
+        List<String> providers = manager.getProviders(true);
+        int providersCount = providers.size();
+        for (int i = 0; i < providersCount; i++) {
+            location = manager.getLastKnownLocation(providers.get(i));
+            mLocationListener.getBetterLocation(location);
+        }
+    }
+
     public static void addPreferencesToMenu(Context context, Menu menu) {
         Intent intent = new Intent(context, PreferenceActivity.class);
         menu.add(Menu.NONE, MENU_PREFERENCES, Menu.NONE, R.string.preferences_label) //
                 .setIcon(android.R.drawable.ic_menu_preferences).setIntent(intent);
+    }
+
+    /**
+     * Used for the accuracy algorithm getBetterLocation.
+     */
+    public static class LocationListener extends BestLocationListener {
+        @Override
+        public void onLocationChanged(Location location) {
+            if (DEBUG) Log.d(TAG, "onLocationChanged: " + location);
+            getBetterLocation(location);
+        }
     }
 }
