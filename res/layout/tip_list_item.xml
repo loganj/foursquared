@@ -6,15 +6,22 @@
   android:layout_width="fill_parent"
   android:layout_height="wrap_content">
 
+
+  <!--
+    If this were focusable, we wouldn't be able to put a click listener on the list view. Combine
+    this with an on item click listener on the list adapter and you can simulate click=check.
+  -->
   <CheckBox
     android:id="@+id/checkbox"
 
     android:layout_width="wrap_content"
     android:layout_height="fill_parent"
-
     android:layout_alignParentTop="true"
     android:layout_alignParentBottom="true"
-    android:layout_marginRight="6dip" />
+    android:layout_marginRight="6dip"
+
+    android:clickable="false"
+    android:focusable="false" />
 
   <TextView
     android:id="@+id/firstLine"

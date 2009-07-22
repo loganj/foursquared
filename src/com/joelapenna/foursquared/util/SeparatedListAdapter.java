@@ -8,7 +8,6 @@ package com.joelapenna.foursquared.util;
 import com.joelapenna.foursquared.R;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
