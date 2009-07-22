@@ -17,7 +17,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -100,6 +102,11 @@ public class UserActivity extends Activity {
             dialog.setMessage("Please wait while we retrieve some information");
             dialog.setIndeterminate(true);
             dialog.setCancelable(true);
+            dialog.setOnCancelListener(new OnCancelListener() {
+                public void onCancel(DialogInterface dialog) {
+                    finish();
+                }
+            });
             mProgressDialog = dialog;
         }
         mProgressDialog.show();
