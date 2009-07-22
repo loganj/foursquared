@@ -30,7 +30,12 @@
     <item
       name="android:background">@drawable/foursquare_gradient</item>
     <item
-      name="android:textAppearance">@android:style/TextAppearance.Medium.Inverse</item>
+      name="android:textAppearance">@android:style/TextAppearance.Medium</item>
+    <item
+      name="android:shadowColor">#BB000000</item>
+    <item
+      name="android:shadowRadius">2.75</item>
+
   </style>
 
   <!--
