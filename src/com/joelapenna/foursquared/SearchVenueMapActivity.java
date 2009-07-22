@@ -65,7 +65,7 @@ public class SearchVenueMapActivity extends MapActivity {
         super.onResume();
         if (DEBUG) Log.d(TAG, "onResume()");
         mMyLocationOverlay.enableMyLocation();
-        mMyLocationOverlay.enableCompass();
+        // mMyLocationOverlay.enableCompass();  // Disabled due to a sdk 1.5 emulator bug
 
         clearMap();
         loadSearchResults(SearchVenueActivity.searchResultsObservable.getSearchResults());

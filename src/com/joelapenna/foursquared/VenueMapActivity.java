@@ -59,7 +59,7 @@ public class VenueMapActivity extends MapActivity {
     public void onResume() {
         super.onResume();
         mMyLocationOverlay.enableMyLocation();
-        mMyLocationOverlay.enableCompass();
+        //mMyLocationOverlay.enableCompass();  // Disabled due to a sdk 1.5 emulator bug
     }
 
     @Override
