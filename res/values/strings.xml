@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="app_name">Foursquared</string>
+  <string
+    name="app_name">Foursquared</string>
+  <string
+    name="venue_checkin_activity_name">Check-In</string>
+  <string
+    name="venue_info_activity_name">Info</string>
 </resources>

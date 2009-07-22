@@ -5,24 +5,51 @@
   android:versionName="2009-04-05"
   android:versionCode="2009040500">
 
+  <uses-permission
+    android:name="android.permission.INTERNET"></uses-permission>
+  <uses-permission
+    android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+
   <application
     android:icon="@drawable/icon"
     android:label="@string/app_name">
 
+    <uses-library
+      android:name="com.google.android.maps" />
+
     <activity
-      android:name=".MainActivity"
-      android:label="@string/app_name">
+      android:name=".TestActivity"
+      android:label="Testing Activity">
       <intent-filter>
         <action
-          android:name="android.intent.action.MAIN"/>
-        <category
-          android:name="android.intent.category.LAUNCHER"/>
+          android:name="android.intent.action.MAIN" />
+      </intent-filter>
+    </activity>
+
+    <activity
+      android:name=".VenueActivity">
+      <intent-filter>
+        <action
+          android:name="android.intent.action.MAIN" />
+      </intent-filter>
+    </activity>
+
+    <activity
+      android:name=".VenueCheckinActivity">
+      <intent-filter>
+        <action
+          android:name="android.intent.action.MAIN" />
+      </intent-filter>
+    </activity>
+
+    <activity
+      android:name=".VenueInfoActivity">
+      <intent-filter>
+        <action
+          android:name="android.intent.action.MAIN" />
       </intent-filter>
     </activity>
 
   </application>
-
-  <uses-permission
-    android:name="android.permission.INTERNET"></uses-permission>
 
 </manifest>

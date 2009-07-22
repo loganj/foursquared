@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+
+
+  <TableLayout
+    android:id="@+id/buttonBar"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true">
+    <TableRow>
+      <Button
+        android:id="@+id/checkinButton"
+        android:layout_height="wrap_content"
+        android:layout_width="0dip"
+        android:layout_weight="1"
+        android:text="Check-in here" />
+      <Button
+        android:id="@+id/shoutButton"
+        android:layout_height="wrap_content"
+        android:layout_width="0dip"
+        android:layout_weight="1"
+        android:text="Shout" />
+    </TableRow>
+
+  </TableLayout>
+
+  <WebView
+    android:id="@+id/webView"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_below="@id/buttonBar"
+    android:layout_alignBottom="@id/buttonBar"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentLeft="true" />
+
+</RelativeLayout>

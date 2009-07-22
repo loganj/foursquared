@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+  <LinearLayout
+    android:id="@+id/address"
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent">
+    <TextView
+      android:id="@+id/venueName"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:layout_alignParentLeft="true"
+      android:textAppearance="@android:style/TextAppearance.Large"
+      android:text="Joe's House" />
+    <TextView
+      android:id="@+id/venueLocationLine1"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentLeft="true"
+      android:layout_below="@+id/venueName"
+      android:textAppearance="@android:style/TextAppearance.Small"
+      android:text="234 Divisadero St." />
+    <TextView
+      android:id="@+id/venueLocationLine2"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentLeft="true"
+      android:layout_below="@+id/venueLocationLine1"
+      android:textAppearance="@android:style/TextAppearance.Small"
+      android:text="San Francisco, CA 94117" />
+  </LinearLayout>
+  <!--
+    <ImageView android:id="@+id/venueImage" android:src="@drawable/icon"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:layout_toRightOf="@+id/venueName" android:layout_alignParentRight="true"
+    android:layout_alignParentTop="true"/>
+
+ -->
+  <TabHost
+    android:id="@android:id/tabhost"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_below="@+id/venueLocationLine2"
+    android:paddingTop="10dip">
+    <TabWidget
+      android:id="@android:id/tabs"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content" />
+    <FrameLayout
+      android:id="@android:id/tabcontent"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:paddingTop="64dip">
+    </FrameLayout>
+  </TabHost>
+
+</RelativeLayout>
