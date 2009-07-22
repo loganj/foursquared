@@ -52,6 +52,9 @@ public abstract class BestLocationListener implements LocationListener {
             if (DEBUG) Log.d(TAG, "unknown last location, using new location");
             mLastLocation = location;
             return location;
+        } else if (location == null) {
+            if (DEBUG) Log.d(TAG, "updated location is unknown but returning new location.");
+            return location;
         }
         long now = new Date().getTime();
         long locationUpdateDelta = now - location.getTime();

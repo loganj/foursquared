@@ -108,11 +108,11 @@ public class Foursquared extends Application {
             throw new FoursquaredCredentialsError(
                     "Phone number or password not set in preferences.");
         }
-        // tryLogin(phoneNumber, password);
+        mFoursquare.setCredentials(phoneNumber, password);
+        // tryLogin();
     }
 
-    private void tryLogin(String phoneNumber, String password) throws FoursquaredCredentialsError {
-        mFoursquare.setCredentials(phoneNumber, password);
+    private void tryLogin() throws FoursquaredCredentialsError {
         try {
             if (DEBUG) Log.d(TAG, "Trying to log in.");
             Auth auth = mFoursquare.login();
