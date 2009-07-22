@@ -2,10 +2,12 @@
  * Copyright 2009 Joe LaPenna
  */
 
-package com.joelapenna.foursquare.types;
+package com.joelapenna.foursquare.types.classic;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.joelapenna.foursquare.types.FoursquareType;
 import com.joelapenna.foursquare.types.Group;
 
 /**

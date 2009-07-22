@@ -4,7 +4,7 @@
 package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.Tip;
+import com.joelapenna.foursquare.types.classic.Tip;
 import com.joelapenna.foursquared.Foursquared;
 
 import android.content.Context;

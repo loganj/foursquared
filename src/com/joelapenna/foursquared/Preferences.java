@@ -7,9 +7,9 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.types.Auth;
 import com.joelapenna.foursquare.types.Credentials;
-import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquare.types.classic.Auth;
+import com.joelapenna.foursquare.types.classic.User;
 
 import android.content.SharedPreferences.Editor;
 import android.util.Log;

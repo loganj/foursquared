@@ -5,10 +5,14 @@
 package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Group;
+<<<<<<< HEAD:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
 import com.joelapenna.foursquare.types.Venue;
 <<<<<<< HEAD:src/com/joelapenna/foursquared/VenueListAdapter.java
 import com.joelapenna.foursquared.util.StringFormatters;
 =======
+=======
+import com.joelapenna.foursquare.types.classic.Venue;
+>>>>>>> 66b622c... Move "classic" data types and parsers to subdirectories.:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
 import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.R;
 >>>>>>> d021be6... Extract out a base adapter for venues and checkins:src/com/joelapenna/foursquared/widget/VenueListAdapter.java

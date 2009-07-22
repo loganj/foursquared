@@ -10,7 +10,7 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.types.classic.Venue;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
 
 import android.content.Intent;

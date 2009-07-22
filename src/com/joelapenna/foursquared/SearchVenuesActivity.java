@@ -7,7 +7,7 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.types.classic.Venue;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;

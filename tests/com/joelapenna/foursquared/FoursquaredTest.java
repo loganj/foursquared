@@ -4,10 +4,10 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.Tip;
-import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.types.classic.Checkin;
+import com.joelapenna.foursquare.types.classic.Tip;
+import com.joelapenna.foursquare.types.classic.Venue;
 
 import java.util.ArrayList;
 import java.util.List;

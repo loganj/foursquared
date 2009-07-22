@@ -4,7 +4,7 @@
 package com.joelapenna.foursquare.filters;
 
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.types.classic.Venue;
 
 import java.util.ArrayList;
 

@@ -9,8 +9,8 @@ import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.filters.VenueFilter;
 import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.Tip;
-import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.types.classic.Tip;
+import com.joelapenna.foursquare.types.classic.Venue;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.TipListAdapter;
 

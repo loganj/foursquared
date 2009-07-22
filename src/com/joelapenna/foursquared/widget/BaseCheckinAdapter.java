@@ -4,8 +4,8 @@
 
 package com.joelapenna.foursquared.widget;
 
-import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.classic.Checkin;
 import com.joelapenna.foursquared.Foursquared;
 
 import android.content.Context;

@@ -6,9 +6,9 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.filters.VenueFilter;
-import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.types.classic.Checkin;
+import com.joelapenna.foursquare.types.classic.Venue;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
 

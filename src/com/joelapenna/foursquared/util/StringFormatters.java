@@ -3,7 +3,7 @@
  */
 package com.joelapenna.foursquared.util;
 
-import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.types.classic.Venue;
 
 import android.text.TextUtils;
 

@@ -5,10 +5,10 @@
 package com.joelapenna.foursquare;
 
 import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.types.Auth;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.User;
-import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.types.classic.Auth;
+import com.joelapenna.foursquare.types.classic.User;
+import com.joelapenna.foursquare.types.classic.Venue;
 
 import android.test.suitebuilder.annotation.LargeTest;
 import android.test.suitebuilder.annotation.SmallTest;

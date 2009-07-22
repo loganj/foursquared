@@ -7,13 +7,13 @@ package com.joelapenna.foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.types.Auth;
-import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.User;
-import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.types.classic.Auth;
+import com.joelapenna.foursquare.types.classic.Checkin;
+import com.joelapenna.foursquare.types.classic.User;
+import com.joelapenna.foursquare.types.classic.Venue;
 import com.joelapenna.foursquared.Foursquared;
 
 import android.text.TextUtils;

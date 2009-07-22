@@ -2,11 +2,12 @@
  * Copyright 2009 Joe LaPenna
  */
 
-package com.joelapenna.foursquare.parsers;
+package com.joelapenna.foursquare.parsers.classic;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareParseException;
-import com.joelapenna.foursquare.types.Auth;
+import com.joelapenna.foursquare.parsers.AbstractParser;
+import com.joelapenna.foursquare.types.classic.Auth;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

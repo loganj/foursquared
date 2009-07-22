@@ -7,7 +7,7 @@ package com.joelapenna.foursquared.maps;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
-import com.joelapenna.foursquare.types.Checkin;
+import com.joelapenna.foursquare.types.classic.Checkin;
 import com.joelapenna.foursquared.Foursquared;
 
 import android.graphics.drawable.Drawable;
