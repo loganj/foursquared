@@ -48,7 +48,6 @@ public class Foursquare {
         mFoursquareV1.setOAuthConsumerCredentials(oAuthConsumerKey, oAuthConsumerSecret);
     }
 
-    @Classic
     public void setCredentials(String phone, String password) {
         mPhone = phone;
         mPassword = password;
@@ -63,6 +62,11 @@ public class Foursquare {
     @V1
     public void setOAuthConsumerCredentials(String oAuthConsumerKey, String oAuthConsumerSecret) {
         mFoursquareV1.setOAuthConsumerCredentials(oAuthConsumerKey, oAuthConsumerSecret);
+    }
+
+    public void clearAllCredentials() {
+        setCredentials(null, null);
+        setOAuthToken(null, null);
     }
 
     @V1

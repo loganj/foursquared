@@ -62,6 +62,11 @@
 
 
     <activity
+      android:name=".LoginActivity">
+    </activity>
+
+
+    <activity
       android:name=".PreferenceActivity"
       android:label="@string/preference_activity_name">
       <intent-filter>

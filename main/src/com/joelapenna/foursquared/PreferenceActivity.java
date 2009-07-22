@@ -46,10 +46,9 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         switch (item.getItemId()) {
             case MENU_LOGIN:
                 mPrefs.edit().clear().commit();
-                Foursquared.getFoursquare().setCredentials(null, null);
-                Foursquared.getFoursquare().setOAuthToken(null, null);
+                Foursquared.getFoursquare().clearAllCredentials();
 
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, LoginActivity.class));
                 finish();
                 return true;
         }
