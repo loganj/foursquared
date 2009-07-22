@@ -61,8 +61,12 @@ class FoursquareHttpApi {
     private static final String CLIENT_VERSION = "iPhone 20090301";
     private static final String CLIENT_VERSION_HEADER = "X_foursquare_client_version";
 
+    private static final String HTTP_SCHEME = "http://";
     private static final String DOMAIN = "playfoursquare.com";
-    private static final String URL_API_BASE = "http://" + DOMAIN + "/api";
+
+    private static final String URL_DOMAIN = HTTP_SCHEME + DOMAIN;
+
+    private static final String URL_API_BASE = URL_DOMAIN + "/api";
     private static final String URL_API_CHECKINS = URL_API_BASE + "/checkins";
     private static final String URL_API_LOGIN = URL_API_BASE + "/login";
     private static final String URL_API_TODO = URL_API_BASE + "/todo";
@@ -70,10 +74,16 @@ class FoursquareHttpApi {
     private static final String URL_API_VENUE = URL_API_BASE + "/venue";
 
     // Not the normal URL because, well, it doesn't have a normal URL!
-    private static final String URL_API_INCOMING = "http://" + DOMAIN + "/incoming/incoming.php";
+    private static final String URL_API_INCOMING = URL_DOMAIN + "/incoming/incoming.php";
 
     // Gets the html description of a checkin.
-    private static final String URL_BREAKDOWN = "http://" + DOMAIN + "/incoming/breakdown";
+    private static final String URL_BREAKDOWN = URL_DOMAIN + "/incoming/breakdown";
+
+    // Get the html achievements page.
+    private static final String URL_ACHIEVEMENTS = URL_DOMAIN + "/web/iphone/achievements";
+
+    // Get the html me page.
+    private static final String URL_ME = URL_DOMAIN + "/web/iphone/me";
 
     private DefaultHttpClient mHttpClient;
 
@@ -179,37 +189,39 @@ class FoursquareHttpApi {
     }
 
     /**
-     * /incoming/breakdown?cid=67889&uid=9232&client=iphone This guy has a custom implementation
-     * because it does not receive XML.
+     * /web/iphone/achievements?task=unlocked&uid=1818&cityid=23
+     */
+    String achievements(String cityId, String task, String userId) throws FoursquareError,
+            FoursquareParseException, IOException {
+        return doHttpPost(URL_ACHIEVEMENTS, // url
+                new BasicNameValuePair("cityid", cityId), // city matters, I guess.
+                new BasicNameValuePair("task", task), // task name?
+                new BasicNameValuePair("uid", userId) // user id
+        );
+    }
+
+    /**
+     * /incoming/breakdown?cid=67889&uid=9232&client=iphone
      */
     String breakdown(String userId, String checkinId) throws FoursquareError,
             FoursquareParseException, IOException {
-        if (DEBUG) Log.d(TAG, "breakdown");
-        NameValuePair[] nameValuePairs = {
+        return doHttpPost(URL_BREAKDOWN, // url
                 new BasicNameValuePair("uid", userId), // user id
                 new BasicNameValuePair("cid", checkinId), // checkin id
-                new BasicNameValuePair("client", "android")
-        };
-        HttpPost httpPost = createHttpPost(URL_BREAKDOWN, Arrays.asList(nameValuePairs));
+                new BasicNameValuePair("client", "android") // client i guess.
+        );
+    }
 
-        HttpResponse response = executeHttpPost(httpPost);
-        if (response == null) {
-            if (DEBUG) Log.d(TAG, "execute() call for the httpPost generated an exception;");
-            throw new FoursquareError("breakdown request unsuccessful.");
-        }
-
-        switch (response.getStatusLine().getStatusCode()) {
-            case 200:
-                break;
-            default:
-                throw new FoursquareError(response.getStatusLine().toString());
-        }
-
-        try {
-            return EntityUtils.toString(response.getEntity());
-        } catch (ParseException e) {
-            throw new FoursquareParseException(e.getMessage());
-        }
+    /**
+     * /web/iphone/me?uid=9232&view=mini&cityid=23
+     */
+    String me(String cityId, String userId) throws FoursquareError, FoursquareParseException,
+            IOException {
+        return doHttpPost(URL_ME, // url
+                new BasicNameValuePair("cityid", cityId), // city matters, I guess.
+                new BasicNameValuePair("view", "mini"), // huh?
+                new BasicNameValuePair("uid", userId) // user id
+        );
     }
 
     private FoursquareType doHttpPost(String url, Parser<? extends FoursquareType> abstractParser,
@@ -234,6 +246,31 @@ class FoursquareHttpApi {
         }
 
         return abstractParser.parse(AuthParser.createParser(response.getEntity().getContent()));
+    }
+
+    private String doHttpPost(String url, NameValuePair... nameValuePairs) throws FoursquareError,
+            FoursquareParseException, IOException {
+        if (DEBUG) Log.d(TAG, "doHttpPost: " + url);
+        HttpPost httpPost = createHttpPost(url, Arrays.asList(nameValuePairs));
+
+        HttpResponse response = executeHttpPost(httpPost);
+        if (response == null) {
+            if (DEBUG) Log.d(TAG, "execute() call for the httpPost generated an exception;");
+            throw new FoursquareError("breakdown request unsuccessful.");
+        }
+
+        switch (response.getStatusLine().getStatusCode()) {
+            case 200:
+                break;
+            default:
+                throw new FoursquareError(response.getStatusLine().toString());
+        }
+
+        try {
+            return EntityUtils.toString(response.getEntity());
+        } catch (ParseException e) {
+            throw new FoursquareParseException(e.getMessage());
+        }
     }
 
     /**
