@@ -2,7 +2,7 @@
  * Copyright 2009 Joe LaPenna
  */
 
-package com.joelapenna.foursquare.test;
+package com.joelapenna.foursquare;
 
 import com.joelapenna.foursquare.FoursquareHttpApiV1;
 import com.joelapenna.foursquare.error.FoursquareError;

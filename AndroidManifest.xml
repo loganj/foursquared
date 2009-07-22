@@ -41,7 +41,7 @@
 
 
     <activity
-      android:name=".test.TestCheckinsActivity"
+      android:name=".TestCheckinsActivity"
       android:label="@string/checkins_activity_name"
       android:launchMode="singleTop">
       <intent-filter>
@@ -52,7 +52,7 @@
 
 
     <activity
-      android:name=".test.TestSearchVenueActivity"
+      android:name=".TestSearchVenueActivity"
       android:label="@string/venue_search_activity_name"
       android:launchMode="singleTop">
       <intent-filter>
@@ -150,7 +150,7 @@
   </application>
 
   <instrumentation
-    android:name=".test.InstrumentationTestRunner"
+    android:name=".InstrumentationTestRunner"
     android:targetPackage="com.joelapenna.foursquared">
   </instrumentation>
 </manifest>

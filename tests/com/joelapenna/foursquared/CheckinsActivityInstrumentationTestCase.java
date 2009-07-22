@@ -1,7 +1,7 @@
 /**
  * Copyright 2009 Joe LaPenna
  */
-package com.joelapenna.foursquared.test;
+package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.CheckinsActivity;

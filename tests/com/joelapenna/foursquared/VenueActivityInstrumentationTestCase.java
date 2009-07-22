@@ -1,7 +1,8 @@
 /**
  * Copyright 2009 Joe LaPenna
  */
-package com.joelapenna.foursquared.test;
+
+package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquared.VenueActivity;
 
@@ -11,9 +12,9 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
- *
  */
-public class VenueActivityInstrumentationTestCase extends ActivityInstrumentationTestCase2<VenueActivity> {
+public class VenueActivityInstrumentationTestCase extends
+        ActivityInstrumentationTestCase2<VenueActivity> {
 
     public VenueActivityInstrumentationTestCase() {
         super("com.joelapenna.foursquared", VenueActivity.class);
