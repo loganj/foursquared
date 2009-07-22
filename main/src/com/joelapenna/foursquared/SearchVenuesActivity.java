@@ -28,7 +28,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,7 +66,9 @@ public class SearchVenuesActivity extends TabActivity {
     private SearchHolder mSearchHolder = new SearchHolder();
 
     private ListView mListView;
-    private TextView mEmpty;
+    private LinearLayout mEmpty;
+    private TextView mEmptyText;
+    private ProgressBar mEmptyProgress;
     private TabHost mTabHost;
     private SeparatedListAdapter mListAdapter;
 
@@ -247,10 +251,11 @@ public class SearchVenuesActivity extends TabActivity {
 
     private void ensureSearchResults() {
         if (mListAdapter.getCount() > 0) {
-            mEmpty.setVisibility(View.GONE);
+            mEmpty.setVisibility(LinearLayout.GONE);
         } else {
-            mEmpty.setText("No results found! Try another search!");
-            mEmpty.setVisibility(View.VISIBLE);
+            mEmptyText.setText("No search results.");
+            mEmptyProgress.setVisibility(LinearLayout.GONE);
+            mEmpty.setVisibility(LinearLayout.VISIBLE);
         }
     }
 
@@ -274,7 +279,9 @@ public class SearchVenuesActivity extends TabActivity {
         if (mListView != null) {
             throw new IllegalStateException("Trying to initialize already initialized ListView");
         }
-        mEmpty = (TextView)findViewById(R.id.empty);
+        mEmpty = (LinearLayout)findViewById(R.id.empty);
+        mEmptyText = (TextView)findViewById(R.id.emptyText);
+        mEmptyProgress = (ProgressBar)findViewById(R.id.emptyProgress);
 
         mListView = (ListView)findViewById(R.id.list);
         mListAdapter = new SeparatedListAdapter(this);

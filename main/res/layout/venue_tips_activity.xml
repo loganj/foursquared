@@ -34,12 +34,10 @@
     android:layout_height="fill_parent"
     android:layout_width="fill_parent" />
 
-  <TextView
-    android:id="@android:id/empty"
-    android:layout_height="fill_parent"
+  <include
+    android:id="@+id/empty"
+    layout="@layout/empty_loading"
     android:layout_width="fill_parent"
-    android:layout_gravity="center|fill"
-    android:gravity="center"
-    android:text="Searching for tips!" />
+    android:layout_height="fill_parent" />
 
 </LinearLayout>

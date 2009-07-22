@@ -30,13 +30,11 @@
           android:id="@+id/list"
           android:layout_width="fill_parent"
           android:layout_height="fill_parent" />
-        <TextView
+        <include
           android:id="@+id/empty"
-          android:layout_height="fill_parent"
+          layout="@layout/empty_loading"
           android:layout_width="fill_parent"
-          android:layout_gravity="center|fill"
-          android:gravity="center"
-          android:text="Searching for tips" />
+          android:layout_height="fill_parent" />
       </LinearLayout>
     </FrameLayout>
   </TabHost>
