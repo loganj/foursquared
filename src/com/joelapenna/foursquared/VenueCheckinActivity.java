@@ -221,13 +221,13 @@ public class VenueCheckinActivity extends ListActivity {
                 boolean twitter = ((ToggleButton)findViewById(R.id.twitterToggle)).isChecked();
                 Location location = ((Foursquared)getApplication()).getLastKnownLocation();
                 if (location == null) {
-                    return ((Foursquared)getApplication()).getFoursquare().checkin(
+                    return Foursquared.getFoursquare().checkin(
                             venue.getVenuename(), silent, twitter, null, null);
                 } else {
                     // I wonder if this could result in the backend logic to mis-calculate which
                     // venue you're at because the phone gave too coarse or inaccurate location
                     // information.
-                    return ((Foursquared)getApplication()).getFoursquare().checkin(
+                    return Foursquared.getFoursquare().checkin(
                             venue.getVenuename(), silent, twitter,
                             String.valueOf(location.getLatitude()),
                             String.valueOf(location.getLongitude()));
@@ -285,11 +285,11 @@ public class VenueCheckinActivity extends ListActivity {
                 Location location = ((Foursquared)getApplication()).getLastKnownLocation();
                 if (location == null) {
                     if (DEBUG) Log.d(TAG, "Getting Checkins without Location");
-                    return ((Foursquared)getApplication()).getFoursquare().checkins(null, null,
+                    return Foursquared.getFoursquare().checkins(null, null,
                             null);
                 } else {
                     if (DEBUG) Log.d(TAG, "Getting Checkins with Location: " + location);
-                    return ((Foursquared)getApplication()).getFoursquare().checkins(null,
+                    return Foursquared.getFoursquare().checkins(null,
                             String.valueOf(location.getLatitude()),
                             String.valueOf(location.getLongitude()));
 

@@ -306,10 +306,10 @@ public class VenueTipsActivity extends ListActivity {
                 Location location = ((Foursquared)getApplication()).getLastKnownLocation();
                 if (location == null) {
                     if (DEBUG) Log.d(TAG, "Getting Todos without Location");
-                    return ((Foursquared)getApplication()).getFoursquare().todos(null, null, null);
+                    return Foursquared.getFoursquare().todos(null, null, null);
                 } else {
                     if (DEBUG) Log.d(TAG, "Getting Todos with Location: " + location);
-                    return ((Foursquared)getApplication()).getFoursquare().todos(null,
+                    return Foursquared.getFoursquare().todos(null,
                             String.valueOf(location.getLatitude()),
                             String.valueOf(location.getLongitude()));
 
@@ -392,7 +392,7 @@ public class VenueTipsActivity extends ListActivity {
             }
 
             try {
-                Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
+                Foursquare foursquare = Foursquared.getFoursquare();
                 if (type == TIP) {
                     return foursquare.addTip(text, mVenue.getVenueid(), lat, lng, null);
                 } else if (type == TODO) {
@@ -448,7 +448,7 @@ public class VenueTipsActivity extends ListActivity {
             String tipid = (String)params[1];
 
             try {
-                Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
+                Foursquare foursquare = Foursquared.getFoursquare();
                 return foursquare.update("done", tipid);
             } catch (FoursquareError e) {
                 // TODO Auto-generated catch block

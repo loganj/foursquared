@@ -343,7 +343,7 @@ public class SearchVenuesActivity extends TabActivity {
 
         public Group search() throws FoursquareError, FoursquareParseException, IOException {
             Location location = mLocationListener.getLastKnownLocation();
-            Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
+            Foursquare foursquare = Foursquared.getFoursquare();
             if (location == null) {
                 if (DEBUG) Log.d(TAG, "Searching without location.");
                 return foursquare.venues(mSearchHolder.query, null, null, 10, 1);

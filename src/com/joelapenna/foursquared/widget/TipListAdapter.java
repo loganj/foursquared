@@ -15,50 +15,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
 /**
  * @author jlapenna
  */
-public class TipListAdapter extends BaseAdapter {
+public class TipListAdapter extends BaseTipAdapter {
     private static final String TAG = "TipListAdapter";
     private static final boolean DEBUG = Foursquared.DEBUG;
 
     private LayoutInflater mInflater;
-    private Group mTips;
 
-    public TipListAdapter(Context context, Group tips) {
+    public TipListAdapter(Context context, Group venues) {
+        super(context, venues);
         mInflater = LayoutInflater.from(context);
-        mTips = tips;
-    }
-
-    /**
-     * The number of items in the list is determined by the number of tips in our array.
-     *
-     * @see android.widget.ListAdapter#getCount()
-     */
-    @Override
-    public int getCount() {
-        return mTips.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        if (DEBUG) Log.d(TAG, "getItem() called: " + String.valueOf(position));
-        return mTips.get(position);
-    }
-
-    /**
-     * Use the position index as a unique id.
-     *
-     * @see android.widget.ListAdapter#getItemId(int)
-     */
-    @Override
-    public long getItemId(int position) {
-        if (DEBUG) Log.d(TAG, "getItemId() called: " + String.valueOf(position));
-        return position;
     }
 
     @Override
@@ -97,17 +68,6 @@ public class TipListAdapter extends BaseAdapter {
         holder.checkbox.setChecked(tip.getUserStatus().equals("done") ? true : false);
 
         return convertView;
-    }
-
-    @Override
-    public boolean hasStableIds() {
-        return false;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        if (DEBUG) Log.d(TAG, "isEmpty() called");
-        return (mTips.size() <= 0);
     }
 
     private static class ViewHolder {

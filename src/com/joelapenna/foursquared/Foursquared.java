@@ -62,7 +62,7 @@ public class Foursquared extends Application {
     private SharedPreferences mSharedPrefs;
     private OnSharedPreferenceChangeListener mOnSharedPreferenceChangeListener;
 
-    private Foursquare mFoursquare = new Foursquare();
+    private static Foursquare sFoursquare = new Foursquare();
 
     public void onCreate() {
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -75,7 +75,7 @@ public class Foursquared extends Application {
                         loadCredentials();
                     } catch (FoursquaredCredentialsError e) {
                         if (DEBUG) Log.d(TAG, "Clearing credentials", e);
-                        mFoursquare.setCredentials(null, null);
+                        sFoursquare.setCredentials(null, null);
                     }
                 }
             }
@@ -88,10 +88,6 @@ public class Foursquared extends Application {
             // We're not doing anything because hopefully our related activities
             // will handle the failure. This is simply convenience.
         }
-    }
-
-    public Foursquare getFoursquare() {
-        return mFoursquare;
     }
 
     public Location getLastKnownLocation() {
@@ -112,7 +108,7 @@ public class Foursquared extends Application {
             throw new FoursquaredCredentialsError(
                     "Phone number or password not set in preferences.");
         }
-        mFoursquare.setCredentials(phoneNumber, password);
+        sFoursquare.setCredentials(phoneNumber, password);
         new Thread() {
             public void run() {
                 try {
@@ -129,8 +125,8 @@ public class Foursquared extends Application {
     private void getUserInfo() throws FoursquaredCredentialsError {
         try {
             if (DEBUG) Log.d(TAG, "Trying to log in.");
-            Auth auth = mFoursquare.login();
-            User user = mFoursquare.user();
+            Auth auth = sFoursquare.login();
+            User user = sFoursquare.user();
             if (auth != null && auth.status() && user != null) {
                 Editor editor = mSharedPrefs.edit();
 
@@ -169,6 +165,10 @@ public class Foursquared extends Application {
         Intent intent = new Intent(context, PreferenceActivity.class);
         menu.add(MENU_GROUP_SYSTEM, MENU_PREFERENCES, Menu.NONE, R.string.preferences_label) //
                 .setIcon(android.R.drawable.ic_menu_preferences).setIntent(intent);
+    }
+
+    public static Foursquare getFoursquare() {
+        return sFoursquare;
     }
 
     /**

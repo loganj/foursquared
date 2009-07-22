@@ -318,7 +318,7 @@ public class CheckinsActivity extends TabActivity {
 
         Group search() throws FoursquareError, FoursquareParseException, IOException {
             Location location = mLocationListener.getLastKnownLocation();
-            Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
+            Foursquare foursquare = Foursquared.getFoursquare();
             if (location == null) {
                 if (DEBUG) Log.d(TAG, "Searching without location.");
                 return foursquare.checkins(null, null, null);

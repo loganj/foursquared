@@ -29,8 +29,7 @@ public class FoursquaredAppTestCase extends ApplicationTestCase<Foursquared> {
     @SmallTest
     public void testPreferences() {
         createApplication();
-        Foursquared foursquared = getApplication();
-        foursquared.getFoursquare();
+        Foursquared.getFoursquare();
         // ... to be continued.
     }
 }
