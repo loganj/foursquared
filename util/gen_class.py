@@ -65,7 +65,6 @@ private void readFromParcel(Parcel source) {
 %(read_parcel_lines)s
 }
 
-@SuppressWarnings("unused")
 public static final Parcelable.Creator<%(type_name)s> CREATOR = new Parcelable.Creator<%(type_name)s>() {
 
     @Override

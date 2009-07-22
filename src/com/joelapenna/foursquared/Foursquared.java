@@ -12,4 +12,6 @@ import android.app.Application;
 public class Foursquared extends Application {
     public static final String TAG = "Foursquared";
     public static final boolean DEBUG = true;
+
+    public static final String EXTRAS_VENUE_KEY = "venue";
 }

@@ -9,6 +9,7 @@ import com.joelapenna.foursquare.types.Venue;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -19,8 +20,6 @@ public class VenueActivity extends TabActivity {
     private static final String TAG = "VenueActivity";
     private static final boolean DEBUG = Foursquared.DEBUG;
 
-    public static final String EXTRAS_VENUE_KEY = "venue";
-
     Venue mVenue;
 
     @Override
@@ -28,30 +27,36 @@ public class VenueActivity extends TabActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.venue_activity);
 
-        loadVenue((Venue)getIntent().getExtras().get(EXTRAS_VENUE_KEY));
+        setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
         setupTabHost();
     }
 
     private void setupTabHost() {
         final TabHost tabHost = this.getTabHost();
         String tag;
+        Intent intent;
 
         tag = (String)this.getText(R.string.venue_checkin_activity_name);
+        intent = new Intent(this, VenueCheckinActivity.class);
+        intent.putExtra(Foursquared.EXTRAS_VENUE_KEY, mVenue);
         tabHost.addTab(tabHost.newTabSpec(tag)
                 // Checkin Tab
                 .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_add))
-                .setContent(new Intent(this, VenueCheckinActivity.class)) // The contained activity
+                .setContent(intent) // The contained activity
                 );
 
         tag = (String)this.getText(R.string.venue_info_activity_name);
+        intent = new Intent(this, VenueInfoActivity.class);
+        intent.putExtra(Foursquared.EXTRAS_VENUE_KEY, mVenue);
         tabHost.addTab(tabHost.newTabSpec(tag)
                 // Info Tab
                 .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_compass))
-                .setContent(new Intent(this, VenueInfoActivity.class)) // The contained activity
+                .setContent(intent) // The contained activity
                 );
     }
 
-    private void loadVenue(Venue venue) {
+    private void setVenue(Venue venue) {
+        if (DEBUG) Log.d(TAG, "loading venue:" + venue.getVenuename());
         TextView name = (TextView)findViewById(R.id.venueName);
         TextView locationLine1 = (TextView)findViewById(R.id.venueLocationLine1);
         TextView locationLine2 = (TextView)findViewById(R.id.venueLocationLine2);

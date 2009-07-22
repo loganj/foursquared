@@ -50,7 +50,7 @@ public class VenueInfoActivity extends MapActivity {
             }
         });
 
-        setVenue(FoursquaredTest.createTestVenue());
+        setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
     }
 
     private void setVenue(Venue venue) {
@@ -74,10 +74,6 @@ public class VenueInfoActivity extends MapActivity {
         mOverlay = new SimpleItemizedOverlay(this.getResources().getDrawable(R.drawable.reddot));
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.google.android.maps.MapActivity#isRouteDisplayed()
-     */
     @Override
     protected boolean isRouteDisplayed() {
         // TODO Auto-generated method stub

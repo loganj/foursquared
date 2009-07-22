@@ -86,7 +86,8 @@ public class FoursquaredTest {
         checkin.setCheckinid("67889");
         checkin.setMessage("OK! We&apos;ve got you @ The Page.");
         checkin.setStatus(true);
-        checkin.setUrl("http://playfoursquare.com/incoming/breakdown?cid=67889&uid=9232&client=iphone");
+        checkin
+                .setUrl("http://playfoursquare.com/incoming/breakdown?cid=67889&uid=9232&client=iphone");
         checkin.setUserid("9232");
         return checkin;
 

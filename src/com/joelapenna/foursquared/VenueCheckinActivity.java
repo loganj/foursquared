@@ -6,6 +6,7 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Tip;
+import com.joelapenna.foursquare.types.Venue;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -27,6 +28,8 @@ public class VenueCheckinActivity extends ListActivity {
 
     private static final int DIALOG_CHECKIN = 0;
 
+    private Venue mVenue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +48,12 @@ public class VenueCheckinActivity extends ListActivity {
                 v.setEnabled(false);
             }
         });
+
+        setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
+    }
+
+    private void setVenue(Venue venue) {
+        mVenue = venue;
     }
 
     @Override

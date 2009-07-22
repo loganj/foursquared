@@ -4,10 +4,13 @@
 
 package com.joelapenna.foursquare.types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class Checkin implements FoursquareType {
+public class Checkin implements FoursquareType, Parcelable {
 
     private String mAddress;
     private String mAlert;
@@ -273,5 +276,94 @@ public class Checkin implements FoursquareType {
     public void setXdatetime(String xdatetime) {
         mXdatetime = xdatetime;
     }
+
+    /* For Parcelable */
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        boolean[] booleanArray = {
+                mDballDefault, mShowDball, mShowTwitter, mStatus, mTwitterDefault,
+        };
+        dest.writeBooleanArray(booleanArray);
+        dest.writeString(this.mAddress);
+        dest.writeString(this.mAlert);
+        dest.writeString(this.mAliasid);
+        dest.writeString(this.mCheckinid);
+        dest.writeString(this.mCityName);
+        dest.writeString(this.mCityid);
+        dest.writeString(this.mCrossstreet);
+        dest.writeString(this.mEmail);
+        dest.writeString(this.mFirstname);
+        dest.writeString(this.mGender);
+        dest.writeString(this.mGeolat);
+        dest.writeString(this.mGeolong);
+        dest.writeString(this.mLastname);
+        dest.writeString(this.mMessage);
+        dest.writeString(this.mPhone);
+        dest.writeString(this.mPhoto);
+        dest.writeString(this.mRelativeTime);
+        dest.writeString(this.mShout);
+        dest.writeString(this.mStats);
+        dest.writeString(this.mUrl);
+        dest.writeString(this.mUserid);
+        dest.writeString(this.mVenueid);
+        dest.writeString(this.mVenuename);
+        dest.writeString(this.mXdatetime);
+    }
+
+    private void readFromParcel(Parcel source) {
+        boolean[] booleanArray = new boolean[5];
+        source.readBooleanArray(booleanArray);
+        this.mDballDefault = booleanArray[0];
+        this.mShowDball = booleanArray[1];
+        this.mShowTwitter = booleanArray[2];
+        this.mStatus = booleanArray[3];
+        this.mTwitterDefault = booleanArray[4];
+        this.mAddress = source.readString();
+        this.mAlert = source.readString();
+        this.mAliasid = source.readString();
+        this.mCheckinid = source.readString();
+        this.mCityName = source.readString();
+        this.mCityid = source.readString();
+        this.mCrossstreet = source.readString();
+        this.mEmail = source.readString();
+        this.mFirstname = source.readString();
+        this.mGender = source.readString();
+        this.mGeolat = source.readString();
+        this.mGeolong = source.readString();
+        this.mLastname = source.readString();
+        this.mMessage = source.readString();
+        this.mPhone = source.readString();
+        this.mPhoto = source.readString();
+        this.mRelativeTime = source.readString();
+        this.mShout = source.readString();
+        this.mStats = source.readString();
+        this.mUrl = source.readString();
+        this.mUserid = source.readString();
+        this.mVenueid = source.readString();
+        this.mVenuename = source.readString();
+        this.mXdatetime = source.readString();
+    }
+
+    public static final Parcelable.Creator<Checkin> CREATOR = new Parcelable.Creator<Checkin>() {
+
+        @Override
+        public Checkin createFromParcel(Parcel source) {
+            Checkin instance = new Checkin();
+            instance.readFromParcel(source);
+            return instance;
+        }
+
+        @Override
+        public Checkin[] newArray(int size) {
+            return new Checkin[size];
+        }
+
+    };
 
 }

@@ -4,10 +4,13 @@
 
 package com.joelapenna.foursquare.types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class Auth implements FoursquareType {
+public class Auth implements FoursquareType, Parcelable {
 
     private String mEmail;
     private String mFirstname;
@@ -84,5 +87,56 @@ public class Auth implements FoursquareType {
     public void setStatus(boolean status) {
         mStatus = status;
     }
+
+    /* For Parcelable */
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        boolean[] booleanArray = {
+            mStatus,
+        };
+        dest.writeBooleanArray(booleanArray);
+        dest.writeString(this.mEmail);
+        dest.writeString(this.mFirstname);
+        dest.writeString(this.mId);
+        dest.writeString(this.mLastname);
+        dest.writeString(this.mMessage);
+        dest.writeString(this.mPhone);
+        dest.writeString(this.mPhoto);
+    }
+
+    private void readFromParcel(Parcel source) {
+        boolean[] booleanArray = new boolean[1];
+        source.readBooleanArray(booleanArray);
+        this.mStatus = booleanArray[0];
+        this.mEmail = source.readString();
+        this.mFirstname = source.readString();
+        this.mId = source.readString();
+        this.mLastname = source.readString();
+        this.mMessage = source.readString();
+        this.mPhone = source.readString();
+        this.mPhoto = source.readString();
+    }
+
+    public static final Parcelable.Creator<Auth> CREATOR = new Parcelable.Creator<Auth>() {
+
+        @Override
+        public Auth createFromParcel(Parcel source) {
+            Auth instance = new Auth();
+            instance.readFromParcel(source);
+            return instance;
+        }
+
+        @Override
+        public Auth[] newArray(int size) {
+            return new Auth[size];
+        }
+
+    };
 
 }
