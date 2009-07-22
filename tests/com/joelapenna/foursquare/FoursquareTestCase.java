@@ -40,7 +40,8 @@ public class FoursquareTestCase extends TestCase {
 
         // check for v1/oauth credentials
         assertFalse(foursquare.hasCredentials(true));
-        foursquare.setCredentials("phone", "password", "token", "secret");
+        foursquare.setCredentials("phone", "password");
+        foursquare.setOAuthToken("token", "secret");
         assertTrue(foursquare.hasCredentials(true));
 
     }
@@ -114,8 +115,8 @@ public class FoursquareTestCase extends TestCase {
         Foursquare foursquare = new Foursquare(TestCredentials.oAuthConsumerKey,
                 TestCredentials.oAuthConsumerSecret);
         foursquare.setCredentials(TestCredentials.testFoursquarePhone,
-                TestCredentials.testFoursquarePassword, TestCredentials.oAuthToken,
-                TestCredentials.oAuthTokenSecret);
+                TestCredentials.testFoursquarePassword);
+        foursquare.setOAuthToken(TestCredentials.oAuthToken, TestCredentials.oAuthTokenSecret);
         return foursquare;
     }
 }

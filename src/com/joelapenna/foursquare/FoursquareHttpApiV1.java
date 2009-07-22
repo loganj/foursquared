@@ -86,6 +86,9 @@ public class FoursquareHttpApiV1 {
      */
     public Credentials authExchange(String phone, String password) throws FoursquareException,
             FoursquareCredentialsError, FoursquareError, IOException {
+        if (mHttpApi.hasOAuthTokenWithSecret()) {
+            throw new IllegalStateException("Cannot do authExchange with OAuthToken already set");
+        }
         HttpPost httpPost = mHttpApi.createHttpPost(URL_API_AUTHEXCHANGE, //
                 new BasicNameValuePair("fs_username", phone), //
                 new BasicNameValuePair("fs_password", password));

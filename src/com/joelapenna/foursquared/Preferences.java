@@ -71,7 +71,8 @@ public class Preferences {
             if (DEBUG) Log.d(TAG, "Storing oauth token");
             editor.putString(PREFERENCE_OAUTH_TOKEN, credentials.getOauthToken());
             editor.putString(PREFERENCE_OAUTH_TOKEN_SECRET, credentials.getOauthTokenSecret());
-            if (DEBUG) Log.d(TAG, "Commiting authexchange token: " + String.valueOf(editor.commit()));
+            if (DEBUG) Log.d(TAG, "Commiting authexchange token: "
+                    + String.valueOf(editor.commit()));
         } else {
             throw new FoursquareCredentialsError("Unable to auth exchange.");
         }
@@ -81,17 +82,19 @@ public class Preferences {
             final boolean doAuthExchange) throws FoursquareCredentialsError, FoursquareException,
             IOException {
         if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Trying to log in.");
+
+        if (doAuthExchange) {
+            if (DEBUG) Log.d(TAG, "doAuthExchange specified for loginUser");
+            foursquare.setOAuthToken(null, null);
+            Credentials credentials = foursquare.authExchange();
+            Preferences.storeAuthExchangeCredentials(editor, credentials);
+        }
+
         Auth auth = foursquare.login();
         Preferences.storeLoginAuth(editor, auth);
 
         User user = foursquare.user();
         Preferences.storeUser(editor, user);
-
-        if (doAuthExchange) {
-            if (DEBUG) Log.d(TAG, "doAuthExchange specified for loginUser");
-            Credentials credentials = foursquare.authExchange();
-            Preferences.storeAuthExchangeCredentials(editor, credentials);
-        }
     }
 
 }

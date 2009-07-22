@@ -28,7 +28,7 @@ import java.util.List;
 public class Foursquared extends Application {
     public static final String TAG = "Foursquared";
     public static final boolean DEBUG = true;
-    public static final boolean API_DEBUG = false;
+    public static final boolean API_DEBUG = true;
     public static final boolean PARSER_DEBUG = false;
 
     public static final int LAST_LOCATION_UPDATE_THRESHOLD = 1000 * 60 * 60;
@@ -94,7 +94,8 @@ public class Foursquared extends Application {
                 || TextUtils.isEmpty(oauthToken) || TextUtils.isEmpty(oauthTokenSecret)) {
             throw new FoursquareCredentialsError("Phone number or password not set in preferences.");
         }
-        sFoursquare.setCredentials(phoneNumber, password, oauthToken, oauthTokenSecret);
+        sFoursquare.setCredentials(phoneNumber, password);
+        sFoursquare.setOAuthToken(oauthToken, oauthTokenSecret);
     }
 
     private void primeLocationListener() {

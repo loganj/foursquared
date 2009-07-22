@@ -50,8 +50,7 @@ public class Foursquare {
         mFoursquare.setCredentials(phone, password);
     }
 
-    public void setCredentials(String phone, String password, String token, String secret) {
-        setCredentials(phone, password);
+    public void setOAuthToken(String token, String secret) {
         mFoursquareV1.setOAuthTokenWithSecret(token, secret);
     }
 

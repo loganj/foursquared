@@ -117,7 +117,8 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                 Editor editor = mPrefs.edit();
                 editor.clear();
                 editor.commit();
-                Foursquared.getFoursquare().setCredentials(null, null, null, null);
+                Foursquared.getFoursquare().setCredentials(null, null);
+                Foursquared.getFoursquare().setOAuthToken(null, null);
                 return true;
         }
         return false;
@@ -195,7 +196,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
             boolean doAuthExchange) throws FoursquareCredentialsError, FoursquareException,
             IOException {
         if (DEBUG) Log.d(TAG, "verifyCredentials()");
-        final Editor editor = preferences.edit();
+
         String phoneNumber = preferences.getString(Preferences.PREFERENCE_PHONE, null);
         String password = preferences.getString(Preferences.PREFERENCE_PASSWORD, null);
 
@@ -203,11 +204,14 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
             throw new FoursquareCredentialsError("Phone number or password not set in preferences.");
         }
         foursquare.setCredentials(phoneNumber, password);
+
+        final Editor editor = preferences.edit();
         Preferences.loginUser(editor, foursquare, doAuthExchange);
 
         String oauthToken = preferences.getString(Preferences.PREFERENCE_OAUTH_TOKEN, null);
         String oauthTokenSecret = preferences.getString(Preferences.PREFERENCE_OAUTH_TOKEN_SECRET,
                 null);
-        foursquare.setCredentials(phoneNumber, password, oauthToken, oauthTokenSecret);
+        foursquare.setCredentials(phoneNumber, password);
+        foursquare.setOAuthToken(oauthToken, oauthTokenSecret);
     }
 }
