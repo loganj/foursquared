@@ -7,9 +7,9 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
+import com.joelapenna.foursquare.filters.TipGroupFilterByVenue;
 import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 
@@ -34,7 +34,6 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -72,24 +71,8 @@ public class VenueTipsActivity extends ListActivity {
             }
         });
 
-        mEmpty = (TextView)findViewById(android.R.id.empty);
-
-        mTipButton = (Button)findViewById(R.id.tipButton);
-        mTipButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialog(DIALOG_TIP);
-            }
-        });
-        mTodoButton = (Button)findViewById(R.id.todoButton);
-        mTodoButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialog(DIALOG_TODO);
-            }
-        });
-
-        setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
+        setupUi();
+        mVenue = (Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY);
 
         if (getLastNonConfigurationInstance() != null) {
             setTipGroups((Group)getLastNonConfigurationInstance());
@@ -186,6 +169,25 @@ public class VenueTipsActivity extends ListActivity {
         }
     }
 
+    private void setupUi() {
+        mEmpty = (TextView)findViewById(android.R.id.empty);
+
+        mTipButton = (Button)findViewById(R.id.tipButton);
+        mTipButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(DIALOG_TIP);
+            }
+        });
+        mTodoButton = (Button)findViewById(R.id.todoButton);
+        mTodoButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(DIALOG_TODO);
+            }
+        });
+    }
+
     private void addTip(String tip) {
         mAddAsyncTask = (AddAsyncTask)new AddAsyncTask().execute(tip, AddAsyncTask.TIP);
     }
@@ -218,37 +220,12 @@ public class VenueTipsActivity extends ListActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        mTipGroups = filterTipGroups(groups);
+        if (mVenue != null) {
+            mTipGroups = TipGroupFilterByVenue.filter(groups, mVenue);
+        } else {
+            mTipGroups = groups;
+        }
         putGroupsInAdapter(mTipGroups);
-    }
-
-    private Group filterTipGroups(Group groups) {
-        Group filteredGroup = new Group();
-        filteredGroup.setType(groups.getType());
-        int groupCount = groups.size();
-        for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
-            Group group = (Group)groups.get(groupsIndex);
-            if (mVenue.getVenueid() != null) {
-                filterTipGroupByVenueid(mVenue.getVenueid(), group);
-                if (group.size() > 0) {
-                    filteredGroup.add(group);
-                }
-            }
-        }
-        return filteredGroup;
-    }
-
-    private void filterTipGroupByVenueid(String venueid, Group group) {
-        ArrayList<Tip> venueTips = new ArrayList<Tip>();
-        int tipCount = group.size();
-        for (int tipIndex = 0; tipIndex < tipCount; tipIndex++) {
-            Tip tip = (Tip)group.get(tipIndex);
-            if (venueid.equals(tip.getVenueid())) {
-                venueTips.add(tip);
-            }
-        }
-        group.clear();
-        group.addAll(venueTips);
     }
 
     private void putGroupsInAdapter(Group groups) {
@@ -262,10 +239,6 @@ public class VenueTipsActivity extends ListActivity {
             mainAdapter.addSection(group.getType(), groupAdapter);
         }
         mainAdapter.notifyDataSetInvalidated();
-    }
-
-    private void setVenue(Venue venue) {
-        mVenue = venue;
     }
 
     private class TipsAsyncTask extends AsyncTask<Void, Void, Group> {

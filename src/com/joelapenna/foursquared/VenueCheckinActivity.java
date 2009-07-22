@@ -59,16 +59,8 @@ public class VenueCheckinActivity extends ListActivity {
             }
         });
 
-        mCheckinButton = (Button)findViewById(R.id.checkinButton);
-        mCheckinButton.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                sendCheckin();
-            }
-        });
-
-        initToggles();
-
-        setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
+        setupUi();
+        mVenue = (Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY);
     }
 
     @Override
@@ -94,7 +86,13 @@ public class VenueCheckinActivity extends ListActivity {
         return null;
     }
 
-    private void initToggles() {
+    private void setupUi() {
+        mCheckinButton = (Button)findViewById(R.id.checkinButton);
+        mCheckinButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                sendCheckin();
+            }
+        });
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 
         ToggleButton silentToggle = (ToggleButton)findViewById(R.id.silentToggle);
@@ -107,18 +105,12 @@ public class VenueCheckinActivity extends ListActivity {
     }
 
     private void sendCheckin() {
-        new CheckinAsyncTask().execute(new Venue[] {
-            mVenue
-        });
+        new AddCheckinAsyncTask().execute(mVenue);
     }
 
-    private void setVenue(Venue venue) {
-        mVenue = venue;
-    }
+    private class AddCheckinAsyncTask extends AsyncTask<Venue, Void, Checkin> {
 
-    private class CheckinAsyncTask extends AsyncTask<Venue, Void, Checkin> {
-
-        private static final String PROGRESS_BAR_TASK_ID = TAG + "CheckinAsyncTask";
+        private static final String PROGRESS_BAR_TASK_ID = TAG + "AddCheckinAsyncTask";
 
         @Override
         public void onPreExecute() {

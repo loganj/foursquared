@@ -43,7 +43,11 @@ public class VenueActivity extends TabActivity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.venue_activity);
 
+<<<<<<< HEAD:src/com/joelapenna/foursquared/VenueActivity.java
         // setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
+=======
+        //setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
+>>>>>>> 76b7dac... + Clean up some Activities keeping code duplcation for another time. PUNT!:src/com/joelapenna/foursquared/VenueActivity.java
         setVenue(FoursquaredTest.createTestVenue("Test"));
         // Venue venue = FoursquaredTest.createTestVenue("A");
         // setVenue(venue);
