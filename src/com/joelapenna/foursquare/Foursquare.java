@@ -9,6 +9,7 @@ import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Auth;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Result;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared;
 
@@ -21,7 +22,7 @@ import java.io.IOException;
  */
 public class Foursquare {
     private static final String TAG = "Foursquare";
-    public static final boolean DEBUG = Foursquared.DEBUG;
+    public static final boolean DEBUG = false;
 
     private String mPhone;
     private String mPassword;
@@ -45,23 +46,33 @@ public class Foursquare {
 
     }
 
+    public Result addTip(String text, String vid, String lat, String lng, String cityId)
+            throws FoursquareError, FoursquareParseException, IOException {
+        return mFoursquare.addTip("top", text, vid, lat, lng, cityId);
+    }
+
+    public Result addTodo(String text, String vid, String lat, String lng, String cityId)
+            throws FoursquareError, FoursquareParseException, IOException {
+        return mFoursquare.addTip("todo", text, vid, lat, lng, cityId);
+    }
+
     public String breakdown(String userId, String checkinId) throws FoursquareError,
             FoursquareParseException, IOException {
         return mFoursquare.breakdown(userId, checkinId);
     }
 
-    public Checkin checkin(String venue, boolean silent, boolean twitter, String lat,
-            String lng) throws FoursquareError, FoursquareParseException, IOException {
+    public Checkin checkin(String venue, boolean silent, boolean twitter, String lat, String lng)
+            throws FoursquareError, FoursquareParseException, IOException {
         return mFoursquare.checkin(mPhone, venue, silent, twitter, lat, lng, null);
     }
 
     public Group todos(String cityId, String lat, String lng) throws FoursquareError,
-    FoursquareParseException, IOException {
+            FoursquareParseException, IOException {
         return mFoursquare.todos(cityId, lat, lng);
     }
 
-    public Group venues(String query, String lat, String lng, int radius, int length) throws FoursquareError,
-            FoursquareParseException, IOException {
+    public Group venues(String query, String lat, String lng, int radius, int length)
+            throws FoursquareError, FoursquareParseException, IOException {
         return mFoursquare.venues(query, lat, lng, radius, length);
     }
 

@@ -19,8 +19,8 @@ import java.io.IOException;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class IncomingCheckinParser extends AbstractParser<Checkin> {
-    private static final String TAG = "IncomingCheckinParser";
+public class AddResponseParser extends AbstractParser<Checkin> {
+    private static final String TAG = "AddResponseParser";
     private static final boolean DEBUG = Foursquare.DEBUG;
 
     @Override
