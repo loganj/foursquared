@@ -119,7 +119,7 @@ public class LoginActivity extends Activity {
     }
 
     private void ensureUi() {
-        setContentView(R.layout.main_activity);
+        setContentView(R.layout.login_activity);
         mPhoneEditText = ((EditText)findViewById(R.id.phoneEditText));
         mPasswordEditText = ((EditText)findViewById(R.id.passwordEditText));
 
