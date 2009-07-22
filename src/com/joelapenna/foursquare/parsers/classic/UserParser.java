@@ -25,6 +25,7 @@ import java.io.IOException;
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
+@Deprecated
 public class UserParser extends AbstractParser<User> {
     private static final String TAG = "UserParser";
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;

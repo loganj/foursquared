@@ -23,6 +23,7 @@ import java.io.IOException;
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
+@Deprecated
 public class TipParser extends AbstractParser<Tip> {
     private static final String TAG = "TipParser";
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;

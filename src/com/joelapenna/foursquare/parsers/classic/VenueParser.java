@@ -22,7 +22,7 @@ import java.io.IOException;
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
-@SuppressWarnings("deprecation")
+@Deprecated
 public class VenueParser extends AbstractParser<Venue> {
     private static final String TAG = "VenueParser";
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
@@ -31,7 +31,7 @@ public class VenueParser extends AbstractParser<Venue> {
     public Venue parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareParseException {
         try {
-        parser.require(XmlPullParser.START_TAG, null, "venue");
+            parser.require(XmlPullParser.START_TAG, null, "venue");
         } catch (XmlPullParserException e) {
             if ("error".equals(parser.getName())) {
                 throw new FoursquareParseException(e.getMessage());

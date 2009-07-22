@@ -23,6 +23,7 @@ import java.io.IOException;
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
+@Deprecated
 public class BadgesParser extends AbstractParser<Group> {
     private static final String TAG = "BadgesParser";
     private static final boolean DEBUG = Foursquare.DEBUG;

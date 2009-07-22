@@ -22,6 +22,7 @@ import java.io.IOException;
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
+@Deprecated
 public class CheckinParser extends AbstractParser<Checkin> {
     private static final String TAG = "CheckinParser";
     private static final boolean DEBUG = Foursquare.DEBUG;
