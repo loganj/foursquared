@@ -12,7 +12,12 @@ import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.SimpleItemizedOverlay;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -25,19 +30,32 @@ public class VenueInfoActivity extends MapActivity {
     private MapController mMapController;
     private SimpleItemizedOverlay mOverlay;
 
+    private Venue mVenue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.venue_info_activity);
 
         setupMapView();
-        loadVenue(Foursquared.createTestVenue());
+
+        Button yelpButton = (Button)findViewById(R.id.yelpButton);
+        yelpButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(mVenue.getYelp()));
+                startActivity(intent);
+
+            }
+        });
+
+        setVenue(Foursquared.createTestVenue());
     }
 
-    /**
-     *
-     */
-    private void loadVenue(Venue venue) {
+    private void setVenue(Venue venue) {
+        mVenue = venue;
+
         int lat = (int)(Double.parseDouble(venue.getGeolat()) * 1E6);
         int lng = (int)(Double.parseDouble(venue.getGeolong()) * 1E6);
         GeoPoint point = new GeoPoint(lat, lng);

@@ -9,7 +9,7 @@
     android:layout_height="fill_parent"
     android:layout_width="fill_parent"
     android:apiKey="@string/google_maps_api_key"
-    android:clickable="false" />
+    android:clickable="true" />
 
   <TableLayout
     android:id="@+id/buttonBar"

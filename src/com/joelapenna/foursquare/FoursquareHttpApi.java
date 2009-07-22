@@ -9,7 +9,7 @@ import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.parsers.AuthParser;
 import com.joelapenna.foursquare.parsers.CheckinParser;
 import com.joelapenna.foursquare.parsers.GroupParser;
-import com.joelapenna.foursquare.parsers.IncomingCheckinResponseParser;
+import com.joelapenna.foursquare.parsers.IncomingCheckinParser;
 import com.joelapenna.foursquare.parsers.Parser;
 import com.joelapenna.foursquare.parsers.TipParser;
 import com.joelapenna.foursquare.parsers.VenueParser;
@@ -127,7 +127,7 @@ class FoursquareHttpApi {
     Checkin checkin(String phone, String venue, boolean silent, boolean twitter,
             String lat, String lng, String cityid) throws FoursquareError,
             FoursquareParseException, IOException {
-        return (Checkin)doHttpPost(URL_API_INCOMING, new IncomingCheckinResponseParser(),
+        return (Checkin)doHttpPost(URL_API_INCOMING, new IncomingCheckinParser(),
                 new BasicNameValuePair("number", phone), // phone
                 new BasicNameValuePair("message", "@" + venue), // venue
                 new BasicNameValuePair("silent", (silent) ? "1" : "0"), // silent
