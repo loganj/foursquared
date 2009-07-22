@@ -8,6 +8,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.content.Context;
 import android.text.Html;
@@ -63,7 +64,7 @@ public class TipListAdapter extends BaseTipAdapter {
         // Popping from string->html fixes things like "&amp;" converting it back to a string
         // prevents a stack overflow in cupcake.
         holder.firstLine.setText(Html.fromHtml(tip.getText()).toString());
-        holder.secondLine.setText(tip.getCreated());
+        holder.secondLine.setText(StringFormatters.getRelativeTimeSpanString(tip.getCreated()));
         // TODO(jlapenna): Hey Joe, you need to make this work...
         // holder.checkbox.setEnabled(tip.getUserStatus().equals("todo") ? true : false);
         // holder.checkbox.setChecked(tip.getUserStatus().equals("done") ? true : false);

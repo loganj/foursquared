@@ -60,8 +60,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
 
         Checkin checkin = (Checkin)getItem(position);
         holder.firstLine.setText(StringFormatters.getCheckinMessage(checkin));
-        holder.secondLine.setText(StringFormatters.getRelativeDate(convertView.getContext(),
-                checkin.getCreated()));
+        holder.secondLine.setText(StringFormatters.getRelativeTimeSpanString(checkin.getCreated()));
 
         return convertView;
     }

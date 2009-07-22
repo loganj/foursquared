@@ -32,6 +32,8 @@
     android:layout_alignParentRight="true"
     android:layout_below="@id/firstLine"
 
+    android:paddingRight="6dip"
+
     android:gravity="right"
     android:textAppearance="@android:style/TextAppearance.Small"
     android:textStyle="italic"

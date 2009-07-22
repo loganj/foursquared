@@ -9,8 +9,15 @@ import com.joelapenna.foursquare.types.Venue;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class StringFormatters {
+
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
+            "EEE, dd MMM yy HH:mm:ss Z");
 
     public static String getVenueLocationCrossStreetOrCity(Venue venue) {
         if (!TextUtils.isEmpty(venue.getCrossstreet())) {
@@ -39,10 +46,12 @@ public class StringFormatters {
      * @param created
      * @return
      */
-    public static CharSequence getRelativeDate(Context context, String created) {
-        // TODO(jlapenna): Write a formatter given: Mon, 08 Jun 09 01:53:09 +0000
-        // or a different format if that one turns out to be nonsense.
-        return created;
+    public static CharSequence getRelativeTimeSpanString(String created) {
+        try {
+            return DateUtils.getRelativeTimeSpanString(DATE_FORMAT.parse(created).getTime());
+        } catch (ParseException e) {
+            return created;
+        }
     }
 
 }
