@@ -13,7 +13,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.classic.Auth;
 import com.joelapenna.foursquare.types.classic.Checkin;
 import com.joelapenna.foursquare.types.classic.User;
-import com.joelapenna.foursquare.types.classic.Venue;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared;
 
 import android.text.TextUtils;
@@ -24,7 +24,6 @@ import java.io.IOException;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-@SuppressWarnings("deprecation")
 public class Foursquare {
     private static final String TAG = "Foursquare";
     public static final boolean DEBUG = Foursquared.API_DEBUG;
@@ -134,9 +133,9 @@ public class Foursquare {
         return mFoursquare.user();
     }
 
-    @Classic
+    @V1
     public Venue venue(String id) throws FoursquareException, FoursquareError, IOException {
-        return mFoursquare.venue(id);
+        return mFoursquareV1.venue(id);
     }
 
     @V1

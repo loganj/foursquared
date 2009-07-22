@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Auto-generated: 2009-06-10 00:51:04.311563
+ * Auto-generated: 2009-06-10 02:19:23.328399
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
@@ -26,6 +26,7 @@ public class Venue implements Parcelable, FoursquareType {
     private String mState;
     private Stats mStats;
     private Group mTips;
+    private Group mTodos;
     private String mZip;
     
     public Venue() {
@@ -127,6 +128,14 @@ public class Venue implements Parcelable, FoursquareType {
         mTips = tips;
     }
     
+    public Group getTodos() {
+        return mTodos;
+    }
+    
+    public void setTodos(Group todos) {
+        mTodos = todos;
+    }
+    
     public String getZip() {
         return mZip;
     }
@@ -160,6 +169,7 @@ public class Venue implements Parcelable, FoursquareType {
         dest.writeString(this.mState);    
         dest.writeParcelable(this.mStats, 0);    
         dest.writeParcelable((Parcelable)this.mTips, flags);    
+        dest.writeParcelable((Parcelable)this.mTodos, flags);    
         dest.writeString(this.mZip);
     }
     
@@ -178,6 +188,7 @@ public class Venue implements Parcelable, FoursquareType {
         this.mState = source.readString();    
         this.mStats = source.readParcelable(null);    
         this.mTips = (Group)source.readParcelable(null);    
+        this.mTodos = (Group)source.readParcelable(null);    
         this.mZip = source.readString();
     }
     

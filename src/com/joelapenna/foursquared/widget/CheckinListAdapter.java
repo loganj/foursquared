@@ -65,10 +65,16 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
         } else {
             firstLineString = checkin.getFirstname() + " " + checkin.getLastname().substring(0, 1) + ".";
         }
-        // Popping from string->html fixes things like "&amp;" converting it back to a string
-        // prevents a stack overflow in cupcake.
         holder.firstLine.setText(firstLineString);
-        holder.secondLine.setText(Html.fromHtml(checkin.getRelativeTime()).toString());
+
+        if (checkin.getRelativeTime() != null) {
+            // Popping from string->html fixes things like "&amp;" converting it back to a string
+            // prevents a stack overflow in cupcake.
+            holder.secondLine.setText(Html.fromHtml(checkin.getRelativeTime()).toString());
+            holder.secondLine.setVisibility(TextView.VISIBLE);
+        } else {
+            holder.secondLine.setVisibility(TextView.GONE);
+        }
 
         return convertView;
     }

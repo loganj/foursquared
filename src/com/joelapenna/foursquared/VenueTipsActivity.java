@@ -8,7 +8,7 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.classic.Tip;
+import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.TipListAdapter;
@@ -30,11 +30,11 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -54,13 +54,12 @@ public class VenueTipsActivity extends ListActivity {
     private Venue mVenue;
     private Group mGroups;
 
-    private LookupTipsAsyncTask mTipsTask;
     private AddAsyncTask mAddAsyncTask;
     private UpdateAsyncTask mUpdateAsyncTask;
 
-    private TextView mEmpty;
     private Button mTipButton;
     private Button mTodoButton;
+    private Observer mVenueObserver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,26 +74,51 @@ public class VenueTipsActivity extends ListActivity {
                 CheckBox checkbox = (CheckBox)view.findViewById(R.id.checkbox);
                 checkbox.setChecked(!checkbox.isChecked());
                 Tip tip = (Tip)((SeparatedListAdapter)getListAdapter()).getItem(position);
-                updateTodo(tip.getTipid());
+                updateTodo(tip.getId());
             }
         });
 
         setupUi();
-        mVenue = (Venue)getIntent().getExtras().get(VenueActivity.EXTRA_VENUE);
 
         if (getLastNonConfigurationInstance() != null) {
             setTipGroups((Group)getLastNonConfigurationInstance());
+
+        } else if (((VenueActivity)getParent()).venueObservable.getVenue() != null) {
+            mVenue = ((VenueActivity)getParent()).venueObservable.getVenue();
+            setTipGroups(tipsAndTodos(mVenue));
+
         } else {
-            lookupTipGroups();
+            mVenueObserver = new Observer() {
+                @Override
+                public void update(Observable observable, Object data) {
+                    mVenue = (Venue)data;
+                    setTipGroups(tipsAndTodos(mVenue));
+                }
+            };
+            ((VenueActivity)getParent()).venueObservable.addObserver(mVenueObserver);
         }
+    }
+
+    private Group tipsAndTodos(Venue venue) {
+        Group tipsAndTodos = new Group();
+
+        Group tips = venue.getTips();
+        if (tips != null) {
+            tips.setType("Tips");
+            tipsAndTodos.add(tips);
+        }
+
+        tips = venue.getTodos();
+        if (tips != null) {
+            tips.setType("Todos");
+            tipsAndTodos.add(tips);
+        }
+        return tipsAndTodos;
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mTipsTask != null) {
-            mTipsTask.cancel(true);
-        }
         if (mAddAsyncTask != null) {
             mAddAsyncTask.cancel(true);
         }
@@ -202,7 +226,7 @@ public class VenueTipsActivity extends ListActivity {
                     .setIcon(android.R.drawable.ic_dialog_info) //
                     .setTitle("This is a dummy title.") // Weird layout issues if this isn't called.
                     .setMessage("This is a dummy message.") // Weird layout issues if this isn't
-                                                            // called.
+                    // called.
                     .create();
         } else {
             return new AlertDialog.Builder(VenueTipsActivity.this) //
@@ -211,14 +235,12 @@ public class VenueTipsActivity extends ListActivity {
                     .setPositiveButton("Add", listener) //
                     .setTitle("This is a dummy title.") // Weird layout issues if this isn't called.
                     .setMessage("This is a dummy message.") // Weird layout issues if this isn't
-                                                            // called.
+                    // called.
                     .create();
         }
     }
 
     private void setupUi() {
-        mEmpty = (TextView)findViewById(android.R.id.empty);
-
         mTipButton = (Button)findViewById(R.id.tipButton);
         mTipButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -247,32 +269,7 @@ public class VenueTipsActivity extends ListActivity {
         mUpdateAsyncTask = (UpdateAsyncTask)new UpdateAsyncTask().execute(TipTask.TODO, todoid);
     }
 
-    /**
-     * If a new tips lookup comes in cancel the old one and start a new one.
-     */
-    private void lookupTipGroups() {
-        if (DEBUG) Log.d(TAG, "lookupTips()");
-
-        // If a task is already running, don't start a new one.
-        if (mTipsTask != null && mTipsTask.getStatus() != AsyncTask.Status.FINISHED) {
-            if (DEBUG) Log.d(TAG, "Query already running attempting to cancel: " + mTipsTask);
-            if (!mTipsTask.cancel(true) && !mTipsTask.isCancelled()) {
-                if (DEBUG) Log.d(TAG, "Unable to cancel tips? That should not have happened!");
-                Toast.makeText(this, "Unable to re-query tips.", Toast.LENGTH_SHORT);
-                return;
-            }
-        }
-        mTipsTask = (LookupTipsAsyncTask)new LookupTipsAsyncTask().execute();
-    }
-
     private void setTipGroups(Group groups) {
-        if (groups == null) {
-            Toast.makeText(getApplicationContext(), "Could not complete TODO lookup!",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        // TODO(jlapenna): Filter tips for only this venue!
-        // mGroups = VenueFilter.filter(groups, mVenue);
         mGroups = groups;
         putGroupsInAdapter(mGroups);
     }
@@ -284,64 +281,9 @@ public class VenueTipsActivity extends ListActivity {
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
             Group group = (Group)groups.get(groupsIndex);
             TipListAdapter groupAdapter = new TipListAdapter(this, group);
-            if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
             mainAdapter.addSection(group.getType(), groupAdapter);
         }
         mainAdapter.notifyDataSetInvalidated();
-    }
-
-    private class LookupTipsAsyncTask extends AsyncTask<Void, Void, Group> {
-
-        private static final String PROGRESS_BAR_TASK_ID = TAG + "LookupTipsAsyncTask";
-
-        @Override
-        public void onPreExecute() {
-            if (DEBUG) Log.d(TAG, "TipsTask: onPreExecute()");
-            VenueActivity.startProgressBar(VenueTipsActivity.this, PROGRESS_BAR_TASK_ID);
-        }
-
-        @Override
-        public Group doInBackground(Void... params) {
-            try {
-                Location location = ((Foursquared)getApplication()).getLastKnownLocation();
-                if (location == null) {
-                    if (DEBUG) Log.d(TAG, "Getting Todos without Location");
-                    return Foursquared.getFoursquare().tips(null, null, 30);
-                } else {
-                    if (DEBUG) Log.d(TAG, "Getting Todos with Location: " + location);
-                    return Foursquared.getFoursquare().todos(null,
-                            String.valueOf(location.getLatitude()),
-                            String.valueOf(location.getLongitude()));
-
-                }
-            } catch (FoursquareException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareException", e);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "IOException", e);
-            }
-            return null;
-        }
-
-        @Override
-        public void onPostExecute(Group groups) {
-            try {
-                setTipGroups(groups);
-            } finally {
-                if (DEBUG) Log.d(TAG, "TipsTask: onPostExecute()");
-                VenueActivity.stopProgressBar(VenueTipsActivity.this, PROGRESS_BAR_TASK_ID);
-                if (getListAdapter().getCount() <= 0) {
-                    mEmpty.setText("No tips for this venue! Add one!");
-                }
-            }
-        }
-
-        @Override
-        public void onCancelled() {
-            VenueActivity.stopProgressBar(VenueTipsActivity.this, PROGRESS_BAR_TASK_ID);
-        }
-
     }
 
     private class TipTask extends AsyncTask<String, Void, Data> {
@@ -412,7 +354,6 @@ public class VenueTipsActivity extends ListActivity {
                 showDialog(DIALOG_ADD_FAIL_MESSAGE);
             } else {
                 showDialog(DIALOG_ADD_SHOW_MESSAGE);
-                lookupTipGroups();
             }
             VenueActivity.stopProgressBar(VenueTipsActivity.this, PROGRESS_BAR_TASK_ID);
         }
@@ -462,9 +403,6 @@ public class VenueTipsActivity extends ListActivity {
             } else {
                 showDialog(DIALOG_UPDATE_SHOW_MESSAGE);
             }
-            // Do this unconditionally so if the update fails the checkbox in the list view will
-            // appear to unset itself.
-            lookupTipGroups();
             VenueActivity.stopProgressBar(VenueTipsActivity.this, PROGRESS_BAR_TASK_ID);
         }
 

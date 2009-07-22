@@ -15,4 +15,7 @@
   <tips type="Group">
     <tip type="Tip"></tip>
   </tips>
+  <todos type="Group">
+    <tip type="Tip"></tip>
+  </todos>
 </venue>

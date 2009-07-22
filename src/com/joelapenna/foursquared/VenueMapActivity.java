@@ -16,9 +16,13 @@ import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -33,6 +37,7 @@ public class VenueMapActivity extends MapActivity {
     private MyLocationOverlay mMyLocationOverlay;
 
     private Venue mVenue;
+    private Observer mVenueObserver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +59,20 @@ public class VenueMapActivity extends MapActivity {
 
         initMap();
 
-        setVenue((Venue)getIntent().getExtras().get(VenueActivity.EXTRA_VENUE));
-        updateMap();
+        if (((VenueActivity)getParent()).venueObservable.getVenue() != null) {
+            setVenue(((VenueActivity)getParent()).venueObservable.getVenue());
+            updateMap();
+            
+        } else {
+            mVenueObserver = new Observer() {
+                @Override
+                public void update(Observable observable, Object data) {
+                    setVenue((Venue)data);
+                    updateMap();
+                }
+            };
+            ((VenueActivity)getParent()).venueObservable.addObserver(mVenueObserver);
+        }
     }
 
     @Override
@@ -91,14 +108,17 @@ public class VenueMapActivity extends MapActivity {
     private boolean isVenueMappable(Venue venue) {
         if ((venue.getGeolat() == null || venue.getGeolong() == null) //
                 || venue.getGeolat().equals("0") || venue.getGeolong().equals("0")) {
+            if (DEBUG) Log.d(TAG, "Venue is not mappable");
             return false;
         }
+        if (DEBUG) Log.d(TAG, "Venue is mappable");
         return true;
     }
 
     private void setVenue(Venue venue) {
         Group venueGroup = new Group();
         venueGroup.setType("Current Venue");
+        venueGroup.add(venue);
         mVenue = venue;
         if (isVenueMappable(venue)) {
             mOverlay.setGroup(venueGroup);

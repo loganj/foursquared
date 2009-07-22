@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Auto-generated: 2009-06-10 00:51:04.111070
+ * Auto-generated: 2009-06-10 02:19:23.130118
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */

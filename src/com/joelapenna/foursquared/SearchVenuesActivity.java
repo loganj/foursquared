@@ -228,7 +228,7 @@ public class SearchVenuesActivity extends TabActivity {
         if (DEBUG) Log.d(TAG, "firing venue activity for venue");
         Intent intent = new Intent(SearchVenuesActivity.this, VenueActivity.class);
         intent.setAction(Intent.ACTION_VIEW);
-        intent.putExtra(VenueActivity.EXTRA_VENUE, venue);
+        intent.putExtra(VenueActivity.EXTRA_VENUE, venue.getId());
         intent.setExtrasClassLoader(getClassLoader());
         startActivity(intent);
     }
@@ -256,7 +256,6 @@ public class SearchVenuesActivity extends TabActivity {
                 setTitle("Searching \"" + mSearchHolder.query + "\" - Foursquared");
             }
         }
-
     }
 
     private void initListViewAdapter() {

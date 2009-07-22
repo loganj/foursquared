@@ -4,6 +4,7 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.StringFormatters;
 
@@ -12,6 +13,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,7 +23,9 @@ import android.view.Window;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.Observable;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -36,10 +40,12 @@ public class VenueActivity extends TabActivity {
     public static final String EXTRA_TASK_ID = "task_id";
     public static final String EXTRA_VENUE = "venue";
 
-    Venue mVenue;
-
     ProgressBarHandler mProgressBarHandler = new ProgressBarHandler();
     BroadcastReceiver mBroadcastReceiver;
+
+    VenueObservable venueObservable = new VenueObservable();
+
+    private Venue mVenue = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,16 +53,13 @@ public class VenueActivity extends TabActivity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.venue_activity);
 
-        setVenue((Venue)getIntent().getExtras().get(EXTRA_VENUE));
-        //setVenue(FoursquaredTest.createTestVenue("Test"));
-        // Venue venue = FoursquaredTest.createTestVenue("A");
-        // setVenue(venue);
-
         // We register this early (not in onStart) because our children might end up calling out to
         // this.
         initBroadcastReceiver();
 
         initTabHost();
+
+        new VenueTask().execute(getIntent().getExtras().getString(EXTRA_VENUE));
     }
 
     @Override
@@ -144,6 +147,7 @@ public class VenueActivity extends TabActivity {
                         getResources().getDrawable(android.R.drawable.ic_menu_info_details))
                 .setContent(intent) // The contained activity
                 );
+
     }
 
     private void setVenue(Venue venue) {
@@ -162,6 +166,7 @@ public class VenueActivity extends TabActivity {
         }
 
         mVenue = venue;
+        venueObservable.notifyObservers(venue);
     }
 
     private class ProgressBarHandler extends Handler {
@@ -191,6 +196,51 @@ public class VenueActivity extends TabActivity {
                     }
                     break;
             }
+        }
+    }
+
+    private class VenueTask extends AsyncTask<String, Void, Venue> {
+        private static final String PROGRESS_BAR_TASK_ID = TAG + "VenueTask";
+
+        @Override
+        protected void onPreExecute() {
+            VenueActivity.startProgressBar(VenueActivity.this, PROGRESS_BAR_TASK_ID);
+        }
+
+        @Override
+        protected Venue doInBackground(String... params) {
+            try {
+                return Foursquared.getFoursquare().venue(params[0]);
+            } catch (FoursquareException e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "FoursquareException", e);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "IOException", e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Venue venue) {
+            VenueActivity.stopProgressBar(VenueActivity.this, PROGRESS_BAR_TASK_ID);
+            setVenue(venue);
+        }
+
+        @Override
+        protected void onCancelled() {
+
+        }
+    }
+
+    class VenueObservable extends Observable {
+        public void notifyObservers(Object data) {
+            setChanged();
+            super.notifyObservers(data);
+        }
+
+        public Venue getVenue() {
+            return mVenue;
         }
     }
 }

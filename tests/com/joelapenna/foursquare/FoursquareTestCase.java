@@ -6,6 +6,7 @@ package com.joelapenna.foursquare;
 
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.types.classic.Auth;
 import com.joelapenna.foursquare.types.classic.User;
 
@@ -97,7 +98,7 @@ public class FoursquareTestCase extends TestCase {
     public void test_venue() throws FoursquareException, IOException {
         Foursquare foursquare = getFoursquareForTest();
 
-        com.joelapenna.foursquare.types.classic.Venue venue = foursquare.venue("23035");
+        Venue venue = foursquare.venue("23035");
         assertNotNull(venue);
     }
 

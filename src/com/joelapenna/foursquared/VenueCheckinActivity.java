@@ -36,6 +36,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -51,6 +53,7 @@ public class VenueCheckinActivity extends ListActivity {
     public Checkin mCheckin;
 
     private LookupCheckinsAsyncTask mCheckinTask;
+    private Observer mVenueObserver;
 
     private Button mCheckinButton;
     private TextView mEmpty;
@@ -72,12 +75,23 @@ public class VenueCheckinActivity extends ListActivity {
         });
 
         setupUi();
-        mVenue = (Venue)getIntent().getExtras().get(VenueActivity.EXTRA_VENUE);
 
         if (getLastNonConfigurationInstance() != null) {
             setCheckinGroups((Group)getLastNonConfigurationInstance());
-        } else {
+
+        } else if (((VenueActivity)getParent()).venueObservable.getVenue() != null) {
+            mVenue = ((VenueActivity)getParent()).venueObservable.getVenue();
             lookupCheckinGroups();
+
+        } else {
+            mVenueObserver = new Observer() {
+                @Override
+                public void update(Observable observable, Object data) {
+                    mVenue = (Venue)data;
+                    lookupCheckinGroups();
+                }
+            };
+            ((VenueActivity)getParent()).venueObservable.addObserver(mVenueObserver);
         }
     }
 
@@ -221,14 +235,13 @@ public class VenueCheckinActivity extends ListActivity {
                 boolean twitter = ((ToggleButton)findViewById(R.id.twitterToggle)).isChecked();
                 Location location = ((Foursquared)getApplication()).getLastKnownLocation();
                 if (location == null) {
-                    return Foursquared.getFoursquare().checkin(
-                            venue.getName(), silent, twitter, null, null);
+                    return Foursquared.getFoursquare().checkin(venue.getName(), silent, twitter,
+                            null, null);
                 } else {
                     // I wonder if this could result in the backend logic to mis-calculate which
                     // venue you're at because the phone gave too coarse or inaccurate location
                     // information.
-                    return Foursquared.getFoursquare().checkin(
-                            venue.getName(), silent, twitter,
+                    return Foursquared.getFoursquare().checkin(venue.getName(), silent, twitter,
                             String.valueOf(location.getLatitude()),
                             String.valueOf(location.getLongitude()));
                 }
@@ -282,8 +295,7 @@ public class VenueCheckinActivity extends ListActivity {
                 Location location = ((Foursquared)getApplication()).getLastKnownLocation();
                 if (location == null) {
                     if (DEBUG) Log.d(TAG, "Getting Checkins without Location");
-                    return Foursquared.getFoursquare().checkins(null, null,
-                            null);
+                    return Foursquared.getFoursquare().checkins(null, null, null);
                 } else {
                     if (DEBUG) Log.d(TAG, "Getting Checkins with Location: " + location);
                     return Foursquared.getFoursquare().checkins(null,

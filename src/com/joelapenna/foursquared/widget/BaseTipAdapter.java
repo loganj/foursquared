@@ -4,7 +4,7 @@
 package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.classic.Tip;
+import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquared.Foursquared;
 
 import android.content.Context;
@@ -25,6 +25,6 @@ abstract public class BaseTipAdapter extends BaseGroupAdapter<Tip> {
     @Override
     public long getItemId(int position) {
         if (DEBUG) Log.d(TAG, "getItemId() called: " + String.valueOf(position));
-        return Long.valueOf(((Tip)group.get(position)).getTipid());
+        return Long.valueOf(((Tip)group.get(position)).getId());
     }
 }

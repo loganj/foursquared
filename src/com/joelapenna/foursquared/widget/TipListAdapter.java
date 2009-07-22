@@ -5,7 +5,7 @@
 package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.classic.Tip;
+import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.R;
 
@@ -63,9 +63,10 @@ public class TipListAdapter extends BaseTipAdapter {
         // Popping from string->html fixes things like "&amp;" converting it back to a string
         // prevents a stack overflow in cupcake.
         holder.firstLine.setText(Html.fromHtml(tip.getText()).toString());
-        holder.secondLine.setText(Html.fromHtml(tip.getStatusText()).toString());
-        holder.checkbox.setEnabled(tip.getUserStatus().equals("todo") ? true : false);
-        holder.checkbox.setChecked(tip.getUserStatus().equals("done") ? true : false);
+        holder.secondLine.setText(Html.fromHtml(tip.getText()).toString());
+        // TODO(jlapenna): Hey Joe, you need to make this work...
+        // holder.checkbox.setEnabled(tip.getUserStatus().equals("todo") ? true : false);
+        // holder.checkbox.setChecked(tip.getUserStatus().equals("done") ? true : false);
 
         return convertView;
     }
