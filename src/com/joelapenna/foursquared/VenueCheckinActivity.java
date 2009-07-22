@@ -68,7 +68,8 @@ public class VenueCheckinActivity extends ListActivity {
         getListView().setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // fireVenueActivityIntent(venue);
+                Checkin checkin = (Checkin)parent.getAdapter().getItem(position);
+                startCheckinActivity(checkin);
             }
         });
 
@@ -172,6 +173,14 @@ public class VenueCheckinActivity extends ListActivity {
             mGroups = groups;
         }
         putGroupsInAdapter(mGroups);
+    }
+
+    void startCheckinActivity(Checkin checkin) {
+        if (DEBUG) Log.d(TAG, "(not) firing checkin activity for checkin");
+        // Intent intent = new Intent(VenueCheckinActivity.this, CheckinActivity.class);
+        // intent.setAction(Intent.ACTION_VIEW);
+        // intent.putExtra("venue", checkin);
+        // startActivity(intent);
     }
 
     private void putGroupsInAdapter(Group groups) {
