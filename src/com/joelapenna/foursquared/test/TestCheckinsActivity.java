@@ -10,6 +10,8 @@ import com.joelapenna.foursquared.CheckinsActivity;
 import android.util.Log;
 
 /**
+ * Use this to inject a bit of data into the CheckinsActivity for exploratory testing.
+ * 
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class TestCheckinsActivity extends CheckinsActivity {

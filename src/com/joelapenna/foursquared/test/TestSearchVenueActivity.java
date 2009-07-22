@@ -10,6 +10,8 @@ import com.joelapenna.foursquared.SearchVenueActivity;
 import android.util.Log;
 
 /**
+ * Use this to inject a bit of data into the SearchVenueActivity for exploratory testing.
+ * 
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class TestSearchVenueActivity extends SearchVenueActivity {
