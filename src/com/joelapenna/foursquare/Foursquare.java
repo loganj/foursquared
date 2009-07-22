@@ -101,7 +101,7 @@ public class Foursquare {
     }
 
     @V1
-    Venue addVenue(String name, String address, String crossstreet, String city, String state,
+    public Venue addVenue(String name, String address, String crossstreet, String city, String state,
             String zip, String cityid, String phone) throws FoursquareException, FoursquareError,
             IOException {
         return mFoursquareV1.addvenue(name, address, crossstreet, city, state, zip, cityid, phone);
