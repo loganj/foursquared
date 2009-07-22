@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<city>
+<city type="City">
   <id>42</id>
   <timezone>America/Chicago</timezone>
   <name>Austin</name>

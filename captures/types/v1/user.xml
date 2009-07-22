@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
-<user>
+<user type="User">
   <id>9711</id>
   <firstname>Testuser</firstname>
   <lastname>Lapenna</lastname>
-  <city></city>
-  <checkin></checkin>
-  <badges>
-    <badge></badge>
+  <city type="City"></city>
+  <checkin type="Checkin"></checkin>
+  <badges type="Group">
+    <badge type="Badge"></badge>
   </badges>
 </user>

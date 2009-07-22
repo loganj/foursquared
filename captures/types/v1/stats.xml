@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
-<stats>
+<stats type="Stats">
   <checkins>77</checkins>
-  <beenhere/>
-  <mayor>
-    <user></user>
+  <beenhere type="boolean" />
+  <mayor type="Mayor">
+    <user type="User"></user>
     <count>9</count>
   </mayor>
 </stats>

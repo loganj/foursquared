@@ -11,7 +11,7 @@
   <geolat>37.7729</geolat>
   <geolong>-122.437</geolong>
   <stats></stats>
-  <tips>
-    <tip></tip>
+  <tips type="Group">
+    <tip type="Tip"></tip>
   </tips>
 </venue>

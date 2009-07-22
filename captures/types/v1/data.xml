@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<data>
+<data type="Data">
   <!-- for api/add -->
-  <status>1</status>
+  <status type="boolean">1</status>
   <message>top item has been added! (#6879)</message>
   <!-- for api/city -->
   <cityid>23</cityid>

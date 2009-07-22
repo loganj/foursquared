@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
-<checkin>
+<checkin type="Checkin">
   <id>337912</id>
-  <user></user>
-  <venue></venue>
+  <user type="user"></user>
+  <venue type="venue"></venue>
   <created>Mon, 08 Jun 09 01:53:09 +0000</created>
 </checkin>
