@@ -9,12 +9,10 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
-import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
-import com.joelapenna.foursquared.test.FoursquaredTest;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -25,7 +23,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -63,13 +60,6 @@ public class SearchVenueMapActivity extends MapActivity {
         });
 
         initMap();
-        Group group = new Group();
-        group.setType("Root");
-        group.add(FoursquaredTest.createVenueGroup("A"));
-        group.add(FoursquaredTest.createVenueGroup("B"));
-        group.add(FoursquaredTest.createVenueGroup("C"));
-        group.add(FoursquaredTest.createVenueGroup("D"));
-        loadSearchResults(group);
 
         mSearchResultsObserver = new Observer() {
             @Override
@@ -152,13 +142,10 @@ public class SearchVenueMapActivity extends MapActivity {
     }
 
     private void clearMap() {
+        if (DEBUG) Log.d(TAG, "clearMap()");
         mVenuesGroupOverlays.clear();
-
-        // Clear the map of all overlays that aren't at index 0, the my location overlay.
-        List<Overlay> overlays = mMapView.getOverlays();
-        for (int i = 1; i < overlays.size(); i++) {
-            overlays.remove(i);
-        }
+        mMapView.getOverlays().clear();
+        mMapView.getOverlays().add(mMyLocationOverlay);
         mMapView.postInvalidate();
     }
 
