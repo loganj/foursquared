@@ -38,7 +38,7 @@ public class VenueActivity extends TabActivity {
     public static final String ACTION_PROGRESS_BAR_STOP = "com.joelapenna.foursquared.VenueActivity.PROGRESS_BAR_STOP";
 
     public static final String EXTRA_TASK_ID = "task_id";
-    public static final String EXTRA_VENUE = "venue";
+    public static final String EXTRA_VENUE = "com.joelapenna.foursquared.VenueId";
 
     ProgressBarHandler mProgressBarHandler = new ProgressBarHandler();
     BroadcastReceiver mBroadcastReceiver;
@@ -122,7 +122,6 @@ public class VenueActivity extends TabActivity {
 
         tag = (String)this.getText(R.string.venue_checkin_activity_name);
         intent = new Intent(this, VenueCheckinActivity.class);
-        intent.putExtra(VenueActivity.EXTRA_VENUE, mVenue);
         tabHost.addTab(tabHost.newTabSpec(tag)
                 // Checkin Tab
                 .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_add))
@@ -131,7 +130,6 @@ public class VenueActivity extends TabActivity {
 
         tag = (String)this.getText(R.string.venue_info_activity_name);
         intent = new Intent(this, VenueMapActivity.class);
-        intent.putExtra(EXTRA_VENUE, mVenue);
         tabHost.addTab(tabHost.newTabSpec(tag)
                 // Info Tab
                 .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_compass))
@@ -140,7 +138,6 @@ public class VenueActivity extends TabActivity {
 
         tag = (String)this.getText(R.string.venue_tips_activity_name);
         intent = new Intent(this, VenueTipsActivity.class);
-        intent.putExtra(VenueActivity.EXTRA_VENUE, mVenue);
         tabHost.addTab(tabHost.newTabSpec(tag)
                 // Info Tab
                 .setIndicator("",

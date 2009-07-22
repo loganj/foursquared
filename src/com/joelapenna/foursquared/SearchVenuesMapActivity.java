@@ -67,7 +67,7 @@ public class SearchVenuesMapActivity extends MapActivity {
                 if (DEBUG) Log.d(TAG, "firing venue activity for venue");
                 Intent intent = new Intent(SearchVenuesMapActivity.this, VenueActivity.class);
                 intent.setAction(Intent.ACTION_VIEW);
-                intent.putExtra("venue", mTappedVenue);
+                intent.putExtra(VenueActivity.EXTRA_VENUE, mTappedVenue.getId());
                 startActivity(intent);
             }
         });

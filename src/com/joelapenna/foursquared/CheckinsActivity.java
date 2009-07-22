@@ -203,7 +203,7 @@ public class CheckinsActivity extends TabActivity {
         if (DEBUG) Log.d(TAG, "firing venue activity for venue");
         Intent intent = new Intent(CheckinsActivity.this, VenueActivity.class);
         intent.setAction(Intent.ACTION_VIEW);
-        intent.putExtra("venue", venue);
+        intent.putExtra(VenueActivity.EXTRA_VENUE, venue.getId());
         startActivity(intent);
     }
 

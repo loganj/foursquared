@@ -229,7 +229,6 @@ public class SearchVenuesActivity extends TabActivity {
         Intent intent = new Intent(SearchVenuesActivity.this, VenueActivity.class);
         intent.setAction(Intent.ACTION_VIEW);
         intent.putExtra(VenueActivity.EXTRA_VENUE, venue.getId());
-        intent.setExtrasClassLoader(getClassLoader());
         startActivity(intent);
     }
 

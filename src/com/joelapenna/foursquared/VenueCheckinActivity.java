@@ -190,10 +190,10 @@ public class VenueCheckinActivity extends ListActivity {
     }
 
     void startCheckinActivity(Checkin checkin) {
-        if (DEBUG) Log.d(TAG, "(not) firing checkin activity for checkin");
+        if (DEBUG) Log.d(TAG, "(not) Firing checkin activity for checkin");
         // Intent intent = new Intent(VenueCheckinActivity.this, CheckinActivity.class);
         // intent.setAction(Intent.ACTION_VIEW);
-        // intent.putExtra("venue", checkin);
+        // intent.putExtra(VenueActivity.EXTRA_VENUE, checkin.getVenueid());
         // startActivity(intent);
     }
 
