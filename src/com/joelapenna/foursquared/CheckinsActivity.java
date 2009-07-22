@@ -160,7 +160,7 @@ public class CheckinsActivity extends TabActivity {
             return;
         }
         mListAdapter.clear();
-        
+
         CheckinListAdapter groupAdapter = new CheckinListAdapter(this, searchResults);
         mListAdapter.addSection("Checkins", groupAdapter);
         mListAdapter.notifyDataSetInvalidated();
@@ -222,7 +222,9 @@ public class CheckinsActivity extends TabActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Checkin checkin = (Checkin)parent.getAdapter().getItem(position);
-                startItemActivity(checkin.getVenue());
+                if (checkin.getVenue() != null) {
+                    startItemActivity(checkin.getVenue());
+                }
             }
         });
     }

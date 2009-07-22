@@ -274,7 +274,7 @@ public class VenueActivity extends TabActivity {
             filteredCheckins.setType(checkins.getType());
             for (int i = 0; i < checkins.size(); i++) {
                 Checkin checkin = (Checkin)checkins.get(i);
-                if (checkin.getVenue().getId().equals(mVenueId)) {
+                if (checkin.getVenue() != null && checkin.getVenue().getId().equals(mVenueId)) {
                     filteredCheckins.add(checkin);
                 }
             }

@@ -296,7 +296,8 @@ public class UserActivity extends Activity {
                     }
                 });
             }
-            if (user.getCheckin() != null) {
+            Checkin checkin = user.getCheckin();
+            if (checkin != null && checkin.getVenue() != null) {
                 Venue venue = user.getCheckin().getVenue();
                 ((TextView)mVenueLayout.findViewById(R.id.name)).setText(venue.getName());
                 ((TextView)mVenueLayout.findViewById(R.id.locationLine1)).setText(venue
