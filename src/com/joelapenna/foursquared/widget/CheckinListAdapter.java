@@ -2,10 +2,12 @@
  * Copyright 2008 Joe LaPenna
  */
 
-package com.joelapenna.foursquared;
+package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquared.Foursquared;
+import com.joelapenna.foursquared.R;
 
 import android.content.Context;
 import android.text.Html;
@@ -13,49 +15,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 /**
- * @author jlapenna
+ * @author Joe LaPenna (joe@joelapenna.com)
  */
-class CheckinListAdapter extends BaseAdapter {
+public class CheckinListAdapter extends BaseCheckinAdapter {
     private static final String TAG = "CheckinListAdapter";
     private static final boolean DEBUG = Foursquared.DEBUG;
 
     private LayoutInflater mInflater;
-    private Group mCheckins;
 
     public CheckinListAdapter(Context context, Group checkins) {
+        super(context, checkins);
         mInflater = LayoutInflater.from(context);
-        mCheckins = checkins;
-    }
-
-    /**
-     * The number of items in the list is determined by the number of checkins in our array.
-     *
-     * @see android.widget.ListAdapter#getCount()
-     */
-    @Override
-    public int getCount() {
-        return mCheckins.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        if (DEBUG) Log.d(TAG, "getItem() called: " + String.valueOf(position));
-        return mCheckins.get(position);
-    }
-
-    /**
-     * Use the position index as a unique id.
-     *
-     * @see android.widget.ListAdapter#getItemId(int)
-     */
-    @Override
-    public long getItemId(int position) {
-        if (DEBUG) Log.d(TAG, "getItemId() called: " + String.valueOf(position));
-        return position;
     }
 
     @Override
@@ -99,6 +72,7 @@ class CheckinListAdapter extends BaseAdapter {
         return false;
     }
 
+<<<<<<< HEAD:src/com/joelapenna/foursquared/CheckinListAdapter.java
     @Override
     public boolean isEmpty() {
         if (DEBUG) Log.d(TAG, "isEmpty() called");
@@ -106,6 +80,9 @@ class CheckinListAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
+=======
+    private class ViewHolder {
+>>>>>>> d021be6... Extract out a base adapter for venues and checkins:src/com/joelapenna/foursquared/widget/CheckinListAdapter.java
         TextView firstLine;
         TextView secondLine;
     }

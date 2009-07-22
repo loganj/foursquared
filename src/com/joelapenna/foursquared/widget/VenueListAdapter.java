@@ -2,60 +2,36 @@
  * Copyright 2008 Joe LaPenna
  */
 
-package com.joelapenna.foursquared;
+package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
+<<<<<<< HEAD:src/com/joelapenna/foursquared/VenueListAdapter.java
 import com.joelapenna.foursquared.util.StringFormatters;
+=======
+import com.joelapenna.foursquared.Foursquared;
+import com.joelapenna.foursquared.R;
+>>>>>>> d021be6... Extract out a base adapter for venues and checkins:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
 
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 /**
- * @author jlapenna
+ * @author Joe LaPenna (joe@joelapenna.com)
  */
-class VenueListAdapter extends BaseAdapter {
+public class VenueListAdapter extends BaseVenueAdapter {
     private static final String TAG = "VenueListAdapter";
     private static final boolean DEBUG = Foursquared.DEBUG;
 
     private LayoutInflater mInflater;
-    private Group mVenues;
 
     public VenueListAdapter(Context context, Group venues) {
+        super(context, venues);
         mInflater = LayoutInflater.from(context);
-        mVenues = venues;
-    }
-
-    /**
-     * The number of items in the list is determined by the number of venues in our array.
-     *
-     * @see android.widget.ListAdapter#getCount()
-     */
-    @Override
-    public int getCount() {
-        return mVenues.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        if (DEBUG) Log.d(TAG, "getItem() called: " + String.valueOf(position));
-        return mVenues.get(position);
-    }
-
-    /**
-     * Use the position index as a unique id.
-     *
-     * @see android.widget.ListAdapter#getItemId(int)
-     */
-    @Override
-    public long getItemId(int position) {
-        if (DEBUG) Log.d(TAG, "getItemId() called: " + String.valueOf(position));
-        return position;
     }
 
     /**
@@ -104,6 +80,7 @@ class VenueListAdapter extends BaseAdapter {
         return convertView;
     }
 
+<<<<<<< HEAD:src/com/joelapenna/foursquared/VenueListAdapter.java
     @Override
     public boolean hasStableIds() {
         return false;
@@ -116,6 +93,9 @@ class VenueListAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
+=======
+    private class ViewHolder {
+>>>>>>> d021be6... Extract out a base adapter for venues and checkins:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
         TextView name;
         TextView locationLine1;
         TextView locationLine2;
