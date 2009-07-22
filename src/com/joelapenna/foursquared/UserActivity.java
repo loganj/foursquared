@@ -18,7 +18,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,7 +25,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -232,7 +230,7 @@ public class UserActivity extends Activity {
         @Override
         protected User doInBackground(Void... params) {
             try {
-                return Foursquared.getFoursquare().user(null, false, true);
+                return Foursquared.getFoursquare().user(mUserId, false, true);
             } catch (FoursquareException e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "FoursquareException", e);
