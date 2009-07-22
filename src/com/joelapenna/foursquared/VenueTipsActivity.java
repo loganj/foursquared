@@ -17,7 +17,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -258,18 +257,6 @@ public class VenueTipsActivity extends ListActivity {
         mVenue = venue;
     }
 
-    private void startProgressBar(String taskId) {
-        Intent intent = new Intent(VenueActivity.ACTION_PROGRESS_BAR_START);
-        intent.putExtra(VenueActivity.EXTRA_TASK_ID, taskId);
-        sendBroadcast(intent);
-    }
-
-    private void stopProgressBar(String taskId) {
-        Intent intent = new Intent(VenueActivity.ACTION_PROGRESS_BAR_STOP);
-        intent.putExtra(VenueActivity.EXTRA_TASK_ID, taskId);
-        sendBroadcast(intent);
-    }
-
     private class TipsAsyncTask extends AsyncTask<Void, Void, Group> {
 
         private static final String PROGRESS_BAR_TASK_ID = TAG + "TipsAsyncTask";
@@ -277,7 +264,7 @@ public class VenueTipsActivity extends ListActivity {
         @Override
         public void onPreExecute() {
             if (DEBUG) Log.d(TAG, "TipsTask: onPreExecute()");
-            startProgressBar(PROGRESS_BAR_TASK_ID);
+            VenueActivity.startProgressBar(VenueTipsActivity.this, PROGRESS_BAR_TASK_ID);
         }
 
         @Override
@@ -313,7 +300,7 @@ public class VenueTipsActivity extends ListActivity {
                 setTipGroups(groups);
             } finally {
                 if (DEBUG) Log.d(TAG, "TipsTask: onPostExecute()");
-                stopProgressBar(PROGRESS_BAR_TASK_ID);
+                VenueActivity.stopProgressBar(VenueTipsActivity.this, PROGRESS_BAR_TASK_ID);
                 if (getListAdapter().getCount() <= 0) {
                     mEmpty.setText("No tips for this venue! Add one!");
                 }
@@ -322,7 +309,7 @@ public class VenueTipsActivity extends ListActivity {
 
         @Override
         public void onCancelled() {
-            stopProgressBar(PROGRESS_BAR_TASK_ID);
+            VenueActivity.stopProgressBar(VenueTipsActivity.this, PROGRESS_BAR_TASK_ID);
         }
 
     }
@@ -334,7 +321,7 @@ public class VenueTipsActivity extends ListActivity {
         @Override
         public void onPreExecute() {
             if (DEBUG) Log.d(TAG, "AddTipTask: onPreExecute()");
-            startProgressBar(PROGRESS_BAR_TASK_ID);
+            VenueActivity.startProgressBar(VenueTipsActivity.this, PROGRESS_BAR_TASK_ID);
         }
 
         @Override
@@ -373,12 +360,12 @@ public class VenueTipsActivity extends ListActivity {
             } else {
                 showDialog(DIALOG_SHOW_MESSAGE);
             }
-            stopProgressBar(PROGRESS_BAR_TASK_ID);
+            VenueActivity.stopProgressBar(VenueTipsActivity.this, PROGRESS_BAR_TASK_ID);
         }
 
         @Override
         public void onCancelled() {
-            stopProgressBar(PROGRESS_BAR_TASK_ID);
+            VenueActivity.stopProgressBar(VenueTipsActivity.this, PROGRESS_BAR_TASK_ID);
         }
     }
 }

@@ -119,15 +119,14 @@ public class VenueCheckinActivity extends ListActivity {
 
     private class CheckinAsyncTask extends AsyncTask<Venue, Void, Checkin> {
 
-        private static final String VENUE_ACTIVITY_PROGRESS_BAR_TASK_ID = TAG + "CheckinAsyncTask";
+        private static final String PROGRESS_BAR_TASK_ID = TAG + "CheckinAsyncTask";
 
         @Override
         public void onPreExecute() {
             mCheckinButton.setEnabled(false);
             if (DEBUG) Log.d(TAG, "CheckinTask: onPreExecute()");
-            Intent intent = new Intent(VenueActivity.ACTION_PROGRESS_BAR_START);
-            intent.putExtra(VenueActivity.EXTRA_TASK_ID, VENUE_ACTIVITY_PROGRESS_BAR_TASK_ID);
-            sendBroadcast(intent);
+            VenueActivity.startProgressBar(VenueCheckinActivity.this, PROGRESS_BAR_TASK_ID);
+
         }
 
         @Override
@@ -177,10 +176,13 @@ public class VenueCheckinActivity extends ListActivity {
                 showDialog(DIALOG_CHECKIN);
             } finally {
                 if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
-                Intent intent = new Intent(VenueActivity.ACTION_PROGRESS_BAR_STOP);
-                intent.putExtra(VenueActivity.EXTRA_TASK_ID, VENUE_ACTIVITY_PROGRESS_BAR_TASK_ID);
-                sendBroadcast(intent);
+                VenueActivity.stopProgressBar(VenueCheckinActivity.this, PROGRESS_BAR_TASK_ID);
             }
+        }
+
+        @Override
+        public void onCancelled() {
+            VenueActivity.stopProgressBar(VenueCheckinActivity.this, PROGRESS_BAR_TASK_ID);
         }
     }
 }

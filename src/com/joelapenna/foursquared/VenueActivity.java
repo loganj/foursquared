@@ -60,6 +60,25 @@ public class VenueActivity extends TabActivity {
         if (DEBUG) Log.d(TAG, "onStart()");
     }
 
+    @Override
+    public void onStop() {
+        super.onStart();
+        if (DEBUG) Log.d(TAG, "onStop()");
+        unregisterReceiver(mBroadcastReceiver);
+    }
+
+    public static void startProgressBar(Context context, String taskId) {
+        Intent intent = new Intent(ACTION_PROGRESS_BAR_START);
+        intent.putExtra(VenueActivity.EXTRA_TASK_ID, taskId);
+        context.sendBroadcast(intent);
+    }
+
+    public static void stopProgressBar(Context context, String taskId) {
+        Intent intent = new Intent(ACTION_PROGRESS_BAR_STOP);
+        intent.putExtra(VenueActivity.EXTRA_TASK_ID, taskId);
+        context.sendBroadcast(intent);
+    }
+
     private void initBroadcastReceiver() {
         if (DEBUG) Log.d(TAG, "initBroadcastReceiver()");
         mBroadcastReceiver = new BroadcastReceiver() {
@@ -84,13 +103,6 @@ public class VenueActivity extends TabActivity {
         filter.addAction(ACTION_PROGRESS_BAR_STOP);
         filter.addAction(ACTION_PROGRESS_BAR_START);
         registerReceiver(mBroadcastReceiver, filter);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStart();
-        if (DEBUG) Log.d(TAG, "onStop()");
-        unregisterReceiver(mBroadcastReceiver);
     }
 
     private void initTabHost() {
