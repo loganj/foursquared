@@ -15,6 +15,7 @@
     android:id="@+id/locationLine1"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:layout_alignWithParentIfMissing="true"
     android:textAppearance="@android:style/TextAppearance.Small" />
   <TextView
     android:id="@+id/locationLine2"

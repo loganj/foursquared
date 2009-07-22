@@ -63,7 +63,12 @@ public class VenueActivity extends TabActivity {
 
         name.setText(venue.getVenuename());
         locationLine1.setText(venue.getAddress());
-        locationLine2.setText(venue.getCity() + ", " + venue.getState() + " " + venue.getZip());
+
+        String line2 = Foursquared.getVenueLocationLine2(venue);
+        if (line2 != null) {
+            locationLine2.setText(line2);
+        }
+
         mVenue = venue;
     }
 

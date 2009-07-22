@@ -23,7 +23,6 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 
 public class TestActivity extends Activity {
     private static final String TAG = "TestActivity";
@@ -34,7 +33,6 @@ public class TestActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
 
         mFoursquare = ((Foursquared)getApplication()).getFoursquare();
         try {

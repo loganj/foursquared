@@ -19,24 +19,23 @@
     </TableRow>
 
     <TableRow
-      android:paddingTop="16dip" >
+      android:paddingTop="16dip">
       <ToggleButton
         android:id="@+id/silentToggle"
         android:layout_height="wrap_content"
         android:layout_width="0px"
         android:layout_weight="1"
-        android:textOff="Broadcast Checkin?"
-        android:textOn="Broadcasting"
-        android:checked="false" />
+        android:textOff="Hide Checkin?"
+        android:textOn="Hiding Checkin" />
       <ToggleButton
         android:id="@+id/twitterToggle"
         android:layout_height="wrap_content"
         android:layout_width="0px"
         android:layout_weight="1"
         android:textOff="Send Tweet?"
-        android:textOn="Tweeting"
-        android:checked="false" />
+        android:textOn="Tweeting Checkin" />
     </TableRow>
+
   </TableLayout>
 
   <ListView

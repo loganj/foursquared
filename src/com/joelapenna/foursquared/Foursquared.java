@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.error.FoursquaredCredentialsError;
 
 import android.app.Application;
@@ -25,6 +26,10 @@ import java.util.Date;
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Foursquared extends Application {
+    /**
+     * 
+     */
+    private static final int LAST_LOCATION_UPDATE_THRESHOLD = 1000 * 60 * 60;
     public static final String TAG = "Foursquared";
     public static final boolean DEBUG = true;
 
@@ -32,6 +37,8 @@ public class Foursquared extends Application {
 
     public static final String PREFERENCE_PHONE = "phone";
     public static final String PREFERENCE_PASSWORD = "password";
+    public static final String PREFERENCE_TWITTER_CHECKIN = "twitter_checkin";
+    public static final String PREFERENCE_SILENT_CHECKIN = "silent_checkin";
 
     // Hidden preferences
     public static final String PREFERENCE_EMAIL = "email";
@@ -61,15 +68,14 @@ public class Foursquared extends Application {
         if (DEBUG) Log.d(TAG, "Have Provider: " + provider.getName());
         Location location = manager.getLastKnownLocation(providerName);
         long timeDelta = new Date().getTime() - location.getTime();
-        if (timeDelta > 1000 * 60 * 20) {
+        if (timeDelta > LAST_LOCATION_UPDATE_THRESHOLD) {
             if (DEBUG) Log.d(TAG, "Last known position is too old! " + String.valueOf(timeDelta));
             return null;
         }
         if (DEBUG) Log.d(TAG, "got Location: " + location);
         return location;
     }
-
-
+    
     public void loadCredentials() throws FoursquaredCredentialsError {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         String phoneNumber = settings.getString(Foursquared.PREFERENCE_PHONE, null);
@@ -85,5 +91,20 @@ public class Foursquared extends Application {
     public void startPreferences() {
         startActivity(new Intent(Foursquared.this, PreferenceActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    public static String getVenueLocationLine2(Venue venue) {
+        if (!TextUtils.isEmpty(venue.getCrossstreet())) {
+            if (venue.getCrossstreet().startsWith("at")) {
+                return "(" + venue.getCrossstreet() + ")";
+            } else {
+                return "(at " + venue.getCrossstreet() + ")";
+            }
+        } else if (!TextUtils.isEmpty(venue.getCity()) && !TextUtils.isEmpty(venue.getState())
+                && !TextUtils.isEmpty(venue.getZip())) {
+            return venue.getCity() + ", " + venue.getState() + " " + venue.getZip();
+        } else {
+            return null;
+        }
     }
 }

@@ -33,7 +33,7 @@ class VenueSearchListAdapter extends BaseAdapter {
 
     /**
      * The number of items in the list is determined by the number of venues in our array.
-     *
+     * 
      * @see android.widget.ListAdapter#getCount()
      */
     @Override
@@ -49,7 +49,7 @@ class VenueSearchListAdapter extends BaseAdapter {
 
     /**
      * Use the position index as a unique id.
-     *
+     * 
      * @see android.widget.ListAdapter#getItemId(int)
      */
     @Override
@@ -60,7 +60,7 @@ class VenueSearchListAdapter extends BaseAdapter {
 
     /**
      * Make a view to hold each row.
-     *
+     * 
      * @see android.widget.ListAdapter#getView(int, android.view.View, android.view.ViewGroup)
      */
     @Override
@@ -92,11 +92,13 @@ class VenueSearchListAdapter extends BaseAdapter {
 
         Venue venue = (Venue)getItem(position);
         holder.name.setText(venue.getVenuename());
-        holder.locationLine1.setText( // 650 Hayes St.
-                venue.getAddress());
-        holder.locationLine2.setText( // San Francisco, CA 94117
-                venue.getCity() + ", " + venue.getCity() + " " + venue.getZip());
-
+        holder.locationLine1.setText(venue.getAddress());
+        String line2 = Foursquared.getVenueLocationLine2(venue);
+        if (line2 == null) {
+            holder.locationLine2.setVisibility(View.GONE);
+        } else {
+            holder.locationLine2.setText(line2);
+        }
         return convertView;
     }
 
@@ -120,7 +122,6 @@ class VenueSearchListAdapter extends BaseAdapter {
         mVenues.clear();
         notifyDataSetInvalidated();
     }
-
 
     private static class ViewHolder {
         TextView name;

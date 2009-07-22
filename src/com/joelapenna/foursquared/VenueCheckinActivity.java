@@ -13,12 +13,10 @@ import com.joelapenna.foursquared.util.UserTask;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
-import android.content.Context;
-import android.location.Criteria;
+import android.content.SharedPreferences;
 import android.location.Location;
-import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -31,7 +29,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.io.IOException;
-import java.util.Date;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -60,6 +57,14 @@ public class VenueCheckinActivity extends ListActivity {
             }
         });
 
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+
+        ToggleButton silentToggle = (ToggleButton)findViewById(R.id.silentToggle);
+        silentToggle.setChecked(settings.getBoolean(Foursquared.PREFERENCE_SILENT_CHECKIN, false));
+
+        ToggleButton twitterToggle = (ToggleButton)findViewById(R.id.twitterToggle);
+        twitterToggle.setChecked(settings.getBoolean(Foursquared.PREFERENCE_TWITTER_CHECKIN, false));
+
         setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
     }
 
@@ -77,13 +82,11 @@ public class VenueCheckinActivity extends ListActivity {
                 webView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
                         LayoutParams.FILL_PARENT));
                 webView.loadUrl(checkin.getUrl());
-                webView.setBackgroundColor(android.R.color.transparent);
                 Spanned title = Html.fromHtml(checkin.getMessage());
                 return new AlertDialog.Builder(this) // the builder
                         .setView(webView) // use a web view
-                        .setIcon(android.R.drawable.ic_dialog_info) // show an
+                        .setIcon(android.R.drawable.ic_dialog_info) // show an icon
                         .setTitle(title).create(); // return it.
-
         }
         return null;
     }
