@@ -48,7 +48,7 @@ import java.util.List;
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class HttpApi {
-    protected static final String TAG = "FoursquareHttpApi";
+    protected static final String TAG = "HttpApi";
     protected static final boolean DEBUG = Foursquare.DEBUG;
 
     private static final String CLIENT_VERSION = "iPhone 20090301";
@@ -137,7 +137,7 @@ public class HttpApi {
 
     /**
      * execute() an httpRequest catching exceptions and returning null instead.
-     * 
+     *
      * @param httpRequest
      * @return
      */
@@ -184,7 +184,7 @@ public class HttpApi {
     /**
      * Create a thread-safe client. This client does not do redirecting, to allow us to capture
      * correct "error" codes.
-     * 
+     *
      * @return HttpClient
      */
     public static final DefaultHttpClient createHttpClient() {
