@@ -121,4 +121,3 @@ public class TipParser extends AbstractParser<Tip> {
         parser.nextToken();
     }
 }
-

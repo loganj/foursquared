@@ -20,7 +20,7 @@ import java.io.IOException;
 
 public class TestActivity extends Activity {
     private static final String TAG = "TestActivity";
-    private static final boolean DEBUG = Foursquared.DEBUG;
+    private static final boolean DEBUG = FoursquaredTest.DEBUG;
 
     private Foursquare mFoursquare;
 

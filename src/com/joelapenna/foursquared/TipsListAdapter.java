@@ -17,9 +17,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.List;
 
 /**
@@ -27,7 +25,7 @@ import java.util.List;
  */
 class TipsListAdapter extends BaseAdapter {
     private static final String TAG = "TipsListAdapter";
-    private static final boolean DEBUG = Foursquared.DEBUG;
+    private static final boolean DEBUG = FoursquaredTest.DEBUG;
 
     private LayoutInflater mInflater;
     private List<Tip> mTips = new ArrayList<Tip>();

@@ -4,7 +4,7 @@
 
 package com.joelapenna.foursquare;
 
-import com.joelapenna.foursquared.Foursquared;
+import com.joelapenna.foursquared.FoursquaredTest;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Auth;
@@ -21,7 +21,7 @@ import java.io.IOException;
  */
 public class Foursquare {
     private static final String TAG = "Foursquare";
-    public static final boolean DEBUG = Foursquared.DEBUG;
+    public static final boolean DEBUG = FoursquaredTest.DEBUG;
 
     private String mPhone;
     private String mPassword;

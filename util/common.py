@@ -7,6 +7,17 @@ STRING = "String"
 
 
 def WalkNodesForAttributes(path):
+  """Parse the xml file getting all attributes.
+  <venue>
+    <attribute>value</attribute>
+  </venue>
+
+  Returns:
+    type_name - The java-style name the top node will have. "Venue"
+    top_node_name - unadultured name of the xml stanza, probably the type of
+    java class we're creating. "venue"
+    attributes - {'attribute': 'value'}
+  """
   doc = pulldom.parse(path)
 
   type_name = None
@@ -17,7 +28,8 @@ def WalkNodesForAttributes(path):
     if event == pulldom.START_ELEMENT:
       # Get the type name to use.
       if type_name is None:
-        type_name = node.tagName.capitalize()
+        type_name = ''.join([word.capitalize()
+                             for word in node.tagName.split('_')])
         top_node_name = node.tagName
         continue
 

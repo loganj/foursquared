@@ -14,30 +14,81 @@ HEADER = """\
 
 package com.joelapenna.foursquare.types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class %s implements FoursquareType {
+public class %(type_name)s implements FoursquareType, Parcelable {
 """
 
 
 GETTER = """\
-public %(typ)s get%(camel_name)s() {
+public %(attribute_type)s get%(camel_name)s() {
     return %(field_name)s;
 }
 """
 
 SETTER = """\
-public void set%(camel_name)s(%(typ)s %(attribute_name)s) {
+public void set%(camel_name)s(%(attribute_type)s %(attribute_name)s) {
     %(field_name)s = %(attribute_name)s;
 }
 """
 
 BOOLEAN_GETTER = """\
-public %(typ)s %(attribute_name)s() {
+public %(attribute_type)s %(attribute_name)s() {
     return %(field_name)s;
 }
 """
+
+PARCELABLE = """\
+/* For Parcelable */
+
+@Override
+public int describeContents() {
+    return 0;
+}
+
+@Override
+public void writeToParcel(Parcel dest, int flags) {
+    boolean[] booleanArray = {
+%(write_boolean_parcel_lines)s
+    };
+    dest.writeBooleanArray(booleanArray);
+%(write_parcel_lines)s
+}
+
+private void readFromParcel(Parcel source) {
+    boolean[] booleanArray = new boolean[%(size)s];
+    source.readBooleanArray(booleanArray);
+%(read_parcel_lines)s
+}
+
+@SuppressWarnings("unused")
+public static final Parcelable.Creator<%(type_name)s> CREATOR = new Parcelable.Creator<%(type_name)s>() {
+
+    @Override
+    public %(type_name)s createFromParcel(Parcel source) {
+        %(type_name)s instance = new %(type_name)s();
+        instance.readFromParcel(source);
+        return instance;
+    }
+
+    @Override
+    public %(type_name)s[] newArray(int size) {
+        return new %(type_name)s[size];
+    }
+
+};
+"""
+
+PARCELABLE_ATTRIBUTE_WRITE_PARCEL = (
+    '    dest.write%(attribute_type)s(this.m%(camel_name)s);')
+
+PARCELABLE_ATTRIBUTE_READ_PARCEL = (
+    '    this.m%(camel_name)s = source.read%(attribute_type)s();')
+
 
 def main():
   type_name, top_node_name, attributes = common.WalkNodesForAttributes(
@@ -47,60 +98,107 @@ def main():
 
 def GenerateClass(type_name, attributes):
   lines = []
-  for name in sorted(attributes):
-    typ = attributes[name]
-    lines.extend(Fields(name, typ).split('\n'))
+  for attribute_name in sorted(attributes):
+    typ = attributes[attribute_name]
+    lines.extend(Field(attribute_name, typ).split('\n'))
 
   lines.append('')
   lines.extend(Constructor(type_name).split('\n'))
   lines.append('')
 
-  for name in sorted(attributes):
-    typ = attributes[name]
-    lines.extend(Accessors(name, typ).split('\n'))
+  # getters and setters
+  for attribute_name in sorted(attributes):
+    attribute_type = attributes[attribute_name]
+    lines.extend(Accessors(attribute_name, attribute_type).split('\n'))
+
+  # parcelable
+  lines.extend(Parcelable(type_name, attributes).split('\n'));
 
   print Header(type_name)
   print '    ' + '\n    '.join(lines)
   print Footer()
 
 
-def AccessorReplacements(name, typ):
+def AccessorReplacements(attribute_name, attribute_type):
   # CamelCaseClassName
-  camel_name = ''.join([word.capitalize() for word in name.split('_')])
+  camel_name = ''.join([word.capitalize()
+                        for word in attribute_name.split('_')])
   # camelCaseLocalName
-  attribute_name = camel_name[0].lower() + camel_name[1:]
+  attribute_name = (camel_name[0].lower() + camel_name[1:])
   # mFieldName
-  field_name = 'm' + camel_name
+  field_attribute_name = 'm' + camel_name
 
   return {
-      'camel_name': camel_name,
       'attribute_name': attribute_name,
-      'field_name': field_name,
-      'typ': typ
+      'camel_name': camel_name,
+      'field_name': field_attribute_name,
+      'attribute_type': attribute_type
   }
 
 
 def Header(type_name):
-  return HEADER % type_name
+  return HEADER % {'type_name': type_name}
 
 
-def Fields(name, typ):
+def Field(attribute_name, attribute_type):
   """Print the field declarations."""
-  replacements = AccessorReplacements(name, typ)
-  return 'private %(typ)s %(field_name)s;' % replacements
+  replacements = AccessorReplacements(attribute_name, attribute_type)
+  return 'private %(attribute_type)s %(field_name)s;' % replacements
 
 
 def Constructor(type_name):
   return 'public %s() {\n}' % type_name
 
 
-def Accessors(name, typ):
+def Accessors(name, attribute_type):
   """Print the getter and setter definitions."""
-  replacements = AccessorReplacements(name, typ)
-  if typ == common.BOOLEAN:
+  replacements = AccessorReplacements(name, attribute_type)
+  if attribute_type == common.BOOLEAN:
     return '%s\n%s' % (BOOLEAN_GETTER % replacements, SETTER % replacements)
   else:
     return '%s\n%s' % (GETTER % replacements, SETTER % replacements)
+
+
+def Parcelable(type_name, attributes):
+  booleans = []
+  # Write
+  write_parcel_lines = []
+  for attribute_name in sorted(attributes):
+    attribute_type = attributes[attribute_name];
+    replacements = AccessorReplacements(attribute_name, attribute_type)
+
+    # skip booleans put them all in a boolean array.
+    if (attribute_type == common.BOOLEAN):
+      booleans.append(replacements['camel_name'])
+      continue
+
+    write_parcel_lines.append(PARCELABLE_ATTRIBUTE_WRITE_PARCEL % replacements)
+  write_parcel_lines = '    \n'.join(write_parcel_lines)
+  write_boolean_parcel_lines = '    ' + '    \n'.join('    m%s,' % b for b in booleans)
+
+  # Read
+  read_parcel_lines = []
+  # handle booleans first.
+  for i, boolean in enumerate(booleans):
+    read_parcel_lines.append('    this.m%s = booleanArray[%s];' % ( boolean, i))
+  for attribute_name in sorted(attributes):
+    attribute_type = attributes[attribute_name];
+    replacements = AccessorReplacements(attribute_name, attribute_type)
+
+    # skip booleans put them all in a boolean array.
+    if (attribute_type == common.BOOLEAN):
+      continue
+
+    read_parcel_lines.append(PARCELABLE_ATTRIBUTE_READ_PARCEL % replacements)
+  read_parcel_lines = '    \n'.join(read_parcel_lines)
+
+  # Compose it.
+  return PARCELABLE % {'type_name': type_name,
+                       'write_parcel_lines': write_parcel_lines,
+                       'write_boolean_parcel_lines': write_boolean_parcel_lines,
+                       'read_parcel_lines': read_parcel_lines,
+                       'size': str(len(booleans))
+                      }
 
 
 def Footer():

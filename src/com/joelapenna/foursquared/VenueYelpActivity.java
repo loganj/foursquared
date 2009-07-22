@@ -11,6 +11,6 @@ import android.app.Activity;
  */
 public class VenueYelpActivity extends Activity {
     public static final String TAG = "VenueYelpActivity";
-    public static final boolean DEBUG = Foursquared.DEBUG;
+    public static final boolean DEBUG = FoursquaredTest.DEBUG;
 
 }

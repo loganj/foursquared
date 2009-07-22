@@ -16,14 +16,16 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnKeyListener;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class VenueSearchActivity extends ListActivity {
     private static final String TAG = "VenueSearchActivity";
-    private static final boolean DEBUG = Foursquared.DEBUG;
+    private static final boolean DEBUG = FoursquaredTest.DEBUG;
 
     private SearchHandler mSearchHandler = new SearchHandler();
     private EditText mSearchEdit;
@@ -35,6 +37,16 @@ public class VenueSearchActivity extends ListActivity {
         setContentView(R.layout.venue_search_activity);
 
         setListAdapter(new VenueSearchListAdapter(this));
+        ((VenueSearchListAdapter)getListAdapter()).add(FoursquaredTest.createTestVenue());
+        ((VenueSearchListAdapter)getListAdapter()).add(FoursquaredTest.createTestVenue());
+        ((VenueSearchListAdapter)getListAdapter()).add(FoursquaredTest.createTestVenue());
+        ((VenueSearchListAdapter)getListAdapter()).add(FoursquaredTest.createTestVenue());
+        ((VenueSearchListAdapter)getListAdapter()).add(FoursquaredTest.createTestVenue());
+        ((VenueSearchListAdapter)getListAdapter()).add(FoursquaredTest.createTestVenue());
+        ((VenueSearchListAdapter)getListAdapter()).add(FoursquaredTest.createTestVenue());
+        ((VenueSearchListAdapter)getListAdapter()).add(FoursquaredTest.createTestVenue());
+        ((VenueSearchListAdapter)getListAdapter()).add(FoursquaredTest.createTestVenue());
+
 
         mSearchEdit = (EditText)findViewById(R.id.searchEdit);
         mSearchEdit.setOnKeyListener(new OnKeyListener() {
@@ -50,6 +62,14 @@ public class VenueSearchActivity extends ListActivity {
                 return false;
             }
         });
+
+        getListView().setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Venue venue = (Venue)parent.getAdapter().getItem(position);
+                fireVenueActivityIntent(venue);
+            }
+        });
     }
 
     protected void sendQuery() {
@@ -60,8 +80,11 @@ public class VenueSearchActivity extends ListActivity {
     }
 
     protected void fireVenueActivityIntent(Venue venue) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        // intent.putExtra("venue", value);
+        if (DEBUG) Log.d(TAG, "firing venue activity for venue");
+        Intent intent = new Intent(VenueSearchActivity.this, VenueActivity.class);
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.putExtra("venue", venue);
+        startActivity(intent);
     }
 
     class SearchHandler extends Handler {
@@ -70,7 +93,7 @@ public class VenueSearchActivity extends ListActivity {
         public static final int MESSAGE_QUERY_COMPLETE = 1;
 
         public void handleMessage(Message msg) {
-            switch(msg.what) {
+            switch (msg.what) {
                 case MESSAGE_QUERY_START:
                     setProgressBarIndeterminateVisibility(true);
                     String query = mSearchEdit.getText().toString();

@@ -33,7 +33,7 @@ public class VenueCheckinActivity extends ListActivity {
         setContentView(R.layout.venue_checkin_activity);
 
         setListAdapter(new TipsListAdapter(this));
-        List<Tip> tips = Foursquared.createTestTips();
+        List<Tip> tips = FoursquaredTest.createTestTips();
         for (int i = 0; i < tips.size(); i++) {
             ((TipsListAdapter)getListAdapter()).add(tips.get(i));
         }
@@ -51,7 +51,7 @@ public class VenueCheckinActivity extends ListActivity {
     public Dialog onCreateDialog(int id) {
         switch (id) {
             case DIALOG_CHECKIN:
-                Checkin checkin = Foursquared.createIncomingCheckin();
+                Checkin checkin = FoursquaredTest.createIncomingCheckin();
                 WebView webView = new WebView(this);
                 webView.loadUrl(checkin.getUrl());
                 Spanned title = Html.fromHtml(checkin.getMessage());

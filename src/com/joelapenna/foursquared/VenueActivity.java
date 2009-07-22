@@ -16,6 +16,10 @@ import android.widget.TextView;
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class VenueActivity extends TabActivity {
+    private static final String TAG = "VenueActivity";
+    private static final boolean DEBUG = Foursquared.DEBUG;
+
+    public static final String EXTRAS_VENUE_KEY = "venue";
 
     Venue mVenue;
 
@@ -24,7 +28,7 @@ public class VenueActivity extends TabActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.venue_activity);
 
-        loadVenue(Foursquared.createTestVenue());
+        loadVenue((Venue)getIntent().getExtras().get(EXTRAS_VENUE_KEY));
         setupTabHost();
     }
 
