@@ -37,6 +37,7 @@ public class VenueTipsActivity extends ListActivity {
 
     private TipsAsyncTask mTipsTask;
     private TextView mEmpty;
+    private Group mTipGroups;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,33 +56,71 @@ public class VenueTipsActivity extends ListActivity {
 
         setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
 
+        if (getLastNonConfigurationInstance() != null) {
+            setTipGroups((Group)getLastNonConfigurationInstance());
+        } else {
+            mTipsTask = (TipsAsyncTask)new TipsAsyncTask().execute();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mTipsTask != null) {
+            mTipsTask.cancel(true);
+        }
+    }
+
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return mTipGroups;
+    }
+
+    /**
+     * If a new tips lookup comes in cancel the old one and start a new one.
+     */
+    private void lookupTipGroups() {
+        if (DEBUG) Log.d(TAG, "lookupTips()");
+
+        // If a task is already running, don't start a new one.
+        if (mTipsTask != null && mTipsTask.getStatus() != AsyncTask.Status.FINISHED) {
+            if (DEBUG) Log.d(TAG, "Query already running attempting to cancel: " + mTipsTask);
+            if (!mTipsTask.cancel(true) && !mTipsTask.isCancelled()) {
+                if (DEBUG) Log.d(TAG, "Unable to cancel tips? That should not have happened!");
+                Toast.makeText(this, "Unable to re-query tips.", Toast.LENGTH_SHORT);
+                return;
+            }
+        }
         mTipsTask = (TipsAsyncTask)new TipsAsyncTask().execute();
     }
 
-    private void putGroupsInAdapter(Group groups) {
+    private void setTipGroups(Group groups) {
         if (groups == null) {
             Toast.makeText(getApplicationContext(), "Could not complete TODO lookup!",
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        SeparatedListAdapter mainAdapter = (SeparatedListAdapter)getListAdapter();
-        mainAdapter.clear();
+        mTipGroups = filterTipGroups(groups);
+        putGroupsInAdapter(mTipGroups);
+    }
+
+    private Group filterTipGroups(Group groups) {
+        Group filteredGroup = new Group();
+        filteredGroup.setType(groups.getType());
         int groupCount = groups.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
             Group group = (Group)groups.get(groupsIndex);
             if (mVenue.getVenueid() != null) {
-                filterByVenueid(mVenue.getVenueid(), group);
+                filterTipGroupByVenueid(mVenue.getVenueid(), group);
                 if (group.size() > 0) {
-                    TipsListAdapter groupAdapter = new TipsListAdapter(this, group);
-                    if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
-                    mainAdapter.addSection(group.getType(), groupAdapter);
+                    filteredGroup.add(group);
                 }
             }
         }
-        mainAdapter.notifyDataSetInvalidated();
+        return filteredGroup;
     }
 
-    private void filterByVenueid(String venueid, Group group) {
+    private void filterTipGroupByVenueid(String venueid, Group group) {
         ArrayList<Tip> venueTips = new ArrayList<Tip>();
         int tipCount = group.size();
         for (int tipIndex = 0; tipIndex < tipCount; tipIndex++) {
@@ -92,6 +131,19 @@ public class VenueTipsActivity extends ListActivity {
         }
         group.clear();
         group.addAll(venueTips);
+    }
+
+    private void putGroupsInAdapter(Group groups) {
+        SeparatedListAdapter mainAdapter = (SeparatedListAdapter)getListAdapter();
+        mainAdapter.clear();
+        int groupCount = groups.size();
+        for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
+            Group group = (Group)groups.get(groupsIndex);
+            TipsListAdapter groupAdapter = new TipsListAdapter(this, group);
+            if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
+            mainAdapter.addSection(group.getType(), groupAdapter);
+        }
+        mainAdapter.notifyDataSetInvalidated();
     }
 
     private void setVenue(Venue venue) {
@@ -105,9 +157,7 @@ public class VenueTipsActivity extends ListActivity {
         @Override
         public void onPreExecute() {
             if (DEBUG) Log.d(TAG, "TipsTask: onPreExecute()");
-            Intent intent = new Intent(VenueActivity.ACTION_PROGRESS_BAR_START);
-            intent.putExtra(VenueActivity.EXTRA_TASK_ID, VENUE_ACTIVITY_PROGRESS_BAR_TASK_ID);
-            sendBroadcast(intent);
+            startProgressBar();
         }
 
         @Override
@@ -140,16 +190,31 @@ public class VenueTipsActivity extends ListActivity {
         @Override
         public void onPostExecute(Group groups) {
             try {
-                putGroupsInAdapter(groups);
+                setTipGroups(groups);
             } finally {
                 if (DEBUG) Log.d(TAG, "TipsTask: onPostExecute()");
-                Intent intent = new Intent(VenueActivity.ACTION_PROGRESS_BAR_STOP);
-                intent.putExtra(VenueActivity.EXTRA_TASK_ID, VENUE_ACTIVITY_PROGRESS_BAR_TASK_ID);
-                sendBroadcast(intent);
+                stopProgressBar();
                 if (getListAdapter().getCount() <= 0) {
                     mEmpty.setText("No tips for this venue! Add one!");
                 }
             }
+        }
+
+        @Override
+        public void onCancelled() {
+            stopProgressBar();
+        }
+
+        private void startProgressBar() {
+            Intent intent = new Intent(VenueActivity.ACTION_PROGRESS_BAR_START);
+            intent.putExtra(VenueActivity.EXTRA_TASK_ID, VENUE_ACTIVITY_PROGRESS_BAR_TASK_ID);
+            sendBroadcast(intent);
+        }
+
+        private void stopProgressBar() {
+            Intent intent = new Intent(VenueActivity.ACTION_PROGRESS_BAR_STOP);
+            intent.putExtra(VenueActivity.EXTRA_TASK_ID, VENUE_ACTIVITY_PROGRESS_BAR_TASK_ID);
+            sendBroadcast(intent);
         }
     }
 }
