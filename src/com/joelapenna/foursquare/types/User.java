@@ -9,6 +9,8 @@ import android.os.Parcelable;
 import com.joelapenna.foursquare.types.Group;
 
 /**
+ * Auto-generated: 2009-05-28 10:32:35.869115
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class User implements Parcelable, FoursquareType {
@@ -20,6 +22,7 @@ public class User implements Parcelable, FoursquareType {
     private String mGender;
     private String mId;
     private String mLastname;
+    private String mPhoto;
     private boolean mSendtwitter;
 
     public User() {
@@ -81,6 +84,14 @@ public class User implements Parcelable, FoursquareType {
         mLastname = lastname;
     }
 
+    public String getPhoto() {
+        return mPhoto;
+    }
+
+    public void setPhoto(String photo) {
+        mPhoto = photo;
+    }
+
     public boolean sendtwitter() {
         return mSendtwitter;
     }
@@ -109,6 +120,7 @@ public class User implements Parcelable, FoursquareType {
         dest.writeString(this.mGender);
         dest.writeString(this.mId);
         dest.writeString(this.mLastname);
+        dest.writeString(this.mPhoto);
     }
 
     private void readFromParcel(Parcel source) {
@@ -122,6 +134,7 @@ public class User implements Parcelable, FoursquareType {
         this.mGender = source.readString();
         this.mId = source.readString();
         this.mLastname = source.readString();
+        this.mPhoto = source.readString();
     }
 
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {

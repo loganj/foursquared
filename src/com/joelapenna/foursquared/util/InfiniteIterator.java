@@ -36,4 +36,8 @@ public class InfiniteIterator implements Iterator {
     @Override
     public void remove() {
     }
+
+    public void reset() {
+        mCount = 0;
+    }
 }

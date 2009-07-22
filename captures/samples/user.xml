@@ -7,6 +7,22 @@
   <cityid>23</cityid>
   <gender>male</gender>
   <sendtwitter>false</sendtwitter>
+  <photo>http://playfoursquare.com/userpix/1818_1239601037.jpg</photo>
+  <!-- Unsupported by gen_*  This causes errors when calling /api/user for the
+  authenticated user.
+  <checkin>
+    <checkinid>305122</checkinid>
+    <venueid>40450</venueid>
+    <aliasid>118685</aliasid>
+    <venuename>On the Corner</venuename>
+    <address>359 Divisadero St</address>
+    <crossstreet>at Oak</crossstreet>
+    <shout></shout>
+    <geolat>37.7729</geolat>
+    <geolong>-122.437</geolong>
+    <created>Thu, 28 May 09 08:09:50 +0000</created>
+  <checkin>
+  -->
   <badges>
     <badge>
       <name>Newbie</name>

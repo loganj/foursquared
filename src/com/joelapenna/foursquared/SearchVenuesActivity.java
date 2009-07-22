@@ -45,6 +45,9 @@ public class SearchVenuesActivity extends TabActivity {
     static final String TAG = "SearchVenuesActivity";
     static final boolean DEBUG = Foursquared.DEBUG;
 
+    public static final String QUERY_NEARBY = null;
+    public static SearchResultsObservable searchResultsObservable;
+
     private static final int MENU_SEARCH = 0;
     private static final int MENU_REFRESH = 1;
     private static final int MENU_NEARBY = 2;
@@ -52,15 +55,12 @@ public class SearchVenuesActivity extends TabActivity {
 
     private static final int MENU_GROUP_SEARCH = 0;
 
-    private static final String QUERY_NEARBY = null;
-
     private SearchTask mSearchTask;
 
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
 
     private SearchHolder mSearchHolder = new SearchHolder();
-    public static SearchResultsObservable searchResultsObservable;
 
     private TextView mEmpty;
     private SeparatedListAdapter mListAdapter;
@@ -377,6 +377,10 @@ public class SearchVenuesActivity extends TabActivity {
 
         public Group getSearchResults() {
             return mSearchHolder.results;
+        }
+
+        public String getQuery() {
+            return mSearchHolder.query;
         }
     };
 }

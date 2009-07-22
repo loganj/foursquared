@@ -17,6 +17,8 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
+ * Auto-generated: 2009-05-28 10:32:37.599227
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -42,6 +44,7 @@ public class UserParser extends AbstractParser<User> {
                         parseUserTag(parser, user);
                         return user;
                     }
+                    break;
 
                 default:
                     if (DEBUG) Log.d(TAG, "Unhandled Event");
@@ -61,7 +64,7 @@ public class UserParser extends AbstractParser<User> {
 
             String name = parser.getName();
             if ("badges".equals(name)) {
-                user.setBadges(new BadgesParser(new BadgeParser()).parse(parser));
+                user.setBadges(new GroupParser(new BadgeParser()).parse(parser));
 
             } else if ("cityid".equals(name)) {
                 user.setCityid(parser.nextText());
@@ -80,6 +83,9 @@ public class UserParser extends AbstractParser<User> {
 
             } else if ("lastname".equals(name)) {
                 user.setLastname(parser.nextText());
+
+            } else if ("photo".equals(name)) {
+                user.setPhoto(parser.nextText());
 
             } else if ("sendtwitter".equals(name)) {
                 user.setSendtwitter(parser.nextText().equals("1"));

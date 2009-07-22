@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class Foursquared extends Application {
     public static final String TAG = "Foursquared";
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final boolean API_DEBUG = false;
 
     public static final int LAST_LOCATION_UPDATE_THRESHOLD = 1000 * 60 * 60;
@@ -114,6 +114,7 @@ public class Foursquared extends Application {
                 try {
                     Foursquared.this.getUserInfo();
                 } catch (FoursquaredCredentialsError e) {
+                    if (DEBUG) Log.d(TAG, "Could not log in: ", e);
                     Toast.makeText(Foursquared.this,
                             "Unable to log in. Please check your phone number and password.",
                             Toast.LENGTH_LONG).show();
@@ -126,8 +127,9 @@ public class Foursquared extends Application {
         try {
             if (DEBUG) Log.d(TAG, "Trying to log in.");
             Auth auth = sFoursquare.login();
-            User user = sFoursquare.user();
-            if (auth != null && auth.status() && user != null) {
+            // We don't call user because its broken for authenticated user lookups.
+            // User user = sFoursquare.user();
+            if (auth != null && auth.status() /* && user != null */) {
                 Editor editor = mSharedPrefs.edit();
 
                 editor.putString(PREFERENCE_EMAIL, auth.getEmail());
@@ -135,15 +137,17 @@ public class Foursquared extends Application {
                 editor.putString(PREFERENCE_LAST, auth.getLastname());
                 editor.putString(PREFERENCE_PHOTO, auth.getPhoto());
 
-                editor.putString(PREFERENCE_CITY_ID, user.getCityid());
-                editor.putString(PREFERENCE_ID, user.getId());
-                editor.putString(PREFERENCE_GENDER, user.getGender());
+                // editor.putString(PREFERENCE_CITY_ID, user.getCityid());
+                // editor.putString(PREFERENCE_ID, user.getId());
+                // editor.putString(PREFERENCE_GENDER, user.getGender());
 
                 editor.commit();
             }
         } catch (FoursquareError e) {
+            if (DEBUG) Log.d(TAG, "FoursquareError: ", e);
             throw new FoursquaredCredentialsError(e.getMessage());
         } catch (FoursquareParseException e) {
+            if (DEBUG) Log.d(TAG, "FoursquareCredentialsError: ", e);
             throw new FoursquaredCredentialsError(e.getMessage());
         } catch (IOException e) {
         }

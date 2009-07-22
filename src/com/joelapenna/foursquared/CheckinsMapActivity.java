@@ -124,6 +124,8 @@ public class CheckinsMapActivity extends MapActivity {
         }
         if (DEBUG) Log.d(TAG, "Loading search results");
 
+        MAP_ICONS_ITERATOR.reset();
+
         final int groupCount = checkins.size();
         for (int groupIndex = 0; groupIndex < groupCount; groupIndex++) {
             Group group = (Group)checkins.get(groupIndex);
@@ -185,7 +187,12 @@ public class CheckinsMapActivity extends MapActivity {
 
     private void recenterMap() {
         GeoPoint center = mMyLocationOverlay.getMyLocation();
-        if (mCheckinsGroupOverlays.size() > 0) {
+        if (center != null
+                && SearchVenuesActivity.searchResultsObservable.getQuery() == SearchVenuesActivity.QUERY_NEARBY) {
+            if (DEBUG) Log.d(TAG, "recenterMap via MyLocation as we are doing a nearby search");
+            mMapController.animateTo(center);
+            mMapController.setZoom(16);
+        } else if (mCheckinsGroupOverlays.size() > 0) {
             if (DEBUG) Log.d(TAG, "recenterMap via checkins overlay span.");
             CheckinItemizedOverlay newestOverlay = mCheckinsGroupOverlays.get(0);
             if (DEBUG) {
@@ -196,7 +203,7 @@ public class CheckinsMapActivity extends MapActivity {
             mMapController.zoomToSpan(newestOverlay.getLatSpanE6(), newestOverlay.getLonSpanE6());
             mMapController.animateTo(newestOverlay.getCenter());
         } else if (center != null) {
-            if (DEBUG) Log.d(TAG, "recenterMap via MyLocation overlay");
+            if (DEBUG) Log.d(TAG, "Fallback, recenterMap via MyLocation overlay");
             mMapController.animateTo(center);
             mMapController.setZoom(16);
             return;
