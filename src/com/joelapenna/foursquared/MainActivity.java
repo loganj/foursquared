@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
     }
 
     private void startDefaultActivity() {
-        startActivity(new Intent(MainActivity.this, SearchVenueActivity.class));
+        startActivity(new Intent(MainActivity.this, SearchVenuesActivity.class));
     }
 
     private void startPreferencesActivity() {

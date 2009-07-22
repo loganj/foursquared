@@ -30,8 +30,8 @@ import java.util.Observer;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class SearchVenueMapActivity extends MapActivity {
-    public static final String TAG = "SearchVenueMapActivity";
+public class SearchVenuesMapActivity extends MapActivity {
+    public static final String TAG = "SearchVenuesMapActivity";
     public static final boolean DEBUG = Foursquared.DEBUG;
 
     private static final int[] MAP_NEW_ICONS = {
@@ -65,7 +65,7 @@ public class SearchVenueMapActivity extends MapActivity {
             @Override
             public void onClick(View v) {
                 if (DEBUG) Log.d(TAG, "firing venue activity for venue");
-                Intent intent = new Intent(SearchVenueMapActivity.this, VenueActivity.class);
+                Intent intent = new Intent(SearchVenuesMapActivity.this, VenueActivity.class);
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.putExtra("venue", mTappedVenue);
                 startActivity(intent);
@@ -79,7 +79,7 @@ public class SearchVenueMapActivity extends MapActivity {
             public void update(Observable observable, Object data) {
                 if (DEBUG) Log.d(TAG, "Observed search results change.");
                 clearMap();
-                loadSearchResults(SearchVenueActivity.searchResultsObservable.getSearchResults());
+                loadSearchResults(SearchVenuesActivity.searchResultsObservable.getSearchResults());
                 recenterMap();
             }
         };
@@ -93,10 +93,10 @@ public class SearchVenueMapActivity extends MapActivity {
         // mMyLocationOverlay.enableCompass(); // Disabled due to a sdk 1.5 emulator bug
 
         clearMap();
-        loadSearchResults(SearchVenueActivity.searchResultsObservable.getSearchResults());
+        loadSearchResults(SearchVenuesActivity.searchResultsObservable.getSearchResults());
         recenterMap();
 
-        SearchVenueActivity.searchResultsObservable.addObserver(mSearchResultsObserver);
+        SearchVenuesActivity.searchResultsObservable.addObserver(mSearchResultsObserver);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class SearchVenueMapActivity extends MapActivity {
         if (DEBUG) Log.d(TAG, "onPause()");
         mMyLocationOverlay.disableMyLocation();
         mMyLocationOverlay.disableCompass();
-        SearchVenueActivity.searchResultsObservable.deleteObserver(mSearchResultsObserver);
+        SearchVenuesActivity.searchResultsObservable.deleteObserver(mSearchResultsObserver);
     }
 
     @Override

@@ -96,7 +96,7 @@
 
 
     <activity
-      android:name=".SearchVenueActivity"
+      android:name=".SearchVenuesActivity"
       android:label="@string/venue_search_activity_name"
       android:launchMode="singleTop">
       <intent-filter>
@@ -114,7 +114,7 @@
     </activity>
 
     <activity
-      android:name=".SearchVenueMapActivity">
+      android:name=".SearchVenuesMapActivity">
     </activity>
 
 

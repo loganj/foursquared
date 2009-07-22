@@ -5,16 +5,16 @@
 package com.joelapenna.foursquared.test;
 
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquared.SearchVenueActivity;
+import com.joelapenna.foursquared.SearchVenuesActivity;
 
 import android.util.Log;
 
 /**
- * Use this to inject a bit of data into the SearchVenueActivity for exploratory testing.
+ * Use this to inject a bit of data into the SearchVenuesActivity for exploratory testing.
  * 
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class TestSearchVenueActivity extends SearchVenueActivity {
+public class TestSearchVenueActivity extends SearchVenuesActivity {
     static final String TAG = "TestSearchVenueActivity";
     static final boolean DEBUG = true;
 

@@ -41,8 +41,8 @@ import java.util.Observable;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class SearchVenueActivity extends TabActivity {
-    static final String TAG = "SearchVenueActivity";
+public class SearchVenuesActivity extends TabActivity {
+    static final String TAG = "SearchVenuesActivity";
     static final boolean DEBUG = Foursquared.DEBUG;
 
     private static final int MENU_SEARCH = 0;
@@ -126,7 +126,7 @@ public class SearchVenueActivity extends TabActivity {
                 return true;
             case MENU_CHECKINS:
                 if (DEBUG) Log.d(TAG, "firing checkins activity");
-                Intent intent = new Intent(SearchVenueActivity.this, CheckinsActivity.class);
+                Intent intent = new Intent(SearchVenuesActivity.this, CheckinsActivity.class);
                 intent.setAction(Intent.ACTION_SEARCH);
                 startActivity(intent);
                 return true;
@@ -227,7 +227,7 @@ public class SearchVenueActivity extends TabActivity {
 
     void startItemActivity(Venue venue) {
         if (DEBUG) Log.d(TAG, "firing venue activity for venue");
-        Intent intent = new Intent(SearchVenueActivity.this, VenueActivity.class);
+        Intent intent = new Intent(SearchVenuesActivity.this, VenueActivity.class);
         intent.setAction(Intent.ACTION_VIEW);
         intent.putExtra(VenueActivity.EXTRA_VENUE, venue);
         startActivity(intent);
@@ -292,7 +292,7 @@ public class SearchVenueActivity extends TabActivity {
                 );
 
         // Maps tab
-        Intent intent = new Intent(this, SearchVenueMapActivity.class);
+        Intent intent = new Intent(this, SearchVenuesMapActivity.class);
         mTabHost.addTab(mTabHost.newTabSpec("map")
                 // Map Tab
                 .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_mapmode))
