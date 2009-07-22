@@ -71,6 +71,16 @@
 
 
     <activity
+      android:name=".AddVenueActivity"
+      android:label="@string/add_venue_activity_name">
+      <intent-filter>
+        <action
+          android:name="android.intent.action.MAIN" />
+      </intent-filter>
+    </activity>
+
+
+    <activity
       android:name=".CheckinsActivity"
       android:label="@string/checkins_activity_name"
       android:launchMode="singleTop">

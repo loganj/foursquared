@@ -7,6 +7,7 @@ package com.joelapenna.foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
@@ -115,6 +116,12 @@ public class Foursquare {
     @V1
     public Group checkins(String cityId) throws FoursquareException, FoursquareError, IOException {
         return mFoursquareV1.checkins(cityId);
+    }
+
+    @V1
+    public City checkCity(String geolat, String geolong) throws FoursquareException, FoursquareError,
+            IOException {
+        return mFoursquareV1.checkcity(geolat, geolong);
     }
 
     @V1
