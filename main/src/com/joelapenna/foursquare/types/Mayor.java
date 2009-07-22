@@ -8,32 +8,41 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Auto-generated: 2009-06-19 00:18:41.877305
+ * Auto-generated: 2009-07-19 11:20:21.311352
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Mayor implements Parcelable, FoursquareType {
 
-    private String mCount;
-    private User mUser;
+    private String mCheckins;
+    private String mMessage;
+    private String mType;
 
     public Mayor() {
     }
 
-    public String getCount() {
-        return mCount;
+    public String getCheckins() {
+        return mCheckins;
     }
 
-    public void setCount(String count) {
-        mCount = count;
+    public void setCheckins(String checkins) {
+        mCheckins = checkins;
     }
 
-    public User getUser() {
-        return mUser;
+    public String getMessage() {
+        return mMessage;
     }
 
-    public void setUser(User user) {
-        mUser = user;
+    public void setMessage(String message) {
+        mMessage = message;
+    }
+
+    public String getType() {
+        return mType;
+    }
+
+    public void setType(String type) {
+        mType = type;
     }
 
     /* For Parcelable */
@@ -49,15 +58,17 @@ public class Mayor implements Parcelable, FoursquareType {
 
         };
         dest.writeBooleanArray(booleanArray);
-        dest.writeString(this.mCount);
-        dest.writeParcelable(this.mUser, 0);
+        dest.writeString(this.mCheckins);
+        dest.writeString(this.mMessage);
+        dest.writeString(this.mType);
     }
 
     private void readFromParcel(Parcel source) {
         boolean[] booleanArray = new boolean[0];
         source.readBooleanArray(booleanArray);
-        this.mCount = source.readString();
-        this.mUser = source.readParcelable(null);
+        this.mCheckins = source.readString();
+        this.mMessage = source.readString();
+        this.mType = source.readString();
     }
 
     public static final Parcelable.Creator<Mayor> CREATOR = new Parcelable.Creator<Mayor>() {

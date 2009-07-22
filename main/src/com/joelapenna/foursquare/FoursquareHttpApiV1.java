@@ -9,19 +9,19 @@ import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.http.HttpApi;
 import com.joelapenna.foursquare.http.HttpApiWithOAuth;
+import com.joelapenna.foursquare.parsers.CheckinParser;
 import com.joelapenna.foursquare.parsers.CityParser;
 import com.joelapenna.foursquare.parsers.CredentialsParser;
 import com.joelapenna.foursquare.parsers.DataParser;
 import com.joelapenna.foursquare.parsers.GroupParser;
-import com.joelapenna.foursquare.parsers.CheckinParser;
 import com.joelapenna.foursquare.parsers.TipParser;
 import com.joelapenna.foursquare.parsers.UserParser;
 import com.joelapenna.foursquare.parsers.VenueParser;
+import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
@@ -255,7 +255,7 @@ public class FoursquareHttpApiV1 {
     /*
      * /checkin?vid=1234&venue=Noc%20Noc&shout=Come%20here&private=0&twitter=1
      */
-    Checkin checkin(String vid, String venue, String shout, boolean isPrivate, boolean twitter)
+    CheckinResult checkin(String vid, String venue, String shout, boolean isPrivate, boolean twitter)
             throws FoursquareException, FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(URL_API_CHECKIN, //
                 new BasicNameValuePair("vid", vid), //
@@ -263,7 +263,7 @@ public class FoursquareHttpApiV1 {
                 new BasicNameValuePair("shout", shout), //
                 new BasicNameValuePair("private", (isPrivate) ? "1" : "0"), //
                 new BasicNameValuePair("twitter", (twitter) ? "1" : "0"));
-        return (Checkin)mHttpApi.doHttpRequest(httpGet, new CheckinParser());
+        return (CheckinResult)mHttpApi.doHttpRequest(httpGet, new CheckinParser());
     }
 
     /**

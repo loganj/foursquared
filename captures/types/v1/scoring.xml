@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<scoring>
+  <score type="Score"></score>
+  <total type="Score"></total>
+  <rank type="Group">
+    <rank type="Rank"></rank>
+  </rank>
+</scoring>

@@ -7,7 +7,7 @@ package com.joelapenna.foursquare.parsers;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
-import com.joelapenna.foursquare.types.Mayor;
+import com.joelapenna.foursquare.types.Scoring;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -17,40 +17,40 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-07-19 11:19:50.884696
+ * Auto-generated: 2009-07-19 11:19:55.321172
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
-public class MayorParser extends AbstractParser<Mayor> {
-    private static final String TAG = "MayorParser";
+public class ScoringParser extends AbstractParser<Scoring> {
+    private static final String TAG = "ScoringParser";
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
-    public Mayor parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
+    public Scoring parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
         try {
-            parser.require(XmlPullParser.START_TAG, null, "mayor");
+            parser.require(XmlPullParser.START_TAG, null, "scoring");
         } catch (XmlPullParserException e) {
             if (parser.getName().equals("error")) {
                 throw new FoursquareError(parser.getText());
             }
         }
 
-        Mayor mayor = new Mayor();
+        Scoring scoring = new Scoring();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
             if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
 
             String name = parser.getName();
-            if ("checkins".equals(name)) {
-                mayor.setCheckins(parser.nextText());
+            if ("rank".equals(name)) {
+                scoring.setRank(new GroupParser(new RankParser()).parse(parser));
 
-            } else if ("message".equals(name)) {
-                mayor.setMessage(parser.nextText());
+            } else if ("score".equals(name)) {
+                scoring.setScore(new ScoreParser().parse(parser));
 
-            } else if ("type".equals(name)) {
-                mayor.setType(parser.nextText());
+            } else if ("total".equals(name)) {
+                scoring.setTotal(new ScoreParser().parse(parser));
 
             } else {
                 // Consume something we don't understand.
@@ -58,6 +58,6 @@ public class MayorParser extends AbstractParser<Mayor> {
                 skipSubTree(parser);
             }
         }
-        return mayor;
+        return scoring;
     }
 }
