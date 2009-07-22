@@ -141,7 +141,7 @@ public class SearchVenueMapActivity extends MapActivity {
     private void clearMap() {
         mMapView.getOverlays().remove(mVenuesOverlay);
         mVenuesOverlay = new VenueItemizedOverlayWithButton(this.getResources().getDrawable(
-                R.drawable.reddot), this.getResources().getDrawable(R.drawable.blueman));
+                R.drawable.reddot), this.getResources().getDrawable(R.drawable.bluedot));
     }
 
     private boolean isVenueMappable(Venue venue) {
