@@ -74,7 +74,7 @@ public class CheckinsMapActivity extends MapActivity {
             public void update(Observable observable, Object data) {
                 if (DEBUG) Log.d(TAG, "Observed search results change.");
                 clearMap();
-                loadSearchResults(CheckinsActivity.checkinsObservable.getSearchResults());
+                loadSearchResults(CheckinsActivity.searchResultsObservable.getSearchResults());
                 recenterMap();
             }
         };
@@ -88,10 +88,10 @@ public class CheckinsMapActivity extends MapActivity {
         // mMyLocationOverlay.enableCompass(); // Disabled due to a sdk 1.5 emulator bug
 
         clearMap();
-        loadSearchResults(CheckinsActivity.checkinsObservable.getSearchResults());
+        loadSearchResults(CheckinsActivity.searchResultsObservable.getSearchResults());
         recenterMap();
 
-        CheckinsActivity.checkinsObservable.addObserver(mSearchResultsObserver);
+        CheckinsActivity.searchResultsObservable.addObserver(mSearchResultsObserver);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class CheckinsMapActivity extends MapActivity {
         if (DEBUG) Log.d(TAG, "onPause()");
         mMyLocationOverlay.disableMyLocation();
         mMyLocationOverlay.disableCompass();
-        CheckinsActivity.checkinsObservable.deleteObserver(mSearchResultsObserver);
+        CheckinsActivity.searchResultsObservable.deleteObserver(mSearchResultsObserver);
     }
 
     @Override

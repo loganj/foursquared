@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-05-03 01:13:37.268358
+ * Auto-generated: 2009-05-19 08:22:12.823080
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -53,8 +53,8 @@ public class CheckinParser extends AbstractParser<Checkin> {
         return null;
     }
 
-    public void parseCheckinTag(XmlPullParser parser, Checkin checkin) throws XmlPullParserException,
-            IOException, FoursquareError, FoursquareParseException {
+    public void parseCheckinTag(XmlPullParser parser, Checkin checkin)
+            throws XmlPullParserException, IOException, FoursquareError, FoursquareParseException {
         assert parser.getName() == "checkin";
         if (DEBUG) Log.d(TAG, "parsing checkin stanza");
 
@@ -76,6 +76,9 @@ public class CheckinParser extends AbstractParser<Checkin> {
 
             } else if ("city_name".equals(name)) {
                 checkin.setCityName(parser.nextText());
+
+            } else if ("city_name_long".equals(name)) {
+                checkin.setCityNameLong(parser.nextText());
 
             } else if ("cityid".equals(name)) {
                 checkin.setCityid(parser.nextText());
@@ -104,6 +107,9 @@ public class CheckinParser extends AbstractParser<Checkin> {
             } else if ("geolong".equals(name)) {
                 checkin.setGeolong(parser.nextText());
 
+            } else if ("is_mayor".equals(name)) {
+                checkin.setIsMayor(parser.nextText().equals("1"));
+
             } else if ("lastname".equals(name)) {
                 checkin.setLastname(parser.nextText());
 
@@ -128,11 +134,17 @@ public class CheckinParser extends AbstractParser<Checkin> {
             } else if ("show_twitter".equals(name)) {
                 checkin.setShowTwitter(parser.nextText().equals("1"));
 
+            } else if ("state".equals(name)) {
+                checkin.setState(parser.nextText());
+
             } else if ("stats".equals(name)) {
                 checkin.setStats(parser.nextText());
 
             } else if ("status".equals(name)) {
                 checkin.setStatus(parser.nextText().equals("1"));
+
+            } else if ("timestamp".equals(name)) {
+                checkin.setTimestamp(parser.nextText());
 
             } else if ("twitter_default".equals(name)) {
                 checkin.setTwitterDefault(parser.nextText().equals("1"));
@@ -148,9 +160,6 @@ public class CheckinParser extends AbstractParser<Checkin> {
 
             } else if ("venuename".equals(name)) {
                 checkin.setVenuename(parser.nextText());
-
-            } else if ("xdatetime".equals(name)) {
-                checkin.setXdatetime(parser.nextText());
             } else {
                 // Consume something we don't understand.
                 if (DEBUG) Log.d(TAG, "Found tag that we don't recognize: " + name);
@@ -160,4 +169,3 @@ public class CheckinParser extends AbstractParser<Checkin> {
         parser.nextToken();
     }
 }
-

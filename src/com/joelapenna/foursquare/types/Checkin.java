@@ -4,22 +4,22 @@
 
 package com.joelapenna.foursquare.types;
 
-import com.joelapenna.foursquare.filters.VenueFilterable;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Auto-generated: 2009-05-03 01:14:11.342959
+ * Auto-generated: 2009-05-19 08:21:57.175264
+ * 
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class Checkin implements Parcelable, FoursquareType, VenueFilterable {
+public class Checkin implements Parcelable, FoursquareType {
 
     private String mAddress;
     private String mAlert;
     private String mAliasid;
     private String mCheckinid;
     private String mCityName;
+    private String mCityNameLong;
     private String mCityid;
     private String mCrossstreet;
     private boolean mDballDefault;
@@ -29,6 +29,7 @@ public class Checkin implements Parcelable, FoursquareType, VenueFilterable {
     private String mGender;
     private String mGeolat;
     private String mGeolong;
+    private boolean mIsMayor;
     private String mLastname;
     private String mMessage;
     private String mPhone;
@@ -37,14 +38,15 @@ public class Checkin implements Parcelable, FoursquareType, VenueFilterable {
     private String mShout;
     private boolean mShowDball;
     private boolean mShowTwitter;
+    private String mState;
     private String mStats;
     private boolean mStatus;
+    private String mTimestamp;
     private boolean mTwitterDefault;
     private String mUrl;
     private String mUserid;
     private String mVenueid;
     private String mVenuename;
-    private String mXdatetime;
 
     public Checkin() {
     }
@@ -87,6 +89,14 @@ public class Checkin implements Parcelable, FoursquareType, VenueFilterable {
 
     public void setCityName(String cityName) {
         mCityName = cityName;
+    }
+
+    public String getCityNameLong() {
+        return mCityNameLong;
+    }
+
+    public void setCityNameLong(String cityNameLong) {
+        mCityNameLong = cityNameLong;
     }
 
     public String getCityid() {
@@ -161,6 +171,14 @@ public class Checkin implements Parcelable, FoursquareType, VenueFilterable {
         mGeolong = geolong;
     }
 
+    public boolean isMayor() {
+        return mIsMayor;
+    }
+
+    public void setIsMayor(boolean isMayor) {
+        mIsMayor = isMayor;
+    }
+
     public String getLastname() {
         return mLastname;
     }
@@ -225,6 +243,14 @@ public class Checkin implements Parcelable, FoursquareType, VenueFilterable {
         mShowTwitter = showTwitter;
     }
 
+    public String getState() {
+        return mState;
+    }
+
+    public void setState(String state) {
+        mState = state;
+    }
+
     public String getStats() {
         return mStats;
     }
@@ -239,6 +265,14 @@ public class Checkin implements Parcelable, FoursquareType, VenueFilterable {
 
     public void setStatus(boolean status) {
         mStatus = status;
+    }
+
+    public String getTimestamp() {
+        return mTimestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        mTimestamp = timestamp;
     }
 
     public boolean twitterDefault() {
@@ -281,14 +315,6 @@ public class Checkin implements Parcelable, FoursquareType, VenueFilterable {
         mVenuename = venuename;
     }
 
-    public String getXdatetime() {
-        return mXdatetime;
-    }
-
-    public void setXdatetime(String xdatetime) {
-        mXdatetime = xdatetime;
-    }
-
     /* For Parcelable */
 
     @Override
@@ -299,11 +325,7 @@ public class Checkin implements Parcelable, FoursquareType, VenueFilterable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         boolean[] booleanArray = {
-            mDballDefault,
-        mShowDball,
-        mShowTwitter,
-        mStatus,
-        mTwitterDefault,
+                mDballDefault, mIsMayor, mShowDball, mShowTwitter, mStatus, mTwitterDefault,
         };
         dest.writeBooleanArray(booleanArray);
         dest.writeString(this.mAddress);
@@ -311,6 +333,7 @@ public class Checkin implements Parcelable, FoursquareType, VenueFilterable {
         dest.writeString(this.mAliasid);
         dest.writeString(this.mCheckinid);
         dest.writeString(this.mCityName);
+        dest.writeString(this.mCityNameLong);
         dest.writeString(this.mCityid);
         dest.writeString(this.mCrossstreet);
         dest.writeString(this.mDisplay);
@@ -325,27 +348,30 @@ public class Checkin implements Parcelable, FoursquareType, VenueFilterable {
         dest.writeString(this.mPhoto);
         dest.writeString(this.mRelativeTime);
         dest.writeString(this.mShout);
+        dest.writeString(this.mState);
         dest.writeString(this.mStats);
+        dest.writeString(this.mTimestamp);
         dest.writeString(this.mUrl);
         dest.writeString(this.mUserid);
         dest.writeString(this.mVenueid);
         dest.writeString(this.mVenuename);
-        dest.writeString(this.mXdatetime);
     }
 
     private void readFromParcel(Parcel source) {
-        boolean[] booleanArray = new boolean[5];
+        boolean[] booleanArray = new boolean[6];
         source.readBooleanArray(booleanArray);
         this.mDballDefault = booleanArray[0];
-        this.mShowDball = booleanArray[1];
-        this.mShowTwitter = booleanArray[2];
-        this.mStatus = booleanArray[3];
-        this.mTwitterDefault = booleanArray[4];
+        this.mIsMayor = booleanArray[1];
+        this.mShowDball = booleanArray[2];
+        this.mShowTwitter = booleanArray[3];
+        this.mStatus = booleanArray[4];
+        this.mTwitterDefault = booleanArray[5];
         this.mAddress = source.readString();
         this.mAlert = source.readString();
         this.mAliasid = source.readString();
         this.mCheckinid = source.readString();
         this.mCityName = source.readString();
+        this.mCityNameLong = source.readString();
         this.mCityid = source.readString();
         this.mCrossstreet = source.readString();
         this.mDisplay = source.readString();
@@ -360,12 +386,13 @@ public class Checkin implements Parcelable, FoursquareType, VenueFilterable {
         this.mPhoto = source.readString();
         this.mRelativeTime = source.readString();
         this.mShout = source.readString();
+        this.mState = source.readString();
         this.mStats = source.readString();
+        this.mTimestamp = source.readString();
         this.mUrl = source.readString();
         this.mUserid = source.readString();
         this.mVenueid = source.readString();
         this.mVenuename = source.readString();
-        this.mXdatetime = source.readString();
     }
 
     public static final Parcelable.Creator<Checkin> CREATOR = new Parcelable.Creator<Checkin>() {

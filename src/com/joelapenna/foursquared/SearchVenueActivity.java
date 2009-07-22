@@ -55,20 +55,18 @@ public class SearchVenueActivity extends TabActivity {
 
     private static final String QUERY_NEARBY = null;
 
-    private SearchAsyncTask mSearchTask;
+    private SearchTask mSearchTask;
 
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
 
-    private String mQuery;
-    private Group mSearchResults;
+    private SearchHolder mSearchHolder = new SearchHolder();
+    public static SearchResultsObservable searchResultsObservable;
 
     private TextView mEmpty;
     private SeparatedListAdapter mListAdapter;
     private ListView mListView;
     private TabHost mTabHost;
-
-    public static SearchResultsObservable searchResultsObservable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,31 +75,30 @@ public class SearchVenueActivity extends TabActivity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.search_venue_activity);
 
-        searchResultsObservable = new SearchResultsObservable();
-
-        ensureTabHost();
-
         mLocationListener = ((Foursquared)getApplication()).getLocationListener();
         mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
-        ensureListViewAdapter();
+        searchResultsObservable = new SearchResultsObservable();
+        
+        initTabHost();
+        initListViewAdapter();
 
         if (getLastNonConfigurationInstance() != null) {
             if (DEBUG) Log.d(TAG, "Restoring state.");
-            StateHolder holder = (StateHolder)getLastNonConfigurationInstance();
-            if (holder.searchResults == null) {
+            SearchHolder holder = (SearchHolder)getLastNonConfigurationInstance();
+            if (holder.results == null) {
                 executeSearchTask(holder.query);
             } else {
-                mQuery = holder.query;
-                setSearchResults(holder.searchResults);
-                putGroupsInAdapter(holder.searchResults);
+                mSearchHolder.query = holder.query;
+                setSearchResults(holder.results);
+                putSearchResultsInAdapter(holder.results);
             }
         } else {
             if (DEBUG) Log.d(TAG, "Running new intent.");
             onNewIntent(getIntent());
             // Group fakeResults = FoursquaredTest.createRandomVenueGroups("Root");
             // setSearchResults(fakeResults);
-            // putGroupsInAdapter(fakeResults);
+            // putSearchResultsInAdapter(fakeResults);
         }
     }
 
@@ -130,7 +127,7 @@ public class SearchVenueActivity extends TabActivity {
                 executeSearchTask(null);
                 return true;
             case MENU_REFRESH:
-                executeSearchTask(mQuery);
+                executeSearchTask(mSearchHolder.query);
                 return true;
             case MENU_CHECKINS:
                 if (DEBUG) Log.d(TAG, "firing checkins activity");
@@ -159,10 +156,7 @@ public class SearchVenueActivity extends TabActivity {
 
     @Override
     public Object onRetainNonConfigurationInstance() {
-        StateHolder holder = new StateHolder();
-        holder.query = mQuery;
-        holder.searchResults = mSearchResults;
-        return holder;
+        return mSearchHolder;
     }
 
     @Override
@@ -189,10 +183,10 @@ public class SearchVenueActivity extends TabActivity {
 
     void executeSearchTask(String query) {
         if (DEBUG) Log.d(TAG, "sendQuery()");
-        mQuery = query;
+        mSearchHolder.query = query;
         // not going through set* because we don't want to notify search result
         // observers.
-        mSearchResults = null;
+        mSearchHolder.results = null;
 
         // If a task is already running, don't start a new one.
         if (mSearchTask != null && mSearchTask.getStatus() != AsyncTask.Status.FINISHED) {
@@ -203,45 +197,10 @@ public class SearchVenueActivity extends TabActivity {
                 return;
             }
         }
-        mSearchTask = (SearchAsyncTask)new SearchAsyncTask().execute();
+        mSearchTask = (SearchTask)new SearchTask().execute();
     }
 
-    Group searchVenues() throws FoursquareError, FoursquareParseException, IOException {
-        Location location = mLocationListener.getLastKnownLocation();
-        Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
-        if (location == null) {
-            if (DEBUG) Log.d(TAG, "Searching without location.");
-            return foursquare.venues(mQuery, null, null, 10, 1);
-        } else {
-            // Try to make the search radius to be the same as our
-            // accuracy.
-            if (DEBUG) Log.d(TAG, "Searching with location: " + location);
-            int radius;
-            if (location.hasAccuracy()) {
-                radius = Float.valueOf(location.getAccuracy()).intValue();
-            } else {
-                radius = 10;
-            }
-            return foursquare.venues(mQuery, String.valueOf(location.getLatitude()), String
-                    .valueOf(location.getLongitude()), radius, 1);
-        }
-    }
-
-    void setSearchResults(Group searchResults) {
-        if (DEBUG) Log.d(TAG, "Setting search results.");
-        mSearchResults = searchResults;
-        searchResultsObservable.notifyObservers();
-    }
-
-    void startVenueActivity(Venue venue) {
-        if (DEBUG) Log.d(TAG, "firing venue activity for venue");
-        Intent intent = new Intent(SearchVenueActivity.this, VenueActivity.class);
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.putExtra(VenueActivity.EXTRA_VENUE, venue);
-        startActivity(intent);
-    }
-
-    void putGroupsInAdapter(Group groups) {
+    void putSearchResultsInAdapter(Group groups) {
         if (groups == null) {
             Toast.makeText(getApplicationContext(), "Could not complete search!",
                     Toast.LENGTH_SHORT).show();
@@ -260,7 +219,47 @@ public class SearchVenueActivity extends TabActivity {
         mListAdapter.notifyDataSetInvalidated();
     }
 
-    private void ensureListViewAdapter() {
+    void setSearchResults(Group searchResults) {
+        if (DEBUG) Log.d(TAG, "Setting search results.");
+        mSearchHolder.results = searchResults;
+        searchResultsObservable.notifyObservers();
+    }
+
+    void startItemActivity(Venue venue) {
+        if (DEBUG) Log.d(TAG, "firing venue activity for venue");
+        Intent intent = new Intent(SearchVenueActivity.this, VenueActivity.class);
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.putExtra(VenueActivity.EXTRA_VENUE, venue);
+        startActivity(intent);
+    }
+    
+    private void ensureSearchResults() {
+        if (mListAdapter.getCount() > 0) {
+            mEmpty.setVisibility(View.GONE);
+        } else {
+            mEmpty.setText("No results found! Try another search!");
+            mEmpty.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void ensureTitle(boolean finished) {
+        if (finished) {
+            if (mSearchHolder.query == QUERY_NEARBY) {
+                setTitle("Nearby - Foursquared");
+            } else {
+                setTitle(mSearchHolder.query + " - Foursquared");
+            }
+        } else {
+            if (mSearchHolder.query == QUERY_NEARBY) {
+                setTitle("Searching Nearby - Foursquared");
+            } else {
+                setTitle("Searching \"" + mSearchHolder.query + "\" - Foursquared");
+            }
+        }
+
+    }
+
+    private void initListViewAdapter() {
         if (mListView != null) {
             throw new IllegalStateException("Trying to initialize already initialized ListView");
         }
@@ -274,21 +273,12 @@ public class SearchVenueActivity extends TabActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Venue venue = (Venue)parent.getAdapter().getItem(position);
-                startVenueActivity(venue);
+                startItemActivity(venue);
             }
         });
     }
 
-    private void ensureSearchResults() {
-        if (mListAdapter.getCount() > 0) {
-            mEmpty.setVisibility(View.GONE);
-        } else {
-            mEmpty.setText("No results found! Try another search!");
-            mEmpty.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void ensureTabHost() {
+    private void initTabHost() {
         if (mTabHost != null) {
             throw new IllegalStateException("Trying to intialize already initializd TabHost");
         }
@@ -313,24 +303,7 @@ public class SearchVenueActivity extends TabActivity {
         mTabHost.setCurrentTab(0);
     }
 
-    private void ensureTitle(boolean finished) {
-        if (finished) {
-            if (mQuery == QUERY_NEARBY) {
-                setTitle("Nearby - Foursquared");
-            } else {
-                setTitle(mQuery + " - Foursquared");
-            }
-        } else {
-            if (mQuery == QUERY_NEARBY) {
-                setTitle("Searching Nearby - Foursquared");
-            } else {
-                setTitle("Searching \"" + mQuery + "\" - Foursquared");
-            }
-        }
-
-    }
-
-    private class SearchAsyncTask extends AsyncTask<Void, Void, Group> {
+    private class SearchTask extends AsyncTask<Void, Void, Group> {
 
         @Override
         public void onPreExecute() {
@@ -342,7 +315,7 @@ public class SearchVenueActivity extends TabActivity {
         @Override
         public Group doInBackground(Void... params) {
             try {
-                return searchVenues();
+                return search();
             } catch (FoursquareError e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "FoursquareError", e);
@@ -360,17 +333,38 @@ public class SearchVenueActivity extends TabActivity {
         public void onPostExecute(Group groups) {
             try {
                 setSearchResults(groups);
-                putGroupsInAdapter(groups);
+                putSearchResultsInAdapter(groups);
             } finally {
                 setProgressBarIndeterminateVisibility(false);
                 ensureTitle(true);
                 ensureSearchResults();
             }
         }
+
+        public Group search() throws FoursquareError, FoursquareParseException, IOException {
+            Location location = mLocationListener.getLastKnownLocation();
+            Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
+            if (location == null) {
+                if (DEBUG) Log.d(TAG, "Searching without location.");
+                return foursquare.venues(mSearchHolder.query, null, null, 10, 1);
+            } else {
+                // Try to make the search radius to be the same as our
+                // accuracy.
+                if (DEBUG) Log.d(TAG, "Searching with location: " + location);
+                int radius;
+                if (location.hasAccuracy()) {
+                    radius = Float.valueOf(location.getAccuracy()).intValue();
+                } else {
+                    radius = 10;
+                }
+                return foursquare.venues(mSearchHolder.query, String.valueOf(location.getLatitude()), String
+                        .valueOf(location.getLongitude()), radius, 1);
+            }
+        }
     }
 
-    private static class StateHolder {
-        Group searchResults;
+    private static class SearchHolder {
+        Group results;
         String query;
     }
 
@@ -382,7 +376,7 @@ public class SearchVenueActivity extends TabActivity {
         }
 
         public Group getSearchResults() {
-            return mSearchResults;
+            return mSearchHolder.results;
         }
     };
 }

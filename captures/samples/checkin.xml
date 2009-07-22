@@ -4,6 +4,8 @@
     <lastname>Reedy</lastname>
     <cityid>23</cityid>
     <city_name>SF</city_name>
+    <city_name_long>San Francisco</city_name_long>
+    <state>CA</state>
     <email>kevinreedy@gmail.com</email>
     <phone>7084219526</phone>
     <photo>http://playfoursquare.com/userpix/blank_boy.png</photo>
@@ -21,8 +23,9 @@
     <shout></shout>
     <geolat>37.7729</geolat>
     <geolong>-122.437</geolong>
-    <xdatetime>2009-04-06 20:33:41</xdatetime>
+    <timestamp>Tue, 19 May 09 06:17:00 +0000</timestamp>
     <relative_time>2 hrs ago</relative_time>
+    <is_mayor>0</is_mayor>
     <stats></stats>
     <alert></alert>
     <display></display>
