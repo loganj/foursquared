@@ -41,7 +41,7 @@ PORT = 80
 
 CONTENT_TYPE_HEADER = {'Content-Type' :'application/x-www-form-urlencoded'}
 
-SIGNATURE_METHOD = oauth.OAuthSignatureMethod_PLAINTEXT()
+SIGNATURE_METHOD = oauth.OAuthSignatureMethod_HMAC_SHA1()
 
 AUTHEXCHANGE_URL = 'http://api.playfoursquare.com/v1/authexchange'
 
@@ -85,8 +85,9 @@ def main():
 
     connection = httplib.HTTPConnection('api.playfoursquare.com:80')
 
-    connection.request(oauth_request.http_method, oauth_request.to_url(),
-        headers={})
+    headers = {'Content-Type' :'application/x-www-form-urlencoded'}
+    connection.request(oauth_request.http_method, AUTHEXCHANGE_URL,
+        body=oauth_request.to_postdata(), headers=headers)
 
     auth_response = connection.getresponse().read()
     token = parse_auth_response(auth_response)
@@ -103,8 +104,8 @@ def main():
   connection.request(oauth_request.http_method, oauth_request.to_url(),
       body=oauth_request.to_postdata(), headers=CONTENT_TYPE_HEADER)
 
-  #print connection.getresponse().read()
-  print minidom.parse(connection.getresponse()).toprettyxml(indent='  ')
+  print connection.getresponse().read()
+  #print minidom.parse(connection.getresponse()).toprettyxml(indent='  ')
 
 
 if __name__ == '__main__':
