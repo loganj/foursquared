@@ -9,13 +9,14 @@ import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.parsers.AuthParser;
 import com.joelapenna.foursquare.parsers.CheckinParser;
 import com.joelapenna.foursquare.parsers.CheckinResponseParser;
+import com.joelapenna.foursquare.parsers.DataParser;
 import com.joelapenna.foursquare.parsers.GroupParser;
 import com.joelapenna.foursquare.parsers.TipParser;
 import com.joelapenna.foursquare.parsers.VenueParser;
 import com.joelapenna.foursquare.types.Auth;
 import com.joelapenna.foursquare.types.Checkin;
+import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.Result;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.error.FoursquaredCredentialsError;
 
@@ -43,7 +44,7 @@ class FoursquareHttpApi extends HttpApi {
     private static final String URL_DOMAIN = HTTP_SCHEME + DOMAIN;
 
     private static final String URL_API_BASE = URL_DOMAIN + "/api";
-    private static final String URL_API_ADD_TODO = URL_API_BASE + "/api/add";
+    private static final String URL_API_ADD_TODO = URL_API_BASE + "/add";
     private static final String URL_API_CHECKINS = URL_API_BASE + "/checkins";
     private static final String URL_API_LOGIN = URL_API_BASE + "/login";
     private static final String URL_API_TODO = URL_API_BASE + "/todo";
@@ -97,6 +98,23 @@ class FoursquareHttpApi extends HttpApi {
                 .getContent()));
         setCredentials(phone, password);
         return auth;
+    }
+
+    /*
+     * /api/add?type=XXX&text=add%20a%20tip&vid=44794&lat=37.770741&lng=-122.436854&cityid=23
+     * top or todo
+     */
+    Data add(String type, String text, String vid, String lat, String lng, String cityId)
+            throws FoursquareError, FoursquareParseException, IOException {
+        return (Data)doHttpPost(URL_API_ADD_TODO, new DataParser(), //
+                new BasicNameValuePair("type", type),
+                new BasicNameValuePair("text", text),
+                new BasicNameValuePair("vid", vid),
+                new BasicNameValuePair("lat", (lat != null) ? lat : ""), // lat
+                new BasicNameValuePair("lng", (lng != null) ? lng : ""), // lng
+                new BasicNameValuePair("cityid", cityId) //
+        //
+        );
     }
 
     Checkin checkin(String phone, String venue, boolean silent, boolean twitter, String lat,
@@ -164,22 +182,6 @@ class FoursquareHttpApi extends HttpApi {
     Venue venue(String id) throws FoursquareError, FoursquareParseException, IOException {
         return (Venue)doHttpPost(URL_API_VENUE, new VenueParser(),
                 new BasicNameValuePair("vid", id));
-    }
-
-    /*
-     * /api/add?type=XXX&text=add%20a%20tip&vid=44794&lat=37.770741&lng=-122.436854&cityid=23
-     * top or todo
-     */
-    Result addTip(String type, String text, String vid, String lat, String lng, String cityId)
-            throws FoursquareError, FoursquareParseException, IOException {
-        return (Result)doHttpPost(URL_API_ADD_TODO, new TipParser(), //
-                new BasicNameValuePair("text", text),
-                new BasicNameValuePair("vid", vid),
-                new BasicNameValuePair("lat", (lat != null) ? lat : ""), // lat
-                new BasicNameValuePair("lng", (lng != null) ? lng : ""), // lng
-                new BasicNameValuePair("cityid", cityId) //
-        //
-        );
     }
 
     /**

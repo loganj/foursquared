@@ -8,8 +8,8 @@ import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Auth;
 import com.joelapenna.foursquare.types.Checkin;
+import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.Result;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared;
 
@@ -22,7 +22,7 @@ import java.io.IOException;
  */
 public class Foursquare {
     private static final String TAG = "Foursquare";
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = Foursquared.DEBUG;
 
     private String mPhone;
     private String mPassword;
@@ -46,14 +46,14 @@ public class Foursquare {
 
     }
 
-    public Result addTip(String text, String vid, String lat, String lng, String cityId)
+    public Data addTip(String text, String vid, String lat, String lng, String cityId)
             throws FoursquareError, FoursquareParseException, IOException {
-        return mFoursquare.addTip("top", text, vid, lat, lng, cityId);
+        return mFoursquare.add("top", text, vid, lat, lng, cityId);
     }
 
-    public Result addTodo(String text, String vid, String lat, String lng, String cityId)
+    public Data addTodo(String text, String vid, String lat, String lng, String cityId)
             throws FoursquareError, FoursquareParseException, IOException {
-        return mFoursquare.addTip("todo", text, vid, lat, lng, cityId);
+        return mFoursquare.add("todo", text, vid, lat, lng, cityId);
     }
 
     public String breakdown(String userId, String checkinId) throws FoursquareError,

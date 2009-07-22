@@ -21,23 +21,27 @@ public class FoursquaredTest {
 
     public static Venue createTestVenue(String id) {
         Venue venue = new Venue();
-        venue.setVenueid("19265");
-        venue.setVenuename("Named " + id);
-        venue.setAddress("298 Divisadero St.");
+        if (id != null) {
+            venue.setVenuename("Bobby's Place " + id);
+        } else {
+            venue.setVenuename("Bobby's Place");
+        }
+        venue.setVenueid("44794");
+        venue.setAddress("123 Fake St.");
         venue.setCity("San Francisco");
         venue.setState("CA");
         venue.setZip("94117");
-        venue.setCrossstreet("between Haight and Page");
+        venue.setCrossstreet("Imaginary");
         venue.setDistance("0.1m");
-        venue.setNumCheckins("46");
-        venue.setYelp("http://www.yelp.com/biz/the-page-san-francisco");
+        venue.setNumCheckins("10");
+        venue
+                .setYelp("http://mobile.yelp.com/search?find_desc=Bobby%27s+place&amp;find_loc=San+Francisco%2CCA&amp;find_submit=Search");
         venue.setGeolat("37.7722");
         venue.setGeolong("-122.437");
         venue
-                .setMap("http://maps.google.com/staticmap?zoom=15&amp;size=280x100&amp;markers=37.7722,-122.437&amp;maptype=mobile");
-        venue
-                .setMapurl("http://maps.google.com/maps?q=+298+Divisadero+St%2CSan+Francisco%2CCA%2C94117");
-        venue.setNewVenue(false);
+                .setMap("http://maps.google.com/staticmap?zoom=15&amp;size=280x100&amp;markers=0,0&amp;maptype=mobile");
+        venue.setMapurl("http://maps.google.com/maps?q=123+Fake+St.%2CSan+Francisco%2CCA%2C");
+        venue.setNewVenue(true);
         return venue;
     }
 

@@ -8,6 +8,7 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Checkin;
+import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
@@ -70,7 +71,8 @@ public class TestActivity extends Activity {
             // testTodos();
             // testBreakdown();
             // testCheckin();
-            testLocation();
+            // testLocation();
+            testAddTip();
         } catch (FoursquareError e) {
             // TODO Auto-generated catch block
             if (DEBUG) Log.d(TAG, "FoursquaredCredentialsError", e);
@@ -81,6 +83,23 @@ public class TestActivity extends Activity {
             // TODO Auto-generated catch block
             if (DEBUG) Log.d(TAG, "IOException", e);
         }
+    }
+
+    /**
+     * @throws IOException
+     * @throws FoursquareParseException
+     * @throws FoursquareError
+     */
+    private void testAddTip() throws FoursquareError, FoursquareParseException, IOException {
+        Venue venue = FoursquaredTest.createTestVenue("Test");
+        Data result = mFoursquare.addTip("Testing adding a tip", venue.getVenueid(), null, null, null);
+        if (result == null) {
+            Log.d(TAG, "the tip result is null! loser.");
+            return;
+        }
+        Log.d(TAG, result.toString());
+        Log.d(TAG, String.valueOf(result.status()));
+        Log.d(TAG, result.getMessage());
     }
 
     private void testLocation() throws FoursquareError, FoursquareParseException, IOException {

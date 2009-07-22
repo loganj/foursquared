@@ -6,7 +6,7 @@ package com.joelapenna.foursquare.parsers;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
-import com.joelapenna.foursquare.types.Result;
+import com.joelapenna.foursquare.types.Data;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -19,14 +19,14 @@ import java.io.IOException;
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
-public class ResultParser extends AbstractParser<Result> {
-    private static final String TAG = "ResultParser";
+public class DataParser extends AbstractParser<Data> {
+    private static final String TAG = "DataParser";
     private static final boolean DEBUG = Foursquare.DEBUG;
 
     @Override
-    public Result parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
+    public Data parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError {
-        Result result = new Result();
+        Data data = new Data();
         int eventType = parser.getEventType();
 
         while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -37,9 +37,9 @@ public class ResultParser extends AbstractParser<Result> {
                     String name = parser.getName();
                     if ("error".equals(name)) {
                         throw new FoursquareError(parser.getText());
-                    } else if ("result".equals(name)) {
-                        parseResultTag(parser, result);
-                        return result;
+                    } else if ("data".equals(name)) {
+                        parseDataTag(parser, data);
+                        return data;
                     }
 
                 default:
@@ -50,20 +50,20 @@ public class ResultParser extends AbstractParser<Result> {
         return null;
     }
 
-    public void parseResultTag(XmlPullParser parser, Result result) throws XmlPullParserException,
+    public void parseDataTag(XmlPullParser parser, Data data) throws XmlPullParserException,
             IOException {
-        assert parser.getName() == "result";
-        if (DEBUG) Log.d(TAG, "parsing result stanza");
+        assert parser.getName() == "data";
+        if (DEBUG) Log.d(TAG, "parsing data stanza");
 
         while (parser.nextTag() != XmlPullParser.END_TAG) {
             if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
 
             String name = parser.getName();
             if ("message".equals(name)) {
-                result.setMessage(parser.nextText());
+                data.setMessage(parser.nextText());
 
             } else if ("status".equals(name)) {
-                result.setStatus(parser.nextText().equals("1"));
+                data.setStatus(parser.nextText().equals("1"));
             } else {
                 // Consume something we don't understand.
                 if (DEBUG) Log.d(TAG, "Found tag that we don't recognize: " + name);
