@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.Checkin;
+import com.joelapenna.foursquare.types.Tip;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -16,6 +17,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
+
+import java.util.List;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -29,7 +32,12 @@ public class VenueCheckinActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.venue_checkin_activity);
 
-        setListAdapter(new TipsListAdapter(this, Foursquared.createTestTips()));
+        setListAdapter(new TipsListAdapter(this));
+        List<Tip> tips = Foursquared.createTestTips();
+        for (int i = 0; i < tips.size(); i++) {
+            ((TipsListAdapter)getListAdapter()).add(tips.get(i));
+        }
+
         Button checkinButton = (Button)findViewById(R.id.checkinButton);
         checkinButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {

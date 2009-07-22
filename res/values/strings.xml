@@ -7,5 +7,7 @@
   <string
     name="venue_info_activity_name">Info</string>
   <string
+    name="venue_search_activity_name">Search</string>
+  <string
     name="venue_yelp_activity_name">Yelp!</string>
 </resources>

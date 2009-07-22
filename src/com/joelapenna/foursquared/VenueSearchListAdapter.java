@@ -4,56 +4,47 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.types.Tip;
+import com.joelapenna.foursquare.types.Venue;
 
 import android.content.Context;
-import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.List;
 
 /**
  * @author jlapenna
  */
-class TipsListAdapter extends BaseAdapter {
-    private static final String TAG = "TipsListAdapter";
+class VenueSearchListAdapter extends BaseAdapter {
+    private static final String TAG = "VenuesListAdapter";
     private static final boolean DEBUG = Foursquared.DEBUG;
 
     private LayoutInflater mInflater;
-    private List<Tip> mTips = new ArrayList<Tip>();
+    private List<Venue> mVenues = new ArrayList<Venue>();
 
-    // Converting a string to an html span is actually pretty resource intensive, use a cache...
-    // This causes a startup delay, might not want to do this on the UI thread.
-    private List<Spanned> mHtmlCache = new ArrayList<Spanned>();
-
-    public TipsListAdapter(Context context) {
+    public VenueSearchListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
     }
 
     /**
-     * The number of items in the list is determined by the number of tips in our array.
+     * The number of items in the list is determined by the number of venues in our array.
      *
      * @see android.widget.ListAdapter#getCount()
      */
     @Override
     public int getCount() {
-        return mTips.size();
+        return mVenues.size();
     }
 
     @Override
     public Object getItem(int position) {
         if (DEBUG) Log.d(TAG, "getItem() called");
-        return mTips.get(position);
+        return mVenues.get(position);
     }
 
     /**
@@ -83,14 +74,14 @@ class TipsListAdapter extends BaseAdapter {
         // need to re-inflate it. We only inflate a new View when the
         // convertView supplied by ListView is null.
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.tip_list_item, null);
+            convertView = mInflater.inflate(R.layout.venue_list_item, null);
 
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.firstLine = (TextView)convertView.findViewById(R.id.firstLine);
-            holder.secondLine = (TextView)convertView.findViewById(R.id.secondLine);
-            holder.checkbox = (CheckBox)convertView.findViewById(R.id.checkbox);
+            holder.name = (TextView)convertView.findViewById(R.id.name);
+            holder.locationLine1 = (TextView)convertView.findViewById(R.id.locationLine1);
+            holder.locationLine2 = (TextView)convertView.findViewById(R.id.locationLine2);
 
             convertView.setTag(holder);
         } else {
@@ -99,14 +90,12 @@ class TipsListAdapter extends BaseAdapter {
             holder = (ViewHolder)convertView.getTag();
         }
 
-        // Bind the data efficiently with the holder.
-        // TODO(jlapenna): Make this "relative" when cupcake comes out, using
-        // DateUtils.getRelativeTimeSpanString
-
-        Tip tip = (Tip)getItem(position);
-        holder.firstLine.setText(tip.getFirstname() + " " + tip.getLastname() + " did this...");
-        holder.secondLine.setText(mHtmlCache.get(position));
-        holder.checkbox.setChecked(tip.getUserStatus().equals("done") ? true : false);
+        Venue venue = (Venue)getItem(position);
+        holder.name.setText(venue.getVenuename());
+        holder.locationLine1.setText( // 650 Hayes St.
+                venue.getAddress());
+        holder.locationLine2.setText( // San Francisco, CA 94117
+                venue.getCity() + ", " + venue.getCity() + " " + venue.getZip());
 
         return convertView;
     }
@@ -119,18 +108,17 @@ class TipsListAdapter extends BaseAdapter {
     @Override
     public boolean isEmpty() {
         if (DEBUG) Log.d(TAG, "isEmpty() called");
-        return (mTips.size() <= 0);
+        return (mVenues.size() <= 0);
     }
 
-    public void add(Tip tip) {
-        mTips.add(tip);
-        mHtmlCache.add(Html.fromHtml(tip.getText()));
+    public void add(Venue venue) {
+        mVenues.add(venue);
         notifyDataSetChanged();
     }
 
     private static class ViewHolder {
-        TextView firstLine;
-        TextView secondLine;
-        CheckBox checkbox;
+        TextView name;
+        TextView locationLine1;
+        TextView locationLine2;
     }
 }

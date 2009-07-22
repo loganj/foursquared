@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="?android:attr/listPreferredItemHeight">
+
+  <TextView
+    android:id="@+id/name"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:textAppearance="@android:style/TextAppearance.Large" />
+  <TextView
+    android:id="@+id/locationLine1"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:textAppearance="@android:style/TextAppearance.Small" />
+  <TextView
+    android:id="@+id/locationLine2"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:textAppearance="@android:style/TextAppearance.Small" />
+
+</LinearLayout>

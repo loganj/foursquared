@@ -43,6 +43,15 @@
     </activity>
 
     <activity
+      android:name=".VenueSearchActivity"
+      android:label="@string/venue_search_activity_name">
+      <intent-filter>
+        <action
+          android:name="android.intent.action.MAIN" />
+      </intent-filter>
+    </activity>
+
+    <activity
       android:name=".VenueYelpActivity">
     </activity>
 

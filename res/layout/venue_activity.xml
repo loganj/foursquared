@@ -25,24 +25,21 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:textAppearance="@android:style/TextAppearance.Large"
-        android:text="Joe's House" />
+        android:textAppearance="@android:style/TextAppearance.Large" />
       <TextView
         android:id="@+id/venueLocationLine1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/venueName"
-        android:textAppearance="@android:style/TextAppearance.Small"
-        android:text="234 Divisadero St." />
+        android:textAppearance="@android:style/TextAppearance.Small" />
       <TextView
         android:id="@+id/venueLocationLine2"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/venueLocationLine1"
-        android:textAppearance="@android:style/TextAppearance.Small"
-        android:text="San Francisco, CA 94117" />
+        android:textAppearance="@android:style/TextAppearance.Small" />
       <FrameLayout
         android:id="@android:id/tabcontent"
         android:layout_width="fill_parent"

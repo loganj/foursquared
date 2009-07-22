@@ -69,6 +69,15 @@ public class Foursquared {
         tips.add(createTestTip());
         tips.add(createTestTip());
         tips.add(createTestTip());
+        tips.add(createTestTip());
+        tips.add(createTestTip());
+        tips.add(createTestTip());
+        tips.add(createTestTip());
+        tips.add(createTestTip());
+        tips.add(createTestTip());
+        tips.add(createTestTip());
+        tips.add(createTestTip());
+        tips.add(createTestTip());
         return tips;
     }
 
@@ -81,5 +90,26 @@ public class Foursquared {
         checkin.setUserid("9232");
         return checkin;
 
+    }
+
+    /**
+     * @return
+     */
+    public static List<Venue> createTestVenues() {
+        List<Venue> venues = new ArrayList<Venue>();
+        venues.add(createTestVenue());
+        venues.add(createTestVenue());
+        venues.add(createTestVenue());
+        venues.add(createTestVenue());
+        venues.add(createTestVenue());
+        venues.add(createTestVenue());
+        venues.add(createTestVenue());
+        venues.add(createTestVenue());
+        venues.add(createTestVenue());
+        venues.add(createTestVenue());
+        venues.add(createTestVenue());
+        venues.add(createTestVenue());
+        venues.add(createTestVenue());
+        return venues;
     }
 }
