@@ -85,9 +85,10 @@ class CheckinListAdapter extends BaseAdapter {
         }
 
         Checkin checkin = (Checkin)getItem(position);
+        String firstLineString = checkin.getFirstname() + " " + checkin.getLastname().substring(0, 1) + ".";
         // Popping from string->html fixes things like "&amp;" converting it back to a string
         // prevents a stack overflow in cupcake.
-        holder.firstLine.setText(Html.fromHtml(checkin.getMessage()).toString());
+        holder.firstLine.setText(firstLineString);
         holder.secondLine.setText(Html.fromHtml(checkin.getRelativeTime()).toString());
 
         return convertView;

@@ -101,9 +101,8 @@ class FoursquareHttpApi extends HttpApi {
     }
 
     /*
-     * /api/add?type=XXX&text=add%20a%20tip&vid=44794&lat=37.770741&lng=-122.436854&cityid=23
-     *
-     * top or todo
+     * /api/add?type=XXX&text=add%20a%20tip&vid=44794&lat=37.770741&lng=-122.436854&cityid=23 top or
+     * todo
      */
     Data add(String type, String text, String vid, String lat, String lng, String cityid)
             throws FoursquareError, FoursquareParseException, IOException {
@@ -121,16 +120,14 @@ class FoursquareHttpApi extends HttpApi {
     Checkin checkin(String phone, String venue, boolean silent, boolean twitter, String lat,
             String lng, String cityid) throws FoursquareError, FoursquareParseException,
             IOException {
-        return (Checkin)doHttpPost(URL_API_INCOMING,
-                new CheckinResponseParser(),
+        return (Checkin)doHttpPost(URL_API_INCOMING, new CheckinResponseParser(),
                 new BasicNameValuePair("number", phone), // phone
                 new BasicNameValuePair("message", "@" + venue), // venue
                 new BasicNameValuePair("silent", (silent) ? "1" : "0"), // silent
                 new BasicNameValuePair("twitter", (twitter) ? "1" : "0"), // twitter
                 new BasicNameValuePair("lat", lat), // lat
                 new BasicNameValuePair("lng", lng), // lng
-                new BasicNameValuePair("cityid", cityid),
-                new BasicNameValuePair("output", "xml"));
+                new BasicNameValuePair("cityid", cityid), new BasicNameValuePair("output", "xml"));
     }
 
     /**
@@ -138,9 +135,13 @@ class FoursquareHttpApi extends HttpApi {
      *
      * @return
      */
-    Group checkins(String cityid) throws FoursquareError, FoursquareParseException, IOException {
+    Group checkins(String cityid, String lat, String lng) throws FoursquareError,
+            FoursquareParseException, IOException {
         return (Group)doHttpPost(URL_API_CHECKINS, new GroupParser(new CheckinParser()),
-                new BasicNameValuePair("cityid", cityid));
+                new BasicNameValuePair("cityid", cityid), //
+                new BasicNameValuePair("lat", lat), // lat
+                new BasicNameValuePair("lng", lng) // lng
+        );
     }
 
     /**

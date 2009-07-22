@@ -27,7 +27,7 @@ public class CheckinGroupFilterByVenue {
         int groupCount = groups.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
             Group group = (Group)groups.get(groupsIndex);
-            filterCheckinGroupByVenueid(venueId, group);
+            filterGroupByVenueid(venueId, group);
             if (group.size() > 0) {
                 filteredGroup.add(group);
             }
@@ -35,7 +35,7 @@ public class CheckinGroupFilterByVenue {
         return filteredGroup;
     }
 
-    public static void filterCheckinGroupByVenueid(String venueid, Group group) {
+    private static void filterGroupByVenueid(String venueid, Group group) {
         ArrayList<Checkin> venueCheckins = new ArrayList<Checkin>();
         int checkinCount = group.size();
         for (int checkinIndex = 0; checkinIndex < checkinCount; checkinIndex++) {

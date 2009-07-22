@@ -49,12 +49,12 @@ public class VenueTipsActivity extends ListActivity {
 
     private Venue mVenue;
     private Data mResult;
+    private Group mGroups;
 
-    private TipsAsyncTask mTipsTask;
+    private LookupTipsAsyncTask mTipsTask;
     private AddAsyncTask mAddAsyncTask;
 
     private TextView mEmpty;
-    private Group mTipGroups;
     private Button mTipButton;
     private Button mTodoButton;
 
@@ -94,7 +94,7 @@ public class VenueTipsActivity extends ListActivity {
 
     @Override
     public Object onRetainNonConfigurationInstance() {
-        return mTipGroups;
+        return mGroups;
     }
 
     @Override
@@ -211,7 +211,7 @@ public class VenueTipsActivity extends ListActivity {
                 return;
             }
         }
-        mTipsTask = (TipsAsyncTask)new TipsAsyncTask().execute();
+        mTipsTask = (LookupTipsAsyncTask)new LookupTipsAsyncTask().execute();
     }
 
     private void setTipGroups(Group groups) {
@@ -221,11 +221,11 @@ public class VenueTipsActivity extends ListActivity {
             return;
         }
         if (mVenue != null) {
-            mTipGroups = TipGroupFilterByVenue.filter(groups, mVenue);
+            mGroups = TipGroupFilterByVenue.filter(groups, mVenue);
         } else {
-            mTipGroups = groups;
+            mGroups = groups;
         }
-        putGroupsInAdapter(mTipGroups);
+        putGroupsInAdapter(mGroups);
     }
 
     private void putGroupsInAdapter(Group groups) {
@@ -241,9 +241,9 @@ public class VenueTipsActivity extends ListActivity {
         mainAdapter.notifyDataSetInvalidated();
     }
 
-    private class TipsAsyncTask extends AsyncTask<Void, Void, Group> {
+    private class LookupTipsAsyncTask extends AsyncTask<Void, Void, Group> {
 
-        private static final String PROGRESS_BAR_TASK_ID = TAG + "TipsAsyncTask";
+        private static final String PROGRESS_BAR_TASK_ID = TAG + "LookupTipsAsyncTask";
 
         @Override
         public void onPreExecute() {

@@ -27,7 +27,7 @@ public class TipGroupFilterByVenue {
         int groupCount = groups.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
             Group group = (Group)groups.get(groupsIndex);
-            filterTipGroupByVenueid(venueId, group);
+            filterGroupByVenueid(venueId, group);
             if (group.size() > 0) {
                 filteredGroup.add(group);
             }
@@ -35,7 +35,7 @@ public class TipGroupFilterByVenue {
         return filteredGroup;
     }
 
-    public static void filterTipGroupByVenueid(String venueid, Group group) {
+    private static void filterGroupByVenueid(String venueid, Group group) {
         ArrayList<Tip> venueTips = new ArrayList<Tip>();
         int tipCount = group.size();
         for (int tipIndex = 0; tipIndex < tipCount; tipIndex++) {

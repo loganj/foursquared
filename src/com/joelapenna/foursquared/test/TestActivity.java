@@ -138,7 +138,7 @@ public class TestActivity extends Activity {
 
     private void testCheckins() throws FoursquareError, FoursquareParseException, IOException {
         Log.d(TAG, "testCheckins");
-        Group checkinGroups = mFoursquare.checkins("23");
+        Group checkinGroups = mFoursquare.checkins("23", null, null);
         Log.d(TAG, "Num Groups:" + checkinGroups.size());
         for (int i = 0; i < checkinGroups.size(); i++) {
             Group checkins = (Group)checkinGroups.get(i);

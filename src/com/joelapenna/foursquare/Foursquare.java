@@ -76,9 +76,9 @@ public class Foursquare {
         return mFoursquare.venues(query, lat, lng, radius, length);
     }
 
-    public Group checkins(String cityId) throws FoursquareError, FoursquareParseException,
+    public Group checkins(String cityId, String lat, String lng) throws FoursquareError, FoursquareParseException,
             IOException {
-        return mFoursquare.checkins(cityId);
+        return mFoursquare.checkins(cityId, lat, lng);
     }
 
     public Venue venue(String id) throws FoursquareError, FoursquareParseException, IOException {

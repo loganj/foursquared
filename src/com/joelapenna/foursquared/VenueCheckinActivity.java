@@ -6,7 +6,9 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
+import com.joelapenna.foursquare.filters.CheckinGroupFilterByVenue;
 import com.joelapenna.foursquare.types.Checkin;
+import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 
@@ -27,6 +29,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.AdapterView.OnItemClickListener;
@@ -43,8 +46,13 @@ public class VenueCheckinActivity extends ListActivity {
     private static final int DIALOG_CHECKIN = 0;
 
     private Venue mVenue;
-    private Button mCheckinButton;
+    private Group mGroups;
     public Checkin mCheckin;
+
+    private LookupCheckinsAsyncTask mCheckinTask;
+
+    private Button mCheckinButton;
+    private TextView mEmpty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +69,12 @@ public class VenueCheckinActivity extends ListActivity {
 
         setupUi();
         mVenue = (Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY);
+
+        if (getLastNonConfigurationInstance() != null) {
+            setCheckinGroups((Group)getLastNonConfigurationInstance());
+        } else {
+            lookupCheckinGroups();
+        }
     }
 
     @Override
@@ -86,7 +100,13 @@ public class VenueCheckinActivity extends ListActivity {
         return null;
     }
 
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return mGroups;
+    }
     private void setupUi() {
+        mEmpty = (TextView)findViewById(android.R.id.empty);
+
         mCheckinButton = (Button)findViewById(R.id.checkinButton);
         mCheckinButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
@@ -106,6 +126,49 @@ public class VenueCheckinActivity extends ListActivity {
 
     private void sendCheckin() {
         new AddCheckinAsyncTask().execute(mVenue);
+    }
+
+    private void lookupCheckinGroups() {
+        if (DEBUG) Log.d(TAG, "lookupCheckin()");
+
+        // If a task is already running, don't start a new one.
+        if (mCheckinTask != null && mCheckinTask.getStatus() != AsyncTask.Status.FINISHED) {
+            if (DEBUG) Log.d(TAG, "Query already running attempting to cancel: " + mCheckinTask);
+            if (!mCheckinTask.cancel(true) && !mCheckinTask.isCancelled()) {
+                if (DEBUG) Log.d(TAG, "Unable to cancel checkins? That should not have happened!");
+                Toast.makeText(this, "Unable to re-query checkins.", Toast.LENGTH_SHORT);
+                return;
+            }
+        }
+        mCheckinTask = (LookupCheckinsAsyncTask)new LookupCheckinsAsyncTask().execute();
+    }
+
+    private void setCheckinGroups(Group groups) {
+        if (groups == null) {
+            Toast.makeText(getApplicationContext(), "Could not complete TODO lookup!",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (mVenue != null) {
+            mGroups = CheckinGroupFilterByVenue.filter(groups, mVenue);
+        } else {
+            mGroups = groups;
+        }
+        putGroupsInAdapter(mGroups);
+    }
+
+    private void putGroupsInAdapter(Group groups) {
+        if (DEBUG) Log.d(TAG, "Putting groups in adapter.");
+        SeparatedListAdapter mainAdapter = (SeparatedListAdapter)getListAdapter();
+        mainAdapter.clear();
+        int groupCount = groups.size();
+        for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
+            Group group = (Group)groups.get(groupsIndex);
+            CheckinListAdapter groupAdapter = new CheckinListAdapter(this, group);
+            if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
+            mainAdapter.addSection(group.getType(), groupAdapter);
+        }
+        mainAdapter.notifyDataSetInvalidated();
     }
 
     private class AddCheckinAsyncTask extends AsyncTask<Venue, Void, Checkin> {
@@ -175,5 +238,62 @@ public class VenueCheckinActivity extends ListActivity {
         public void onCancelled() {
             VenueActivity.stopProgressBar(VenueCheckinActivity.this, PROGRESS_BAR_TASK_ID);
         }
+    }
+
+    private class LookupCheckinsAsyncTask extends AsyncTask<Void, Void, Group> {
+
+        private static final String PROGRESS_BAR_TASK_ID = TAG + "LookupCheckinsAsyncTask";
+
+        @Override
+        public void onPreExecute() {
+            if (DEBUG) Log.d(TAG, "CheckinTask: onPreExecute()");
+            VenueActivity.startProgressBar(VenueCheckinActivity.this, PROGRESS_BAR_TASK_ID);
+        }
+
+        @Override
+        public Group doInBackground(Void... params) {
+            try {
+                Location location = ((Foursquared)getApplication()).getLocation();
+                if (location == null) {
+                    if (DEBUG) Log.d(TAG, "Getting Checkins without Location");
+                    return ((Foursquared)getApplication()).getFoursquare().checkins(null, null, null);
+                } else {
+                    if (DEBUG) Log.d(TAG, "Getting Checkins with Location: " + location);
+                    return ((Foursquared)getApplication()).getFoursquare().checkins(null,
+                            String.valueOf(location.getLatitude()),
+                            String.valueOf(location.getLongitude()));
+
+                }
+            } catch (FoursquareError e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "FoursquareError", e);
+            } catch (FoursquareParseException e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "FoursquareParseException", e);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "IOException", e);
+            }
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(Group groups) {
+            try {
+                setCheckinGroups(groups);
+            } finally {
+                if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
+                VenueActivity.stopProgressBar(VenueCheckinActivity.this, PROGRESS_BAR_TASK_ID);
+                if (getListAdapter().getCount() <= 0) {
+                    mEmpty.setText("No checkins for this venue! Add one!");
+                }
+            }
+        }
+
+        @Override
+        public void onCancelled() {
+            VenueActivity.stopProgressBar(VenueCheckinActivity.this, PROGRESS_BAR_TASK_ID);
+        }
+
     }
 }
