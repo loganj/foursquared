@@ -17,7 +17,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -301,37 +300,19 @@ public class VenueTipsActivity extends ListActivity {
 
         @Override
         public void onPreExecute() {
-            if (DEBUG) Log.d(TAG, "AddTipTask: onPreExecute()");
+            if (DEBUG) Log.d(TAG, "AddAsyncTask: onPreExecute()");
             ((VenueActivity)getParent()).startProgressBar(PROGRESS_BAR_TASK_ID);
         }
 
         @Override
         public Data doInBackground(String... params) {
             assert params.length == 2;
-            type = (String)params[0];
+            this.type = (String)params[0];
             String text = (String)params[1];
-
-            final String lat;
-            final String lng;
-
-            Location location = ((Foursquared)getApplication()).getLastKnownLocation();
-            if (location == null) {
-                if (DEBUG) Log.d(TAG, "Adding Tip without Location");
-                lat = null;
-                lng = null;
-            } else {
-                if (DEBUG) Log.d(TAG, "Adding Tip with Location: " + location);
-                lat = String.valueOf(location.getLatitude());
-                lng = String.valueOf(location.getLongitude());
-            }
 
             try {
                 Foursquare foursquare = Foursquared.getFoursquare();
-                if (type == TIP) {
-                    return foursquare.addTip(text, mVenue.getId(), lat, lng, null);
-                } else if (type == TODO) {
-                    return foursquare.addTodo(text, mVenue.getId(), lat, lng, null);
-                }
+                return foursquare.addTip(mVenue.getId(), text, this.type);
             } catch (FoursquareException e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "FoursquareException", e);
@@ -344,7 +325,7 @@ public class VenueTipsActivity extends ListActivity {
 
         @Override
         public void onPostExecute(Data result) {
-            if (DEBUG) Log.d(TAG, "AddTipTask: onPostExecute: " + result);
+            if (DEBUG) Log.d(TAG, "AddAsyncTask: onPostExecute: " + result);
             if (result == null) {
                 showDialog(DIALOG_ADD_FAIL_MESSAGE);
             } else {
@@ -367,7 +348,7 @@ public class VenueTipsActivity extends ListActivity {
 
         @Override
         public void onPreExecute() {
-            if (DEBUG) Log.d(TAG, "UpdateTipTask: onPreExecute()");
+            if (DEBUG) Log.d(TAG, "UpdateAsyncTask: onPreExecute()");
             ((VenueActivity)getParent()).startProgressBar(PROGRESS_BAR_TASK_ID);
         }
 
@@ -392,7 +373,7 @@ public class VenueTipsActivity extends ListActivity {
 
         @Override
         public void onPostExecute(Data result) {
-            if (DEBUG) Log.d(TAG, "UpdateTipTask: onPostExecute: " + result);
+            if (DEBUG) Log.d(TAG, "UpdateAsyncTask: onPostExecute: " + result);
             if (result == null) {
                 showDialog(DIALOG_UPDATE_FAIL_MESSAGE);
             } else {

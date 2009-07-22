@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-@SuppressWarnings("deprecation")
 public class FoursquareTestCase extends TestCase {
 
     /**
@@ -69,14 +68,6 @@ public class FoursquareTestCase extends TestCase {
         assertNotNull(auth);
         assertEquals("testuser@joelapenna.com", auth.getEmail());
         assertEquals("9711", auth.getId());
-    }
-
-    @LargeTest
-    public void test_todos() throws FoursquareException, IOException {
-        Foursquare foursquare = getFoursquareForTest();
-
-        Group todos = foursquare.todos("23", null, null);
-        assertNotNull(todos);
     }
 
     @LargeTest

@@ -50,6 +50,7 @@ public class FoursquareHttpApiV1 {
 
     private static final String URL_API_AUTHEXCHANGE = URL_API_BASE + "/authexchange";
 
+    private static final String URL_API_ADDTIP = URL_API_BASE + "/addtip";
     private static final String URL_API_CITIES = URL_API_BASE + "/cities";
     private static final String URL_API_CHECKCITY = URL_API_BASE + "/checkcity";
     private static final String URL_API_SWITCHCITY = URL_API_BASE + "/switchcity";
@@ -100,6 +101,18 @@ public class FoursquareHttpApiV1 {
                 new BasicNameValuePair("fs_username", phone), //
                 new BasicNameValuePair("fs_password", password));
         return (Credentials)mHttpApi.doHttpRequest(httpPost, new CredentialsParser());
+    }
+
+    /*
+     * /addtip?vid=1234&text=I%20added%20a%20tip&type=todo (type defaults "tip")
+     */
+    Data addtip(String vid, String text, String type) throws FoursquareException,
+            FoursquareCredentialsError, FoursquareError, IOException {
+        HttpPost httpPost = mHttpApi.createHttpPost(URL_API_ADDTIP, //
+                new BasicNameValuePair("vid", vid), //
+                new BasicNameValuePair("text", text), //
+                new BasicNameValuePair("type", type));
+        return (Data)mHttpApi.doHttpRequest(httpPost, new DataParser());
     }
 
     /*

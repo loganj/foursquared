@@ -84,16 +84,10 @@ public class Foursquare {
 
     }
 
-    @Classic
-    public Data addTip(String text, String vid, String lat, String lng, String cityId)
-            throws FoursquareException, FoursquareError, IOException {
-        return mFoursquare.add("top", text, vid, lat, lng, cityId);
-    }
-
-    @Classic
-    public Data addTodo(String text, String vid, String lat, String lng, String cityId)
-            throws FoursquareException, FoursquareError, IOException {
-        return mFoursquare.add("todo", text, vid, lat, lng, cityId);
+    @V1
+    public Data addTip(String vid, String text, String type) throws FoursquareException,
+            FoursquareError, IOException {
+        return mFoursquareV1.addtip(vid, text, type);
     }
 
     @Classic
@@ -102,23 +96,9 @@ public class Foursquare {
         return mFoursquare.checkin(mPhone, venue, silent, twitter, lat, lng, null);
     }
 
-    @Classic
-    @Deprecated
-    public Group checkins(String cityId, String lat, String lng) throws FoursquareException,
-            FoursquareError, IOException {
-        return mFoursquare.checkins(cityId, lat, lng);
-    }
-
     @V1
     public Group checkins(String cityId) throws FoursquareException, FoursquareError, IOException {
         return mFoursquareV1.checkins(cityId);
-    }
-
-    @Deprecated
-    @Classic
-    public Group todos(String cityId, String lat, String lng) throws FoursquareException,
-            FoursquareError, IOException {
-        return mFoursquare.todos(cityId, lat, lng);
     }
 
     @V1
