@@ -148,10 +148,6 @@
       android:name=".VenueTipsActivity">
     </activity>
 
-    <activity
-      android:name=".VenueYelpActivity">
-    </activity>
-
 
     <provider
       android:name=".providers.VenueQuerySuggestionsProvider"

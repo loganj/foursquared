@@ -57,6 +57,18 @@ public class VenueMapActivity extends MapActivity {
             }
         });
 
+        Button mapsButton = (Button)findViewById(R.id.mapsButton);
+        mapsButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse( //
+                        "geo:0,0?q=" + mVenue.getName() + " near " + mVenue.getCity()));
+                startActivity(intent);
+
+            }
+        });
+
         initMap();
 
         Venue venue = ((VenueActivity)getParent()).venueObservable.getVenue();
