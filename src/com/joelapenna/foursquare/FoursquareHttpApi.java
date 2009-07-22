@@ -6,6 +6,7 @@ package com.joelapenna.foursquare;
 
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
+import com.joelapenna.foursquare.http.HttpApi;
 import com.joelapenna.foursquare.parsers.AuthParser;
 import com.joelapenna.foursquare.parsers.CheckinParser;
 import com.joelapenna.foursquare.parsers.CheckinResponseParser;
