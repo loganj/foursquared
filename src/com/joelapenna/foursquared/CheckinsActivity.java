@@ -45,9 +45,7 @@ public class CheckinsActivity extends TabActivity {
     static final String TAG = "CheckinsActivity";
     static final boolean DEBUG = Foursquared.DEBUG;
 
-    private static final int MENU_SEARCH = 0;
     private static final int MENU_REFRESH = 1;
-    private static final int MENU_NEARBY = 2;
 
     private static final int MENU_GROUP_SEARCH = 0;
 
@@ -103,10 +101,6 @@ public class CheckinsActivity extends TabActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(MENU_GROUP_SEARCH, MENU_SEARCH, Menu.NONE, R.string.search_label) //
-                .setIcon(android.R.drawable.ic_menu_search);
-        menu.add(MENU_GROUP_SEARCH, MENU_NEARBY, Menu.NONE, R.string.nearby_label) //
-                .setIcon(android.R.drawable.ic_menu_compass);
         menu.add(MENU_GROUP_SEARCH, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
                 .setIcon(R.drawable.ic_menu_refresh);
         Foursquared.addPreferencesToMenu(this, menu);
@@ -116,12 +110,6 @@ public class CheckinsActivity extends TabActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case MENU_SEARCH:
-                onSearchRequested();
-                return true;
-            case MENU_NEARBY:
-                executeSearchTask(null);
-                return true;
             case MENU_REFRESH:
                 executeSearchTask(mSearchHolder.query);
                 return true;

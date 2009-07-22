@@ -115,13 +115,6 @@ public class CheckinsMapActivity extends MapActivity {
 
         mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
         mMapView.getOverlays().add(mMyLocationOverlay);
-        mMyLocationOverlay.runOnFirstFix(new Runnable() {
-            public void run() {
-                if (DEBUG) Log.d(TAG, "runOnFirstFix()");
-                mMapView.getController().animateTo(mMyLocationOverlay.getMyLocation());
-                mMapView.getController().setZoom(16);
-            }
-        });
     }
 
     private void loadSearchResults(Group checkins) {
