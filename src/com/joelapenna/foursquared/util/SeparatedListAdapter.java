@@ -110,6 +110,7 @@ public class SeparatedListAdapter extends BaseAdapter {
 
             // check if position inside this section
             try {
+                // The second argument is null because if it were convertView, things would crash.
                 if (position == 0) return headers.getView(sectionnum, null, parent);
                 if (position < size) return adapter.getView(position - 1, null, parent);
             } catch (Exception e) {
@@ -126,5 +127,10 @@ public class SeparatedListAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    @Override
+    public boolean hasStableIds() {
+        return false;
     }
 }

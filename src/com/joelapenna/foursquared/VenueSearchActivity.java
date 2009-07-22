@@ -67,7 +67,7 @@ public class VenueSearchActivity extends ListActivity {
             }
         });
 
-        // testStuff();
+        testStuff();
     }
 
     private void testStuff() {
