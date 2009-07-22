@@ -220,7 +220,7 @@ public class VenueSearchActivity extends ListActivity {
             } finally {
                 setProgressBarIndeterminateVisibility(false);
                 if (mQuery == QUERY_NEARBY) {
-                    setTitle("Searching Nearby");
+                    setTitle("Nearby - Foursquared");
                 } else {
                     setTitle(mQuery + " - Foursquared");
                 }
