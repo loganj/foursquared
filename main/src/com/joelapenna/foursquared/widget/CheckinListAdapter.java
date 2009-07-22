@@ -65,18 +65,6 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
         return convertView;
     }
 
-<<<<<<< HEAD:src/com/joelapenna/foursquared/widget/CheckinListAdapter.java
-    @Override
-    public boolean hasStableIds() {
-        return false;
-    }
-
-<<<<<<< HEAD:src/com/joelapenna/foursquared/CheckinListAdapter.java
-    @Override
-    public boolean isEmpty() {
-        if (DEBUG) Log.d(TAG, "isEmpty() called");
-        return (mCheckins.size() <= 0);
-=======
     public static Venue venueFromCheckin(Checkin checkin) {
         Venue venue = new Venue();
         venue.setAddress(checkin.getVenue().getAddress());
@@ -87,13 +75,9 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
         venue.setId(checkin.getVenue().getId());
         venue.setName(checkin.getVenue().getName());
         return venue;
->>>>>>> 12c68cf... Use display attribute in list items when available.:src/com/joelapenna/foursquared/widget/CheckinListAdapter.java
     }
 
     private static class ViewHolder {
-=======
-    private class ViewHolder {
->>>>>>> d021be6... Extract out a base adapter for venues and checkins:src/com/joelapenna/foursquared/widget/CheckinListAdapter.java
         TextView firstLine;
         TextView secondLine;
     }

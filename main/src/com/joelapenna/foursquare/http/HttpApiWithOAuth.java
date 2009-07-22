@@ -80,24 +80,13 @@ public class HttpApiWithOAuth extends HttpApi {
                     is.close();
                 }
             case 401:
-<<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApiWithOAuth.java
-                bestEffortConsumeContent(response);
-=======
                 response.getEntity().consumeContent();
-<<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApiWithOAuth.java
->>>>>>> ce6538a... Improve content consumption (so we don't leak threads) in HttpApis.:src/com/joelapenna/foursquare/http/HttpApiWithOAuth.java
-=======
                 if (DEBUG) Log.d(TAG, EntityUtils.toString(response.getEntity()));
->>>>>>> be0d8a3... Add a debugging message when auth_exchange 401s:src/com/joelapenna/foursquare/http/HttpApiWithOAuth.java
                 throw new FoursquareCredentialsError(response.getStatusLine().toString());
             default:
                 if (DEBUG) Log.d(TAG, "Default case for status code reached: "
                         + response.getStatusLine().toString());
-<<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApiWithOAuth.java
-                bestEffortConsumeContent(response);
-=======
                 response.getEntity().consumeContent();
->>>>>>> ce6538a... Improve content consumption (so we don't leak threads) in HttpApis.:src/com/joelapenna/foursquare/http/HttpApiWithOAuth.java
                 return null;
         }
     }

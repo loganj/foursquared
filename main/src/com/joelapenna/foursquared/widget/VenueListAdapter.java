@@ -5,25 +5,10 @@
 package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Group;
-<<<<<<< HEAD:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
-<<<<<<< HEAD:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
 import com.joelapenna.foursquare.types.Venue;
-<<<<<<< HEAD:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
-<<<<<<< HEAD:src/com/joelapenna/foursquared/VenueListAdapter.java
-import com.joelapenna.foursquared.util.StringFormatters;
-=======
-=======
-import com.joelapenna.foursquare.types.classic.Venue;
->>>>>>> 66b622c... Move "classic" data types and parsers to subdirectories.:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
-=======
-import com.joelapenna.foursquare.types.Venue;
->>>>>>> 31ef377... Support using V1 Venue. VenueActitity crashes when receiving intent from:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
-import com.joelapenna.foursquared.Foursquared;
-=======
 import com.joelapenna.foursquared.FoursquaredSettings;
->>>>>>> 40ab8c4... Move some "settings" constants to FoursquaredSettings.java:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
 import com.joelapenna.foursquared.R;
->>>>>>> d021be6... Extract out a base adapter for venues and checkins:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
+import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.content.Context;
 import android.util.Log;
@@ -92,27 +77,8 @@ public class VenueListAdapter extends BaseVenueAdapter {
         return convertView;
     }
 
-<<<<<<< HEAD:src/com/joelapenna/foursquared/VenueListAdapter.java
-    @Override
-    public boolean hasStableIds() {
-        return false;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        if (DEBUG) Log.d(TAG, "isEmpty() called");
-        return (mVenues.size() <= 0);
-    }
-
     private static class ViewHolder {
-<<<<<<< HEAD:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
-=======
-    private class ViewHolder {
->>>>>>> d021be6... Extract out a base adapter for venues and checkins:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
-        TextView name;
-=======
         TextView venueName;
->>>>>>> 5adad04... Unifify venue item display.:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
         TextView locationLine1;
         TextView locationLine2;
     }
