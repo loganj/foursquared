@@ -423,6 +423,7 @@ public class VenueActivity extends TabActivity {
 
         @Override
         public Group doInBackground(Void... params) {
+            if (DEBUG) Log.d(TAG, "CheckinsTask: doInBackground()");
             try {
                 return Foursquared.getFoursquare().checkins(null);
             } catch (FoursquareException e) {

@@ -38,6 +38,7 @@ import org.apache.http.util.EntityUtils;
 import android.util.Log;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
@@ -93,7 +94,11 @@ public class HttpApi {
 >>>>>>> ce6538a... Improve content consumption (so we don't leak threads) in HttpApis.:src/com/joelapenna/foursquare/http/HttpApi.java
         if (DEBUG) Log.d(TAG, "doHttpRequest: " + httpRequest.getURI());
         HttpResponse response = executeHttpRequest(httpRequest);
+<<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
 >>>>>>> 69171d9... tips() works after realizing that authexchange causes tokens to expire!:src/com/joelapenna/foursquare/http/HttpApi.java
+=======
+        if (DEBUG) Log.d(TAG, "executed HttpRequest for: " + httpRequest.getURI().toString());
+>>>>>>> 6eedb7c... Stop HTTP hangs! Because we weren't closing input streams on responses:src/com/joelapenna/foursquare/http/HttpApi.java
         if (response == null) {
             if (DEBUG) Log.d(TAG, "execute() call for the httpRequest generated an exception;");
             return null;
@@ -101,8 +106,12 @@ public class HttpApi {
 
         switch (response.getStatusLine().getStatusCode()) {
             case 200:
-                return parser.parse(AbstractParser.createXmlPullParser( //
-                        response.getEntity().getContent()));
+                InputStream is = response.getEntity().getContent();
+                try {
+                    return parser.parse(AbstractParser.createXmlPullParser(is));
+                } finally {
+                    is.close();
+                }
             case 401:
 <<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
                 bestEffortConsumeContent(response);
@@ -139,6 +148,7 @@ public class HttpApi {
         HttpPost httpPost = createHttpPost(url, nameValuePairs);
 
         HttpResponse response = executeHttpRequest(httpPost);
+        if (DEBUG) Log.d(TAG, "executed HttpRequest for: " + httpPost.getURI().toString());
         if (response == null) {
             if (DEBUG) Log.d(TAG, "execute() call for the httpPost generated an exception;");
             throw new FoursquareError("breakdown request unsuccessful.");
@@ -175,17 +185,16 @@ public class HttpApi {
      */
     public HttpResponse executeHttpRequest(HttpRequestBase httpRequest) {
         if (DEBUG) Log.d(TAG, "executing HttpRequest for: " + httpRequest.getURI().toString());
-        HttpResponse response;
         try {
-            response = mHttpClient.execute(httpRequest);
+            mHttpClient.getConnectionManager().closeExpiredConnections();
+            return mHttpClient.execute(httpRequest);
         } catch (ClientProtocolException e) {
             Log.d(TAG, "ClientProtocolException for " + httpRequest, e);
-            return null;
         } catch (IOException e) {
             Log.d(TAG, "IOException for " + httpRequest, e);
-            return null;
         }
-        return response;
+        httpRequest.abort();
+        return null;
     }
 
     public HttpGet createHttpGet(String url, NameValuePair... nameValuePairs) {

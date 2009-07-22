@@ -46,7 +46,7 @@ import java.util.Observer;
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class UserActivity extends Activity {
-    private static final String TAG = "TestUserActivity";
+    private static final String TAG = "UserActivity";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public static final String EXTRA_USER = "com.joelapenna.foursquared.UserId";
@@ -104,12 +104,6 @@ public class UserActivity extends Activity {
         if (mUserPhotoTask != null) {
             mUserPhotoTask.cancel(true);
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (DEBUG) Log.d(TAG, "onPause()");
     }
 
     @Override

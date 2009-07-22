@@ -26,6 +26,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.util.Log;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -52,6 +53,7 @@ public class HttpApiWithOAuth extends HttpApi {
             throw new RuntimeException(e);
         }
         HttpResponse response = executeHttpRequest(httpRequest);
+        if (DEBUG) Log.d(TAG, "executed HttpRequest for: " + httpRequest.getURI().toString());
         if (response == null) {
             if (DEBUG) Log.d(TAG, "execute() call for the httpRequest generated an exception;");
             return null;
@@ -59,8 +61,12 @@ public class HttpApiWithOAuth extends HttpApi {
 
         switch (response.getStatusLine().getStatusCode()) {
             case 200:
-                return parser.parse(AbstractParser.createXmlPullParser( //
-                        response.getEntity().getContent()));
+                InputStream is = response.getEntity().getContent();
+                try {
+                    return parser.parse(AbstractParser.createXmlPullParser(is));
+                } finally {
+                    is.close();
+                }
             case 401:
 <<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApiWithOAuth.java
                 bestEffortConsumeContent(response);
