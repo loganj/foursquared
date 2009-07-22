@@ -80,40 +80,15 @@ public class VenueTipsActivity extends ListActivity {
 
         setupUi();
 
-        if (getLastNonConfigurationInstance() != null) {
-            setTipGroups((Group)getLastNonConfigurationInstance());
-
-        } else if (((VenueActivity)getParent()).venueObservable.getVenue() != null) {
+        VenueActivity parent = (VenueActivity)getParent();
+        if (parent.venueObservable.getVenue() != null) {
             mVenue = ((VenueActivity)getParent()).venueObservable.getVenue();
             setTipGroups(tipsAndTodos(mVenue));
 
         } else {
-            mVenueObserver = new Observer() {
-                @Override
-                public void update(Observable observable, Object data) {
-                    mVenue = (Venue)data;
-                    setTipGroups(tipsAndTodos(mVenue));
-                }
-            };
-            ((VenueActivity)getParent()).venueObservable.addObserver(mVenueObserver);
+            mVenueObserver = new VenueObserver();
+            parent.venueObservable.addObserver(mVenueObserver);
         }
-    }
-
-    private Group tipsAndTodos(Venue venue) {
-        Group tipsAndTodos = new Group();
-
-        Group tips = venue.getTips();
-        if (tips != null) {
-            tips.setType("Tips");
-            tipsAndTodos.add(tips);
-        }
-
-        tips = venue.getTodos();
-        if (tips != null) {
-            tips.setType("Todos");
-            tipsAndTodos.add(tips);
-        }
-        return tipsAndTodos;
     }
 
     @Override
@@ -125,11 +100,6 @@ public class VenueTipsActivity extends ListActivity {
         if (mUpdateAsyncTask != null) {
             mUpdateAsyncTask.cancel(true);
         }
-    }
-
-    @Override
-    public Object onRetainNonConfigurationInstance() {
-        return mGroups;
     }
 
     @Override
@@ -257,6 +227,23 @@ public class VenueTipsActivity extends ListActivity {
         });
     }
 
+    private Group tipsAndTodos(Venue venue) {
+        Group tipsAndTodos = new Group();
+
+        Group tips = venue.getTips();
+        if (tips != null) {
+            tips.setType("Tips");
+            tipsAndTodos.add(tips);
+        }
+
+        tips = venue.getTodos();
+        if (tips != null) {
+            tips.setType("Todos");
+            tipsAndTodos.add(tips);
+        }
+        return tipsAndTodos;
+    }
+
     private void addTip(String text) {
         mAddAsyncTask = (AddAsyncTask)new AddAsyncTask().execute(AddAsyncTask.TIP, text);
     }
@@ -284,6 +271,14 @@ public class VenueTipsActivity extends ListActivity {
             mainAdapter.addSection(group.getType(), groupAdapter);
         }
         mainAdapter.notifyDataSetInvalidated();
+    }
+
+    private final class VenueObserver implements Observer {
+        @Override
+        public void update(Observable observable, Object data) {
+            mVenue = (Venue)data;
+            setTipGroups(tipsAndTodos(mVenue));
+        }
     }
 
     private class TipTask extends AsyncTask<String, Void, Data> {

@@ -29,6 +29,9 @@ abstract class BaseGroupItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 
     @Override
     public int size() {
+        if (group == null) {
+            return 0;
+        }
         return group.size();
     }
 

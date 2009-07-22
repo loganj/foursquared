@@ -5,6 +5,8 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.types.Checkin;
+import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.StringFormatters;
 
@@ -32,7 +34,6 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Observable;
-import java.util.Observer;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -53,13 +54,14 @@ public class VenueActivity extends TabActivity {
     private static final int MENU_CHECKIN_SILENT = 3;
 
     VenueObservable venueObservable = new VenueObservable();
+    CheckinsObservable checkinsObservable = new CheckinsObservable();
+
+    private String mVenueId = null;
+    private Venue mVenue = null;
+    private Group mCheckins = null;
+    private com.joelapenna.foursquare.types.classic.Checkin mCheckin = null;
 
     private HashSet<Object> mProgressBarTasks = new HashSet<Object>();
-
-    private Observer mVenueObserver = new VenueObserver();
-    private Venue mVenue = null;
-
-    public com.joelapenna.foursquare.types.classic.Checkin mCheckin = null;
 
     private MenuItem mShareToggle;
     private MenuItem mTwitterToggle;
@@ -71,12 +73,30 @@ public class VenueActivity extends TabActivity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.venue_activity);
 
+        mVenueId = getIntent().getExtras().getString(EXTRA_VENUE);
+
         initTabHost();
 
-        venueObservable.addObserver(mVenueObserver);
+        StateHolder holder = (StateHolder)getLastNonConfigurationInstance();
+        if (holder != null) {
+            if (holder.venueId != null) {
+                mVenueId = holder.venueId;
+            }
+            if (holder.venue != null) {
+                setVenue(holder.venue);
+            } else {
+                new VenueTask().execute(mVenueId);
+            }
 
-        // TODO(jlapenna): retainNonConfigurationBlahBlah.
-        new VenueTask().execute(getIntent().getExtras().getString(EXTRA_VENUE));
+            if (holder.checkins != null) {
+                setCheckins(holder.checkins);
+            } else {
+                new CheckinsTask().execute();
+            }
+        } else {
+            new VenueTask().execute(mVenueId);
+            new CheckinsTask().execute();
+        }
     }
 
     @Override
@@ -167,6 +187,15 @@ public class VenueActivity extends TabActivity {
         return null;
     }
 
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        StateHolder holder = new StateHolder();
+        holder.venue = mVenue;
+        holder.venueId = mVenueId;
+        holder.checkins = mCheckins;
+        return holder;
+    }
+
     public void startProgressBar(String taskId) {
         boolean added = mProgressBarTasks.add(taskId);
         if (!added) {
@@ -235,6 +264,24 @@ public class VenueActivity extends TabActivity {
     private void setVenue(Venue venue) {
         mVenue = venue;
         venueObservable.notifyObservers(venue);
+        displayVenue(mVenue);
+    }
+
+    private void setCheckins(Group checkins) {
+        Group filteredCheckins = new Group();
+        if (checkins == null) {
+            filteredCheckins.setType("Recent Checkins");
+        } else {
+            filteredCheckins.setType(checkins.getType());
+            for (int i = 0; i < checkins.size(); i++) {
+                Checkin checkin = (Checkin)checkins.get(i);
+                if (checkin.getVenue().getId().equals(mVenueId)) {
+                    filteredCheckins.add(checkin);
+                }
+            }
+        }
+        mCheckins = filteredCheckins;
+        checkinsObservable.notifyObservers(mCheckins);
     }
 
     class VenueObservable extends Observable {
@@ -248,15 +295,14 @@ public class VenueActivity extends TabActivity {
         }
     }
 
-    /**
-     * This guy will be an attempt at controlling a dialog without relying on AsyncTask...
-     *
-     * @author Joe LaPenna (joe@joelapenna.com)
-     */
-    class VenueObserver implements Observer {
-        @Override
-        public void update(Observable observable, Object data) {
-            displayVenue(mVenue);
+    class CheckinsObservable extends Observable {
+        public void notifyObservers(Object data) {
+            setChanged();
+            super.notifyObservers(data);
+        }
+
+        public Group getCheckins() {
+            return mCheckins;
         }
     }
 
@@ -362,5 +408,52 @@ public class VenueActivity extends TabActivity {
         public void onCancelled() {
             stopProgressBar(PROGRESS_BAR_TASK_ID);
         }
+    }
+
+    private class CheckinsTask extends AsyncTask<Void, Void, Group> {
+
+        private static final String PROGRESS_BAR_TASK_ID = TAG + "CheckinsTask";
+
+        @Override
+        public void onPreExecute() {
+            if (DEBUG) Log.d(TAG, "CheckinsTask: onPreExecute()");
+            startProgressBar(PROGRESS_BAR_TASK_ID);
+        }
+
+        @Override
+        public Group doInBackground(Void... params) {
+            try {
+                return Foursquared.getFoursquare().checkins(null);
+            } catch (FoursquareException e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "FoursquareError", e);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "IOException", e);
+            }
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(Group checkins) {
+            if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
+            try {
+                setCheckins(checkins);
+            } finally {
+                stopProgressBar(PROGRESS_BAR_TASK_ID);
+            }
+        }
+
+        @Override
+        public void onCancelled() {
+            stopProgressBar(PROGRESS_BAR_TASK_ID);
+        }
+
+    }
+
+    private static final class StateHolder {
+        Venue venue;
+        String venueId;
+        Group checkins;
     }
 }

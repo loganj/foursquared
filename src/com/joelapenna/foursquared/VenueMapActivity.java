@@ -33,8 +33,8 @@ public class VenueMapActivity extends MapActivity {
 
     private MapView mMapView;
     private MapController mMapController;
-    private VenueItemizedOverlay mOverlay;
-    private MyLocationOverlay mMyLocationOverlay;
+    private VenueItemizedOverlay mOverlay = null;
+    private MyLocationOverlay mMyLocationOverlay = null;
 
     private Venue mVenue;
     private Observer mVenueObserver;
@@ -65,13 +65,7 @@ public class VenueMapActivity extends MapActivity {
             updateMap();
 
         } else {
-            mVenueObserver = new Observer() {
-                @Override
-                public void update(Observable observable, Object data) {
-                    setVenue((Venue)data);
-                    updateMap();
-                }
-            };
+            mVenueObserver = new VenueObserver();
             ((VenueActivity)getParent()).venueObservable.addObserver(mVenueObserver);
         }
     }
@@ -129,12 +123,20 @@ public class VenueMapActivity extends MapActivity {
 
     private void updateMap() {
         GeoPoint center;
-        if (mOverlay.size() > 0) {
+        if (mOverlay != null && mOverlay.size() > 0) {
             center = mOverlay.getCenter();
         } else {
             return;
         }
         mMapController.animateTo(center);
         mMapController.setZoom(12);
+    }
+
+    private final class VenueObserver implements Observer {
+        @Override
+        public void update(Observable observable, Object data) {
+            setVenue((Venue)data);
+            updateMap();
+        }
     }
 }

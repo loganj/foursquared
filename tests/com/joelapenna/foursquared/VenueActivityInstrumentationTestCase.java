@@ -23,10 +23,9 @@ public class VenueActivityInstrumentationTestCase extends
     @SmallTest
     public void testOnCreate() {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.putExtra(VenueActivity.EXTRA_VENUE, FoursquaredTest.createRandomVenue("Random"));
+        intent.putExtra(VenueActivity.EXTRA_VENUE, "40450");
         setActivityIntent(intent);
 
-        // This test won't fail because the NPE happens too late!
         VenueActivity activity = getActivity();
         activity.openOptionsMenu();
         activity.closeOptionsMenu();
