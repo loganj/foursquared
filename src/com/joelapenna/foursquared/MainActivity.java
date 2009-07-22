@@ -32,10 +32,11 @@ public class MainActivity extends Activity {
         mFoursquare = new Foursquare("4158303607", "ci9ahXa9");
         try {
             // All requests fail if this guy isn't called first. I wonder why...
-            testLogin();
+            // testLogin();
             testVenues();
             testVenue();
             testCheckins();
+            // testBreakdown();
             // testCheckin();
         } catch (FoursquareError e) {
             // TODO Auto-generated catch block
@@ -49,13 +50,23 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void testBreakdown() throws FoursquareError, FoursquareParseException, IOException {
+        Log.d(TAG, "testBreakdown");
+        Log.d(TAG, mFoursquare.breakdown("9232", "67889"));
+
+    }
+
     private void testCheckins() throws FoursquareError, FoursquareParseException, IOException {
         Log.d(TAG, "testCheckins");
-        Group checkins = mFoursquare.checkins("23");
-        Log.d(TAG, "CheckinGroup:" + checkins.getType());
-        for (int i = 0; i < checkins.size(); i++) {
-            Checkin checkin = (Checkin)checkins.get(i);
-            Log.d(TAG, "Checkin at: " + checkin.getVenuename());
+        Group checkinGroups = mFoursquare.checkins("23");
+        Log.d(TAG, "Num Groups:" + checkinGroups.size());
+        for (int i = 0; i < checkinGroups.size(); i++) {
+            Group checkins = (Group)checkinGroups.get(i);
+            Log.d(TAG, "CheckinGroup:" + checkins.getType());
+            for (int j = 0; j < checkins.size(); j++) {
+                Checkin checkin = (Checkin)checkins.get(j);
+                Log.d(TAG, "Checkin at: " + checkin.getVenuename() + "(" + checkin.getCheckinid() + ")");
+            }
         }
     }
 
@@ -82,10 +93,15 @@ public class MainActivity extends Activity {
 
     private void testVenues() throws FoursquareError, FoursquareParseException, IOException {
         Log.d(TAG, "testVenues");
-        Group venues = mFoursquare.venues("37.770900", "-122.436987", 1, 10);
-        Log.d(TAG, "VenueGroup:" + venues.getType());
-        for (int i = 0; i < venues.size(); i++) {
-            Log.d(TAG, "Venue: " + ((Venue)venues.get(i)).getVenuename());
+        Group venueGroups = mFoursquare.venues("37.770900", "-122.436987", 1, 10);
+        Log.d(TAG, "Num Groups:" + venueGroups.size());
+        for (int i = 0; i < venueGroups.size(); i++) {
+            Group venues = (Group)venueGroups.get(i);
+            Log.d(TAG, "VenueGroup:" + venues.getType());
+            for (int j = 0; j < venues.size(); j++) {
+                Venue venue = (Venue)venues.get(j);
+                Log.d(TAG, "Venue at: " + venue.getVenuename() + "(" + venue.getVenueid() + ")");
+            }
         }
     }
 }

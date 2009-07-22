@@ -2,100 +2,80 @@
 <checkins>
   <group type="Me">
     <checkin>
-      <userid>118685</userid>
-      <firstname>Kevin</firstname>
-      <lastname>Reedy</lastname>
+      <userid>142739</userid>
+      <firstname>testuser</firstname>
+      <lastname>lapenna</lastname>
       <cityid>23</cityid>
       <city_name>SF</city_name>
-      <email>kevinreedy@gmail.com</email>
-      <phone>7084219526</phone>
+      <email>testuser@joelapenna.com</email>
+      <phone>4158303607</phone>
       <photo>http://playfoursquare.com/userpix/blank_boy.png</photo>
       <gender>male</gender>
       <show_twitter>1</show_twitter>
       <twitter_default>0</twitter_default>
       <show_dball>0</show_dball>
       <dball_default>0</dball_default>
-      <checkinid>67715</checkinid>
-      <venueid>40450</venueid>
-      <aliasid>118685</aliasid>
-      <venuename>On the Corner</venuename>
-      <address>359 Divisadero St</address>
-      <crossstreet>Oak St</crossstreet>
+      <checkinid>73740</checkinid>
+      <venueid>44794</venueid>
+      <aliasid>142739</aliasid>
+      <venuename>Bobby&apos;s place</venuename>
+      <address>123 Fake St.</address>
+      <crossstreet>Imaginary</crossstreet>
       <shout></shout>
-      <geolat>37.7729</geolat>
-      <geolong>-122.437</geolong>
-      <xdatetime>2009-04-06 20:33:41</xdatetime>
+      <geolat>0</geolat>
+      <geolong>0</geolong>
+      <xdatetime>2009-04-09 20:54:10</xdatetime>
       <relative_time>2 hrs ago</relative_time>
-      ..<stats>
-        ..</stats>
+      <stats>
+      </stats>
       <alert>
       </alert>
     </checkin>
   </group>
   <group type="Last 3 Hours">
     <checkin>
-      <checkinid>67715</checkinid>
-      <userid>9232</userid>
-      <firstname>Kevin</firstname>
-      <lastname>Reedy</lastname>
-      <email>kevinreedy@gmail.com</email>
-      <phone>7084219526</phone>
+      <checkinid>73740</checkinid>
+      <userid>9711</userid>
+      <firstname>testuser</firstname>
+      <lastname>lapenna</lastname>
+      <email>testuser@joelapenna.com</email>
+      <phone>4158303607</phone>
       <photo>http://playfoursquare.com/userpix/blank_boy.png</photo>
       <gender>male</gender>
-      <venueid>40450</venueid>
-      <aliasid>118685</aliasid>
-      <display>Kevin R. r</display>
-      <venuename>On the Corner</venuename>
-      <address>359 Divisadero St</address>
-      <crossstreet>Oak St</crossstreet>
+      <venueid>44794</venueid>
+      <aliasid>142739</aliasid>
+      <display>testuser l. @ Bobby&apos;s place</display>
+      <venuename>Bobby&apos;s place</venuename>
+      <address>123 Fake St.</address>
+      <crossstreet>Imaginary</crossstreet>
       <shout></shout>
-      <geolat>37.7729</geolat>
-      <geolong>-122.437</geolong>
-      <xdatetime>2009-04-06 20:33:41</xdatetime>
+      <geolat>0</geolat>
+      <geolong>0</geolong>
+      <xdatetime>2009-04-09 20:54:10</xdatetime>
       <relative_time>2 hrs ago</relative_time>
     </checkin>
-    <checkin>
-      <checkinid>67648</checkinid>
-      <userid>1818</userid>
-      <firstname>Joe</firstname>
-      <lastname>LaPenna</lastname>
-      <email>jlapenna@gmail.com</email>
-      <phone>6503903604</phone>
-      <photo>http://playfoursquare.com/userpix/1818_1238945987.jpg</photo>
-      <gender>male</gender>
-      <venueid>40450</venueid>
-      <aliasid>118685</aliasid>
-      <display>Joe L. @ On the Corner</display>
-      <venuename>On the Corner</venuename>
-      <address>359 Divisadero St</address>
-      <crossstreet>Oak St</crossstreet>
-      <shout></shout>
-      <geolat>37.7729</geolat>
-      <geolong>-122.437</geolong>
-      <xdatetime>2009-04-06 20:03:06</xdatetime>
-      <relative_time>3 hrs ago</relative_time>
-    </checkin>
   </group>
-  <group type="Yesterday">
+  <group type="Older">
     <checkin>
-      <checkinid>65655</checkinid>
-      <userid>9689</userid>
-      <firstname>Carrie</firstname>
-      <lastname>Higgins</lastname>
-      <email>Carriehggns@gmail.com</email>
-      <phone>7085163723</phone>
+      <checkinid>67878</checkinid>
+      <userid>9923</userid>
+      <firstname>Test2</firstname>
+      <lastname>User2</lastname>
+      <email>testuser2@joelapenna.com</email>
+      <phone>5882300123</phone>
       <photo>http://playfoursquare.com/userpix/blank_girl.png</photo>
       <gender>female</gender>
-      <venueid></venueid>
-      <aliasid>142373</aliasid>
-      <display>Carrie H. @ Loving hut</display>
-      <venuename>Loving hut</venuename>
-      <address></address>
-      <crossstreet></crossstreet>
-      <shout></shout>
-      <geolat></geolat>
-      <geolongdatetime>2009-04-05 18:08:09</xdatetime>
-      <relative_time>Sun 6:08 PM</relative_time>
+      <venueid>44794</venueid>
+      <aliasid>142739</aliasid>
+      <display>Test2 U. @ Bobby&apos;s place</display>
+      <venuename>Bobby&apos;s place</venuename>
+      <address>123 Fake St.</address>
+      <crossstreet>Imaginary</crossstreet>
+      <shout>Hey shout at you</shout>
+      <geolat>0</geolat>
+      <geolong>0</geolong>
+      <xdatetime>2009-04-06 22:35:33</xdatetime>
+      <relative_time>Mon Apr 6</relative_time>
     </checkin>
-    .</group>
+  </group>
 </checkins>

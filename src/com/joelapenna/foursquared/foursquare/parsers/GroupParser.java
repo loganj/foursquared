@@ -34,7 +34,9 @@ public class GroupParser extends AbstractParser<Group> {
     @Override
     public Group parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError {
-        Group items = new Group();
+        // We're likely to have to parse multiple groups.
+        Group groups = new Group();
+
         int eventType = parser.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT) {
             switch (eventType) {
@@ -45,9 +47,9 @@ public class GroupParser extends AbstractParser<Group> {
                     if ("error".equals(name)) {
                         throw new FoursquareError(parser.getText());
                     } else if ("group".equals(name)) {
+                        Group items = new Group();
                         parseGroupTag(parser, items);
-                        break; // TODO(jlapenna): This will only handle a result that has one group
-                               // in it.
+                        groups.add(items);
                     }
 
                 default:
@@ -55,7 +57,7 @@ public class GroupParser extends AbstractParser<Group> {
             }
             eventType = parser.nextToken();
         }
-        return items;
+        return groups;
     }
 
     public void parseGroupTag(XmlPullParser parser, Group group) throws XmlPullParserException,
@@ -83,6 +85,11 @@ public class GroupParser extends AbstractParser<Group> {
                         if (DEBUG) Log.d(TAG, "FoursquareParseException", e);
                     }
                     break;
+
+                case XmlPullParser.END_TAG:
+                    if (parser.getName().equals("group")) {
+                        return;
+                    }
 
                 default:
                     if (DEBUG) Log.d(TAG, "Unhandled Event");

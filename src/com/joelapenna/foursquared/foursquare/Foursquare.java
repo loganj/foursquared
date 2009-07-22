@@ -35,6 +35,7 @@ public class Foursquare {
     public void setCredentials(String phone, String password) {
         mPhone = phone;
         mPassword = password;
+        mFoursquare.setCredentials(phone, password);
     }
 
     public boolean login() throws FoursquareError, FoursquareParseException, IOException {
@@ -44,18 +45,23 @@ public class Foursquare {
 
     }
 
+    public String breakdown(String userId, String checkinId) throws FoursquareError,
+            FoursquareParseException, IOException {
+        return mFoursquare.breakdown(userId, checkinId);
+    }
+
     public IncomingCheckin checkin(String venue, boolean silent, boolean twitter, String lat,
             String lng) throws FoursquareError, FoursquareParseException, IOException {
         return mFoursquare.checkin(mPhone, venue, silent, twitter, lat, lng, null);
     }
 
-    public Group venues(String lat, String lng, int radius, int length)
-            throws FoursquareError, FoursquareParseException, IOException {
+    public Group venues(String lat, String lng, int radius, int length) throws FoursquareError,
+            FoursquareParseException, IOException {
         return mFoursquare.venues(lat, lng, radius, length);
     }
 
-    public Group checkins(String cityId)
-            throws FoursquareError, FoursquareParseException, IOException {
+    public Group checkins(String cityId) throws FoursquareError, FoursquareParseException,
+            IOException {
         return mFoursquare.checkins(cityId);
     }
 

@@ -21,6 +21,7 @@ import com.joelapenna.foursquared.foursquare.types.Venue;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
+import org.apache.http.ParseException;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
@@ -39,6 +40,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 
 import android.util.Log;
 
@@ -68,10 +70,18 @@ class FoursquareHttpApi {
     // Not the normal URL because, well, it doesn't have a normal URL!
     private static final String URL_API_INCOMING = "http://" + DOMAIN + "/incoming/incoming.php";
 
+    // Gets the html description of a checkin.
+    private static final String URL_BREAKDOWN = "http://" + DOMAIN + "/incoming/breakdown";
+
     private DefaultHttpClient mHttpClient;
 
     FoursquareHttpApi(DefaultHttpClient httpClient) {
         mHttpClient = httpClient;
+    }
+
+    void setCredentials(String phone, String password) {
+        mHttpClient.getCredentialsProvider().setCredentials(new AuthScope(DOMAIN, 80),
+                new UsernamePasswordCredentials(phone, password));
     }
 
     Auth login(String phone, String password) throws FoursquareError, FoursquareParseException,
@@ -98,8 +108,7 @@ class FoursquareHttpApi {
         }
         Auth auth = new AuthParser().parse(AuthParser.createParser(response.getEntity()
                 .getContent()));
-        mHttpClient.getCredentialsProvider().setCredentials(new AuthScope(DOMAIN, 80),
-                new UsernamePasswordCredentials(phone, password));
+        setCredentials(phone, password);
         return auth;
     }
 
@@ -121,8 +130,7 @@ class FoursquareHttpApi {
      * 
      * @return
      */
-    Group checkins(String cityId) throws FoursquareError,
-            FoursquareParseException, IOException {
+    Group checkins(String cityId) throws FoursquareError, FoursquareParseException, IOException {
         return (Group)doHttpPost(URL_API_CHECKINS, new GroupParser(new CheckinParser()),
                 new BasicNameValuePair("cityid", cityId));
     }
@@ -140,7 +148,7 @@ class FoursquareHttpApi {
                 new BasicNameValuePair("r", String.valueOf(radius)), // radius in miles?
                 new BasicNameValuePair("length", String.valueOf(length)));
     }
-    
+
     /**
      * /api/venue?vid=1234
      * 
@@ -149,6 +157,41 @@ class FoursquareHttpApi {
     Venue venue(String id) throws FoursquareError, FoursquareParseException, IOException {
         return (Venue)doHttpPost(URL_API_VENUE, new VenueParser(),
                 new BasicNameValuePair("vid", id));
+    }
+
+    /**
+     * /incoming/breakdown?cid=67889&uid=9232&client=iphone
+     * 
+     * This guy has a custom implementation because it does not receive XML.
+     */
+    String breakdown(String userId, String checkinId) throws FoursquareError,
+            FoursquareParseException, IOException {
+        if (DEBUG) Log.d(TAG, "breakdown");
+        NameValuePair[] nameValuePairs = {
+                new BasicNameValuePair("uid", userId), // user id
+                new BasicNameValuePair("cid", checkinId), // checkin id
+                new BasicNameValuePair("client", "android")
+        };
+        HttpPost httpPost = createHttpPost(URL_BREAKDOWN, Arrays.asList(nameValuePairs));
+
+        HttpResponse response = executeHttpPost(httpPost);
+        if (response == null) {
+            if (DEBUG) Log.d(TAG, "execute() call for the httpPost generated an exception;");
+            throw new FoursquareError("breakdown request unsuccessful.");
+        }
+
+        switch (response.getStatusLine().getStatusCode()) {
+            case 200:
+                break;
+            default:
+                throw new FoursquareError(response.getStatusLine().toString());
+        }
+
+        try {
+            return EntityUtils.toString(response.getEntity());
+        } catch (ParseException e) {
+            throw new FoursquareParseException(e.getMessage());
+        }
     }
 
     private FoursquareType doHttpPost(String url, Parser<? extends FoursquareType> abstractParser,
