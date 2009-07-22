@@ -5,6 +5,8 @@
   <string
     name="preference_activity_name">Preferences!</string>
   <string
+    name="checkins_activity_name">Foursquare Checkins</string>
+  <string
     name="venue_checkin_activity_name">Check-In</string>
   <string
     name="venue_info_activity_name">Info</string>

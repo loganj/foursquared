@@ -51,6 +51,21 @@
 
 
     <activity
+      android:name=".CheckinsActivity"
+      android:label="@string/checkins_activity_name"
+      android:launchMode="singleTop">
+      <intent-filter>
+        <action
+          android:name="android.intent.action.MAIN" />
+      </intent-filter>
+    </activity>
+
+    <activity
+      android:name=".CheckinsMapActivity">
+    </activity>
+
+
+    <activity
       android:name=".PreferenceActivity"
       android:label="@string/preference_activity_name">
       <intent-filter>
