@@ -126,6 +126,11 @@ public class Foursquare {
     }
 
     @V1
+    public Data switchCity(String cityId) throws FoursquareException, FoursquareError, IOException {
+        return mFoursquareV1.switchcity(cityId);
+    }
+
+    @V1
     public Group tips(String geolat, String geolong, int limit) throws FoursquareException,
             FoursquareError, IOException {
         return mFoursquareV1.tips(geolat, geolong, limit);

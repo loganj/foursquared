@@ -238,9 +238,9 @@ public class FoursquareHttpApiV1 {
      */
     Data switchcity(String cityid) throws FoursquareException, FoursquareCredentialsError,
             FoursquareError, IOException {
-        HttpGet httpGet = mHttpApi.createHttpGet(URL_API_SWITCHCITY, //
+        HttpPost httpPost = mHttpApi.createHttpPost(URL_API_SWITCHCITY, //
                 new BasicNameValuePair("cityid", cityid));
-        return (Data)mHttpApi.doHttpRequest(httpGet, new DataParser());
+        return (Data)mHttpApi.doHttpRequest(httpPost, new DataParser());
     }
 
     /*

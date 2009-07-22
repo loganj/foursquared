@@ -34,6 +34,7 @@ public class Preferences {
     public static final String PREFERENCE_CITY_ID = "city_id";
     public static final String PREFERENCE_CITY_GEOLAT = "city_geolat";
     public static final String PREFERENCE_CITY_GEOLONG = "city_geolong";
+    public static final String PREFERENCE_CITY_NAME = "city_name";
     public static final String PREFERENCE_EMAIL = "email";
     public static final String PREFERENCE_FIRST = "first_name";
     public static final String PREFERENCE_GENDER = "gender";
@@ -70,8 +71,8 @@ public class Preferences {
      * @throws FoursquareException
      * @throws IOException
      */
-    static boolean loginUser(Foursquare foursquare, String phoneNumber, String password,
-            Editor editor) throws FoursquareCredentialsError, FoursquareException, IOException {
+    static User loginUser(Foursquare foursquare, String phoneNumber, String password, Editor editor)
+            throws FoursquareCredentialsError, FoursquareException, IOException {
         if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Trying to log in.");
 
         foursquare.setCredentials(phoneNumber, password);
@@ -79,7 +80,7 @@ public class Preferences {
 
         Credentials credentials = foursquare.authExchange();
         if (credentials == null) {
-            return false;
+            return null;
         }
         foursquare.setOAuthToken(credentials.getOauthToken(), credentials.getOauthTokenSecret());
         User user = foursquare.user(null, false, false);
@@ -87,7 +88,7 @@ public class Preferences {
         storePhoneAndPassword(editor, phoneNumber, password);
         storeAuthExchangeCredentials(editor, credentials);
         storeUser(editor, user);
-        return true;
+        return user;
     }
 
     static void storeAuthExchangeCredentials(final Editor editor, Credentials credentials)
@@ -111,14 +112,19 @@ public class Preferences {
 
     static void storeUser(final Editor editor, User user) {
         if (user != null && user.getId() != null) {
-            City city = user.getCity();
-            editor.putString(PREFERENCE_CITY_ID, city.getId());
-            editor.putString(PREFERENCE_CITY_GEOLAT, city.getGeolat());
-            editor.putString(PREFERENCE_CITY_GEOLONG, city.getGeolong());
             editor.putString(PREFERENCE_ID, user.getId());
             if (DEBUG) Log.d(TAG, "Commiting user info: " + String.valueOf(editor.commit()));
         } else {
             if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Unable to lookup user.");
+        }
+    }
+
+    static void storeCity(final Editor editor, City city) {
+        if (city != null) {
+            editor.putString(PREFERENCE_CITY_ID, city.getId());
+            editor.putString(PREFERENCE_CITY_GEOLAT, city.getGeolat());
+            editor.putString(PREFERENCE_CITY_GEOLONG, city.getGeolong());
+            editor.putString(PREFERENCE_CITY_NAME, city.getName());
         }
     }
 }

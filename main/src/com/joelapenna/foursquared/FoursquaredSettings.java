@@ -10,7 +10,7 @@ package com.joelapenna.foursquared;
 public class FoursquaredSettings {
 
     public static final boolean DEBUG = true;
-    public static final boolean API_DEBUG = true;
+    public static final boolean API_DEBUG = false;
     public static final boolean PARSER_DEBUG = false;
 
     public static final boolean USE_DUMPCATCHER = true;

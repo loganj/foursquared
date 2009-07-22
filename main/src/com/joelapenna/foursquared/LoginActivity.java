@@ -6,12 +6,18 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.types.City;
+import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquared.Foursquared.LocationListener;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -38,11 +44,16 @@ public class LoginActivity extends Activity {
     private EditText mPhoneEditText;
     private EditText mPasswordEditText;
     private ProgressDialog mProgressDialog;
+    private LocationListener mLocationListener;
+    private LocationManager mLocationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.d(TAG, "onCreate()");
+
+        mLocationListener = ((Foursquared)getApplication()).getLocationListener();
+        mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mPrefs.edit().clear().commit();
@@ -56,6 +67,25 @@ public class LoginActivity extends Activity {
             if (DEBUG) Log.d(TAG, "LoginTask previously cancelled, trying again.");
             mLoginTask = new LoginTask().execute();
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // We should probably dynamically connect to any location provider we can find and not just
+        // the gps/network providers.
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                LocationListener.LOCATION_UPDATE_MIN_TIME,
+                LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                LocationListener.LOCATION_UPDATE_MIN_TIME,
+                LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mLocationManager.removeUpdates(mLocationListener);
     }
 
     @Override
@@ -143,8 +173,24 @@ public class LoginActivity extends Activity {
                 String password = mPasswordEditText.getText().toString();
 
                 Editor editor = mPrefs.edit();
-                if (Preferences.loginUser( //
-                        Foursquared.getFoursquare(), phoneNumber, password, editor)) {
+
+                User user = Preferences.loginUser( //
+                        Foursquared.getFoursquare(), phoneNumber, password, editor);
+
+                if (user != null) {
+                    Location location = mLocationListener.getLastKnownLocation();
+                    if (location != null) {
+                        City city = Foursquared.getFoursquare().checkCity(
+                                String.valueOf(location.getLatitude()),
+                                String.valueOf(location.getLongitude()));
+                        if (!user.getCity().getId().equals(city.getId())) {
+                            Foursquared.getFoursquare().switchCity(city.getId());
+                        }
+                        Preferences.storeCity(editor, city);
+
+                    } else {
+                        Preferences.storeCity(editor, user.getCity());
+                    }
                     editor.commit();
                     return true;
                 }
@@ -167,9 +213,9 @@ public class LoginActivity extends Activity {
             if (DEBUG) Log.d(TAG, "onPostExecute(): " + loggedIn);
 
             if (loggedIn) {
-                Toast
-                        .makeText(LoginActivity.this, "Welcome back to Foursquare.",
-                                Toast.LENGTH_LONG).show();
+                String city = mPrefs.getString(Preferences.PREFERENCE_CITY_NAME, null);
+                Toast.makeText( //
+                        LoginActivity.this, "Welcome to " + city + "!", Toast.LENGTH_LONG).show();
                 if (Intent.ACTION_MAIN.equals(getIntent().getAction())) {
                     startActivity(new Intent(LoginActivity.this, SearchVenuesActivity.class));
                 }
