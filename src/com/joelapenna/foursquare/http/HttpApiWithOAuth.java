@@ -51,6 +51,6 @@ public class HttpApiWithOAuth extends HttpApi {
     }
 
     public boolean hasOAuthTokenWithSecret() {
-        return (mConsumer.getToken() != null) && (mConsumer.getConsumerSecret() != null);
+        return (mConsumer.getToken() != null) && (mConsumer.getTokenSecret() != null);
     }
 }

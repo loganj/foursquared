@@ -8,6 +8,7 @@ import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Auth;
 import com.joelapenna.foursquare.types.Checkin;
+import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
@@ -29,24 +30,43 @@ public class Foursquare {
     private String mPhone;
     private String mPassword;
     private FoursquareHttpApi mFoursquare;
+    private FoursquareHttpApiV1 mFoursquareV1;
 
     public Foursquare() {
         mFoursquare = new FoursquareHttpApi();
+        mFoursquareV1 = null;
+    }
+    
+    public Foursquare(String oAuthConsumerKey, String oAuthConsumerSecret) {
+        mFoursquare = new FoursquareHttpApi();
+        mFoursquareV1 = new FoursquareHttpApiV1(oAuthConsumerKey, oAuthConsumerSecret);
     }
 
-    public Foursquare(String phone, String password) {
+    public Foursquare(String phone, String password, String token, String secret) {
         super();
+        setCredentials(phone, password, token, secret);
+    }
+
+    public void setCredentials(String phone, String password) {
+        mPhone = phone;
+        mPassword = password;
+    }
+
+    public void setCredentials(String phone, String password, String token, String secret) {
         setCredentials(phone, password);
+        mFoursquareV1.setCredentials(token, secret);
     }
 
     public boolean hasCredentials() {
         return !(TextUtils.isEmpty(mPhone) && TextUtils.isEmpty(mPassword));
     }
 
-    public void setCredentials(String phone, String password) {
-        mPhone = phone;
-        mPassword = password;
-        mFoursquare.setCredentials(phone, password);
+    public boolean hasCredentials(boolean v1) {
+        return hasCredentials() && ((v1) ? mFoursquareV1.hasCredentials() : true);
+    }
+
+    public Credentials authExchange() throws FoursquareError, FoursquareParseException, IOException {
+        return mFoursquareV1.authExchange(mPhone, mPassword);
     }
 
     public Auth login() throws FoursquareError, FoursquareParseException, IOException {
