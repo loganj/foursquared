@@ -32,7 +32,7 @@ public class SimpleItemizedOverlay extends ItemizedOverlay<OverlayItem> {
         return mOverlays.size();
     }
 
-    public void addOverlay(OverlayItem overlay) {
+    public void addItem(OverlayItem overlay) {
         mOverlays.add(overlay);
         populate();
     }

@@ -88,7 +88,7 @@ public class VenueMapActivity extends MapActivity {
             int lat = (int)(Double.parseDouble(venue.getGeolat()) * 1E6);
             int lng = (int)(Double.parseDouble(venue.getGeolong()) * 1E6);
             GeoPoint point = new GeoPoint(lat, lng);
-            mOverlay.addOverlay(new OverlayItem(point, venue.getVenuename(), ""));
+            mOverlay.addItem(new OverlayItem(point, venue.getVenuename(), ""));
             mMapView.getOverlays().add(mOverlay);
         }
     }
