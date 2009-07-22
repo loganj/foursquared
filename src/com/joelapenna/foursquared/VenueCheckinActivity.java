@@ -74,7 +74,7 @@ public class VenueCheckinActivity extends ListActivity {
         });
 
         setupUi();
-        mVenue = (Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY);
+        mVenue = (Venue)getIntent().getExtras().get(VenueActivity.EXTRA_VENUE);
 
         if (getLastNonConfigurationInstance() != null) {
             setCheckinGroups((Group)getLastNonConfigurationInstance());

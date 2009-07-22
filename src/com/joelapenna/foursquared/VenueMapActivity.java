@@ -52,7 +52,7 @@ public class VenueMapActivity extends MapActivity {
 
         initMap();
 
-        setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
+        setVenue((Venue)getIntent().getExtras().get(VenueActivity.EXTRA_VENUE));
         updateMap();
     }
 

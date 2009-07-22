@@ -47,7 +47,7 @@ public class VenueActivity extends TabActivity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.venue_activity);
 
-        setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
+        setVenue((Venue)getIntent().getExtras().get(EXTRA_VENUE));
         //setVenue(FoursquaredTest.createTestVenue("Test"));
         // Venue venue = FoursquaredTest.createTestVenue("A");
         // setVenue(venue);
@@ -119,7 +119,7 @@ public class VenueActivity extends TabActivity {
 
         tag = (String)this.getText(R.string.venue_checkin_activity_name);
         intent = new Intent(this, VenueCheckinActivity.class);
-        intent.putExtra(Foursquared.EXTRAS_VENUE_KEY, mVenue);
+        intent.putExtra(VenueActivity.EXTRA_VENUE, mVenue);
         tabHost.addTab(tabHost.newTabSpec(tag)
                 // Checkin Tab
                 .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_add))
@@ -128,7 +128,7 @@ public class VenueActivity extends TabActivity {
 
         tag = (String)this.getText(R.string.venue_info_activity_name);
         intent = new Intent(this, VenueMapActivity.class);
-        intent.putExtra(Foursquared.EXTRAS_VENUE_KEY, mVenue);
+        intent.putExtra(EXTRA_VENUE, mVenue);
         tabHost.addTab(tabHost.newTabSpec(tag)
                 // Info Tab
                 .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_compass))
@@ -137,7 +137,7 @@ public class VenueActivity extends TabActivity {
 
         tag = (String)this.getText(R.string.venue_tips_activity_name);
         intent = new Intent(this, VenueTipsActivity.class);
-        intent.putExtra(Foursquared.EXTRAS_VENUE_KEY, mVenue);
+        intent.putExtra(VenueActivity.EXTRA_VENUE, mVenue);
         tabHost.addTab(tabHost.newTabSpec(tag)
                 // Info Tab
                 .setIndicator("",

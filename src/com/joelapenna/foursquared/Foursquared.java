@@ -39,8 +39,6 @@ public class Foursquared extends Application {
 
     public static final int LAST_LOCATION_UPDATE_THRESHOLD = 1000 * 60 * 60;
 
-    public static final String EXTRAS_VENUE_KEY = "venue";
-
     public static final String PREFERENCE_PHONE = "phone";
     public static final String PREFERENCE_PASSWORD = "password";
     public static final String PREFERENCE_TWITTER_CHECKIN = "twitter_checkin";
