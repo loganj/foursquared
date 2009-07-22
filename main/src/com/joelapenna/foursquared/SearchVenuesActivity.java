@@ -6,7 +6,9 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
@@ -362,8 +364,12 @@ public class SearchVenuesActivity extends TabActivity {
             Location location = mLocationListener.getLastKnownLocation();
             Foursquare foursquare = Foursquared.getFoursquare();
             if (location == null) {
-                if (DEBUG) Log.d(TAG, "Searching without location.");
-                return foursquare.venues(null, null, mSearchHolder.query, 1, 10);
+                // Foursquare requires a lat, lng for a venue search, so we have to pull it from the
+                // server if we cannot determine it locally.
+                // This won't work
+                City city = foursquare.user(null, false, false).getCity();
+                return foursquare.venues(//
+                        city.getGeolat(), city.getGeolong(), mSearchHolder.query, 1, 10);
             } else {
                 // Try to make the search radius to be the same as our
                 // accuracy.

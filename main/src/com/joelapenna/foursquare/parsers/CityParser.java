@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-06-19 00:18:41.206000
+ * Auto-generated: 2009-07-13 10:07:04.534834
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -43,7 +43,13 @@ public class CityParser extends AbstractParser<City> {
             if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
 
             String name = parser.getName();
-            if ("id".equals(name)) {
+            if ("geolat".equals(name)) {
+                city.setGeolat(parser.nextText());
+
+            } else if ("geolong".equals(name)) {
+                city.setGeolong(parser.nextText());
+
+            } else if ("id".equals(name)) {
                 city.setId(parser.nextText());
 
             } else if ("name".equals(name)) {
