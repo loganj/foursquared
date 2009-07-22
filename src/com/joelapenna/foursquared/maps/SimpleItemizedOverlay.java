@@ -37,4 +37,8 @@ public class SimpleItemizedOverlay extends ItemizedOverlay<OverlayItem> {
         populate();
     }
 
+    public Drawable centerBottomDrawable(Drawable drawable) {
+        return boundCenterBottom(drawable);
+    }
+
 }

@@ -42,12 +42,10 @@ public class VenueActivity extends TabActivity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.venue_activity);
 
-        setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
+        //setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
         //setVenue(FoursquaredTest.createTestVenue("Anonymous"));
-        // Venue venue = FoursquaredTest.createTestVenue("A");
-        // venue.setGeolat("0");
-        // venue.setGeolong("0");
-        // setVenue(venue);
+        Venue venue = FoursquaredTest.createTestVenue("A");
+        setVenue(venue);
 
         // We register this early (not in onStart) because our children might end up calling out to
         // this.

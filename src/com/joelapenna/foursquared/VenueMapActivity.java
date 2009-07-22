@@ -8,6 +8,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.SimpleItemizedOverlay;
@@ -16,9 +17,12 @@ import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ZoomControls;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -29,15 +33,15 @@ public class VenueMapActivity extends MapActivity {
 
     private MapView mMapView;
     private MapController mMapController;
-    private SimpleItemizedOverlay mUserOverlay;
-    private SimpleItemizedOverlay mVenueOverlay;
+    private SimpleItemizedOverlay mOverlay;
+    private MyLocationOverlay mMyLocationOverlay;
 
     private Venue mVenue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.venue_info_activity);
+        setContentView(R.layout.venue_map_activity);
 
         Button yelpButton = (Button)findViewById(R.id.yelpButton);
         yelpButton.setOnClickListener(new OnClickListener() {
@@ -52,20 +56,22 @@ public class VenueMapActivity extends MapActivity {
 
         setupMapView();
 
-        setUser();
         setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
         setMap();
     }
 
-    private void setUser() {
-        Location location = ((Foursquared)getApplication()).getLocation();
-        if (location != null) {
-            int lat = (int)(location.getLatitude() * 1E6);
-            int lng = (int)(location.getLongitude() * 1E6);
-            GeoPoint point = new GeoPoint(lat, lng);
-            mUserOverlay.addOverlay(new OverlayItem(point, "You are here!", ""));
-        }
+    @Override
+    public void onResume() {
+        super.onResume();
+        mMyLocationOverlay.enableMyLocation();
+        mMyLocationOverlay.enableCompass();
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        mMyLocationOverlay.disableMyLocation();
+        mMyLocationOverlay.disableCompass();
     }
 
     private void setVenue(Venue venue) {
@@ -79,24 +85,23 @@ public class VenueMapActivity extends MapActivity {
 
         // Otherwise...
         if (!("0".equals(venue.getGeolat()) && "0".equals(venue.getGeolong()))) {
+            if (DEBUG) Log.d(TAG, "Adding venue overlay at: " + venue.getGeolat());
             int lat = (int)(Double.parseDouble(venue.getGeolat()) * 1E6);
             int lng = (int)(Double.parseDouble(venue.getGeolong()) * 1E6);
             GeoPoint point = new GeoPoint(lat, lng);
-            mVenueOverlay.addOverlay(new OverlayItem(point, venue.getVenuename(), ""));
+            mOverlay.addOverlay(new OverlayItem(point, venue.getVenuename(), ""));
         }
     }
 
     private void setMap() {
         GeoPoint center;
-        if (mVenueOverlay.size() > 0) {
-            center = mVenueOverlay.getCenter();
-        } else if (mUserOverlay.size() > 0) {
-            center = mUserOverlay.getCenter();
+        if (mOverlay.size() > 0) {
+            center = mOverlay.getCenter();
         } else {
             return;
         }
         mMapController.animateTo(center);
-        mMapController.setZoom(14);
+        mMapController.setZoom(12);
     }
 
     /**
@@ -106,18 +111,18 @@ public class VenueMapActivity extends MapActivity {
         mMapView = (MapView)findViewById(R.id.mapView);
         mMapController = mMapView.getController();
 
-        mUserOverlay = new SimpleItemizedOverlay(this.getResources()
-                .getDrawable(R.drawable.blueman));
-        mMapView.getOverlays().add(mUserOverlay);
+        mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
+        mMapView.getOverlays().add(mMyLocationOverlay);
 
-        mVenueOverlay = new SimpleItemizedOverlay(this.getResources()
-                .getDrawable(R.drawable.reddot));
-        mMapView.getOverlays().add(mVenueOverlay);
+        mOverlay = new SimpleItemizedOverlay(this.getResources().getDrawable(R.drawable.reddot));
+        mMapView.getOverlays().add(mOverlay);
+
+        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.zoomView);
+        linearLayout.addView(mMapView.getZoomControls());
     }
 
     @Override
     protected boolean isRouteDisplayed() {
-        // TODO Auto-generated method stub
         return false;
     }
 
