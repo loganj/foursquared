@@ -52,6 +52,7 @@ public class Foursquare {
         mPhone = phone;
         mPassword = password;
         mFoursquare.setCredentials(phone, password);
+        mFoursquareV1.setCredentials(phone, password);
     }
 
     @V1
@@ -72,7 +73,8 @@ public class Foursquare {
     @V1
     @Classic
     public boolean hasCredentials() {
-        return mFoursquare.hasCredentials() && mFoursquareV1.hasCredentials();
+        return mFoursquare.hasCredentials() && mFoursquareV1.hasCredentials()
+                && mFoursquareV1.hasOAuthTokenWithSecret();
     }
 
     @V1

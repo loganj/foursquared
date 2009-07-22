@@ -47,19 +47,22 @@ public class HttpApiWithOAuth extends HttpApi {
     public FoursquareType doHttpRequest(HttpRequestBase httpRequest,
             Parser<? extends FoursquareType> parser) throws FoursquareException, IOException {
         if (DEBUG) Log.d(TAG, "doHttpRequest: " + httpRequest.getURI());
-        try {
-            if (DEBUG) Log.d(TAG, "Signing request: " + httpRequest.getURI());
-            if (DEBUG) Log.d(TAG, "Consumer: " + mConsumer.getConsumerKey() + ", "
-                    + mConsumer.getConsumerSecret());
-            if (DEBUG) Log.d(TAG, "Token: " + mConsumer.getToken() + ", "
-                    + mConsumer.getTokenSecret());
-            mConsumer.sign(httpRequest);
-        } catch (OAuthMessageSignerException e) {
-            if (DEBUG) Log.d(TAG, "OAuthMessageSignerException", e);
-            throw new RuntimeException(e);
-        } catch (OAuthExpectationFailedException e) {
-            if (DEBUG) Log.d(TAG, "OAuthExpectationFailedException", e);
-            throw new RuntimeException(e);
+        // XXX
+        if (false) {
+            try {
+                if (DEBUG) Log.d(TAG, "Signing request: " + httpRequest.getURI());
+                if (DEBUG) Log.d(TAG, "Consumer: " + mConsumer.getConsumerKey() + ", "
+                        + mConsumer.getConsumerSecret());
+                if (DEBUG) Log.d(TAG, "Token: " + mConsumer.getToken() + ", "
+                        + mConsumer.getTokenSecret());
+                mConsumer.sign(httpRequest);
+            } catch (OAuthMessageSignerException e) {
+                if (DEBUG) Log.d(TAG, "OAuthMessageSignerException", e);
+                throw new RuntimeException(e);
+            } catch (OAuthExpectationFailedException e) {
+                if (DEBUG) Log.d(TAG, "OAuthExpectationFailedException", e);
+                throw new RuntimeException(e);
+            }
         }
         HttpResponse response = executeHttpRequest(httpRequest);
         if (DEBUG) Log.d(TAG, "executed HttpRequest for: " + httpRequest.getURI().toString());

@@ -26,11 +26,24 @@ import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 
+import org.apache.http.HttpException;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.AuthState;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.ExecutionContext;
+import org.apache.http.protocol.HttpContext;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.IOException;
@@ -44,6 +57,7 @@ public class FoursquareHttpApiV1 {
 
     private static final String HTTP_SCHEME = "http://";
     private static final String DOMAIN = "api.playfoursquare.com";
+    private static final AuthScope AUTH_SCOPE = new AuthScope(DOMAIN, 80);
 
     private static final String URL_DOMAIN = HTTP_SCHEME + DOMAIN;
 
@@ -63,12 +77,54 @@ public class FoursquareHttpApiV1 {
     private static final String URL_API_VENUES = URL_API_BASE + "/venues";
     private static final String URL_API_TIPS = URL_API_BASE + "/tips";
 
-    private DefaultHttpClient mHttpClient;
-    private HttpApiWithOAuth mHttpApi;
+    private final DefaultHttpClient mHttpClient = HttpApi.createHttpClient();
+    private HttpApiWithOAuth mHttpApi = new HttpApiWithOAuth(mHttpClient);
+
+    // XXX Foursquare requires "pre-emptive" basic auth, it won't do the normal challenge, response
+    // stuff.
+    HttpRequestInterceptor preemptiveAuth = new HttpRequestInterceptor() {
+
+        @Override
+        public void process(final HttpRequest request, final HttpContext context)
+                throws HttpException, IOException {
+
+            AuthState authState = (AuthState)context.getAttribute(ClientContext.TARGET_AUTH_STATE);
+            CredentialsProvider credsProvider = (CredentialsProvider)context
+                    .getAttribute(ClientContext.CREDS_PROVIDER);
+            HttpHost targetHost = (HttpHost)context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+
+            // If not auth scheme has been initialized yet
+            if (authState.getAuthScheme() == null) {
+                AuthScope authScope = new AuthScope(targetHost.getHostName(), targetHost.getPort());
+                // Obtain credentials matching the target host
+                org.apache.http.auth.Credentials creds = credsProvider.getCredentials(authScope);
+                // If found, generate BasicScheme preemptively
+                if (creds != null) {
+                    authState.setAuthScheme(new BasicScheme());
+                    authState.setCredentials(creds);
+                }
+            }
+        }
+
+    };
 
     public FoursquareHttpApiV1() {
-        mHttpClient = HttpApi.createHttpClient();
-        mHttpApi = new HttpApiWithOAuth(mHttpClient);
+        mHttpClient.addRequestInterceptor(preemptiveAuth, 0);
+    }
+
+    void setCredentials(String phone, String password) {
+        if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(password)) {
+            if (DEBUG) Log.d(TAG, "Clearing Credentials");
+            mHttpClient.getCredentialsProvider().clear();
+        } else {
+            if (DEBUG) Log.d(TAG, "Setting Phone/Password: " + phone + " " + password);
+            mHttpClient.getCredentialsProvider().setCredentials(AUTH_SCOPE,
+                    new UsernamePasswordCredentials(phone, password));
+        }
+    }
+
+    public boolean hasCredentials() {
+        return mHttpClient.getCredentialsProvider().getCredentials(AUTH_SCOPE) != null;
     }
 
     public FoursquareHttpApiV1(String oAuthConsumerKey, String oAuthConsumerSecret) {
@@ -87,7 +143,7 @@ public class FoursquareHttpApiV1 {
         mHttpApi.setOAuthTokenWithSecret(token, secret);
     }
 
-    public boolean hasCredentials() {
+    public boolean hasOAuthTokenWithSecret() {
         return mHttpApi.hasOAuthTokenWithSecret();
     }
 
@@ -96,13 +152,22 @@ public class FoursquareHttpApiV1 {
      */
     public Credentials authExchange(String phone, String password) throws FoursquareException,
             FoursquareCredentialsError, FoursquareError, IOException {
-        if (mHttpApi.hasOAuthTokenWithSecret()) {
-            throw new IllegalStateException("Cannot do authExchange with OAuthToken already set");
+        // XXX Don't do a real lookup.
+        if (false) {
+            if (mHttpApi.hasOAuthTokenWithSecret()) {
+                throw new IllegalStateException(
+                        "Cannot do authExchange with OAuthToken already set");
+            }
+            HttpPost httpPost = mHttpApi.createHttpPost(URL_API_AUTHEXCHANGE, //
+                    new BasicNameValuePair("fs_username", phone), //
+                    new BasicNameValuePair("fs_password", password));
+            return (Credentials)mHttpApi.doHttpRequest(httpPost, new CredentialsParser());
         }
-        HttpPost httpPost = mHttpApi.createHttpPost(URL_API_AUTHEXCHANGE, //
-                new BasicNameValuePair("fs_username", phone), //
-                new BasicNameValuePair("fs_password", password));
-        return (Credentials)mHttpApi.doHttpRequest(httpPost, new CredentialsParser());
+        // Instead return a hack.
+        Credentials credentials = new Credentials();
+        credentials.setOauthToken("XXX");
+        credentials.setOauthTokenSecret("XXX");
+        return credentials;
     }
 
     /*

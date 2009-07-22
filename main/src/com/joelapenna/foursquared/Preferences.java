@@ -12,8 +12,6 @@ import com.joelapenna.foursquare.types.User;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.res.Resources;
-import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.IOException;
