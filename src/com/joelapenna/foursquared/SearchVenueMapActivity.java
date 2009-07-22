@@ -118,6 +118,8 @@ public class SearchVenueMapActivity extends MapActivity {
         }
         if (DEBUG) Log.d(TAG, "Loading search results");
 
+        Group mappableVenueGroup = new Group();
+        mappableVenueGroup.setType("Mappable");
         final int groupCount = searchResults.size();
         for (int groupIndex = 0; groupIndex < groupCount; groupIndex++) {
             Group group = (Group)searchResults.get(groupIndex);
@@ -127,13 +129,13 @@ public class SearchVenueMapActivity extends MapActivity {
                 Venue venue = (Venue)group.get(venueIndex);
                 if (isVenueMappable(venue)) {
                     if (DEBUG) Log.d(TAG, "adding venue: " + venue.getVenuename());
-                    mVenuesOverlay.addVenue(venue);
+                    mappableVenueGroup.add(venue);
                 }
             }
         }
-        if (mVenuesOverlay.size() > 0) {
-            if (DEBUG) Log.d(TAG, "adding mVenuesOverlay to mMapView");
-            mVenuesOverlay.finish();
+        if (mappableVenueGroup.size() > 0) {
+            if (DEBUG) Log.d(TAG, "setting the map view venue overlay.");
+            mVenuesOverlay.setGroup(mappableVenueGroup);
             mMapView.getOverlays().add(mVenuesOverlay);
         }
     }

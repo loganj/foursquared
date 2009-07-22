@@ -9,6 +9,7 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
 
@@ -94,10 +95,11 @@ public class VenueMapActivity extends MapActivity {
     }
 
     private void setVenue(Venue venue) {
+        Group venueGroup = new Group();
+        venueGroup.setType("Current Venue");
         mVenue = venue;
         if (isVenueMappable(venue)) {
-            mOverlay.addVenue(venue);
-            mOverlay.finish();
+            mOverlay.setGroup(venueGroup);
             mMapView.getOverlays().add(mOverlay);
         }
     }
