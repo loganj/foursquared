@@ -36,7 +36,7 @@ public class SearchVenueMapActivity extends MapActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.venue_search_map_activity);
+        setContentView(R.layout.search_venue_map_activity);
 
         initMap();
 

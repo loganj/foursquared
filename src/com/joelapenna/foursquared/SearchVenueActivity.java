@@ -76,7 +76,7 @@ public class SearchVenueActivity extends TabActivity {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.d(TAG, "onCreate");
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setContentView(R.layout.venue_search_activity);
+        setContentView(R.layout.search_venue_activity);
 
         searchResultsObservable = new SearchResultsObservable();
 
