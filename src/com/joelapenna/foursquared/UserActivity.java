@@ -6,8 +6,11 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Badge;
+import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
+import com.joelapenna.foursquared.util.StringFormatters;
 import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
 
 import android.app.Activity;
@@ -25,9 +28,12 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -56,6 +62,7 @@ public class UserActivity extends Activity {
     private UserObserver mUserObserver = new UserObserver();
 
     private GridView mBadgesGrid;
+    private LinearLayout mVenueLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +71,16 @@ public class UserActivity extends Activity {
         setContentView(R.layout.user_activity);
 
         mBadgesGrid = (GridView)findViewById(R.id.badgesGrid);
+        mVenueLayout = (LinearLayout)findViewById(R.id.venue);
 
-        mUserId = getIntent().getExtras().getString(EXTRA_USER);
+        if (getIntent().hasExtra(EXTRA_USER)) {
+            mUserId = getIntent().getExtras().getString(EXTRA_USER);
+        } else {
+            mUserId = null;
+        }
 
+        mUserObservable.addObserver(mUserObserver);
         if (getLastNonConfigurationInstance() == null) {
-            mUserObservable.addObserver(mUserObserver);
             new UserTask().execute();
         } else {
             User user = (User)getLastNonConfigurationInstance();
@@ -207,14 +219,27 @@ public class UserActivity extends Activity {
         protected User doInBackground(Void... params) {
             try {
                 String uid;
+                Checkin checkin = null;
                 if (mUserId == null) {
+                    // TODO(jlapenna): Fix someday.
                     SharedPreferences prefs = PreferenceManager
                             .getDefaultSharedPreferences(UserActivity.this);
                     uid = prefs.getString(Preferences.PREFERENCE_ID, null);
+                    // We have to check a second time if we're doing a user lookup because of a
+                    // weird data return issue from the foursquare server.
+                    if (DEBUG) Log.d(TAG, "Making stupid second user request.");
+                    checkin = Foursquared.getFoursquare().user(null, false, false).getCheckin();
                 } else {
                     uid = mUserId;
                 }
-                return Foursquared.getFoursquare().user(uid, false, true);
+                User user = Foursquared.getFoursquare().user(uid, false, true);
+                // See above where we do a second query for the currently logged in user. If we
+                // request badges, we don't get checkins.
+                if (user != null && checkin != null) {
+                    if (DEBUG) Log.d(TAG, "Overloading checkin");
+                    user.setCheckin(checkin);
+                }
+                return user;
             } catch (FoursquareException e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "FoursquareException", e);
@@ -264,6 +289,20 @@ public class UserActivity extends Activity {
                         showBadgeDialog(badge);
                     }
                 });
+            }
+            if (user.getCheckin() != null) {
+                Venue venue = user.getCheckin().getVenue();
+                ((TextView)mVenueLayout.findViewById(R.id.name)).setText(venue.getName());
+                ((TextView)mVenueLayout.findViewById(R.id.locationLine1)).setText(venue
+                        .getAddress());
+                ((TextView)mVenueLayout.findViewById(R.id.locationLine2)).setText(StringFormatters
+                        .getVenueLocationCrossStreetOrCity(venue));
+            } else {
+                // If we don't have a checkin location, clear it from the UI so it doesn't take up
+                // space.
+                LayoutParams params = mVenueLayout.getLayoutParams();
+                params.height = 0;
+                mVenueLayout.setLayoutParams(params);
             }
         }
     }

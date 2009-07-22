@@ -52,6 +52,18 @@
     android:singleLine="true"
     android:ellipsize="marquee" />
 
+  <include
+    android:id="@+id/venue"
+
+    layout="@layout/venue_list_item"
+
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+
+    android:layout_alignParentRight="true"
+    android:layout_alignParentLeft="true"
+    android:layout_below="@id/photo" />
+
   <GridView
     android:id="@+id/badgesGrid"
     android:layout_width="fill_parent"
@@ -61,7 +73,7 @@
     android:layout_alignParentRight="true"
     android:layout_alignParentLeft="true"
     android:layout_alignParentBottom="true"
-    android:layout_below="@id/photo"
+    android:layout_below="@id/venue"
 
     android:paddingTop="12dip"
 
