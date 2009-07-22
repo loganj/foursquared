@@ -4,8 +4,8 @@
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
-  android:layout_height="wrap_content">
-
+  android:layout_height="wrap_content"
+  android:padding="5px">
 
   <!--
     If this were focusable, we wouldn't be able to put a click listener on the list view. Combine
@@ -57,7 +57,7 @@
 
     android:gravity="right"
     android:textAppearance="@android:style/TextAppearance.Small"
-    android:textStyle="italic"
+    android:textColor="#7EDDFC"
 
     android:singleLine="true"
     android:ellipsize="marquee" />

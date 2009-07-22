@@ -12,6 +12,7 @@ import com.joelapenna.foursquared.R;
 import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.content.Context;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +50,8 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
             // views we want to bind data to.
             holder = new ViewHolder();
             holder.firstLine = (TextView)convertView.findViewById(R.id.firstLine);
-            holder.secondLine = (TextView)convertView.findViewById(R.id.secondLine);
+            holder.shoutTextView = (TextView)convertView.findViewById(R.id.shoutTextView);
+            holder.timeTextView = (TextView)convertView.findViewById(R.id.timeTextView);
 
             convertView.setTag(holder);
         } else {
@@ -60,7 +62,15 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
 
         Checkin checkin = (Checkin)getItem(position);
         holder.firstLine.setText(StringFormatters.getCheckinMessage(checkin));
-        holder.secondLine.setText(StringFormatters.getRelativeTimeSpanString(checkin.getCreated()));
+        holder.timeTextView.setText(StringFormatters
+                .getRelativeTimeSpanString(checkin.getCreated()));
+
+        if (checkin.getShout() != null) {
+            holder.shoutTextView.setText(checkin.getShout());
+            holder.shoutTextView.setVisibility(TextView.VISIBLE);
+        } else {
+            holder.shoutTextView.setVisibility(TextView.GONE);
+        }
 
         return convertView;
     }
@@ -79,6 +89,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
 
     private static class ViewHolder {
         TextView firstLine;
-        TextView secondLine;
+        TextView shoutTextView;
+        TextView timeTextView;
     }
 }

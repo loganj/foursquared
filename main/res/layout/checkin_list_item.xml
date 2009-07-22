@@ -4,7 +4,8 @@
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
-  android:layout_height="?android:attr/listPreferredItemHeight">
+  android:layout_height="?android:attr/listPreferredItemHeight"
+  android:padding="5px">
 
   <TextView
     android:id="@+id/firstLine"
@@ -19,16 +20,18 @@
 
     android:textAppearance="@android:style/TextAppearance.Large"
 
+    android:singleLine="true"
+    android:ellipsize="marquee"
+
     android:gravity="center_vertical" />
 
   <TextView
-    android:id="@+id/secondLine"
+    android:id="@+id/timeTextView"
 
-    android:layout_width="fill_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
 
     android:layout_alignParentBottom="true"
-    android:layout_alignParentLeft="true"
     android:layout_alignParentRight="true"
     android:layout_below="@id/firstLine"
 
@@ -36,7 +39,25 @@
 
     android:gravity="right"
     android:textAppearance="@android:style/TextAppearance.Small"
-    android:textStyle="italic"
+    android:textColor="#7EDDFC"
+
+    android:singleLine="true"
+    android:ellipsize="marquee" />
+
+  <TextView
+    android:id="@+id/shoutTextView"
+
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentLeft="true"
+    android:layout_below="@id/firstLine"
+
+    android:paddingRight="6dip"
+
+    android:gravity="left"
+    android:textAppearance="@android:style/TextAppearance.Small"
 
     android:singleLine="true"
     android:ellipsize="marquee" />
