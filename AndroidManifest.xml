@@ -41,19 +41,6 @@
 
 
     <activity
-      android:name=".test.TestActivity"
-      android:label="Testing Activity"
-      android:launchMode="singleTop">
-      <intent-filter>
-        <action
-          android:name="android.intent.action.MAIN" />
-        <action
-          android:name="android.intent.action.SEARCH" />
-      </intent-filter>
-    </activity>
-
-
-    <activity
       android:name=".test.TestCheckinsActivity"
       android:label="@string/checkins_activity_name"
       android:launchMode="singleTop">
