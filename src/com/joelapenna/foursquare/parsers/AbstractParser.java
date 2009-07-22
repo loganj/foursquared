@@ -25,16 +25,23 @@ public abstract class AbstractParser<T extends FoursquareType> implements Parser
     private static final String TAG = "AbstractParser";
     private static final boolean DEBUG = Foursquare.DEBUG;
 
-    private static XmlPullParserFactory mFactory = setFactory();
+    private static XmlPullParserFactory sFactory;
+    static {
+        try {
+            sFactory = XmlPullParserFactory.newInstance();
+        } catch (XmlPullParserException e) {
+            throw new IllegalStateException("Could not create a factory");
+        }
+    }
 
-    abstract protected T parseInner(final XmlPullParser parser) throws FoursquareParseException,
-            FoursquareError, IOException, XmlPullParserException;
+    abstract protected T parseInner(final XmlPullParser parser) throws IOException,
+            XmlPullParserException, FoursquareError, FoursquareParseException;
 
     /*
      * (non-Javadoc)
      * @see com.joelapenna.foursquare.parsers.Parser#parse(java.io.InputStream)
      */
-    final public T parse(XmlPullParser parser) throws FoursquareError, FoursquareParseException {
+    public final T parse(XmlPullParser parser) throws FoursquareParseException, FoursquareError {
         try {
             if (parser.getEventType() == XmlPullParser.START_DOCUMENT) {
                 parser.nextTag();
@@ -49,26 +56,15 @@ public abstract class AbstractParser<T extends FoursquareType> implements Parser
         }
     }
 
-    final public static XmlPullParser createParser(InputStream is) {
+    public static final XmlPullParser createXmlPullParser(InputStream is) {
         XmlPullParser parser;
         try {
-            parser = mFactory.newPullParser();
+            parser = sFactory.newPullParser();
             parser.setInput(is, null);
         } catch (XmlPullParserException e) {
             throw new IllegalArgumentException();
         }
         return parser;
-    }
-
-    final static XmlPullParserFactory setFactory() {
-        if (mFactory == null) {
-            try {
-                mFactory = XmlPullParserFactory.newInstance();
-            } catch (XmlPullParserException e) {
-                throw new IllegalStateException("Could not create a factory");
-            }
-        }
-        return mFactory;
     }
 
     public static void skipSubTree(XmlPullParser parser) throws XmlPullParserException, IOException {

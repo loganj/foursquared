@@ -5,7 +5,6 @@
 package com.joelapenna.foursquare.parsers;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Venue;
 
@@ -18,7 +17,7 @@ import java.io.IOException;
 
 /**
  * Auto-generated: 2009-06-02 23:02:36.820816
- * 
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -28,8 +27,14 @@ public class VenueParser extends AbstractParser<Venue> {
 
     @Override
     public Venue parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
-            FoursquareError, FoursquareParseException {
+            FoursquareParseException {
+        try {
         parser.require(XmlPullParser.START_TAG, null, "venue");
+        } catch (XmlPullParserException e) {
+            if ("error".equals(parser.getName())) {
+                throw new FoursquareParseException(e.getMessage());
+            }
+        }
 
         Venue venue = new Venue();
 

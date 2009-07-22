@@ -18,7 +18,7 @@ import java.io.IOException;
 
 /**
  * Auto-generated: 2009-06-02 23:02:36.637107
- * 
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -28,7 +28,7 @@ public class UserParser extends AbstractParser<User> {
 
     @Override
     public User parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
-            FoursquareError, FoursquareParseException {
+            FoursquareParseException, FoursquareError {
         parser.require(XmlPullParser.START_TAG, null, "user");
 
         User user = new User();

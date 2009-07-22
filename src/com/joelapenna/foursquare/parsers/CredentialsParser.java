@@ -5,7 +5,6 @@
 package com.joelapenna.foursquare.parsers;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Credentials;
 
@@ -18,7 +17,7 @@ import java.io.IOException;
 
 /**
  * Auto-generated: 2009-06-02 23:02:36.131660
- * 
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -28,7 +27,7 @@ public class CredentialsParser extends AbstractParser<Credentials> {
 
     @Override
     public Credentials parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
-            FoursquareError, FoursquareParseException {
+            FoursquareParseException {
         parser.require(XmlPullParser.START_TAG, null, "credentials");
 
         Credentials credentials = new Credentials();

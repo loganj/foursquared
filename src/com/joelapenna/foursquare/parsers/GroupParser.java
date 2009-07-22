@@ -33,7 +33,7 @@ public class GroupParser extends AbstractParser<Group> {
 
     @Override
     public Group parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
-            FoursquareError, FoursquareParseException {
+            FoursquareParseException, FoursquareError {
 
         Group group = new Group();
         group.setType(parser.getAttributeValue(null, "type"));

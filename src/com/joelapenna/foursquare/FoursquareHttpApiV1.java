@@ -4,8 +4,9 @@
 
 package com.joelapenna.foursquare;
 
+import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquare.error.FoursquareError;
-import com.joelapenna.foursquare.error.FoursquareParseException;
+import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.http.HttpApi;
 import com.joelapenna.foursquare.http.HttpApiWithOAuth;
 import com.joelapenna.foursquare.parsers.CredentialsParser;
@@ -44,13 +45,13 @@ public class FoursquareHttpApiV1 {
             mHttpApi.setOAuthTokenWithSecret(token, secret);
         }
     }
-    
+
     public boolean hasCredentials() {
         return mHttpApi.hasOAuthTokenWithSecret();
     }
 
-    public Credentials authExchange(String phone, String password) throws FoursquareError,
-            FoursquareParseException, IOException {
+    public Credentials authExchange(String phone, String password) throws FoursquareException,
+            FoursquareCredentialsError, FoursquareError, IOException {
         return (Credentials)mHttpApi.doHttpPost("http://api.playfoursquare.com/v1/authexchange",
                 new CredentialsParser(), //
                 new BasicNameValuePair("fs_username", phone), //

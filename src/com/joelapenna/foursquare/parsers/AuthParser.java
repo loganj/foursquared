@@ -5,7 +5,6 @@
 package com.joelapenna.foursquare.parsers;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Auth;
 
@@ -18,7 +17,7 @@ import java.io.IOException;
 
 /**
  * Auto-generated: 2009-06-02 23:02:35.474137
- * 
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -28,7 +27,7 @@ public class AuthParser extends AbstractParser<Auth> {
 
     @Override
     public Auth parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
-            FoursquareError, FoursquareParseException {
+            FoursquareParseException {
         parser.require(XmlPullParser.START_TAG, null, "auth");
 
         Auth auth = new Auth();

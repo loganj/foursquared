@@ -4,9 +4,12 @@
 
 package com.joelapenna.foursquare;
 
+import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquare.error.FoursquareError;
+import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.http.HttpApi;
+import com.joelapenna.foursquare.parsers.AbstractParser;
 import com.joelapenna.foursquare.parsers.AuthParser;
 import com.joelapenna.foursquare.parsers.CheckinParser;
 import com.joelapenna.foursquare.parsers.CheckinResponseParser;
@@ -22,7 +25,6 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared;
-import com.joelapenna.foursquared.error.FoursquaredCredentialsError;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -114,17 +116,16 @@ class FoursquareHttpApi {
         // Auth results are wrapped in a "data" element. We shouldn't use it, rather we should use
         // the first item in it.
         Auth auth = (Auth)new GroupParser(new AuthParser()).parse(
-                AuthParser.createParser(response.getEntity().getContent())).get(0);
+                AbstractParser.createXmlPullParser(response.getEntity().getContent())).get(0);
         setCredentials(phone, password);
         return auth;
     }
 
     /*
-     * /api/add?type=XXX&text=add%20a%20tip&vid=44794&lat=37.770741&lng=-122.436854&cityid=23 top or
-     * todo
+     * /api/add?type=XXX&text=add%20a%20tip&vid=44794&lat=37.770741&lng=-122.436854&cityid=23
      */
     Data add(String type, String text, String vid, String lat, String lng, String cityid)
-            throws FoursquareError, FoursquareParseException, IOException {
+            throws FoursquareException, IOException {
         return (Data)mHttpApi.doHttpPost(URL_API_ADD, new DataParser(), //
                 new BasicNameValuePair("type", type), // type
                 new BasicNameValuePair("text", text), // text
@@ -137,8 +138,7 @@ class FoursquareHttpApi {
     }
 
     Checkin checkin(String phone, String venue, boolean silent, boolean twitter, String lat,
-            String lng, String cityid) throws FoursquareError, FoursquareParseException,
-            IOException {
+            String lng, String cityid) throws FoursquareException, FoursquareError, IOException {
         return (Checkin)mHttpApi.doHttpPost(URL_API_INCOMING, new CheckinResponseParser(),
                 new BasicNameValuePair("number", phone), // phone
                 new BasicNameValuePair("message", "@" + venue), // venue
@@ -151,11 +151,9 @@ class FoursquareHttpApi {
 
     /**
      * /api/checkins?lat=37.770653&lng=-122.436929&r=1&l=10
-     * 
-     * @return
      */
-    Group checkins(String cityid, String lat, String lng) throws FoursquareError,
-            FoursquareParseException, IOException {
+    Group checkins(String cityid, String lat, String lng) throws FoursquareException,
+            FoursquareError, IOException {
         return (Group)mHttpApi.doHttpPost(URL_API_CHECKINS, //
                 new GroupParser(new GroupParser(new CheckinParser())), //
                 new BasicNameValuePair("cityid", cityid), //
@@ -166,13 +164,9 @@ class FoursquareHttpApi {
 
     /**
      * /api/todo?cityid=23&lat=37.770900&lng=-122.436987
-     * 
-     * @throws IOException
-     * @throws FoursquareParseException
-     * @throws FoursquaredCredentialsError
      */
-    Group todos(String cityid, String lat, String lng) throws FoursquareError,
-            FoursquareParseException, IOException {
+    Group todos(String cityid, String lat, String lng) throws FoursquareException, FoursquareError,
+            IOException {
         return (Group)mHttpApi.doHttpPost(URL_API_TODO, //
                 new GroupParser(new GroupParser(new TipParser())), //
                 new BasicNameValuePair("cityid", cityid), // city id
@@ -184,7 +178,7 @@ class FoursquareHttpApi {
     /*
      * /api/update?tipid=6777&status=ignore /api/update?tipid=6777&status=done
      */
-    Data update(String status, String tipid) throws FoursquareError, FoursquareParseException,
+    Data update(String status, String tipid) throws FoursquareException, FoursquareError,
             IOException {
         return (Data)mHttpApi.doHttpPost(URL_API_UPDATE, new DataParser(), //
                 new BasicNameValuePair("status", status), //
@@ -192,42 +186,38 @@ class FoursquareHttpApi {
                 );
     }
 
-    User user() throws FoursquareError, FoursquareParseException, IOException {
+    User user() throws FoursquareException, FoursquareError, IOException {
         return (User)mHttpApi.doHttpPost(URL_API_USER, new UserParser());
     }
 
     /**
-     * /api/venues?lat=37.770653&lng=-122.436929&r=1&l=10
-     * 
-     * @return
+     * /api/venue?vid=1234
      */
-    Group venues(String query, String lat, String lng, int radius, int length)
-            throws FoursquareError, FoursquareParseException, IOException {
-        return (Group)mHttpApi.doHttpPost(URL_API_VENUES, //
-                new GroupParser(new GroupParser(new VenueParser())), //
-                new BasicNameValuePair("lat", lat), // lat
-                new BasicNameValuePair("lng", lng), // lng
-                new BasicNameValuePair("q", query), // a query
-                new BasicNameValuePair("r", String.valueOf(radius)), // radius in miles?
-                new BasicNameValuePair("length", String.valueOf(length)) // number of results.
-                );
+    Venue venue(String id) throws FoursquareException, FoursquareError, IOException {
+        return (Venue)mHttpApi.doHttpPost(URL_API_VENUE, new VenueParser(), new BasicNameValuePair(
+                "vid", id));
     }
 
     /**
-     * /api/venue?vid=1234
-     * 
-     * @return
+     * /api/venues?lat=37.770653&lng=-122.436929&r=1&l=10
      */
-    Venue venue(String id) throws FoursquareError, FoursquareParseException, IOException {
-        return (Venue)mHttpApi.doHttpPost(URL_API_VENUE, new VenueParser(), new BasicNameValuePair(
-                "vid", id));
+    Group venues(String query, String lat, String lng, int radius, int length)
+            throws FoursquareException, FoursquareError, IOException {
+        return (Group)mHttpApi.doHttpPost(URL_API_VENUES, //
+                new GroupParser(new GroupParser(new VenueParser())), //
+                new BasicNameValuePair("q", query), // a query
+                new BasicNameValuePair("lat", lat), // lat
+                new BasicNameValuePair("lng", lng), // lng
+                new BasicNameValuePair("r", String.valueOf(radius)), // radius in miles?
+                new BasicNameValuePair("l", String.valueOf(length)) // number of results.
+                );
     }
 
     /**
      * /web/iphone/achievements?task=unlocked&uid=1818&cityid=23
      */
     String achievements(String cityid, String task, String userId) throws FoursquareError,
-            FoursquareParseException, IOException {
+            FoursquareParseException, IOException, FoursquareCredentialsError {
         return mHttpApi.doHttpPost(URL_ACHIEVEMENTS, // url
                 new BasicNameValuePair("cityid", cityid), // city matters, I guess.
                 new BasicNameValuePair("task", task), // task name?
@@ -239,7 +229,7 @@ class FoursquareHttpApi {
      * /incoming/breakdown?cid=67889&uid=9232&client=iphone
      */
     String breakdown(String userId, String checkinId) throws FoursquareError,
-            FoursquareParseException, IOException {
+            FoursquareParseException, IOException, FoursquareCredentialsError {
         return mHttpApi.doHttpPost(URL_BREAKDOWN, // url
                 new BasicNameValuePair("uid", userId), // user id
                 new BasicNameValuePair("cid", checkinId), // checkin id
@@ -251,7 +241,7 @@ class FoursquareHttpApi {
      * /web/iphone/me?uid=9232&view=mini&cityid=23
      */
     String me(String cityid, String userId) throws FoursquareError, FoursquareParseException,
-            IOException {
+            IOException, FoursquareCredentialsError {
         return mHttpApi.doHttpPost(URL_ME, // url
                 new BasicNameValuePair("cityid", cityid), // city matters, I guess.
                 new BasicNameValuePair("view", "mini"), // huh?

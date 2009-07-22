@@ -5,8 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.error.FoursquareError;
-import com.joelapenna.foursquare.error.FoursquareParseException;
+import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.filters.VenueFilter;
 import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
@@ -314,12 +313,9 @@ public class VenueTipsActivity extends ListActivity {
                             String.valueOf(location.getLongitude()));
 
                 }
-            } catch (FoursquareError e) {
+            } catch (FoursquareException e) {
                 // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareError", e);
-            } catch (FoursquareParseException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareParseException", e);
+                if (DEBUG) Log.d(TAG, "FoursquareException", e);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "IOException", e);
@@ -398,12 +394,9 @@ public class VenueTipsActivity extends ListActivity {
                 } else if (type == TODO) {
                     return foursquare.addTodo(text, mVenue.getVenueid(), lat, lng, null);
                 }
-            } catch (FoursquareError e) {
+            } catch (FoursquareException e) {
                 // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareError", e);
-            } catch (FoursquareParseException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareParseException", e);
+                if (DEBUG) Log.d(TAG, "FoursquareException", e);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "IOException", e);
@@ -450,12 +443,9 @@ public class VenueTipsActivity extends ListActivity {
             try {
                 Foursquare foursquare = Foursquared.getFoursquare();
                 return foursquare.update("done", tipid);
-            } catch (FoursquareError e) {
+            } catch (FoursquareException e) {
                 // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareError", e);
-            } catch (FoursquareParseException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareParseException", e);
+                if (DEBUG) Log.d(TAG, "FoursquareException", e);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "IOException", e);

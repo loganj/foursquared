@@ -4,8 +4,7 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.error.FoursquareError;
-import com.joelapenna.foursquare.error.FoursquareParseException;
+import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.filters.VenueFilter;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
@@ -232,12 +231,9 @@ public class VenueCheckinActivity extends ListActivity {
                             String.valueOf(location.getLatitude()),
                             String.valueOf(location.getLongitude()));
                 }
-            } catch (FoursquareError e) {
+            } catch (FoursquareException e) {
                 // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareError", e);
-            } catch (FoursquareParseException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareParseException", e);
+                if (DEBUG) Log.d(TAG, "FoursquareException", e);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "IOException", e);
@@ -294,12 +290,9 @@ public class VenueCheckinActivity extends ListActivity {
                             String.valueOf(location.getLongitude()));
 
                 }
-            } catch (FoursquareError e) {
+            } catch (FoursquareException e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "FoursquareError", e);
-            } catch (FoursquareParseException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareParseException", e);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "IOException", e);

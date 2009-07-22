@@ -5,8 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.error.FoursquareError;
-import com.joelapenna.foursquare.error.FoursquareParseException;
+import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
@@ -316,12 +315,9 @@ public class SearchVenuesActivity extends TabActivity {
         public Group doInBackground(Void... params) {
             try {
                 return search();
-            } catch (FoursquareError e) {
+            } catch (FoursquareException e) {
                 // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareError", e);
-            } catch (FoursquareParseException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareParseException", e);
+                if (DEBUG) Log.d(TAG, "FoursquareException", e);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "IOException", e);
@@ -341,7 +337,7 @@ public class SearchVenuesActivity extends TabActivity {
             }
         }
 
-        public Group search() throws FoursquareError, FoursquareParseException, IOException {
+        public Group search() throws FoursquareException, IOException {
             Location location = mLocationListener.getLastKnownLocation();
             Foursquare foursquare = Foursquared.getFoursquare();
             if (location == null) {
@@ -357,8 +353,9 @@ public class SearchVenuesActivity extends TabActivity {
                 } else {
                     radius = 10;
                 }
-                return foursquare.venues(mSearchHolder.query, String.valueOf(location.getLatitude()), String
-                        .valueOf(location.getLongitude()), radius, 1);
+                Group venues = foursquare.venues(mSearchHolder.query, String.valueOf(location
+                        .getLatitude()), String.valueOf(location.getLongitude()), radius, 1);
+                return venues;
             }
         }
     }

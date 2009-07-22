@@ -5,7 +5,6 @@
 package com.joelapenna.foursquare.parsers;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Badge;
 
@@ -18,7 +17,7 @@ import java.io.IOException;
 
 /**
  * Auto-generated: 2009-06-02 23:02:35.637856
- * 
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -28,7 +27,7 @@ public class BadgeParser extends AbstractParser<Badge> {
 
     @Override
     public Badge parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
-            FoursquareError, FoursquareParseException {
+            FoursquareParseException {
         parser.require(XmlPullParser.START_TAG, null, "badge");
 
         Badge badge = new Badge();

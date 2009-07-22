@@ -5,8 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.error.FoursquareError;
-import com.joelapenna.foursquare.error.FoursquareParseException;
+import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
@@ -291,12 +290,9 @@ public class CheckinsActivity extends TabActivity {
         public Group doInBackground(Void... params) {
             try {
                 return search();
-            } catch (FoursquareError e) {
+            } catch (FoursquareException e) {
                 // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareError", e);
-            } catch (FoursquareParseException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareParseException", e);
+                if (DEBUG) Log.d(TAG, "FoursquarException", e);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "IOException", e);
@@ -316,7 +312,7 @@ public class CheckinsActivity extends TabActivity {
             }
         }
 
-        Group search() throws FoursquareError, FoursquareParseException, IOException {
+        Group search() throws FoursquareException, IOException {
             Location location = mLocationListener.getLastKnownLocation();
             Foursquare foursquare = Foursquared.getFoursquare();
             if (location == null) {

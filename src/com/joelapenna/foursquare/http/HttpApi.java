@@ -5,9 +5,11 @@
 package com.joelapenna.foursquare.http;
 
 import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquare.error.FoursquareError;
+import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.error.FoursquareParseException;
-import com.joelapenna.foursquare.parsers.AuthParser;
+import com.joelapenna.foursquare.parsers.AbstractParser;
 import com.joelapenna.foursquare.parsers.Parser;
 import com.joelapenna.foursquare.types.FoursquareType;
 
@@ -43,20 +45,26 @@ import java.util.List;
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class HttpApi {
-
     protected static final String TAG = "FoursquareHttpApi";
     protected static final boolean DEBUG = Foursquare.DEBUG;
+
     private static final String CLIENT_VERSION = "iPhone 20090301";
     private static final String CLIENT_VERSION_HEADER = "X_foursquare_client_version";
+
     private DefaultHttpClient mHttpClient;
 
     public HttpApi(DefaultHttpClient httpClient) {
         mHttpClient = httpClient;
     }
 
+<<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
     public FoursquareType doHttpPost(String url,
             Parser<? extends FoursquareType> abstractParser, NameValuePair... nameValuePairs)
             throws FoursquareError, FoursquareParseException, IOException {
+=======
+    public FoursquareType doHttpPost(String url, Parser<? extends FoursquareType> parser,
+            NameValuePair... nameValuePairs) throws FoursquareException, IOException {
+>>>>>>> 0b7d5f0... Change around Exception/Error raising, add unittests:src/com/joelapenna/foursquare/http/HttpApi.java
         if (DEBUG) Log.d(TAG, "doHttpPost: " + url);
         HttpPost httpPost = createHttpPost(url, nameValuePairs);
 
@@ -69,17 +77,23 @@ public class HttpApi {
         switch (response.getStatusLine().getStatusCode()) {
             case 200:
                 break;
+            case 401:
+                throw new FoursquareCredentialsError(response.getStatusLine().toString());
             default:
                 if (DEBUG) Log.d(TAG, "Default case for status code reached: "
                         + response.getStatusLine().toString());
                 return null;
         }
 
+<<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
         return abstractParser.parse(AuthParser.createParser(response.getEntity().getContent()));
+=======
+        return parser.parse(AbstractParser.createXmlPullParser(response.getEntity().getContent()));
+>>>>>>> 0b7d5f0... Change around Exception/Error raising, add unittests:src/com/joelapenna/foursquare/http/HttpApi.java
     }
 
-    public String doHttpPost(String url, NameValuePair... nameValuePairs)
-            throws FoursquareError, FoursquareParseException, IOException {
+    public String doHttpPost(String url, NameValuePair... nameValuePairs) throws FoursquareError,
+            FoursquareParseException, IOException, FoursquareCredentialsError {
         if (DEBUG) Log.d(TAG, "doHttpPost: " + url);
         HttpPost httpPost = createHttpPost(url, nameValuePairs);
 
@@ -92,6 +106,8 @@ public class HttpApi {
         switch (response.getStatusLine().getStatusCode()) {
             case 200:
                 break;
+            case 401:
+                throw new FoursquareCredentialsError(response.getStatusLine().toString());
             default:
                 throw new FoursquareError(response.getStatusLine().toString());
         }
@@ -105,7 +121,7 @@ public class HttpApi {
 
     /**
      * execute() an httpPost catching exceptions and returning null instead.
-     * 
+     *
      * @param httpPost
      * @return
      */
@@ -143,7 +159,7 @@ public class HttpApi {
     /**
      * Create a thread-safe client. This client does not do redirecting, to allow us to capture
      * correct "error" codes.
-     * 
+     *
      * @return HttpClient
      */
     public static final DefaultHttpClient createHttpClient() {

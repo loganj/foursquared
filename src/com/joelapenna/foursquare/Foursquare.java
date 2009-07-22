@@ -4,8 +4,9 @@
 
 package com.joelapenna.foursquare;
 
+import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquare.error.FoursquareError;
-import com.joelapenna.foursquare.error.FoursquareParseException;
+import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Auth;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Credentials;
@@ -36,24 +37,22 @@ public class Foursquare {
         mFoursquare = new FoursquareHttpApi();
         mFoursquareV1 = null;
     }
-    
+
     public Foursquare(String oAuthConsumerKey, String oAuthConsumerSecret) {
         mFoursquare = new FoursquareHttpApi();
         mFoursquareV1 = new FoursquareHttpApiV1(oAuthConsumerKey, oAuthConsumerSecret);
     }
 
-    public Foursquare(String phone, String password, String token, String secret) {
-        super();
-        setCredentials(phone, password, token, secret);
-    }
-
     public void setCredentials(String phone, String password) {
         mPhone = phone;
         mPassword = password;
+        mFoursquare.setCredentials(phone, password);
     }
 
     public void setCredentials(String phone, String password, String token, String secret) {
-        setCredentials(phone, password);
+        mPhone = phone;
+        mPassword = password;
+        mFoursquare.setCredentials(phone, password);
         mFoursquareV1.setCredentials(token, secret);
     }
 
@@ -65,61 +64,62 @@ public class Foursquare {
         return hasCredentials() && ((v1) ? mFoursquareV1.hasCredentials() : true);
     }
 
-    public Credentials authExchange() throws FoursquareError, FoursquareParseException, IOException {
+    public Credentials authExchange() throws FoursquareException, FoursquareError,
+            FoursquareCredentialsError, IOException {
+        if (mFoursquareV1 == null) {
+            throw new NoSuchMethodError(
+                    "authExchange is unavailable without a consumer key/secret.");
+        }
         return mFoursquareV1.authExchange(mPhone, mPassword);
     }
 
-    public Auth login() throws FoursquareError, FoursquareParseException, IOException {
+    public Auth login() throws FoursquareException, FoursquareError, FoursquareCredentialsError,
+            IOException {
         if (DEBUG) Log.d(TAG, "login()");
         return mFoursquare.login(mPhone, mPassword);
 
     }
 
     public Data addTip(String text, String vid, String lat, String lng, String cityId)
-            throws FoursquareError, FoursquareParseException, IOException {
+            throws FoursquareException, FoursquareError, IOException {
         return mFoursquare.add("top", text, vid, lat, lng, cityId);
     }
 
     public Data addTodo(String text, String vid, String lat, String lng, String cityId)
-            throws FoursquareError, FoursquareParseException, IOException {
+            throws FoursquareException, FoursquareError, IOException {
         return mFoursquare.add("todo", text, vid, lat, lng, cityId);
     }
 
-    public String breakdown(String userId, String checkinId) throws FoursquareError,
-            FoursquareParseException, IOException {
-        return mFoursquare.breakdown(userId, checkinId);
-    }
-
     public Checkin checkin(String venue, boolean silent, boolean twitter, String lat, String lng)
-            throws FoursquareError, FoursquareParseException, IOException {
+            throws FoursquareException, FoursquareError, IOException {
         return mFoursquare.checkin(mPhone, venue, silent, twitter, lat, lng, null);
     }
 
-    public Group todos(String cityId, String lat, String lng) throws FoursquareError,
-            FoursquareParseException, IOException {
-        return mFoursquare.todos(cityId, lat, lng);
-    }
-
-    public Data update(String status, String tipid) throws FoursquareError,
-            FoursquareParseException, IOException {
-        return mFoursquare.update(status, tipid);
-    }
-
-    public Group venues(String query, String lat, String lng, int radius, int length)
-            throws FoursquareError, FoursquareParseException, IOException {
-        return mFoursquare.venues(query, lat, lng, radius, length);
-    }
-
-    public Group checkins(String cityId, String lat, String lng) throws FoursquareError,
-            FoursquareParseException, IOException {
+    public Group checkins(String cityId, String lat, String lng) throws FoursquareException,
+            FoursquareError, IOException {
         return mFoursquare.checkins(cityId, lat, lng);
     }
 
-    public User user() throws FoursquareError, FoursquareParseException, IOException {
+    public Group todos(String cityId, String lat, String lng) throws FoursquareException,
+            FoursquareError, IOException {
+        return mFoursquare.todos(cityId, lat, lng);
+    }
+
+    public Data update(String status, String tipid) throws FoursquareException, FoursquareError,
+            IOException {
+        return mFoursquare.update(status, tipid);
+    }
+
+    public User user() throws FoursquareException, FoursquareError, IOException {
         return mFoursquare.user();
     }
 
-    public Venue venue(String id) throws FoursquareError, FoursquareParseException, IOException {
+    public Venue venue(String id) throws FoursquareException, FoursquareError, IOException {
         return mFoursquare.venue(id);
+    }
+
+    public Group venues(String query, String lat, String lng, int radius, int length)
+            throws FoursquareException, FoursquareError, IOException {
+        return mFoursquare.venues(query, lat, lng, radius, length);
     }
 }

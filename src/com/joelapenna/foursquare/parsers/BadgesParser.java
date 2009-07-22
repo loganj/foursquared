@@ -33,7 +33,7 @@ public class BadgesParser extends AbstractParser<Group> {
 
     @Override
     public Group parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
-            FoursquareError, FoursquareParseException {
+            FoursquareParseException, FoursquareError {
         // We're likely to have to parse multiple groups.
         Group badges = new Group();
 

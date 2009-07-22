@@ -5,10 +5,11 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquare.error.FoursquareError;
+import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Auth;
-import com.joelapenna.foursquared.error.FoursquaredCredentialsError;
 import com.joelapenna.foursquared.maps.BestLocationListener;
 
 import android.app.Application;
@@ -72,7 +73,7 @@ public class Foursquared extends Application {
                     Log.d(TAG, key + " preference was changed");
                     try {
                         loadCredentials();
-                    } catch (FoursquaredCredentialsError e) {
+                    } catch (FoursquareCredentialsError e) {
                         if (DEBUG) Log.d(TAG, "Clearing credentials", e);
                         sFoursquare.setCredentials(null, null);
                     }
@@ -83,7 +84,7 @@ public class Foursquared extends Application {
 
         try {
             loadCredentials();
-        } catch (FoursquaredCredentialsError e) {
+        } catch (FoursquareCredentialsError e) {
             // We're not doing anything because hopefully our related activities
             // will handle the failure. This is simply convenience.
         }
@@ -98,13 +99,13 @@ public class Foursquared extends Application {
         return mLocationListener;
     }
 
-    private void loadCredentials() throws FoursquaredCredentialsError {
+    private void loadCredentials() throws FoursquareCredentialsError {
         if (DEBUG) Log.d(TAG, "loadCredentials()");
         String phoneNumber = mSharedPrefs.getString(Foursquared.PREFERENCE_PHONE, null);
         String password = mSharedPrefs.getString(Foursquared.PREFERENCE_PASSWORD, null);
 
         if (TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(password)) {
-            throw new FoursquaredCredentialsError(
+            throw new FoursquareCredentialsError(
                     "Phone number or password not set in preferences.");
         }
         sFoursquare.setCredentials(phoneNumber, password);
@@ -112,7 +113,8 @@ public class Foursquared extends Application {
             public void run() {
                 try {
                     Foursquared.this.getUserInfo();
-                } catch (FoursquaredCredentialsError e) {
+                } catch (FoursquareException e) {
+                    // TODO Auto-generated catch block
                     if (DEBUG) Log.d(TAG, "Could not log in: ", e);
                     Toast.makeText(Foursquared.this,
                             "Unable to log in. Please check your phone number and password.",
@@ -122,7 +124,7 @@ public class Foursquared extends Application {
         }.start();
     }
 
-    private void getUserInfo() throws FoursquaredCredentialsError {
+    private void getUserInfo() throws FoursquareCredentialsError, FoursquareException {
         try {
             if (DEBUG) Log.d(TAG, "Trying to log in.");
             Auth auth = sFoursquare.login();
@@ -144,10 +146,10 @@ public class Foursquared extends Application {
             }
         } catch (FoursquareError e) {
             if (DEBUG) Log.d(TAG, "FoursquareError: ", e);
-            throw new FoursquaredCredentialsError(e.getMessage());
+            throw new FoursquareCredentialsError(e.getMessage());
         } catch (FoursquareParseException e) {
             if (DEBUG) Log.d(TAG, "FoursquareCredentialsError: ", e);
-            throw new FoursquaredCredentialsError(e.getMessage());
+            throw new FoursquareCredentialsError(e.getMessage());
         } catch (IOException e) {
         }
     }
