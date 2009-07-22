@@ -95,7 +95,7 @@ public class Foursquared extends Application {
     }
 
     public LocationListener getLocationListener() {
-        primeLocationListner();
+        primeLocationListener();
         return mLocationListener;
     }
 
@@ -129,7 +129,7 @@ public class Foursquared extends Application {
         }
     }
 
-    private void primeLocationListner() {
+    private void primeLocationListener() {
         LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
         Location location = null;
