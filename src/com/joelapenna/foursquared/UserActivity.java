@@ -42,12 +42,15 @@ public class UserActivity extends Activity {
     private static final String TAG = "TestUserActivity";
     private static final boolean DEBUG = Foursquared.DEBUG;
 
+    public static final String EXTRA_USER = "com.joelapenna.foursquared.UserId";
+
     private RemoteResourceManager mUserPhotoManager = new RemoteResourceManager("user_photo");
     private RemoteResourceManager mBadgeIconManager = new RemoteResourceManager("badges");
 
     private Dialog mProgressDialog;
     private AlertDialog mBadgeDialog;
 
+    private String mUserId = null;
     private User mUser = null;
     private UserObservable mUserObservable = new UserObservable();
     private UserObserver mUserObserver = new UserObserver();
@@ -62,9 +65,10 @@ public class UserActivity extends Activity {
 
         mBadgesGrid = (GridView)findViewById(R.id.badgesGrid);
 
-        mUserObservable.addObserver(mUserObserver);
+        mUserId = getIntent().getExtras().getString(EXTRA_USER);
 
         if (getLastNonConfigurationInstance() == null) {
+            mUserObservable.addObserver(mUserObserver);
             new UserTask().execute();
         } else {
             User user = (User)getLastNonConfigurationInstance();
@@ -202,9 +206,14 @@ public class UserActivity extends Activity {
         @Override
         protected User doInBackground(Void... params) {
             try {
-                SharedPreferences prefs = PreferenceManager
-                        .getDefaultSharedPreferences(UserActivity.this);
-                String uid = prefs.getString(Preferences.PREFERENCE_ID, null);
+                String uid;
+                if (mUserId == null) {
+                    SharedPreferences prefs = PreferenceManager
+                            .getDefaultSharedPreferences(UserActivity.this);
+                    uid = prefs.getString(Preferences.PREFERENCE_ID, null);
+                } else {
+                    uid = mUserId;
+                }
                 return Foursquared.getFoursquare().user(uid, false, true);
             } catch (FoursquareException e) {
                 // TODO Auto-generated catch block

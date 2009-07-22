@@ -6,10 +6,13 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -40,7 +43,7 @@ public class VenueCheckinActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Checkin checkin = (Checkin)parent.getAdapter().getItem(position);
-                // TODO(jlapenna): Do something useful here.
+                startItemActivity(checkin.getUser());
             }
         });
 
@@ -58,6 +61,13 @@ public class VenueCheckinActivity extends ListActivity {
         CheckinListAdapter groupAdapter = new CheckinListAdapter(this, checkins);
         mainAdapter.addSection("Recent Checkins", groupAdapter);
         mainAdapter.notifyDataSetInvalidated();
+    }
+
+    void startItemActivity(User user) {
+        if (DEBUG) Log.d(TAG, "firing venue activity for venue");
+        Intent intent = new Intent(VenueCheckinActivity.this, UserActivity.class);
+        intent.putExtra(UserActivity.EXTRA_USER, user.getId());
+        startActivity(intent);
     }
 
     private final class ParentDataObserver implements Observer {

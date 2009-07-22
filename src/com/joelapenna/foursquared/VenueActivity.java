@@ -42,7 +42,6 @@ public class VenueActivity extends TabActivity {
     private static final String TAG = "VenueActivity";
     private static final boolean DEBUG = Foursquared.DEBUG;
 
-    public static final String EXTRA_TASK_ID = "task_id";
     public static final String EXTRA_VENUE = "com.joelapenna.foursquared.VenueId";
 
     private static final int DIALOG_CHECKIN = 0;
