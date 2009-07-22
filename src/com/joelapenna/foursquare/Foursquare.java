@@ -11,6 +11,7 @@ import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.Foursquared;
 
 import android.util.Log;
 
@@ -21,7 +22,7 @@ import java.io.IOException;
  */
 public class Foursquare {
     private static final String TAG = "Foursquare";
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = Foursquared.DEBUG;
 
     private String mPhone;
     private String mPassword;
