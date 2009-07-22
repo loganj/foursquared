@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <!-- Copyright 2008 Joe LaPenna -->
+
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <PreferenceCategory
+    android:title="Foursquare">
+    <EditTextPreference
+      android:persistent="true"
+      android:key="phone"
+      android:title="Phone"
+      android:hint="555 867 5309"
+      android:phoneNumber="true"
+      android:singleLine="true" />
+    <EditTextPreference
+      android:persistent="true"
+      android:key="password"
+      android:title="Password"
+      android:password="true"
+      android:singleLine="true" />
+  </PreferenceCategory>
+</PreferenceScreen>

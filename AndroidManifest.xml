@@ -6,9 +6,11 @@
   android:versionCode="2009040500">
 
   <uses-permission
-    android:name="android.permission.INTERNET"></uses-permission>
+    android:name="android.permission.INTERNET" />
   <uses-permission
-    android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+    android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission
+    android:name="android.permission.READ_PHONE_STATE" />
 
   <application
     android:name="Foursquared"
@@ -26,6 +28,16 @@
           android:name="android.intent.action.MAIN" />
       </intent-filter>
     </activity>
+
+    <activity
+      android:name=".PreferenceActivity"
+      android:label="@string/preference_activity_name">
+      <intent-filter>
+        <action
+          android:name="android.intent.action.MAIN" />
+      </intent-filter>
+    </activity>
+
 
     <activity
       android:name=".VenueActivity">

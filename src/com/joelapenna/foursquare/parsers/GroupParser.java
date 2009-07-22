@@ -80,7 +80,7 @@ public class GroupParser extends AbstractParser<Group> {
                         }
                     } catch (FoursquareError e) {
                         // TODO Auto-generated catch block
-                        if (DEBUG) Log.d(TAG, "FoursquareError", e);
+                        if (DEBUG) Log.d(TAG, "FoursquaredCredentialsError", e);
                     } catch (FoursquareParseException e) {
                         // TODO Auto-generated catch block
                         if (DEBUG) Log.d(TAG, "FoursquareParseException", e);

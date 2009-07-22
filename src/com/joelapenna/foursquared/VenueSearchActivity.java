@@ -37,16 +37,6 @@ public class VenueSearchActivity extends ListActivity {
         setContentView(R.layout.venue_search_activity);
 
         setListAdapter(new VenueSearchListAdapter(this));
-        ((VenueSearchListAdapter)getListAdapter()).add(FoursquaredTest.createTestVenue());
-        ((VenueSearchListAdapter)getListAdapter()).add(FoursquaredTest.createTestVenue());
-        ((VenueSearchListAdapter)getListAdapter()).add(FoursquaredTest.createTestVenue());
-        ((VenueSearchListAdapter)getListAdapter()).add(FoursquaredTest.createTestVenue());
-        ((VenueSearchListAdapter)getListAdapter()).add(FoursquaredTest.createTestVenue());
-        ((VenueSearchListAdapter)getListAdapter()).add(FoursquaredTest.createTestVenue());
-        ((VenueSearchListAdapter)getListAdapter()).add(FoursquaredTest.createTestVenue());
-        ((VenueSearchListAdapter)getListAdapter()).add(FoursquaredTest.createTestVenue());
-        ((VenueSearchListAdapter)getListAdapter()).add(FoursquaredTest.createTestVenue());
-
 
         mSearchEdit = (EditText)findViewById(R.id.searchEdit);
         mSearchEdit.setOnKeyListener(new OnKeyListener() {
@@ -55,7 +45,7 @@ public class VenueSearchActivity extends ListActivity {
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     switch (keyCode) {
                         case KeyEvent.KEYCODE_ENTER:
-                            sendQuery();
+                            startQuery();
                             return true;
                     }
                 }
@@ -72,11 +62,16 @@ public class VenueSearchActivity extends ListActivity {
         });
     }
 
-    protected void sendQuery() {
+    protected void startQuery() {
         if (DEBUG) Log.d(TAG, "sendQuery()");
         Message msg = mSearchHandler.obtainMessage(SearchHandler.MESSAGE_QUERY_START);
         msg.sendToTarget();
+    }
 
+    protected void finishQuery() {
+        if (DEBUG) Log.d(TAG, "finishQuery()");
+        Message msg = mSearchHandler.obtainMessage(SearchHandler.MESSAGE_QUERY_FINISH);
+        msg.sendToTarget();
     }
 
     protected void fireVenueActivityIntent(Venue venue) {
@@ -90,17 +85,20 @@ public class VenueSearchActivity extends ListActivity {
     class SearchHandler extends Handler {
 
         public static final int MESSAGE_QUERY_START = 0;
-        public static final int MESSAGE_QUERY_COMPLETE = 1;
+        public static final int MESSAGE_QUERY_FINISH = 1;
 
         public void handleMessage(Message msg) {
+            String query = mSearchEdit.getText().toString();
             switch (msg.what) {
                 case MESSAGE_QUERY_START:
                     setProgressBarIndeterminateVisibility(true);
-                    String query = mSearchEdit.getText().toString();
                     setTitle("Searching: " + query);
+                    mSearchEdit.setEnabled(false);
                     break;
-                case MESSAGE_QUERY_COMPLETE:
+                case MESSAGE_QUERY_FINISH:
                     setProgressBarIndeterminateVisibility(false);
+                    setTitle("Searched for: " + query);
+                    mSearchEdit.setEnabled(true);
                     break;
             }
         }

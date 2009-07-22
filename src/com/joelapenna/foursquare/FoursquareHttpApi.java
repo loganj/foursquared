@@ -152,7 +152,7 @@ class FoursquareHttpApi {
      *
      * @throws IOException
      * @throws FoursquareParseException
-     * @throws FoursquareError
+     * @throws FoursquaredCredentialsError
      */
     Group todos(String cityId, String lat, String lng) throws FoursquareError,
             FoursquareParseException, IOException {
