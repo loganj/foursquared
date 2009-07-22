@@ -6,12 +6,11 @@ package com.joelapenna.foursquared.util;
 
 import com.joelapenna.foursquared.Foursquared;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
@@ -20,8 +19,8 @@ import org.apache.http.conn.scheme.SocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
 
 import android.net.Uri;
 import android.os.Handler;
@@ -34,6 +33,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Observable;
+import java.util.zip.GZIPInputStream;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -115,14 +115,41 @@ class RemoteResourceFetcher extends Observable {
     private void makeRequest(Request request) throws IOException {
         try {
             HttpGet httpGet = new HttpGet(request.uri.toString());
-            HttpResponse response;
-            response = mHttpClient.execute(httpGet);
+            httpGet.addHeader("Accept-Encoding", "gzip");
+            HttpResponse response = mHttpClient.execute(httpGet);
             HttpEntity entity = response.getEntity();
-            InputStream is = entity.getContent();
+            InputStream is = getUngzippedContent(entity);
             mResourceCache.store(request.hash, is);
         } finally {
             notifyObservers(request.uri);
         }
+    }
+
+    /**
+     * Gets the input stream from a response entity. If the entity is gzipped then this will get a
+     * stream over the uncompressed data.
+     *
+     * @param entity the entity whose content should be read
+     * @return the input stream to read from
+     * @throws IOException
+     */
+    public static InputStream getUngzippedContent(HttpEntity entity) throws IOException {
+        InputStream responseStream = entity.getContent();
+        if (responseStream == null) {
+            return responseStream;
+        }
+        Header header = entity.getContentEncoding();
+        if (header == null) {
+            return responseStream;
+        }
+        String contentEncoding = header.getValue();
+        if (contentEncoding == null) {
+            return responseStream;
+        }
+        if (contentEncoding.contains("gzip")) {
+            responseStream = new GZIPInputStream(responseStream);
+        }
+        return responseStream;
     }
 
     /**
@@ -132,6 +159,19 @@ class RemoteResourceFetcher extends Observable {
      * @return HttpClient
      */
     public static final DefaultHttpClient createHttpClient() {
+
+        // Shamelessly cribbed from AndroidHttpClient
+        HttpParams params = new BasicHttpParams();
+
+        // Turn off stale checking. Our connections break all the time anyway,
+        // and it's not worth it to pay the penalty of checking every time.
+        HttpConnectionParams.setStaleCheckingEnabled(params, false);
+
+        // Default connection and socket timeout of 10 seconds. Tweak to taste.
+        HttpConnectionParams.setConnectionTimeout(params, 10 * 1000);
+        HttpConnectionParams.setSoTimeout(params, 10 * 1000);
+        HttpConnectionParams.setSocketBufferSize(params, 8192);
+
         // Sets up the http part of the service.
         final SchemeRegistry supportedSchemes = new SchemeRegistry();
 
@@ -140,25 +180,9 @@ class RemoteResourceFetcher extends Observable {
         final SocketFactory sf = PlainSocketFactory.getSocketFactory();
         supportedSchemes.register(new Scheme("http", sf, 80));
 
-        // Set some client http client parameter defaults.
-        final HttpParams httpParams = createHttpParams();
-        HttpClientParams.setRedirecting(httpParams, false);
-
-        final ClientConnectionManager ccm = new ThreadSafeClientConnManager(httpParams,
+        final ClientConnectionManager ccm = new ThreadSafeClientConnManager(params,
                 supportedSchemes);
-        return new DefaultHttpClient(ccm, httpParams);
-    }
-
-    /**
-     * Create the default HTTP protocol parameters.
-     */
-    private static final HttpParams createHttpParams() {
-        // prepare parameters
-        final HttpParams params = new BasicHttpParams();
-        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setContentCharset(params, "UTF-8");
-        HttpProtocolParams.setUseExpectContinue(params, true);
-        return params;
+        return new DefaultHttpClient(ccm, params);
     }
 
     private static class Request {

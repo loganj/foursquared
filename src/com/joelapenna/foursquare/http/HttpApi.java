@@ -14,7 +14,6 @@ import com.joelapenna.foursquare.parsers.Parser;
 import com.joelapenna.foursquare.types.FoursquareType;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
@@ -22,7 +21,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.PlainSocketFactory;
@@ -34,7 +32,6 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
@@ -222,18 +219,6 @@ public class HttpApi {
         final ClientConnectionManager ccm = new ThreadSafeClientConnManager(params,
                 supportedSchemes);
         return new DefaultHttpClient(ccm, params);
-    }
-
-    /**
-     * Create the default HTTP protocol parameters.
-     */
-    private static final HttpParams createHttpParams() {
-        // prepare parameters
-        final HttpParams params = new BasicHttpParams();
-        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setContentCharset(params, "UTF-8");
-        HttpProtocolParams.setUseExpectContinue(params, true);
-        return params;
     }
 
     public static void bestEffortConsumeContent(HttpResponse response) {
