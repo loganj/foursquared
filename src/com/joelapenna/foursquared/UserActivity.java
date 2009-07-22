@@ -36,6 +36,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.IOException;
@@ -243,7 +244,12 @@ public class UserActivity extends Activity {
         @Override
         protected void onPostExecute(User user) {
             setProgressBarIndeterminateVisibility(false);
-            setUser(user);
+            if (user == null) {
+                Toast.makeText(UserActivity.this, "Unable to lookup user information", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                setUser(user);
+            }
             dismissProgressDialog();
         }
 
