@@ -179,18 +179,6 @@ public class UserActivity extends Activity {
         mUserObservable.notifyObservers(user);
     }
 
-    private void displayUser(User user) {
-        if (DEBUG) Log.d(TAG, "loading user");
-        String fullName = user.getFirstname() + " " + user.getLastname();
-        TextView name = (TextView)findViewById(R.id.name);
-        TextView city = (TextView)findViewById(R.id.city);
-
-        name.setText(fullName);
-        city.setText(user.getCity().getShortname());
-
-        ensureUserPhoto(user);
-    }
-
     private void ensureUserPhoto(User user) {
         if (user.getPhoto() == null) {
             ((ImageView)findViewById(R.id.photo)).setImageResource(R.drawable.blank_boy);
@@ -285,9 +273,15 @@ public class UserActivity extends Activity {
         public void update(Observable observable, Object data) {
             User user = (User)data;
             displayUser(user);
+            displayBadges(user);
+            displayCheckin(user);
+        }
+
+        private void displayBadges(User user) {
             if (user.getBadges() != null) {
                 mBadgesGrid.setAdapter(new BadgeWithIconListAdapter(UserActivity.this, user
                         .getBadges(), mBadgeIconManager));
+                ((TextView)findViewById(R.id.badgesHeader)).setVisibility(TextView.VISIBLE);
                 mBadgesGrid.setOnItemClickListener(new OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -296,6 +290,9 @@ public class UserActivity extends Activity {
                     }
                 });
             }
+        }
+
+        private void displayCheckin(User user) {
             Checkin checkin = user.getCheckin();
             if (checkin != null && checkin.getVenue() != null) {
                 Venue venue = user.getCheckin().getVenue();
@@ -304,6 +301,7 @@ public class UserActivity extends Activity {
                         .getAddress());
                 ((TextView)mVenueLayout.findViewById(R.id.locationLine2)).setText(StringFormatters
                         .getVenueLocationCrossStreetOrCity(venue));
+                ((TextView)findViewById(R.id.venueHeader)).setVisibility(TextView.VISIBLE);
             } else {
                 // If we don't have a checkin location, clear it from the UI so it doesn't take up
                 // space.
@@ -311,6 +309,18 @@ public class UserActivity extends Activity {
                 params.height = 0;
                 mVenueLayout.setLayoutParams(params);
             }
+        }
+
+        private void displayUser(User user) {
+            if (DEBUG) Log.d(TAG, "loading user");
+            String fullName = user.getFirstname() + " " + user.getLastname();
+            TextView name = (TextView)findViewById(R.id.name);
+            TextView city = (TextView)findViewById(R.id.city);
+
+            name.setText(fullName);
+            city.setText(user.getCity().getShortname());
+
+            ensureUserPhoto(user);
         }
     }
 }

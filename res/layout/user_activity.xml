@@ -52,6 +52,26 @@
     android:singleLine="true"
     android:ellipsize="marquee" />
 
+  <TextView
+    android:id="@+id/venueHeader"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+
+    android:visibility="invisible"
+
+    android:text="Last Seen"
+
+    android:layout_alignParentRight="true"
+    android:layout_alignParentLeft="true"
+    android:layout_below="@id/photo"
+
+    android:layout_marginTop="4dip"
+    android:paddingTop="2dip"
+    android:paddingBottom="2dip"
+    android:paddingLeft="5dip"
+
+    style="?android:attr/listSeparatorTextViewStyle" />
+
   <include
     android:id="@+id/venue"
 
@@ -62,7 +82,27 @@
 
     android:layout_alignParentRight="true"
     android:layout_alignParentLeft="true"
-    android:layout_below="@id/photo" />
+    android:layout_below="@id/venueHeader" />
+
+  <TextView
+    android:id="@+id/badgesHeader"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+
+    android:visibility="invisible"
+
+    android:text="Badges"
+
+    android:layout_alignParentRight="true"
+    android:layout_alignParentLeft="true"
+    android:layout_below="@id/venue"
+
+    android:layout_marginTop="8dip"
+    android:paddingTop="2dip"
+    android:paddingBottom="2dip"
+    android:paddingLeft="5dip"
+
+    style="?android:attr/listSeparatorTextViewStyle" />
 
   <GridView
     android:id="@+id/badgesGrid"
@@ -73,7 +113,7 @@
     android:layout_alignParentRight="true"
     android:layout_alignParentLeft="true"
     android:layout_alignParentBottom="true"
-    android:layout_below="@id/venue"
+    android:layout_below="@id/badgesHeader"
 
     android:paddingTop="12dip"
 
