@@ -34,11 +34,7 @@ import java.util.List;
  */
 public class Foursquared extends Application {
     public static final String TAG = "Foursquared";
-    public static final boolean DEBUG = true;
-    public static final boolean API_DEBUG = false;
-    public static final boolean PARSER_DEBUG = false;
-    public static final boolean USE_DUMPCATCHER = true;
-    public static final boolean DUMPCATCHER_TEST = true;
+    public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public static final int LAST_LOCATION_UPDATE_THRESHOLD = 1000 * 60 * 60;
 
@@ -58,7 +54,7 @@ public class Foursquared extends Application {
     public void onCreate() {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (USE_DUMPCATCHER) setupDumpcatcher();
+        if (FoursquaredSettings.USE_DUMPCATCHER) setupDumpcatcher();
         // Set the oauth credentials.
         sFoursquare.setOAuthConsumerCredentials( //
                 getResources().getString(R.string.oauth_consumer_key), //
@@ -100,14 +96,14 @@ public class Foursquared extends Application {
 
     private void setupDumpcatcher() {
         String client = Preferences.createUniqueId(mPrefs);
-        if (DUMPCATCHER_TEST) {
-            if (DEBUG) Log.d(TAG, "Loading Dumpcatcher TEST");
+        if (FoursquaredSettings.DUMPCATCHER_TEST) {
+            if (FoursquaredSettings.DEBUG) Log.d(TAG, "Loading Dumpcatcher TEST");
             mDumpcatcher = new Dumpcatcher( //
                     getResources().getString(R.string.test_dumpcatcher_product_key), //
                     getResources().getString(R.string.test_dumpcatcher_secret), //
                     getResources().getString(R.string.test_dumpcatcher_url), client, 5);
         } else {
-            if (DEBUG) Log.d(TAG, "Loading Dumpcatcher Live");
+            if (FoursquaredSettings.DEBUG) Log.d(TAG, "Loading Dumpcatcher Live");
             mDumpcatcher = new Dumpcatcher( //
                     getResources().getString(R.string.dumpcatcher_product_key), //
                     getResources().getString(R.string.dumpcatcher_secret), //
@@ -125,7 +121,7 @@ public class Foursquared extends Application {
     }
 
     private void loadCredentials() throws FoursquareCredentialsError {
-        if (DEBUG) Log.d(TAG, "loadCredentials()");
+        if (FoursquaredSettings.DEBUG) Log.d(TAG, "loadCredentials()");
         String phoneNumber = mPrefs.getString(Preferences.PREFERENCE_PHONE, null);
         String password = mPrefs.getString(Preferences.PREFERENCE_PASSWORD, null);
         String oauthToken = mPrefs.getString(Preferences.PREFERENCE_OAUTH_TOKEN, null);

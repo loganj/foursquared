@@ -7,7 +7,7 @@ package com.joelapenna.foursquared.widget;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.Foursquared;
+import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
 import com.joelapenna.foursquared.util.StringFormatters;
 
@@ -23,7 +23,7 @@ import android.widget.TextView;
  */
 public class CheckinListAdapter extends BaseCheckinAdapter {
     private static final String TAG = "CheckinListAdapter";
-    private static final boolean DEBUG = Foursquared.DEBUG;
+    private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private LayoutInflater mInflater;
 

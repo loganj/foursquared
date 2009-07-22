@@ -8,6 +8,7 @@ import com.joelapenna.foursquare.types.Group;
 <<<<<<< HEAD:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
 <<<<<<< HEAD:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
 import com.joelapenna.foursquare.types.Venue;
+<<<<<<< HEAD:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
 <<<<<<< HEAD:src/com/joelapenna/foursquared/VenueListAdapter.java
 import com.joelapenna.foursquared.util.StringFormatters;
 =======
@@ -18,6 +19,9 @@ import com.joelapenna.foursquare.types.classic.Venue;
 import com.joelapenna.foursquare.types.Venue;
 >>>>>>> 31ef377... Support using V1 Venue. VenueActitity crashes when receiving intent from:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
 import com.joelapenna.foursquared.Foursquared;
+=======
+import com.joelapenna.foursquared.FoursquaredSettings;
+>>>>>>> 40ab8c4... Move some "settings" constants to FoursquaredSettings.java:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
 import com.joelapenna.foursquared.R;
 >>>>>>> d021be6... Extract out a base adapter for venues and checkins:src/com/joelapenna/foursquared/widget/VenueListAdapter.java
 
@@ -33,7 +37,7 @@ import android.widget.TextView;
  */
 public class VenueListAdapter extends BaseVenueAdapter {
     private static final String TAG = "VenueListAdapter";
-    private static final boolean DEBUG = Foursquared.DEBUG;
+    private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private LayoutInflater mInflater;
 

@@ -40,7 +40,7 @@ import java.util.Observable;
  */
 public class VenueActivity extends TabActivity {
     private static final String TAG = "VenueActivity";
-    private static final boolean DEBUG = Foursquared.DEBUG;
+    private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public static final String EXTRA_VENUE = "com.joelapenna.foursquared.VenueId";
 

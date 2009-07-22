@@ -24,7 +24,7 @@ import com.joelapenna.foursquare.types.classic.Auth;
 import com.joelapenna.foursquare.types.classic.Checkin;
 import com.joelapenna.foursquare.types.classic.User;
 import com.joelapenna.foursquare.types.classic.Venue;
-import com.joelapenna.foursquared.Foursquared;
+import com.joelapenna.foursquared.FoursquaredSettings;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -44,7 +44,7 @@ import java.io.IOException;
 @SuppressWarnings("deprecation")
 class FoursquareHttpApi {
     private static final String TAG = "FoursquareHttpApi";
-    private static final boolean DEBUG = Foursquared.API_DEBUG;
+    private static final boolean DEBUG = FoursquaredSettings.API_DEBUG;
 
     private static final String HTTP_SCHEME = "http://";
     private static final String DOMAIN = "playfoursquare.com";

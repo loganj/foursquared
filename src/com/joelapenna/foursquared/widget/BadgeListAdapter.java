@@ -6,7 +6,7 @@ package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Badge;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquared.Foursquared;
+import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
 
 import android.content.Context;
@@ -22,7 +22,7 @@ import android.widget.TextView;
  */
 public class BadgeListAdapter extends BaseBadgeAdapter {
     private static final String TAG = "BadgeListAdapter";
-    private static final boolean DEBUG = Foursquared.DEBUG;
+    private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private LayoutInflater mInflater;
 

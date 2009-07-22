@@ -33,7 +33,7 @@ import java.util.Observer;
  */
 public class SearchVenuesMapActivity extends MapActivity {
     public static final String TAG = "SearchVenuesMapActivity";
-    public static final boolean DEBUG = Foursquared.DEBUG;
+    public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private final IconsIterator mIconsIterator = new IconsIterator();
 
@@ -217,7 +217,7 @@ public class SearchVenuesMapActivity extends MapActivity {
 
     private class VenueItemizedOverlayWithButton extends VenueItemizedOverlay {
         public static final String TAG = "VenueItemizedOverlayWithButton";
-        public static final boolean DEBUG = Foursquared.DEBUG;
+        public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
         private Drawable mBeenThereMarker;
 

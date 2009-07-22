@@ -34,7 +34,7 @@ import java.io.IOException;
 public class PreferenceActivity extends android.preference.PreferenceActivity implements
         OnSharedPreferenceChangeListener {
     static final String TAG = "PreferenceActivity";
-    static final boolean DEBUG = Foursquared.DEBUG;
+    static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private static final int MENU_CLEAR = 0;
 
@@ -185,7 +185,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity im
 
     private class LoginTask extends AsyncTask<Void, Void, Boolean> {
         private static final String TAG = "LoginTask";
-        private static final boolean DEBUG = Foursquared.DEBUG;
+        private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
         @Override
         protected void onPreExecute() {

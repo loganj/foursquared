@@ -33,7 +33,7 @@ import java.util.Observer;
  */
 public class CheckinsMapActivity extends MapActivity {
     public static final String TAG = "CheckinsMapActivity";
-    public static final boolean DEBUG = Foursquared.DEBUG;
+    public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private final IconsIterator mIconIterator = new IconsIterator();
 
@@ -203,7 +203,7 @@ public class CheckinsMapActivity extends MapActivity {
 
     private class CheckinItemizedOverlayWithButton extends CheckinItemizedOverlay {
         public static final String TAG = "CheckinItemizedOverlayWithButton";
-        public static final boolean DEBUG = Foursquared.DEBUG;
+        public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
         public CheckinItemizedOverlayWithButton(Drawable defaultMarker) {
             super(defaultMarker);

@@ -4,7 +4,7 @@
 
 package com.joelapenna.foursquared.util;
 
-import com.joelapenna.foursquared.Foursquared;
+import com.joelapenna.foursquared.FoursquaredSettings;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -40,7 +40,7 @@ import java.util.zip.GZIPInputStream;
  */
 class RemoteResourceFetcher extends Observable {
     public static final String TAG = "RemoteResourceFetcher";
-    public static final boolean DEBUG = Foursquared.DEBUG;
+    public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private DiskCache mResourceCache;
     private Handler mFetcherHandler;

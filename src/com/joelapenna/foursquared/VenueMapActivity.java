@@ -29,7 +29,7 @@ import java.util.Observer;
  */
 public class VenueMapActivity extends MapActivity {
     public static final String TAG = "VenueMapActivity";
-    public static final boolean DEBUG = Foursquared.DEBUG;
+    public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private MapView mMapView;
     private MapController mMapController;

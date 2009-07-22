@@ -41,7 +41,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class VenueTipsActivity extends ListActivity {
     public static final String TAG = "VenueTipsActivity";
-    public static final boolean DEBUG = Foursquared.DEBUG;
+    public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private static final int DIALOG_TODO = 0;
     private static final int DIALOG_TIP = 1;

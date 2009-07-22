@@ -42,7 +42,7 @@ import java.util.Observable;
  */
 public class SearchVenuesActivity extends TabActivity {
     static final String TAG = "SearchVenuesActivity";
-    static final boolean DEBUG = Foursquared.DEBUG;
+    static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public static final String QUERY_NEARBY = null;
     public static SearchResultsObservable searchResultsObservable;

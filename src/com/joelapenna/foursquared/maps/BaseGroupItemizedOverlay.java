@@ -9,7 +9,7 @@ import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquared.Foursquared;
+import com.joelapenna.foursquared.FoursquaredSettings;
 
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -19,7 +19,7 @@ import android.util.Log;
  */
 abstract class BaseGroupItemizedOverlay extends ItemizedOverlay<OverlayItem> {
     public static final String TAG = "BaseGroupItemizedOverlay";
-    public static final boolean DEBUG = Foursquared.DEBUG;
+    public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     Group group = null;
 

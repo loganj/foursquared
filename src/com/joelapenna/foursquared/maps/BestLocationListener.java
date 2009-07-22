@@ -1,7 +1,7 @@
 
 package com.joelapenna.foursquared.maps;
 
-import com.joelapenna.foursquared.Foursquared;
+import com.joelapenna.foursquared.FoursquaredSettings;
 
 import android.location.Location;
 import android.location.LocationListener;
@@ -12,7 +12,7 @@ import java.util.Date;
 
 public abstract class BestLocationListener implements LocationListener {
     public static final String TAG = "BestLocationListener";
-    public static final boolean DEBUG = Foursquared.DEBUG;
+    public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public static final long LOCATION_UPDATE_MIN_TIME = 1000 * 60;
     public static final long LOCATION_UPDATE_MIN_DISTANCE = 100;

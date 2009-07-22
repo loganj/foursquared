@@ -47,7 +47,7 @@ import java.util.Observer;
  */
 public class UserActivity extends Activity {
     private static final String TAG = "TestUserActivity";
-    private static final boolean DEBUG = Foursquared.DEBUG;
+    private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public static final String EXTRA_USER = "com.joelapenna.foursquared.UserId";
 

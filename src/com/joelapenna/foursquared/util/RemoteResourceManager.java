@@ -4,7 +4,7 @@
 
 package com.joelapenna.foursquared.util;
 
-import com.joelapenna.foursquared.Foursquared;
+import com.joelapenna.foursquared.FoursquaredSettings;
 
 import android.net.Uri;
 import android.util.Log;
@@ -20,7 +20,7 @@ import java.util.Observer;
  */
 public class RemoteResourceManager extends Observable {
     private static final String TAG = "RemoteResourceManager";
-    private static final boolean DEBUG = Foursquared.DEBUG;
+    private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private DiskCache mDiskCache;
     private RemoteResourceFetcher mRemoteResourceFetcher;

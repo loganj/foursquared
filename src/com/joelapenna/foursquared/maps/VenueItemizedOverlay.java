@@ -8,7 +8,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.Foursquared;
+import com.joelapenna.foursquared.FoursquaredSettings;
 
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -18,7 +18,7 @@ import android.util.Log;
  */
 public class VenueItemizedOverlay extends BaseGroupItemizedOverlay {
     public static final String TAG = "VenueItemizedOverlay";
-    public static final boolean DEBUG = Foursquared.DEBUG;
+    public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public VenueItemizedOverlay(Drawable defaultMarker) {
         super(defaultMarker);

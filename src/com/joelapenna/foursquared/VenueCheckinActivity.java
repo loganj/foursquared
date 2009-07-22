@@ -26,7 +26,7 @@ import java.util.Observer;
  */
 public class VenueCheckinActivity extends ListActivity {
     public static final String TAG = "VenueCheckinActivity";
-    public static final boolean DEBUG = Foursquared.DEBUG;
+    public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private Observer mParentDataObserver;
 

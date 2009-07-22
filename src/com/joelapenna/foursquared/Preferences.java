@@ -19,7 +19,7 @@ import java.util.UUID;
  */
 public class Preferences {
     private static final String TAG = "Preferences";
-    private static final boolean DEBUG = Foursquared.DEBUG;
+    private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public static final String PREFERENCE_PHONE = "phone";
     public static final String PREFERENCE_PASSWORD = "password";

@@ -17,7 +17,7 @@ import android.widget.Toast;
  */
 public class MainActivity extends Activity {
     public static final String TAG = "MainActivity";
-    public static final boolean DEBUG = Foursquared.DEBUG;
+    public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private boolean mStartedPreferences;
 

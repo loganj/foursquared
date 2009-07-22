@@ -6,7 +6,7 @@ package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
-import com.joelapenna.foursquared.Foursquared;
+import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
 import com.joelapenna.foursquared.util.StringFormatters;
 
@@ -24,7 +24,7 @@ import android.widget.TextView;
  */
 public class TipListAdapter extends BaseTipAdapter {
     private static final String TAG = "TipListAdapter";
-    private static final boolean DEBUG = Foursquared.DEBUG;
+    private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private LayoutInflater mInflater;
 
