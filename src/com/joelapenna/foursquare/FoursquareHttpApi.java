@@ -45,10 +45,8 @@ class FoursquareHttpApi {
 
     private static final String HTTP_SCHEME = "http://";
     private static final String DOMAIN = "playfoursquare.com";
-    private static final String API_DOMAIN = DOMAIN;
 
     private static final String URL_DOMAIN = HTTP_SCHEME + DOMAIN;
-    private static final String URL_API_DOMAIN = HTTP_SCHEME + API_DOMAIN;
 
     private static final String URL_API_BASE = URL_DOMAIN + "/api";
     private static final String URL_API_ADD = URL_API_BASE + "/add";
