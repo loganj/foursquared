@@ -67,15 +67,20 @@ public class Foursquared extends Application {
         LocationProvider provider = manager.getProvider(providerName);
         if (DEBUG) Log.d(TAG, "Have Provider: " + provider.getName());
         Location location = manager.getLastKnownLocation(providerName);
-        long timeDelta = new Date().getTime() - location.getTime();
-        if (timeDelta > LAST_LOCATION_UPDATE_THRESHOLD) {
-            if (DEBUG) Log.d(TAG, "Last known position is too old! " + String.valueOf(timeDelta));
-            return null;
+        if (location != null) {
+            long timeDelta = new Date().getTime() - location.getTime();
+            if (timeDelta > LAST_LOCATION_UPDATE_THRESHOLD) {
+                if (DEBUG) Log.d(TAG, "Last known position is too old! "
+                        + String.valueOf(timeDelta));
+                return null;
+            }
+            if (DEBUG) Log.d(TAG, "got Location: " + location);
+        } else {
+            if (DEBUG) Log.d(TAG, "No known location.");
         }
-        if (DEBUG) Log.d(TAG, "got Location: " + location);
         return location;
     }
-    
+
     public void loadCredentials() throws FoursquaredCredentialsError {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         String phoneNumber = settings.getString(Foursquared.PREFERENCE_PHONE, null);

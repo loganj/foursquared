@@ -8,7 +8,7 @@ import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.util.UserTask;
+import android.os.AsyncTask;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -92,7 +92,7 @@ public class VenueCheckinActivity extends ListActivity {
     }
 
     private void sendCheckin() {
-        new CheckinUserTask().execute(new Venue[] {
+        new CheckinAsyncTask().execute(new Venue[] {
             mVenue
         });
     }
@@ -101,7 +101,7 @@ public class VenueCheckinActivity extends ListActivity {
         mVenue = venue;
     }
 
-    class CheckinUserTask extends UserTask<Venue, Void, Checkin> {
+    class CheckinAsyncTask extends AsyncTask<Venue, Void, Checkin> {
 
         @Override
         public void onPreExecute() {

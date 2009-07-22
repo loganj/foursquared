@@ -8,7 +8,7 @@ import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.util.UserTask;
+import android.os.AsyncTask;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -67,10 +67,20 @@ public class VenueSearchActivity extends ListActivity {
         });
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
     protected void startQuery() {
         if (DEBUG) Log.d(TAG, "sendQuery()");
         String query = mSearchEdit.getText().toString();
-        new SearchUserTask().execute(new String[] {
+        new SearchAsyncTask().execute(new String[] {
             query
         });
     }
@@ -83,7 +93,7 @@ public class VenueSearchActivity extends ListActivity {
         startActivity(intent);
     }
 
-    class SearchUserTask extends UserTask<String, Void, Group> {
+    class SearchAsyncTask extends AsyncTask<String, Void, Group> {
 
         @Override
         public void onPreExecute() {
