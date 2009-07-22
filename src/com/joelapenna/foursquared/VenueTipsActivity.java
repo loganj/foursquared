@@ -52,7 +52,7 @@ public class VenueTipsActivity extends ListActivity {
     private Data mResult;
 
     private TipsAsyncTask mTipsTask;
-    private AddTipAsyncTask mAddTipAsyncTask;
+    private AddAsyncTask mAddAsyncTask;
 
     private TextView mEmpty;
     private Group mTipGroups;
@@ -104,6 +104,9 @@ public class VenueTipsActivity extends ListActivity {
         if (mTipsTask != null) {
             mTipsTask.cancel(true);
         }
+        if (mAddAsyncTask != null) {
+            mAddAsyncTask.cancel(true);
+        }
     }
 
     @Override
@@ -114,14 +117,8 @@ public class VenueTipsActivity extends ListActivity {
     @Override
     public Dialog onCreateDialog(int id) {
         if (DEBUG) Log.d(TAG, "onCreateDialog: " + String.valueOf(id));
-        String title = null;
-        String message = null;
-        DialogInterface.OnClickListener listener = null;
-        final EditText editText = new EditText(this);
-        editText.setSingleLine(true);
-        editText.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT));
 
+        // Handle the simple result dialogs
         switch (id) {
             case DIALOG_FAIL_MESSAGE:
                 return new AlertDialog.Builder(VenueTipsActivity.this) //
@@ -135,7 +132,20 @@ public class VenueTipsActivity extends ListActivity {
                         .setTitle("Added!").setIcon(android.R.drawable.ic_dialog_info) //
                         .setMessage(mResult.getMessage()) //
                         .create();
+        }
 
+        // Handle the more complex tip/todo dialogs.
+
+        String title = null;
+        String message = null;
+        DialogInterface.OnClickListener listener = null;
+
+        final EditText editText = new EditText(this);
+        editText.setSingleLine(true);
+        editText.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.FILL_PARENT,
+                LayoutParams.WRAP_CONTENT));
+
+        switch (id) {
             case DIALOG_TODO:
                 title = "Add a Todo!";
                 message = "I want to...";
@@ -177,10 +187,11 @@ public class VenueTipsActivity extends ListActivity {
     }
 
     private void addTip(String tip) {
-        mAddTipAsyncTask = (AddTipAsyncTask)new AddTipAsyncTask().execute(tip);
+        mAddAsyncTask = (AddAsyncTask)new AddAsyncTask().execute(tip, AddAsyncTask.TIP);
     }
 
     private void addTodo(String todo) {
+        mAddAsyncTask = (AddAsyncTask)new AddAsyncTask().execute(todo, AddAsyncTask.TODO);
     }
 
     /**
@@ -314,9 +325,12 @@ public class VenueTipsActivity extends ListActivity {
 
     }
 
-    private class AddTipAsyncTask extends AsyncTask<String, Void, Data> {
+    private class AddAsyncTask extends AsyncTask<String, Void, Data> {
 
-        private static final String PROGRESS_BAR_TASK_ID = TAG + "AddTipAsyncTask";
+        private static final String PROGRESS_BAR_TASK_ID = TAG + "AddAsyncTask";
+
+        public static final String TODO = "todo";
+        public static final String TIP = "tip";
 
         @Override
         public void onPreExecute() {
@@ -326,17 +340,30 @@ public class VenueTipsActivity extends ListActivity {
 
         @Override
         public Data doInBackground(String... params) {
+            assert params.length == 2;
+            String text = (String)params[0];
+            String type = (String)params[1];
+
+            final String lat;
+            final String lng;
+
+            Location location = ((Foursquared)getApplication()).getLocation();
+            if (location == null) {
+                if (DEBUG) Log.d(TAG, "Adding Tip without Location");
+                lat = null;
+                lng = null;
+            } else {
+                if (DEBUG) Log.d(TAG, "Adding Tip with Location: " + location);
+                lat = String.valueOf(location.getLatitude());
+                lng = String.valueOf(location.getLongitude());
+            }
+
             try {
-                Location location = ((Foursquared)getApplication()).getLocation();
                 Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
-                if (location == null) {
-                    if (DEBUG) Log.d(TAG, "Adding Tip without Location");
-                    return foursquare.addTip((String)params[0], mVenue.getVenueid(), null, null, null);
-                } else {
-                    if (DEBUG) Log.d(TAG, "Adding Tip with Location: " + location);
-                    String lat = String.valueOf(location.getLatitude());
-                    String lng = String.valueOf(location.getLongitude());
-                    return foursquare.addTip((String)params[0], mVenue.getVenueid(), lat, lng, null);
+                if (type == TIP) {
+                    return foursquare.addTip(text, mVenue.getVenueid(), lat, lng, null);
+                } else if (type == TODO) {
+                    return foursquare.addTodo(text, mVenue.getVenueid(), lat, lng, null);
                 }
             } catch (FoursquareError e) {
                 // TODO Auto-generated catch block
@@ -359,6 +386,7 @@ public class VenueTipsActivity extends ListActivity {
                 showDialog(DIALOG_FAIL_MESSAGE);
             } else {
                 showDialog(DIALOG_SHOW_MESSAGE);
+                lookupTipGroups();
             }
             VenueActivity.stopProgressBar(VenueTipsActivity.this, PROGRESS_BAR_TASK_ID);
         }
