@@ -23,8 +23,8 @@ import android.widget.Button;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class VenueInfoActivity extends MapActivity {
-    public static final String TAG = "VenueInfoActivity";
+public class VenueMapActivity extends MapActivity {
+    public static final String TAG = "VenueMapActivity";
     public static final boolean DEBUG = Foursquared.DEBUG;
 
     private MapView mMapView;

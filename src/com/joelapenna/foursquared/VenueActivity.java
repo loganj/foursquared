@@ -110,7 +110,7 @@ public class VenueActivity extends TabActivity {
                 );
 
         tag = (String)this.getText(R.string.venue_info_activity_name);
-        intent = new Intent(this, VenueInfoActivity.class);
+        intent = new Intent(this, VenueMapActivity.class);
         intent.putExtra(Foursquared.EXTRAS_VENUE_KEY, mVenue);
         tabHost.addTab(tabHost.newTabSpec(tag)
                 // Info Tab
