@@ -4,13 +4,12 @@
 
 package com.joelapenna.foursquare.types;
 
-import com.joelapenna.foursquare.filters.VenueFilterable;
-
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.joelapenna.foursquare.filters.VenueFilterable;
 
 /**
- * Auto-generated: 2009-05-03 01:13:16.154141
+ * Auto-generated: 2009-05-29 00:24:01.513512
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */

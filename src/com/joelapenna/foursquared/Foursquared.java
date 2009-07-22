@@ -8,7 +8,6 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Auth;
-import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.error.FoursquaredCredentialsError;
 import com.joelapenna.foursquared.maps.BestLocationListener;
 

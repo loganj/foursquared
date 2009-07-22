@@ -14,6 +14,7 @@ DEFAULT_INTERFACES = ['Parcelable', 'FoursquareType']
 INTERFACES = {
     'Checkin': DEFAULT_INTERFACES + ['VenueFilterable'],
     'Tip': DEFAULT_INTERFACES + ['VenueFilterable'],
+    'Venue': DEFAULT_INTERFACES + ['VenueFilterable'],
 }
 
 DEFAULT_CLASS_IMPORTS = [
@@ -22,7 +23,11 @@ DEFAULT_CLASS_IMPORTS = [
 ]
 
 CLASS_IMPORTS = {
+    'Checkin': DEFAULT_CLASS_IMPORTS + ['import com.joelapenna.foursquare.filters.VenueFilterable'],
     'User': DEFAULT_CLASS_IMPORTS + ['import com.joelapenna.foursquare.types.Group'],
+    'Tip': DEFAULT_CLASS_IMPORTS + ['import com.joelapenna.foursquare.types.Group'],
+    'Venue': DEFAULT_CLASS_IMPORTS + ['import com.joelapenna.foursquare.filters.VenueFilterable'],
+    'Tip': DEFAULT_CLASS_IMPORTS + ['import com.joelapenna.foursquare.filters.VenueFilterable'],
 }
 
 
