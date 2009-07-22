@@ -474,7 +474,9 @@ public class VenueActivity extends TabActivity {
             try {
                 if (tip != null) {
                     String tipToastString = "Added Tip #" + tip.getId() + " " + tip.getText();
+                    // Refresh the tips list.
                     Toast.makeText(VenueActivity.this, tipToastString, Toast.LENGTH_LONG).show();
+                    new VenueTask().execute(mStateHolder.venueId);
                 } else {
                     Toast.makeText(VenueActivity.this, "Unable to add your tip! (Sorry!)",
                             Toast.LENGTH_LONG).show();
