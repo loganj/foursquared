@@ -48,7 +48,8 @@ public class Foursquared extends Application {
         try {
             loadCredentials();
         } catch (FoursquaredCredentialsError e) {
-            startPreferences();
+            // We're not doing anything because hopefully our related activities will handle the
+            // failure. This is simply convenience.
         }
     }
 
@@ -90,11 +91,6 @@ public class Foursquared extends Application {
                     "Phone number or password not set in preferences.");
         }
         mFoursquare = new Foursquare(phoneNumber, password);
-    }
-
-    public void startPreferences() {
-        startActivity(new Intent(Foursquared.this, PreferenceActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     public static String getVenueLocationLine2(Venue venue) {
