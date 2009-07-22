@@ -10,14 +10,14 @@
   <ImageView
     android:id="@+id/photo"
 
-    android:layout_width="64px"
-    android:layout_height="64px"
+    android:layout_width="75px"
+    android:layout_height="75px"
 
     android:layout_alignParentTop="true"
     android:layout_alignParentLeft="true"
     android:layout_marginRight="6dip"
 
-    android:scaleType="fitXY" />
+    android:scaleType="center" />
 
   <TextView
     android:id="@+id/name"
