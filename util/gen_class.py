@@ -19,6 +19,7 @@ package com.joelapenna.foursquare.types;
 
 /**
  * Auto-generated: %(timestamp)s
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class %(type_name)s implements %(interfaces)s {

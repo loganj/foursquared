@@ -29,6 +29,7 @@ import java.io.IOException;
 
 /**
  * Auto-generated: %(timestamp)s
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
