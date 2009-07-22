@@ -35,7 +35,7 @@ import java.io.IOException;
  */
 public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
     private static final String TAG = "%(type_name)sParser";
-    private static final boolean DEBUG = Foursquare.API_DEBUG;
+    private static final boolean DEBUG = Foursquare.DEBUG;
 
     @Override
     public %(type_name)s parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
@@ -70,6 +70,11 @@ GROUP_STANZA = """\
                 %(top_node_name)s.set%(camel_name)s(new GroupParser(new %(camel_name_singular)sParser()).parse(parser));
 """
 
+COMPLEX_STANZA = """\
+            } else if ("%(name)s".equals(name)) {
+                %(top_node_name)s.set%(camel_name)s(new %(camel_name)sParser().parse(parser));
+"""
+
 STANZA = """\
             } else if ("%(name)s".equals(name)) {
                 %(top_node_name)s.set%(camel_name)s(parser.nextText());
@@ -89,9 +94,15 @@ def GenerateClass(type_name, top_node_name, attributes):
     replacements = Replacements(top_node_name, name, typ)
     if typ == common.BOOLEAN:
       stanzas.append(BOOLEAN_STANZA % replacements)
+
     elif typ == common.GROUP:
       replacements['camel_name_singular'] = replacements['camel_name'][:-1]
       stanzas.append(GROUP_STANZA % replacements)
+
+    elif typ in common.COMPLEX:
+      replacements['camel_name_singular'] = replacements['camel_name'][:-1]
+      stanzas.append(COMPLEX_STANZA % replacements)
+
     else:
       stanzas.append(STANZA % replacements)
   if stanzas:

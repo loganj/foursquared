@@ -84,6 +84,12 @@ public static final Parcelable.Creator<%(type_name)s> CREATOR = new Parcelable.C
 };
 """
 
+PARCELABLE_COMPLEX_WRITE_PARCEL = (
+    '    dest.writeParcelable(this.m%(camel_name)s, 0);')
+
+PARCELABLE_COMPLEX_READ_PARCEL = (
+    '    this.m%(camel_name)s = source.readParcelable(null);')
+
 PARCELABLE_ATTRIBUTE_WRITE_PARCEL = (
     '    dest.write%(attribute_type)s(this.m%(camel_name)s);')
 
@@ -180,14 +186,23 @@ def Parcelable(type_name, attributes):
     replacements = AccessorReplacements(attribute_name, attribute_type)
 
     # skip booleans put them all in a boolean array.
-    if (attribute_type == common.BOOLEAN):
+    if attribute_type == common.BOOLEAN:
       booleans.append(replacements['camel_name'])
-    elif (attribute_type == common.GROUP):
-      write_parcel_lines.append(PARCELABLE_GROUP_ATTRIBUTE_WRITE_PARCEL % replacements)
+
+    elif attribute_type == common.GROUP:
+      write_parcel_lines.append(
+          PARCELABLE_GROUP_ATTRIBUTE_WRITE_PARCEL % replacements)
+
+    elif attribute_type in common.COMPLEX:
+      write_parcel_lines.append(
+          PARCELABLE_COMPLEX_WRITE_PARCEL % replacements)
+
     else:
-      write_parcel_lines.append(PARCELABLE_ATTRIBUTE_WRITE_PARCEL % replacements)
+      write_parcel_lines.append(
+          PARCELABLE_ATTRIBUTE_WRITE_PARCEL % replacements)
   write_parcel_lines = '    \n'.join(write_parcel_lines)
-  write_boolean_parcel_lines = '    ' + '    \n'.join('    m%s,' % b for b in booleans)
+  write_boolean_parcel_lines = '    ' + '    \n'.join(
+      '    m%s,' % b for b in booleans)
 
   # Read
   read_parcel_lines = []
@@ -199,10 +214,17 @@ def Parcelable(type_name, attributes):
     replacements = AccessorReplacements(attribute_name, attribute_type)
 
     # skip booleans put them all in a boolean array.
-    if (attribute_type == common.BOOLEAN):
+    if attribute_type == common.BOOLEAN:
       continue
-    elif (attribute_type == common.GROUP):
-      read_parcel_lines.append(PARCELABLE_GROUP_ATTRIBUTE_READ_PARCEL % replacements)
+
+    elif attribute_type == common.GROUP:
+      read_parcel_lines.append(
+          PARCELABLE_GROUP_ATTRIBUTE_READ_PARCEL % replacements)
+
+    elif attribute_type in common.COMPLEX:
+      read_parcel_lines.append(
+          PARCELABLE_COMPLEX_READ_PARCEL % replacements)
+
     else:
       read_parcel_lines.append(PARCELABLE_ATTRIBUTE_READ_PARCEL % replacements)
   read_parcel_lines = '    \n'.join(read_parcel_lines)

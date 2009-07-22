@@ -2,6 +2,7 @@
 
 import logging
 
+from xml.dom import minidom
 from xml.dom import pulldom
 
 BOOLEAN = "boolean"
@@ -9,12 +10,11 @@ STRING = "String"
 GROUP = "Group"
 
 
+# Interfaces that all FoursquareTypes implement.
 DEFAULT_INTERFACES = ['Parcelable', 'FoursquareType']
 
+# Interfaces that specific FoursqureTypes implement.
 INTERFACES = {
-    'Checkin': DEFAULT_INTERFACES + ['VenueFilterable'],
-    'Tip': DEFAULT_INTERFACES + ['VenueFilterable'],
-    'Venue': DEFAULT_INTERFACES + ['VenueFilterable'],
 }
 
 DEFAULT_CLASS_IMPORTS = [
@@ -26,12 +26,6 @@ CLASS_IMPORTS = {
     'Checkin': DEFAULT_CLASS_IMPORTS + [
         'import com.joelapenna.foursquare.filters.VenueFilterable'
     ],
-    'User': DEFAULT_CLASS_IMPORTS + [
-        'import com.joelapenna.foursquare.types.Group'
-    ],
-    'Tip': DEFAULT_CLASS_IMPORTS + [
-        'import com.joelapenna.foursquare.types.Group'
-    ],
     'Venue': DEFAULT_CLASS_IMPORTS + [
         'import com.joelapenna.foursquare.filters.VenueFilterable'
     ],
@@ -39,6 +33,22 @@ CLASS_IMPORTS = {
         'import com.joelapenna.foursquare.filters.VenueFilterable'
     ],
 }
+
+
+COMPLEX = [
+    'Group',
+    'Badge',
+    'Checkin',
+    'City',
+    'Credentials',
+    'Data',
+    'Mayor',
+    'Stats',
+    'Tip',
+    'User',
+    'Venue',
+]
+TYPES = COMPLEX + ['boolean']
 
 
 def WalkNodesForAttributes(path):
@@ -59,44 +69,37 @@ def WalkNodesForAttributes(path):
   top_node_name = None
   attributes = {}
 
+  level = 0
   for event, node in doc:
+    # For skipping parts of a tree.
+    if level > 0:
+      if event == pulldom.END_ELEMENT:
+        level-=1
+        logging.warn('(%s) Skip end: %s' % (str(level), node))
+        continue
+      elif event == pulldom.START_ELEMENT:
+        logging.warn('(%s) Skipping: %s' % (str(level), node))
+        level+=1
+        continue
+
     if event == pulldom.START_ELEMENT:
+      logging.warn('Parsing: ' + node.tagName)
       # Get the type name to use.
       if type_name is None:
         type_name = ''.join([word.capitalize()
                              for word in node.tagName.split('_')])
         top_node_name = node.tagName
+        logging.warn('Found Top Node Name: ' + top_node_name)
         continue
 
-      doc.expandNode(node)
-      has_text_child = False
-      has_complex_child = False
-      child_node_tagnames = set()
-      for child in node.childNodes:
-        if child.nodeType == node.ELEMENT_NODE:
-          child_node_tagnames.add(child.tagName)
-          has_complex_child = True
-        if child.nodeType == node.TEXT_NODE and not child.data.isspace():
-          has_text_child = True
-      assert len(child_node_tagnames) in [0, 1]
-
-      if has_text_child:
-        logging.warn(node.tagName + ' has a text child')
-        value = node.firstChild.data
-        if (node.tagName == 'badges'):
-            import pdb; pdb.set_trace()
-      else:
-        value = None
-
-      if node.tagName in TYPES:
-        typ = TYPES[node.tagName]
-      if value in ["0", "1", "true", "false"]:
-        typ = BOOLEAN
-      elif node.hasChildNodes() and has_complex_child:
-        typ = GROUP
-      elif node.hasChildNodes() and not has_text_child:
-        typ = ''.join([word.capitalize() for word in node.tagName.split('_')])
+      typ = node.getAttribute('type')
+      # We don't want to walk complex types.
+      if typ in COMPLEX:
+        logging.warn('Found Complex: ' + node.tagName)
+        level = 1
       else:
         typ = STRING
+      logging.warn('Adding: ' + str((node, typ)))
       attributes.setdefault(node.tagName, typ)
+  logging.warn('Attr: ' + str((type_name, top_node_name, attributes)))
   return type_name, top_node_name, attributes
