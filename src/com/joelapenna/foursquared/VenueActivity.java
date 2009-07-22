@@ -8,15 +8,26 @@ import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.StringFormatters;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.TabActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.Window;
+import android.view.ViewGroup.LayoutParams;
+import android.webkit.WebView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -33,12 +44,26 @@ public class VenueActivity extends TabActivity {
     public static final String EXTRA_TASK_ID = "task_id";
     public static final String EXTRA_VENUE = "com.joelapenna.foursquared.VenueId";
 
+    private static final int DIALOG_CHECKIN = 0;
+
+    private static final int MENU_GROUP_CHECKIN = 0;
+
+    private static final int MENU_CHECKIN = 1;
+    private static final int MENU_CHECKIN_TWITTER = 2;
+    private static final int MENU_CHECKIN_SILENT = 3;
+
     VenueObservable venueObservable = new VenueObservable();
 
     private HashSet<Object> mProgressBarTasks = new HashSet<Object>();
 
     private Observer mVenueObserver = new VenueObserver();
     private Venue mVenue = null;
+
+    public com.joelapenna.foursquare.types.classic.Checkin mCheckin = null;
+
+    private MenuItem mShareToggle;
+    private MenuItem mTwitterToggle;
+    private MenuItem mCheckinMenu;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,9 +80,85 @@ public class VenueActivity extends TabActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
+        mCheckinMenu = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN, Menu.NONE, "Checkin").setIcon(android.R.drawable.ic_menu_add);
+        mTwitterToggle = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN_TWITTER, Menu.NONE, "Twitter")
+                .setCheckable(true);
+        mShareToggle = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN_SILENT, Menu.NONE, "Share")
+                .setCheckable(true);
+
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        mTwitterToggle.setChecked(settings
+                .getBoolean(Preferences.PREFERENCE_TWITTER_CHECKIN, false));
+        mShareToggle.setChecked(settings.getBoolean(Preferences.PREFERENCE_SHARE_CHECKIN, true));
+
         Foursquared.addPreferencesToMenu(this, menu);
         return true;
+    }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (DEBUG) Log.d(TAG, "onPrepareOptions: mTwitterToggle: " + mTwitterToggle.isChecked());
+        if (DEBUG) Log.d(TAG, "onPrepareOptions: mShareToggle: " + mShareToggle.isChecked());
+        if (mTwitterToggle.isChecked()) {
+            mTwitterToggle.setIcon(android.R.drawable.button_onoff_indicator_on);
+            mTwitterToggle.setTitle("Sending Tweet");
+        } else {
+            mTwitterToggle.setIcon(android.R.drawable.button_onoff_indicator_off);
+            mTwitterToggle.setTitle("Send Tweet?");
+        }
+
+        if (mShareToggle.isChecked()) {
+            mShareToggle.setIcon(android.R.drawable.button_onoff_indicator_on);
+            mShareToggle.setTitle("Sharing Check-in");
+        } else {
+            mShareToggle.setIcon(android.R.drawable.button_onoff_indicator_off);
+            mShareToggle.setTitle("Hiding Checkin");
+        }
+
+        if (mShareToggle.isChecked()) {
+            mTwitterToggle.setEnabled(true);
+        } else {
+            mTwitterToggle.setChecked(false);
+            mTwitterToggle.setEnabled(false);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case MENU_CHECKIN:
+                new VenueCheckinTask().execute();
+                return true;
+            case MENU_CHECKIN_TWITTER:
+                item.setChecked(!item.isChecked());
+                return true;
+            case MENU_CHECKIN_SILENT:
+                item.setChecked(!item.isChecked());
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DIALOG_CHECKIN:
+                com.joelapenna.foursquare.types.classic.Checkin checkin = mCheckin;
+
+                WebView webView = new WebView(this);
+                webView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
+                        LayoutParams.FILL_PARENT));
+                webView.loadUrl(checkin.getUrl());
+                Spanned title = Html.fromHtml(checkin.getMessage());
+                return new AlertDialog.Builder(this) // the builder
+                        .setView(webView) // use a web view
+                        .setIcon(android.R.drawable.ic_dialog_info) // show an icon
+                        .setTitle(title).create(); // return it.
+        }
+        return null;
     }
 
     public void startProgressBar(String taskId) {
@@ -130,6 +231,29 @@ public class VenueActivity extends TabActivity {
         venueObservable.notifyObservers(venue);
     }
 
+    class VenueObservable extends Observable {
+        public void notifyObservers(Object data) {
+            setChanged();
+            super.notifyObservers(data);
+        }
+
+        public Venue getVenue() {
+            return mVenue;
+        }
+    }
+
+    /**
+     * This guy will be an attempt at controlling a dialog without relying on AsyncTask...
+     * 
+     * @author Joe LaPenna (joe@joelapenna.com)
+     */
+    class VenueObserver implements Observer {
+        @Override
+        public void update(Observable observable, Object data) {
+            displayVenue(mVenue);
+        }
+    }
+
     private class VenueTask extends AsyncTask<String, Void, Venue> {
         private static final String PROGRESS_BAR_TASK_ID = TAG + "VenueTask";
 
@@ -164,26 +288,73 @@ public class VenueActivity extends TabActivity {
         }
     }
 
-    class VenueObservable extends Observable {
-        public void notifyObservers(Object data) {
-            setChanged();
-            super.notifyObservers(data);
-        }
+    private class VenueCheckinTask extends
+            AsyncTask<Venue, Void, com.joelapenna.foursquare.types.classic.Checkin> {
 
-        public Venue getVenue() {
-            return mVenue;
-        }
-    }
+        private static final String PROGRESS_BAR_TASK_ID = TAG + "AddCheckinAsyncTask";
 
-    /**
-     * This guy will be an attempt at controlling a dialog without relying on AsyncTask...
-     *
-     * @author Joe LaPenna (joe@joelapenna.com)
-     */
-    class VenueObserver implements Observer {
         @Override
-        public void update(Observable observable, Object data) {
-            displayVenue(mVenue);
+        public void onPreExecute() {
+            mCheckinMenu.setEnabled(false);
+            mShareToggle.setEnabled(false);
+            mTwitterToggle.setEnabled(false);
+            if (DEBUG) Log.d(TAG, "CheckinTask: onPreExecute()");
+            ((VenueActivity)getParent()).startProgressBar(PROGRESS_BAR_TASK_ID);
+
+        }
+
+        @Override
+        public com.joelapenna.foursquare.types.classic.Checkin doInBackground(Venue... params) {
+            try {
+                final Venue venue = params[0];
+                if (DEBUG) Log.d(TAG, "Checking in to: " + venue.getName());
+
+                boolean silent = !mShareToggle.isChecked();
+                boolean twitter = mTwitterToggle.isChecked();
+                Location location = ((Foursquared)getApplication()).getLastKnownLocation();
+                if (location == null) {
+                    return Foursquared.getFoursquare().checkin(venue.getName(), silent, twitter,
+                            null, null);
+                } else {
+                    // I wonder if this could result in the backend logic to mis-calculate which
+                    // venue you're at because the phone gave too coarse or inaccurate location
+                    // information.
+                    return Foursquared.getFoursquare().checkin(venue.getName(), silent, twitter,
+                            String.valueOf(location.getLatitude()),
+                            String.valueOf(location.getLongitude()));
+                }
+            } catch (FoursquareException e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "FoursquareException", e);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "IOException", e);
+            }
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(com.joelapenna.foursquare.types.classic.Checkin checkin) {
+            try {
+                mCheckin = checkin;
+                if (checkin == null) {
+                    mCheckinMenu.setEnabled(true);
+                    Toast.makeText(VenueActivity.this, "Unable to checkin! (FIX THIS!)",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                showDialog(DIALOG_CHECKIN);
+                // TODO(jlapenna): Re-enable this
+                // lookupCheckinGroups();
+            } finally {
+                if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
+                ((VenueActivity)getParent()).stopProgressBar(PROGRESS_BAR_TASK_ID);
+            }
+        }
+
+        @Override
+        public void onCancelled() {
+            ((VenueActivity)getParent()).stopProgressBar(PROGRESS_BAR_TASK_ID);
         }
     }
 }

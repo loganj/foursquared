@@ -35,7 +35,7 @@ public class Foursquared extends Application {
 
     // Common menu items
     private static final int MENU_PREFERENCES = -1;
-    private static final int MENU_GROUP_SYSTEM = -1;
+    private static final int MENU_GROUP_SYSTEM = 20;
 
     private LocationListener mLocationListener = new LocationListener();
 

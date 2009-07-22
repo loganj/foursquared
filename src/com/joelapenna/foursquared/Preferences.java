@@ -26,7 +26,7 @@ public class Preferences {
     public static final String PREFERENCE_PHONE = "phone";
     public static final String PREFERENCE_PASSWORD = "password";
     public static final String PREFERENCE_TWITTER_CHECKIN = "twitter_checkin";
-    public static final String PREFERENCE_SILENT_CHECKIN = "silent_checkin";
+    public static final String PREFERENCE_SHARE_CHECKIN = "share_checkin";
 
     // Not-in-XML preferences
     public static final String PREFERENCE_CITY_ID = "city_id";

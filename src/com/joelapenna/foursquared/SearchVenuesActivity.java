@@ -10,7 +10,6 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
-import com.joelapenna.foursquared.util.IconsIterator;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
 

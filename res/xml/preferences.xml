@@ -30,11 +30,11 @@
   <PreferenceCategory
     android:title="Check-in Defaults">
     <CheckBoxPreference
-      android:key="silent_checkin"
+      android:key="share_checkin"
       android:persistent="true"
-      android:title="Hide Checkins"
-      android:summaryOn="By default, hide checkins from other users."
-      android:summaryOff="By default, show checkins to other users." />
+      android:title="Share Checkins"
+      android:summaryOn="By default, show checkins to other users."
+      android:summaryOff="By default, hide checkins to other users." />
     <CheckBoxPreference
       android:key="twitter_checkin"
       android:persistent="true"

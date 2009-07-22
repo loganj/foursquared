@@ -4,40 +4,6 @@
   android:orientation="vertical"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent">
-
-  <TableLayout
-    android:id="@+id/buttonBar"
-    android:layout_height="wrap_content"
-    android:layout_width="fill_parent">
-    <TableRow>
-      <Button
-        android:id="@+id/checkinButton"
-        android:layout_height="wrap_content"
-        android:layout_width="0px"
-        android:layout_weight="1"
-        android:text="Check-in here"
-        android:textAppearance="@android:style/TextAppearance.Medium" />
-    </TableRow>
-
-    <TableRow>
-      <ToggleButton
-        android:id="@+id/silentToggle"
-        android:layout_height="wrap_content"
-        android:layout_width="0px"
-        android:layout_weight="1"
-        android:textOff="Hide Checkin?"
-        android:textOn="Hiding Checkin" />
-      <ToggleButton
-        android:id="@+id/twitterToggle"
-        android:layout_height="wrap_content"
-        android:layout_width="0px"
-        android:layout_weight="1"
-        android:textOff="Send Tweet?"
-        android:textOn="Tweeting Checkin" />
-    </TableRow>
-
-  </TableLayout>
-
   <ListView
     android:id="@android:id/list"
     android:layout_height="fill_parent"
