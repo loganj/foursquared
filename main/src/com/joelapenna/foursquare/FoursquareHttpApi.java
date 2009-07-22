@@ -124,6 +124,7 @@ class FoursquareHttpApi {
     /*
      * /api/add?type=XXX&text=add%20a%20tip&vid=44794&lat=37.770741&lng=-122.436854&cityid=23
      */
+    @Deprecated
     Data add(String type, String text, String vid, String lat, String lng, String cityid)
             throws FoursquareException, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(URL_API_ADD, //
