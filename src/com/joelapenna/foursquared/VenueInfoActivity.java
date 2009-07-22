@@ -13,6 +13,7 @@ import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.SimpleItemizedOverlay;
 
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -28,7 +29,8 @@ public class VenueInfoActivity extends MapActivity {
 
     private MapView mMapView;
     private MapController mMapController;
-    private SimpleItemizedOverlay mOverlay;
+    private SimpleItemizedOverlay mUserOverlay;
+    private SimpleItemizedOverlay mVenueOverlay;
 
     private Venue mVenue;
 
@@ -36,8 +38,6 @@ public class VenueInfoActivity extends MapActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.venue_info_activity);
-
-        setupMapView();
 
         Button yelpButton = (Button)findViewById(R.id.yelpButton);
         yelpButton.setOnClickListener(new OnClickListener() {
@@ -49,8 +49,24 @@ public class VenueInfoActivity extends MapActivity {
 
             }
         });
+        
+        setupMapView();
 
+        setUser();
         setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
+        setMap();
+    }
+    
+    private void setUser() {
+        Location location = ((Foursquared)getApplication()).getLocation();
+        int lat = (int)(location.getLatitude() * 1E6);
+        int lng = (int)(location.getLongitude() * 1E6);
+        GeoPoint point = new GeoPoint(lat, lng);
+
+        mUserOverlay = new SimpleItemizedOverlay(this.getResources().getDrawable(R.drawable.blueman));
+        mUserOverlay.addOverlay(new OverlayItem(point, "You are here!", ""));
+        mMapView.getOverlays().add(mUserOverlay);
+        
     }
 
     private void setVenue(Venue venue) {
@@ -59,10 +75,15 @@ public class VenueInfoActivity extends MapActivity {
         int lat = (int)(Double.parseDouble(venue.getGeolat()) * 1E6);
         int lng = (int)(Double.parseDouble(venue.getGeolong()) * 1E6);
         GeoPoint point = new GeoPoint(lat, lng);
-        mMapController.animateTo(point);
-        mMapController.setZoom(16);
-        mOverlay.addOverlay(new OverlayItem(point, "", ""));
-        mMapView.getOverlays().add(mOverlay);
+
+        mVenueOverlay = new SimpleItemizedOverlay(this.getResources().getDrawable(R.drawable.reddot));
+        mVenueOverlay.addOverlay(new OverlayItem(point, venue.getVenuename(), ""));
+        mMapView.getOverlays().add(mVenueOverlay);
+    }
+
+    private void setMap() {
+        mMapController.animateTo(mVenueOverlay.getCenter());
+        mMapController.setZoom(14);
     }
 
     /**
@@ -71,7 +92,6 @@ public class VenueInfoActivity extends MapActivity {
     private void setupMapView() {
         mMapView = (MapView)findViewById(R.id.mapView);
         mMapController = mMapView.getController();
-        mOverlay = new SimpleItemizedOverlay(this.getResources().getDrawable(R.drawable.reddot));
     }
 
     @Override

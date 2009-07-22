@@ -16,28 +16,17 @@ import java.util.ArrayList;
  */
 public class SimpleItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 
-    /**
-     * @param defaultMarker
-     */
+    ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
+
     public SimpleItemizedOverlay(Drawable defaultMarker) {
         super(boundCenterBottom(defaultMarker));
     }
 
-    ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
-
-    /*
-     * (non-Javadoc)
-     * @see com.google.android.maps.ItemizedOverlay#createItem(int)
-     */
     @Override
     protected OverlayItem createItem(int i) {
         return mOverlays.get(i);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.google.android.maps.ItemizedOverlay#size()
-     */
     @Override
     public int size() {
         return mOverlays.size();
