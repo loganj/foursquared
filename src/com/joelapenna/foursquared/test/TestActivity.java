@@ -66,14 +66,14 @@ public class TestActivity extends Activity {
 
         mFoursquare = ((Foursquared)getApplication()).getFoursquare();
         try {
-            // testLogin();
-            // testVenues();
-            // testVenue();
-            // testCheckins();
-            // testTodos();
-            // testBreakdown();
-            // testCheckin();
-            // testLocation();
+            testLogin();
+            testVenues();
+            testVenue();
+            testCheckins();
+            testTodos();
+            testBreakdown();
+            testCheckin();
+            testLocation();
             testAddTip();
         } catch (FoursquareError e) {
             // TODO Auto-generated catch block

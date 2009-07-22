@@ -11,7 +11,6 @@ import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
-import com.joelapenna.foursquared.test.FoursquaredTest;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
 
@@ -89,13 +88,8 @@ public class CheckinsActivity extends TabActivity {
                 setSearchResults(holder.results);
                 putSearchResultsInAdapter(holder.results);
             }
-        } else {
-            if (DEBUG) Log.d(TAG, "Running new intent.");
-            onNewIntent(getIntent());
-            // Group fakeResults = FoursquaredTest.createRandomCheckinGroups("Root");
-            // setSearchResults(fakeResults);
-            // putSearchResultsInAdapter(fakeResults);
-        }
+        } else
+            handleOnCreateIntent();
     }
 
     @Override
@@ -155,6 +149,38 @@ public class CheckinsActivity extends TabActivity {
         }
     }
 
+    public void handleOnCreateIntent() {
+        if (DEBUG) Log.d(TAG, "Running new intent.");
+        onNewIntent(getIntent());
+    }
+
+    public void putSearchResultsInAdapter(Group searchResults) {
+        if (searchResults == null) {
+            Toast.makeText(getApplicationContext(), "Could not complete search!",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mListAdapter.clear();
+        int groupCount = searchResults.size();
+        for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
+            Group group = (Group)searchResults.get(groupsIndex);
+            if (group.getType().equals("Me")) {
+                if (DEBUG) Log.d(TAG, "Skipping 'Me' Section.");
+            } else if (group.size() > 0 && !group.getType().equals("Me")) {
+                CheckinListAdapter groupAdapter = new CheckinListAdapter(this, group);
+                if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
+                mListAdapter.addSection(group.getType(), groupAdapter);
+            }
+        }
+        mListAdapter.notifyDataSetInvalidated();
+    }
+
+    public void setSearchResults(Group searchResults) {
+        if (DEBUG) Log.d(TAG, "Setting search results.");
+        mSearchHolder.results = searchResults;
+        searchResultsObservable.notifyObservers();
+    }
+
     void executeSearchTask(String query) {
         if (DEBUG) Log.d(TAG, "sendQuery()");
         mSearchHolder.query = query;
@@ -172,33 +198,6 @@ public class CheckinsActivity extends TabActivity {
             }
         }
         mSearchTask = (SearchTask)new SearchTask().execute();
-    }
-
-    void putSearchResultsInAdapter(Group groups) {
-        if (groups == null) {
-            Toast.makeText(getApplicationContext(), "Could not complete search!",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        mListAdapter.clear();
-        int groupCount = groups.size();
-        for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
-            Group group = (Group)groups.get(groupsIndex);
-            if (group.getType().equals("Me")) {
-                if (DEBUG) Log.d(TAG, "Skipping 'Me' Section.");
-            } else if (group.size() > 0 && !group.getType().equals("Me")) {
-                CheckinListAdapter groupAdapter = new CheckinListAdapter(this, group);
-                if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
-                mListAdapter.addSection(group.getType(), groupAdapter);
-            }
-        }
-        mListAdapter.notifyDataSetInvalidated();
-    }
-
-    void setSearchResults(Group searchResults) {
-        if (DEBUG) Log.d(TAG, "Setting search results.");
-        mSearchHolder.results = searchResults;
-        searchResultsObservable.notifyObservers();
     }
 
     void startItemActivity(Venue venue) {

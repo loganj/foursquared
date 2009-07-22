@@ -51,6 +51,36 @@
 
 
     <activity
+      android:name=".test.TestCheckinsActivity"
+      android:label="@string/checkins_activity_name"
+      android:launchMode="singleTop">
+      <intent-filter>
+        <action
+          android:name="android.intent.action.MAIN" />
+      </intent-filter>
+    </activity>
+
+
+    <activity
+      android:name=".test.TestSearchVenueActivity"
+      android:label="@string/venue_search_activity_name"
+      android:launchMode="singleTop">
+      <intent-filter>
+        <action
+          android:name="android.intent.action.MAIN" />
+        <action
+          android:name="android.intent.action.SEARCH" />
+      </intent-filter>
+      <meta-data
+        android:name="android.app.default_searchable"
+        android:value=".SearchVenueActivity" />
+      <meta-data
+        android:name="android.app.searchable"
+        android:resource="@xml/searchable" />
+    </activity>
+
+
+    <activity
       android:name=".CheckinsActivity"
       android:label="@string/checkins_activity_name"
       android:launchMode="singleTop">
