@@ -262,11 +262,12 @@ public class VenueActivity extends TabActivity {
         String tag;
         Intent intent;
 
-        tag = (String)this.getText(R.string.venue_checkin_activity_name);
-        intent = new Intent(this, VenueCheckinActivity.class);
+        tag = (String)this.getText(R.string.venue_tips_activity_name);
+        intent = new Intent(this, VenueTipsActivity.class);
         tabHost.addTab(tabHost.newTabSpec(tag)
-                // Checkin Tab
-                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_add))
+                // Info Tab
+                .setIndicator("",
+                        getResources().getDrawable(android.R.drawable.ic_menu_info_details))
                 .setContent(intent) // The contained activity
                 );
 
@@ -274,16 +275,15 @@ public class VenueActivity extends TabActivity {
         intent = new Intent(this, VenueMapActivity.class);
         tabHost.addTab(tabHost.newTabSpec(tag)
                 // Info Tab
-                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_compass))
+                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_mapmode))
                 .setContent(intent) // The contained activity
                 );
 
-        tag = (String)this.getText(R.string.venue_tips_activity_name);
-        intent = new Intent(this, VenueTipsActivity.class);
+        tag = (String)this.getText(R.string.venue_checkin_activity_name);
+        intent = new Intent(this, VenueCheckinActivity.class);
         tabHost.addTab(tabHost.newTabSpec(tag)
-                // Info Tab
-                .setIndicator("",
-                        getResources().getDrawable(android.R.drawable.ic_menu_info_details))
+                // Checkin Tab
+                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_agenda))
                 .setContent(intent) // The contained activity
                 );
 

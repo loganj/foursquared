@@ -109,7 +109,8 @@ public class VenueMapActivity extends MapActivity {
         mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
         mMapView.getOverlays().add(mMyLocationOverlay);
 
-        mOverlay = new VenueItemizedOverlay(this.getResources().getDrawable(R.drawable.reddot));
+        mOverlay = new VenueItemizedOverlay(this.getResources().getDrawable(
+                R.drawable.map_marker_blue));
     }
 
     private boolean isVenueMappable(Venue venue) {

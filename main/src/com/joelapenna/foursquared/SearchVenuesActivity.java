@@ -55,7 +55,7 @@ public class SearchVenuesActivity extends TabActivity {
     private static final int MENU_NEARBY = 2;
     private static final int MENU_ADD_VENUE = 3;
     private static final int MENU_CHECKINS = 4;
-    private static final int MENU_ME = 5;
+    private static final int MENU_MYINFO = 5;
 
     private static final int MENU_GROUP_SEARCH = 0;
     private static final int MENU_GROUP_ACTIVITIES = 1;
@@ -115,9 +115,9 @@ public class SearchVenuesActivity extends TabActivity {
         menu.add(Menu.NONE, MENU_ADD_VENUE, Menu.NONE, R.string.add_venue_label) //
                 .setIcon(android.R.drawable.ic_menu_add);
         menu.add(MENU_GROUP_ACTIVITIES, MENU_CHECKINS, Menu.NONE, R.string.checkins_label) //
-                .setIcon(R.drawable.ic_menu_friends);
-        menu.add(MENU_GROUP_ACTIVITIES, MENU_ME, Menu.NONE, R.string.me_label) //
-                .setIcon(android.R.drawable.ic_menu_info_details);
+                .setIcon(R.drawable.ic_menu_allfriends);
+        menu.add(MENU_GROUP_ACTIVITIES, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
+                .setIcon(R.drawable.ic_menu_myinfo);
         Foursquared.addPreferencesToMenu(this, menu);
         return true;
     }
@@ -143,7 +143,7 @@ public class SearchVenuesActivity extends TabActivity {
                 intent.setAction(Intent.ACTION_SEARCH);
                 startActivity(intent);
                 return true;
-            case MENU_ME:
+            case MENU_MYINFO:
                 if (DEBUG) Log.d(TAG, "firing user activity");
                 startActivity(new Intent(SearchVenuesActivity.this, UserActivity.class));
                 return true;

@@ -28,7 +28,7 @@ public class VenueCheckinActivity extends ListActivity {
     public static final String TAG = "VenueCheckinActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    private Observer mParentDataObserver;
+    private Observer mParentDataObserver = new ParentDataObserver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +44,19 @@ public class VenueCheckinActivity extends ListActivity {
             }
         });
 
-        mParentDataObserver = new ParentDataObserver();
-        ((VenueActivity)getParent()).venueObservable.addObserver(mParentDataObserver);
-        ((VenueActivity)getParent()).checkinsObservable.addObserver(mParentDataObserver);
+        VenueActivity parent = (VenueActivity)getParent();
+        if (parent.venueObservable.getVenue() != null) {
+            mParentDataObserver.update(parent.venueObservable, parent.venueObservable.getVenue());
+        } else {
+            ((VenueActivity)getParent()).venueObservable.addObserver(mParentDataObserver);
+        }
+
+        if (parent.checkinsObservable.getCheckins() != null) {
+            mParentDataObserver.update(parent.checkinsObservable, parent.checkinsObservable
+                    .getCheckins());
+        } else {
+            ((VenueActivity)getParent()).checkinsObservable.addObserver(mParentDataObserver);
+        }
     }
 
     private void setCheckins(Group checkins) {
