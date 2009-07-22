@@ -50,8 +50,8 @@ public class VenueMapActivity extends MapActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 // TODO(jlapenna): Construct a useful Yelp URI!
-                intent.setData(Uri.parse( //
-                        "http://yelp.com/biz/" + mVenue.getName() + "-" + mVenue.getCity()));
+                String yelpUrl = "http://yelp.com/biz/" + mVenue.getName() + "-" + mVenue.getCity();
+                intent.setData(Uri.parse(yelpUrl.replace(" ", "-")));
                 startActivity(intent);
 
             }
