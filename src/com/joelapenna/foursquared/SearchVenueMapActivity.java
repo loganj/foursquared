@@ -9,10 +9,12 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
+import com.joelapenna.foursquared.test.FoursquaredTest;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -22,6 +24,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -36,7 +40,7 @@ public class SearchVenueMapActivity extends MapActivity {
 
     private MapView mMapView;
     private MapController mMapController;
-    private VenueItemizedOverlay mVenuesOverlay;
+    private ArrayList<VenueItemizedOverlay> mVenuesGroupOverlays = new ArrayList<VenueItemizedOverlay>();
     private MyLocationOverlay mMyLocationOverlay;
     private Observer mSearchResultsObserver;
     private Button mVenueButton;
@@ -50,11 +54,22 @@ public class SearchVenueMapActivity extends MapActivity {
         mVenueButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                startVenueActivity(mTappedVenue);
+                if (DEBUG) Log.d(TAG, "firing venue activity for venue");
+                Intent intent = new Intent(SearchVenueMapActivity.this, VenueActivity.class);
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.putExtra("venue", mTappedVenue);
+                startActivity(intent);
             }
         });
 
         initMap();
+        Group group = new Group();
+        group.setType("Root");
+        group.add(FoursquaredTest.createVenueGroup("A"));
+        group.add(FoursquaredTest.createVenueGroup("B"));
+        group.add(FoursquaredTest.createVenueGroup("C"));
+        group.add(FoursquaredTest.createVenueGroup("D"));
+        loadSearchResults(group);
 
         mSearchResultsObserver = new Observer() {
             @Override
@@ -62,7 +77,7 @@ public class SearchVenueMapActivity extends MapActivity {
                 if (DEBUG) Log.d(TAG, "Observed search results change.");
                 clearMap();
                 loadSearchResults(SearchVenueActivity.searchResultsObservable.getSearchResults());
-                updateMap();
+                recenterMap();
             }
         };
     }
@@ -76,7 +91,7 @@ public class SearchVenueMapActivity extends MapActivity {
 
         clearMap();
         loadSearchResults(SearchVenueActivity.searchResultsObservable.getSearchResults());
-        updateMap();
+        recenterMap();
 
         SearchVenueActivity.searchResultsObservable.addObserver(mSearchResultsObserver);
     }
@@ -118,52 +133,77 @@ public class SearchVenueMapActivity extends MapActivity {
         }
         if (DEBUG) Log.d(TAG, "Loading search results");
 
-        Group mappableVenueGroup = new Group();
-        mappableVenueGroup.setType("Mappable");
         final int groupCount = searchResults.size();
         for (int groupIndex = 0; groupIndex < groupCount; groupIndex++) {
             Group group = (Group)searchResults.get(groupIndex);
-            if (DEBUG) Log.d(TAG, "Adding items in group: " + group.getType());
-            final int venueCount = group.size();
-            for (int venueIndex = 0; venueIndex < venueCount; venueIndex++) {
-                Venue venue = (Venue)group.get(venueIndex);
-                if (isVenueMappable(venue)) {
-                    if (DEBUG) Log.d(TAG, "adding venue: " + venue.getVenuename());
-                    mappableVenueGroup.add(venue);
-                }
+
+            // One VenueItemizedOverlay per group!
+            VenueItemizedOverlay mappableVenuesOverlay = createMappableVenuesOverlay(group);
+
+            if (mappableVenuesOverlay != null) {
+                if (DEBUG) Log.d(TAG, "adding a map view venue overlay.");
+                mVenuesGroupOverlays.add(mappableVenuesOverlay);
             }
         }
-        if (mappableVenueGroup.size() > 0) {
-            if (DEBUG) Log.d(TAG, "setting the map view venue overlay.");
-            mVenuesOverlay.setGroup(mappableVenueGroup);
-            mMapView.getOverlays().add(mVenuesOverlay);
+        // Only add the list of venue group overlays if it contains any overlays.
+        if (mVenuesGroupOverlays.size() > 0) {
+            mMapView.getOverlays().addAll(mVenuesGroupOverlays);
         }
     }
 
     private void clearMap() {
-        mMapView.getOverlays().remove(mVenuesOverlay);
-        mVenuesOverlay = new VenueItemizedOverlayWithButton(this.getResources().getDrawable(
-                R.drawable.reddot), this.getResources().getDrawable(R.drawable.bluedot));
+        mVenuesGroupOverlays.clear();
+
+        // Clear the map of all overlays that aren't at index 0, the my location overlay.
+        List<Overlay> overlays = mMapView.getOverlays();
+        for (int i = 1; i < overlays.size(); i++) {
+            overlays.remove(i);
+        }
+        mMapView.postInvalidate();
+    }
+
+    /**
+     * Create an overlay that contains a specific group's list of mappable venues.
+     *
+     * @param group
+     * @return
+     */
+    private VenueItemizedOverlay createMappableVenuesOverlay(Group group) {
+        Group mappableVenues = new Group();
+        mappableVenues.setType(group.getType());
+        if (DEBUG) Log.d(TAG, "Adding items in group: " + group.getType());
+
+        final int venueCount = group.size();
+        for (int venueIndex = 0; venueIndex < venueCount; venueIndex++) {
+            Venue venue = (Venue)group.get(venueIndex);
+            if (isVenueMappable(venue)) {
+                if (DEBUG) Log.d(TAG, "adding venue: " + venue.getVenuename());
+                mappableVenues.add(venue);
+            }
+        }
+        if (mappableVenues.size() > 0) {
+            VenueItemizedOverlay mappableVenuesOverlay = new VenueItemizedOverlayWithButton( //
+                    this.getResources().getDrawable(R.drawable.reddot), //
+                    this.getResources().getDrawable(R.drawable.bluedot));
+            mappableVenuesOverlay.setGroup(mappableVenues);
+            return mappableVenuesOverlay;
+        } else {
+            return null;
+        }
     }
 
     private boolean isVenueMappable(Venue venue) {
-        if ((venue.getGeolat() == null || venue.getGeolong() == null) //
-                || venue.getGeolat().equals("0") || venue.getGeolong().equals("0")) {
+        if ((venue.getGeolat() == null //
+                || venue.getGeolong() == null) //
+                || venue.getGeolat().equals("0") //
+                || venue.getGeolong().equals("0")) {
             return false;
         }
         return true;
     }
 
-    private void updateMap() {
+    private void recenterMap() {
         GeoPoint center = mMyLocationOverlay.getMyLocation();
-        if (mVenuesOverlay.size() > 0) {
-            if (DEBUG) Log.d(TAG, "updateMap via overlay span");
-            center = mVenuesOverlay.getCenter();
-            mMapController.animateTo(center);
-            mMapController.zoomToSpan(mVenuesOverlay.getLatSpanE6(), mVenuesOverlay.getLonSpanE6());
-            return;
-        }
-
         if (center != null) {
             if (DEBUG) Log.d(TAG, "updateMap via location overlay");
             mMapController.animateTo(center);
@@ -171,14 +211,6 @@ public class SearchVenueMapActivity extends MapActivity {
             return;
         }
         if (DEBUG) Log.d(TAG, "Could not re-center no location or venue overlay.");
-    }
-
-    void startVenueActivity(Venue venue) {
-        if (DEBUG) Log.d(TAG, "firing venue activity for venue");
-        Intent intent = new Intent(SearchVenueMapActivity.this, VenueActivity.class);
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.putExtra("venue", venue);
-        startActivity(intent);
     }
 
     private class VenueItemizedOverlayWithButton extends VenueItemizedOverlay {
