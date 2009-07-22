@@ -29,13 +29,13 @@ import java.io.IOException;
 
 /**
  * Auto-generated: %(timestamp)s
- * 
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
 public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
     private static final String TAG = "%(type_name)sParser";
-    private static final boolean DEBUG = Foursquare.DEBUG;
+    private static final boolean DEBUG = Foursquare.API_DEBUG;
 
     @Override
     public %(type_name)s parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
@@ -49,6 +49,7 @@ public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
 
             String name = parser.getName();
             %(stanzas)s
+
             } else {
                 // Consume something we don't understand.
                 if (DEBUG) Log.d(TAG, "Found tag that we don't recognize: " + name);
