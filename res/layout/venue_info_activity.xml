@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent">
 
   <com.google.android.maps.MapView
     android:id="@+id/mapView"
-    android:apiKey="@string/google_maps_api_key"
-
     android:layout_height="fill_parent"
     android:layout_width="fill_parent"
+    android:apiKey="@string/google_maps_api_key"
+    android:clickable="false" />
 
-    android:clickable="true" />
+  <TableLayout
+    android:id="@+id/buttonBar"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:background="#AA000000">
+    <TableRow>
+      <Button
+        android:id="@+id/yelpButton"
+        android:layout_height="wrap_content"
+        android:layout_width="0dip"
+        android:layout_weight="1"
+        android:text="Yelp!" />
+    </TableRow>
+  </TableLayout>
 
-</RelativeLayout>
+</FrameLayout>
