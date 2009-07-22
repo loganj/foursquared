@@ -1,10 +1,11 @@
-REPOSITORY
+
+==Setup Your Repository==
 
 The main foursquared repo is at http://joelapenna.com/git/foursquared.git
 
 *Some files must be manually created in order for the tests and source to build.*
 
-*Create res/values/credentials.xml* -- do not check this in. It must contain strings:
+*Create main/res/values/credentials.xml* -- do not check this in. It must contain strings:
 
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
@@ -15,10 +16,29 @@ The main foursquared repo is at http://joelapenna.com/git/foursquared.git
     name="oauth_consumer_key">SOME_OTHER_KEY</string>
   <string
     name="oauth_consumer_secret">SOME_OTHER_OTHER_KEY</string>
+
+
+  <!-- A stanza like this will be sufficient if you're not testing dumpcatcher capabilities. ->
+  <string
+    name="dumpcatcher_url"></string>
+  <string
+    name="dumpcatcher_product_key"></string>
+  <string
+    name="dumpcatcher_secret"></string>
+
+  <!-- A stanza like this will be sufficient if you're not testing dumpcatcher capabilities. ->
+  <string
+    name="test_dumpcatcher_url"></string>
+  <string
+    name="test_dumpcatcher_product_key"></string>
+  <string
+    name="test_dumpcatcher_secret"></string>
+
+
 </resources>
 
-*Create src/com/joelapenna/foursquare/test/TestConstants.java* -- do not check this in. It must contain strings:
-   
+*Create tests/src/com/joelapenna/foursquare/TestConstants.java* -- do not check this in. It must contain strings:
+
 public class TestConstants {
 
     static final String oAuthConsumerKey = "SOME_OTHER_KEY";
@@ -26,9 +46,14 @@ public class TestConstants {
 
     static final String testFoursquareUsername = "testuser@example.com";
     static final String testFoursquarePassword = "some_password";
+
+	public static final String testFoursquarePhone = "";
+	public static final String testFoursquarePassword = "";
+
 }
 
-IDEAS
+
+==Ideas==
 
 + "Lead" a Bar Crawl
 Use your phone to generate a "proxy" authentication credentials and store that on your client. Pass that authentication credential onto another phone, maybe by QRCode and allow others to act on your behalf. Provide UI on your phone to disable that credential by sending an RPC to /api/logout with those credentials.
@@ -38,13 +63,6 @@ This will give a user the ability to designate someone else as their notifier. T
 + Shortcuts to favorite checkins.
 
 + Yelp Integration
-
-+ Send all venue opens to the query suggest provider, provide a quick search interface.
-
-
-TODO
-
-+ Display tags for a venue.
 
 
 -------------
@@ -77,96 +95,3 @@ Content-Type: text/html
 Via: 1.1 www.playfoursquare.com
 Keep-Alive: timeout=15, max=100
 Connection: Keep-Alive
-
-
-
-+ DELETE TIP Example:
-http://playfoursquare.com/user?task=delete_tip&tid=5682&listid=1780
-Host: playfoursquare.com
-
--- Request Headers
-User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.8) Gecko/2009032711 Ubuntu/8.10 (intrepid) Firefox/3.0.8
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-Accept-Language: en-us,en;q=0.5
-Accept-Encoding: gzip,deflate
-Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
-Keep-Alive: 300
-Connection: keep-alive
-Referer: http://playfoursquare.com/user/1818
-Cookie: SESSIONID=b5ca140cc5cbb59838fee18e8e64255b; cookieCityID=23
-
--- Response Headers
-Date: Sun, 05 Apr 2009 15:54:40 GMT
-Server: Apache
-Expires: Thu, 19 Nov 1981 08:52:00 GMT
-Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-Pragma: no-cache
-Location: /user/1818
-Content-Length: 0
-Keep-Alive: timeout=15, max=100
-Connection: Keep-Alive
-Content-Type: text/html
-
-
-
-+ DEMOTE Example
-http://playfoursquare.com/user?task=remove_from_list&tid=5682&listid=1780
-
-
-
-+ LOGIN Example
-http://m.playfoursquare.com/login
-
--- Request Headers
-Host: m.playfoursquare.com
-User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.8) Gecko/2009032711 Ubuntu/8.10 (intrepid) Firefox/3.0.8
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-Accept-Language: en-us,en;q=0.5
-Accept-Encoding: gzip,deflate
-Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
-Keep-Alive: 300
-Connection: keep-alive
-Referer: http://m.playfoursquare.com/index
-Cookie: SESSIONID=bcf5bd566449ba0a2be9d7dc8bf02cb4; cookieCityID=23
-
--- Response Headers
-Date: Sun, 05 Apr 2009 16:38:46 GMT
-Server: Apache
-Expires: Thu, 19 Nov 1981 08:52:00 GMT
-Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-Pragma: no-cache
-Location: index
-Content-Length: 0
-Content-Type: text/html
-Set-Cookie: cookieCityID=23; expires=Mon, 05-Apr-2010 16:38:46 GMT
-Via: 1.1 www.playfoursquare.com
-Keep-Alive: timeout=15, max=100
-Connection: Keep-Alive
-
-
-
-+ LOGOUT Example
-http://m.playfoursquare.com/logout
-
-
-
-/// CAPTURE NOTES
-Load App
-"Hold on w'ere locating you"
-"Nearby Favorites"
-Click "The Page"
-Click "Info"
-Click "Check In"
-Click "Check-in here"
-"updating"
-OK! We've got you @ The Page.
-Your checkin-in score:
-First time @ The Page (+5)
-Travel bonus: 2 stops! (+2)
-Total: 7 pts (15 tonight)
-Ryan M is the mayor of The Page.
-Click "Friends"
-Click "Joe L."
-Click "Badges"
-Has newbie badge.
-Click "More"
