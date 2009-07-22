@@ -24,11 +24,22 @@
 
     <activity
       android:name=".TestActivity"
-      android:label="Testing Activity">
+      android:label="Testing Activity"
+      android:launchMode="singleTop">
       <intent-filter>
         <action
           android:name="android.intent.action.MAIN" />
+        <action
+          android:name="android.intent.action.SEARCH" />
+        <meta-data
+          android:name="android.app.default_searchable"
+          android:value=".TestActivity" />
+        <meta-data
+          android:name="android.app.searchable"
+          android:resource="@xml/searchable" />
       </intent-filter>
+
+
     </activity>
 
     <activity
@@ -58,13 +69,22 @@
 
     <activity
       android:name=".VenueSearchActivity"
-      android:label="@string/venue_search_activity_name">
+      android:label="@string/venue_search_activity_name"
+      android:launchMode="singleTop">
       <intent-filter>
         <action
           android:name="android.intent.action.MAIN" />
         <category
           android:name="android.intent.category.LAUNCHER" />
+        <action
+          android:name="android.intent.action.SEARCH" />
       </intent-filter>
+        <meta-data
+          android:name="android.app.default_searchable"
+          android:value=".VenueSearchActivity" />
+        <meta-data
+          android:name="android.app.searchable"
+          android:resource="@xml/searchable" />
     </activity>
 
     <activity

@@ -14,12 +14,15 @@ import com.joelapenna.foursquare.types.Venue;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import java.io.IOException;
 import java.util.Date;
@@ -27,12 +30,37 @@ import java.util.Date;
 public class TestActivity extends Activity {
     private static final String TAG = "TestActivity";
     private static final boolean DEBUG = Foursquared.DEBUG;
+    private static final int MENU_SEARCH = 1;
 
     private Foursquare mFoursquare;
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.search_label) // More stuff.
+                .setIcon(android.R.drawable.ic_search_category_default);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case MENU_SEARCH:
+                onSearchRequested();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.venue_checkin_activity);
+
+        setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
+        onSearchRequested();
+
+        startSearch(null, true, new Bundle(), false);
 
         mFoursquare = ((Foursquared)getApplication()).getFoursquare();
         try {

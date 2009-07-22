@@ -11,17 +11,17 @@ import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 
 import android.app.ListActivity;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.View.OnKeyListener;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -34,7 +34,9 @@ public class VenueSearchActivity extends ListActivity {
     private static final String TAG = "VenueSearchActivity";
     private static final boolean DEBUG = Foursquared.DEBUG;
 
-    private EditText mSearchEdit;
+    private static final int MENU_SEARCH = 0;
+
+    private String mQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,22 +45,6 @@ public class VenueSearchActivity extends ListActivity {
         setContentView(R.layout.venue_search_activity);
 
         setListAdapter(new SeparatedListAdapter(this));
-
-        mSearchEdit = (EditText)findViewById(R.id.searchEdit);
-        mSearchEdit.setOnKeyListener(new OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    switch (keyCode) {
-                        case KeyEvent.KEYCODE_ENTER:
-                            startQuery();
-                            return true;
-                    }
-                }
-                return false;
-            }
-        });
-
         getListView().setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -67,11 +53,40 @@ public class VenueSearchActivity extends ListActivity {
             }
         });
 
-        testStuff();
+        onNewIntent(getIntent());
+        startQuery(mQuery);
     }
 
-    private void testStuff() {
-        mSearchEdit.setText("YOUR FACE");
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.search_label) // More stuff.
+                .setIcon(android.R.drawable.ic_search_category_default);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case MENU_SEARCH:
+                onSearchRequested();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        if (DEBUG) Log.d(TAG, "New Intent: " + intent);
+        if (intent == null) {
+            if (DEBUG) Log.d(TAG, "No intent to search on");
+        } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            if (DEBUG) Log.d(TAG, "onNewIntent received search intent");
+            mQuery = intent.getStringExtra(SearchManager.QUERY);
+        }
+    }
+
+    void testStuff() {
         Group groups = new Group();
         groups.setType("TLG");
         groups.add(FoursquaredTest.createVenueGroup("Group A"));
@@ -80,15 +95,13 @@ public class VenueSearchActivity extends ListActivity {
         putGroupsInAdapter(groups);
     }
 
-    protected void startQuery() {
+    void startQuery(String query) {
+        mQuery = query;
         if (DEBUG) Log.d(TAG, "sendQuery()");
-        String query = mSearchEdit.getText().toString();
-        new SearchAsyncTask().execute(new String[] {
-            query
-        });
+        new SearchAsyncTask().execute();
     }
 
-    protected void fireVenueActivityIntent(Venue venue) {
+    void fireVenueActivityIntent(Venue venue) {
         if (DEBUG) Log.d(TAG, "firing venue activity for venue");
         Intent intent = new Intent(VenueSearchActivity.this, VenueActivity.class);
         intent.setAction(Intent.ACTION_VIEW);
@@ -97,50 +110,40 @@ public class VenueSearchActivity extends ListActivity {
     }
 
     private void putGroupsInAdapter(Group groups) {
-        try {
-            if (groups == null) {
-                Toast.makeText(getApplicationContext(), "Could not complete search!",
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
-            SeparatedListAdapter mainAdapter = (SeparatedListAdapter)getListAdapter();
-            mainAdapter.clear();
-            int groupCount = groups.size();
-            for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
-                Group group = (Group)groups.get(groupsIndex);
-                VenueListAdapter groupAdapter = new VenueListAdapter(this, group);
-                if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
-                mainAdapter.addSection(group.getType(), groupAdapter);
-            }
-            mainAdapter.notifyDataSetInvalidated();
-
-        } finally {
-            setProgressBarIndeterminateVisibility(false);
-            String query = mSearchEdit.getText().toString();
-            setTitle("Searching: " + query);
-            mSearchEdit.setEnabled(true);
+        if (groups == null) {
+            Toast.makeText(getApplicationContext(), "Could not complete search!",
+                    Toast.LENGTH_SHORT).show();
+            return;
         }
+        SeparatedListAdapter mainAdapter = (SeparatedListAdapter)getListAdapter();
+        mainAdapter.clear();
+        int groupCount = groups.size();
+        for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
+            Group group = (Group)groups.get(groupsIndex);
+            VenueListAdapter groupAdapter = new VenueListAdapter(this, group);
+            if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
+            mainAdapter.addSection(group.getType(), groupAdapter);
+        }
+        mainAdapter.notifyDataSetInvalidated();
     }
 
-    class SearchAsyncTask extends AsyncTask<String, Void, Group> {
+    class SearchAsyncTask extends AsyncTask<Void, Void, Group> {
 
         @Override
         public void onPreExecute() {
             setProgressBarIndeterminateVisibility(true);
-            String query = mSearchEdit.getText().toString();
-            setTitle("Searching: " + query);
-            mSearchEdit.setEnabled(false);
+            setTitle("Searching...");
         }
 
         @Override
-        public Group doInBackground(String... params) {
+        public Group doInBackground(Void... params) {
             try {
                 Location location = ((Foursquared)getApplication()).getLocation();
                 if (location == null) {
-                    return ((Foursquared)getApplication()).getFoursquare().venues(params[0], null,
+                    return ((Foursquared)getApplication()).getFoursquare().venues(mQuery, null,
                             null, 10, 1);
                 } else {
-                    return ((Foursquared)getApplication()).getFoursquare().venues(params[0],
+                    return ((Foursquared)getApplication()).getFoursquare().venues(mQuery,
                             String.valueOf(location.getLatitude()),
                             String.valueOf(location.getLongitude()), 10, 1);
                 }
@@ -159,7 +162,16 @@ public class VenueSearchActivity extends ListActivity {
 
         @Override
         public void onPostExecute(Group groups) {
-            putGroupsInAdapter(groups);
+            try {
+                putGroupsInAdapter(groups);
+            } finally {
+                setProgressBarIndeterminateVisibility(false);
+                if (mQuery == null) {
+                    setTitle("Search Results Nearby");
+                } else {
+                    setTitle("Search Results: " + mQuery);
+                }
+            }
         }
     }
 }

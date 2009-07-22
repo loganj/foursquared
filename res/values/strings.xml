@@ -12,4 +12,10 @@
     name="venue_search_activity_name">Foursquare Search</string>
   <string
     name="venue_yelp_activity_name">Yelp!</string>
+
+
+  <string
+    name="search_label">Search</string>
+  <string
+    name="search_hint">Search for something...</string>
 </resources>
