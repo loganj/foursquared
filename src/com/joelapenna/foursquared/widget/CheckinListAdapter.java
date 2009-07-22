@@ -4,14 +4,14 @@
 
 package com.joelapenna.foursquared.widget;
 
+import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.classic.Checkin;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.content.Context;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,22 +59,9 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
         }
 
         Checkin checkin = (Checkin)getItem(position);
-        String firstLineString;
-        if (checkin.getDisplay() != null) {
-            firstLineString = checkin.getDisplay();
-        } else {
-            firstLineString = checkin.getFirstname() + " " + checkin.getLastname().substring(0, 1) + ".";
-        }
-        holder.firstLine.setText(firstLineString);
-
-        if (checkin.getRelativeTime() != null) {
-            // Popping from string->html fixes things like "&amp;" converting it back to a string
-            // prevents a stack overflow in cupcake.
-            holder.secondLine.setText(Html.fromHtml(checkin.getRelativeTime()).toString());
-            holder.secondLine.setVisibility(TextView.VISIBLE);
-        } else {
-            holder.secondLine.setVisibility(TextView.GONE);
-        }
+        holder.firstLine.setText(StringFormatters.getCheckinMessage(checkin));
+        holder.secondLine.setText(StringFormatters.getRelativeDate(convertView.getContext(),
+                checkin.getCreated()));
 
         return convertView;
     }
@@ -93,13 +80,13 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
 =======
     public static Venue venueFromCheckin(Checkin checkin) {
         Venue venue = new Venue();
-        venue.setAddress(checkin.getAddress());
-        venue.setCity(checkin.getCityName());
-        venue.setCrossstreet(checkin.getCrossstreet());
-        venue.setGeolat(checkin.getGeolat());
-        venue.setGeolong(checkin.getGeolong());
-        venue.setId(checkin.getVenueid());
-        venue.setName(checkin.getVenuename());
+        venue.setAddress(checkin.getVenue().getAddress());
+        venue.setCity(checkin.getVenue().getCity());
+        venue.setCrossstreet(checkin.getVenue().getCrossstreet());
+        venue.setGeolat(checkin.getVenue().getGeolat());
+        venue.setGeolong(checkin.getVenue().getGeolong());
+        venue.setId(checkin.getVenue().getId());
+        venue.setName(checkin.getVenue().getName());
         return venue;
 >>>>>>> 12c68cf... Use display attribute in list items when available.:src/com/joelapenna/foursquared/widget/CheckinListAdapter.java
     }

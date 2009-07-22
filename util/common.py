@@ -40,6 +40,7 @@ COMPLEX = [
     'Badge',
     'Beenhere',
     'Checkin',
+    'CheckinResponse',
     'City',
     'Credentials',
     'Data',

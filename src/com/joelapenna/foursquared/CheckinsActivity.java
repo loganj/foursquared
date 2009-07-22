@@ -7,7 +7,7 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.classic.Checkin;
+import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
@@ -160,17 +160,9 @@ public class CheckinsActivity extends TabActivity {
             return;
         }
         mListAdapter.clear();
-        int groupCount = searchResults.size();
-        for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
-            Group group = (Group)searchResults.get(groupsIndex);
-            if (group.getType().equals("Me")) {
-                if (DEBUG) Log.d(TAG, "Skipping 'Me' Section.");
-            } else if (group.size() > 0 && !group.getType().equals("Me")) {
-                CheckinListAdapter groupAdapter = new CheckinListAdapter(this, group);
-                if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
-                mListAdapter.addSection(group.getType(), groupAdapter);
-            }
-        }
+        
+        CheckinListAdapter groupAdapter = new CheckinListAdapter(this, searchResults);
+        mListAdapter.addSection("Checkins", groupAdapter);
         mListAdapter.notifyDataSetInvalidated();
     }
 
@@ -230,7 +222,7 @@ public class CheckinsActivity extends TabActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Checkin checkin = (Checkin)parent.getAdapter().getItem(position);
-                startItemActivity(CheckinListAdapter.venueFromCheckin(checkin));
+                startItemActivity(checkin.getVenue());
             }
         });
     }
@@ -317,13 +309,12 @@ public class CheckinsActivity extends TabActivity {
             Foursquare foursquare = Foursquared.getFoursquare();
             if (location == null) {
                 if (DEBUG) Log.d(TAG, "Searching without location.");
-                return foursquare.checkins(null, null, null);
+                return foursquare.checkins(null);
             } else {
                 // Try to make the search radius to be the same as our
                 // accuracy.
                 if (DEBUG) Log.d(TAG, "Searching with location: " + location);
-                return foursquare.checkins(null, String.valueOf(location.getLatitude()), String
-                        .valueOf(location.getLongitude()));
+                return foursquare.checkins(null);
             }
         }
     }

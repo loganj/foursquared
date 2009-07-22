@@ -9,12 +9,12 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.classic.Checkin;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.CheckinItemizedOverlay;
 import com.joelapenna.foursquared.util.InfiniteIterator;
-import com.joelapenna.foursquared.widget.CheckinListAdapter;
+import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -126,20 +126,12 @@ public class CheckinsMapActivity extends MapActivity {
 
         MAP_ICONS_ITERATOR.reset();
 
-        final int groupCount = checkins.size();
-        for (int groupIndex = 0; groupIndex < groupCount; groupIndex++) {
-            Group group = (Group)checkins.get(groupIndex);
-            if (group.getType().equals("Me")) {
-                continue;
-            }
+        // One CheckinItemizedOverlay per group!
+        CheckinItemizedOverlay mappableCheckinsOverlay = createMappableCheckinsOverlay(checkins);
 
-            // One CheckinItemizedOverlay per group!
-            CheckinItemizedOverlay mappableCheckinsOverlay = createMappableCheckinsOverlay(group);
-
-            if (mappableCheckinsOverlay != null) {
-                if (DEBUG) Log.d(TAG, "adding a map view checkin overlay.");
-                mCheckinsGroupOverlays.add(mappableCheckinsOverlay);
-            }
+        if (mappableCheckinsOverlay != null) {
+            if (DEBUG) Log.d(TAG, "adding a map view checkin overlay.");
+            mCheckinsGroupOverlays.add(mappableCheckinsOverlay);
         }
         // Only add the list of checkin group overlays if it contains any overlays.
         if (mCheckinsGroupOverlays.size() > 0) {
@@ -170,7 +162,7 @@ public class CheckinsMapActivity extends MapActivity {
         for (int checkinIndex = 0; checkinIndex < checkinCount; checkinIndex++) {
             Checkin checkin = (Checkin)group.get(checkinIndex);
             if (CheckinItemizedOverlay.isCheckinMappable(checkin)) {
-                if (DEBUG) Log.d(TAG, "adding checkin: " + checkin.getVenuename());
+                if (DEBUG) Log.d(TAG, "adding checkin: " + checkin.getVenue().getName());
                 mappableCheckins.add(checkin);
             }
         }
@@ -231,9 +223,10 @@ public class CheckinsMapActivity extends MapActivity {
             if (DEBUG) Log.d(TAG, "onTap: " + this + " " + i);
             CheckinOverlayItem item = (CheckinOverlayItem)getItem(i);
             item.getCheckin();
-            mTappedVenue = CheckinListAdapter.venueFromCheckin(item.getCheckin());
-            if (DEBUG) Log.d(TAG, "onTap: " + item.getCheckin().getVenuename());
-            mCheckinButton.setText(item.getCheckin().getDisplay());
+            Checkin checkin = item.getCheckin();
+            mTappedVenue = checkin.getVenue();
+            if (DEBUG) Log.d(TAG, "onTap: " + checkin.getVenue().getName());
+            mCheckinButton.setText(StringFormatters.getCheckinMessage(checkin));
             mCheckinButton.setVisibility(View.VISIBLE);
             return true;
         }

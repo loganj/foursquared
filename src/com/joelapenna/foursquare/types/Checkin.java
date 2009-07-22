@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Auto-generated: 2009-06-10 02:19:21.823386
+ * Auto-generated: 2009-06-10 23:39:00.795282
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
@@ -16,9 +16,8 @@ public class Checkin implements Parcelable, FoursquareType {
 
     private String mCreated;
     private String mId;
-    private String mMessage;
-    private String mUser;
-    private String mVenue;
+    private User mUser;
+    private Venue mVenue;
     
     public Checkin() {
     }
@@ -39,27 +38,19 @@ public class Checkin implements Parcelable, FoursquareType {
         mId = id;
     }
     
-    public String getMessage() {
-        return mMessage;
-    }
-    
-    public void setMessage(String message) {
-        mMessage = message;
-    }
-    
-    public String getUser() {
+    public User getUser() {
         return mUser;
     }
     
-    public void setUser(String user) {
+    public void setUser(User user) {
         mUser = user;
     }
     
-    public String getVenue() {
+    public Venue getVenue() {
         return mVenue;
     }
     
-    public void setVenue(String venue) {
+    public void setVenue(Venue venue) {
         mVenue = venue;
     }
     
@@ -78,9 +69,8 @@ public class Checkin implements Parcelable, FoursquareType {
         dest.writeBooleanArray(booleanArray);
         dest.writeString(this.mCreated);    
         dest.writeString(this.mId);    
-        dest.writeString(this.mMessage);    
-        dest.writeString(this.mUser);    
-        dest.writeString(this.mVenue);
+        dest.writeParcelable(this.mUser, 0);    
+        dest.writeParcelable(this.mVenue, 0);
     }
     
     private void readFromParcel(Parcel source) {
@@ -88,9 +78,8 @@ public class Checkin implements Parcelable, FoursquareType {
         source.readBooleanArray(booleanArray);
         this.mCreated = source.readString();    
         this.mId = source.readString();    
-        this.mMessage = source.readString();    
-        this.mUser = source.readString();    
-        this.mVenue = source.readString();
+        this.mUser = source.readParcelable(null);    
+        this.mVenue = source.readParcelable(null);
     }
     
     public static final Parcelable.Creator<Checkin> CREATOR = new Parcelable.Creator<Checkin>() {

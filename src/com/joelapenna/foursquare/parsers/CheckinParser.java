@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-06-10 02:19:21.723873
+ * Auto-generated: 2009-06-10 23:39:02.470109
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -43,14 +43,11 @@ public class CheckinParser extends AbstractParser<Checkin> {
             } else if ("id".equals(name)) {
                 checkin.setId(parser.nextText());
 
-            } else if ("message".equals(name)) {
-                checkin.setMessage(parser.nextText());
-
             } else if ("user".equals(name)) {
-                checkin.setUser(parser.nextText());
+                checkin.setUser(new UserParser().parse(parser));
 
             } else if ("venue".equals(name)) {
-                checkin.setVenue(parser.nextText());
+                checkin.setVenue(new VenueParser().parse(parser));
 
             } else {
                 // Consume something we don't understand.

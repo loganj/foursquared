@@ -104,9 +104,15 @@ public class Foursquare {
     }
 
     @Classic
+    @Deprecated
     public Group checkins(String cityId, String lat, String lng) throws FoursquareException,
             FoursquareError, IOException {
         return mFoursquare.checkins(cityId, lat, lng);
+    }
+
+    @V1
+    public Group checkins(String cityId) throws FoursquareException, FoursquareError, IOException {
+        return mFoursquareV1.checkins(cityId);
     }
 
     @Deprecated

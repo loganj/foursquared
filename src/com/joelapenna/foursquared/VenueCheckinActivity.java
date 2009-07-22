@@ -7,7 +7,7 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquare.types.classic.Checkin;
+import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
 
@@ -50,7 +50,7 @@ public class VenueCheckinActivity extends ListActivity {
 
     private Venue mVenue;
     private Group mGroups;
-    public Checkin mCheckin;
+    public com.joelapenna.foursquare.types.classic.Checkin mCheckin;
 
     private LookupCheckinsAsyncTask mCheckinTask;
     private Observer mVenueObserver;
@@ -77,7 +77,7 @@ public class VenueCheckinActivity extends ListActivity {
         setupUi();
 
         if (getLastNonConfigurationInstance() != null) {
-            setCheckinGroups((Group)getLastNonConfigurationInstance());
+            setCheckins((Group)getLastNonConfigurationInstance());
 
         } else if (((VenueActivity)getParent()).venueObservable.getVenue() != null) {
             mVenue = ((VenueActivity)getParent()).venueObservable.getVenue();
@@ -99,11 +99,7 @@ public class VenueCheckinActivity extends ListActivity {
     public Dialog onCreateDialog(int id) {
         switch (id) {
             case DIALOG_CHECKIN:
-                Checkin checkin = mCheckin;
-                if (DEBUG) Log.d(TAG, checkin.getUserid());
-                if (DEBUG) Log.d(TAG, checkin.getMessage());
-                if (DEBUG) Log.d(TAG, String.valueOf(checkin.status()));
-                if (DEBUG) Log.d(TAG, checkin.getUrl());
+                com.joelapenna.foursquare.types.classic.Checkin checkin = mCheckin;
 
                 WebView webView = new WebView(this);
                 webView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
@@ -173,20 +169,24 @@ public class VenueCheckinActivity extends ListActivity {
         mCheckinTask = (LookupCheckinsAsyncTask)new LookupCheckinsAsyncTask().execute();
     }
 
-    private void setCheckinGroups(Group groups) {
-        if (groups == null) {
+    private void setCheckins(Group checkins) {
+        if (checkins == null) {
             Toast.makeText(getApplicationContext(), "Could not complete TODO lookup!",
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        // TODO(jlapenna): Filter all checkins by venue.
-        // if (mVenue != null) {
-        // mGroups = VenueFilter.filter(groups, mVenue);
-        // } else {
-        // mGroups = groups;
-        // }
-        mGroups = groups;
-        putGroupsInAdapter(mGroups);
+
+        Group filteredCheckins = new Group();
+        filteredCheckins.setType("Recent Checkins");
+        Checkin checkin;
+        for (int i = 0; i < checkins.size(); i++) {
+            checkin = (Checkin)checkins.get(i);
+            if (checkin.getVenue().getId().equals(mVenue.getId())) {
+                filteredCheckins.add(checkin);
+            }
+        }
+        mGroups = filteredCheckins;
+        putCheckinsInAdapter(filteredCheckins);
     }
 
     void startCheckinActivity(Checkin checkin) {
@@ -197,21 +197,17 @@ public class VenueCheckinActivity extends ListActivity {
         // startActivity(intent);
     }
 
-    private void putGroupsInAdapter(Group groups) {
+    private void putCheckinsInAdapter(Group checkins) {
         if (DEBUG) Log.d(TAG, "Putting groups in adapter.");
         SeparatedListAdapter mainAdapter = (SeparatedListAdapter)getListAdapter();
         mainAdapter.clear();
-        int groupCount = groups.size();
-        for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
-            Group group = (Group)groups.get(groupsIndex);
-            CheckinListAdapter groupAdapter = new CheckinListAdapter(this, group);
-            if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
-            mainAdapter.addSection(group.getType(), groupAdapter);
-        }
+        CheckinListAdapter groupAdapter = new CheckinListAdapter(this, checkins);
+        mainAdapter.addSection("Recent Checkins", groupAdapter);
         mainAdapter.notifyDataSetInvalidated();
     }
 
-    private class AddCheckinAsyncTask extends AsyncTask<Venue, Void, Checkin> {
+    private class AddCheckinAsyncTask extends
+            AsyncTask<Venue, Void, com.joelapenna.foursquare.types.classic.Checkin> {
 
         private static final String PROGRESS_BAR_TASK_ID = TAG + "AddCheckinAsyncTask";
 
@@ -226,7 +222,7 @@ public class VenueCheckinActivity extends ListActivity {
         }
 
         @Override
-        public Checkin doInBackground(Venue... params) {
+        public com.joelapenna.foursquare.types.classic.Checkin doInBackground(Venue... params) {
             try {
                 final Venue venue = params[0];
                 if (DEBUG) Log.d(TAG, "Checking in to: " + venue.getName());
@@ -256,7 +252,7 @@ public class VenueCheckinActivity extends ListActivity {
         }
 
         @Override
-        public void onPostExecute(Checkin checkin) {
+        public void onPostExecute(com.joelapenna.foursquare.types.classic.Checkin checkin) {
             try {
                 mCheckin = checkin;
                 if (checkin == null) {
@@ -295,12 +291,10 @@ public class VenueCheckinActivity extends ListActivity {
                 Location location = ((Foursquared)getApplication()).getLastKnownLocation();
                 if (location == null) {
                     if (DEBUG) Log.d(TAG, "Getting Checkins without Location");
-                    return Foursquared.getFoursquare().checkins(null, null, null);
+                    return Foursquared.getFoursquare().checkins(null);
                 } else {
                     if (DEBUG) Log.d(TAG, "Getting Checkins with Location: " + location);
-                    return Foursquared.getFoursquare().checkins(null,
-                            String.valueOf(location.getLatitude()),
-                            String.valueOf(location.getLongitude()));
+                    return Foursquared.getFoursquare().checkins(null);
 
                 }
             } catch (FoursquareException e) {
@@ -314,9 +308,9 @@ public class VenueCheckinActivity extends ListActivity {
         }
 
         @Override
-        public void onPostExecute(Group groups) {
+        public void onPostExecute(Group checkins) {
             try {
-                setCheckinGroups(groups);
+                setCheckins(checkins);
             } finally {
                 if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
                 VenueActivity.stopProgressBar(VenueCheckinActivity.this, PROGRESS_BAR_TASK_ID);

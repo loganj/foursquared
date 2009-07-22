@@ -7,7 +7,7 @@ package com.joelapenna.foursquared.maps;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
-import com.joelapenna.foursquare.types.classic.Checkin;
+import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquared.Foursquared;
 
 import android.graphics.drawable.Drawable;
@@ -27,9 +27,9 @@ public class CheckinItemizedOverlay extends BaseGroupItemizedOverlay {
     @Override
     protected OverlayItem createItem(int i) {
         Checkin checkin = (Checkin)group.get(i);
-        if (DEBUG) Log.d(TAG, "creating checkin overlayItem: " + checkin.getVenuename());
-        int lat = (int)(Double.parseDouble(checkin.getGeolat()) * 1E6);
-        int lng = (int)(Double.parseDouble(checkin.getGeolong()) * 1E6);
+        if (DEBUG) Log.d(TAG, "creating checkin overlayItem: " + checkin.getVenue().getName());
+        int lat = (int)(Double.parseDouble(checkin.getVenue().getGeolat()) * 1E6);
+        int lng = (int)(Double.parseDouble(checkin.getVenue().getGeolong()) * 1E6);
         GeoPoint point = new GeoPoint(lat, lng);
         return new CheckinOverlayItem(point, checkin);
     }
@@ -42,10 +42,11 @@ public class CheckinItemizedOverlay extends BaseGroupItemizedOverlay {
     }
 
     public static boolean isCheckinMappable(Checkin checkin) {
-        if ((checkin.getGeolat() == null //
-                || checkin.getGeolong() == null) //
-                || checkin.getGeolat().equals("0") //
-                || checkin.getGeolong().equals("0")) {
+        if (checkin.getVenue() == null //
+                || checkin.getVenue().getGeolat() == null //
+                || checkin.getVenue().getGeolong() == null //
+                || checkin.getVenue().getGeolat().equals("0") //
+                || checkin.getVenue().getGeolong().equals("0")) {
             return false;
         }
         return true;
@@ -56,7 +57,7 @@ public class CheckinItemizedOverlay extends BaseGroupItemizedOverlay {
         private Checkin mCheckin;
 
         public CheckinOverlayItem(GeoPoint point, Checkin checkin) {
-            super(point, checkin.getVenuename(), checkin.getAddress());
+            super(point, checkin.getVenue().getName(), checkin.getVenue().getAddress());
             mCheckin = checkin;
         }
 

@@ -5,7 +5,7 @@
 package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.classic.Checkin;
+import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquared.Foursquared;
 
 import android.content.Context;
@@ -25,6 +25,6 @@ public abstract class BaseCheckinAdapter extends BaseGroupAdapter<Checkin> {
     @Override
     public long getItemId(int position) {
         if (DEBUG) Log.d(TAG, "getItemId() called: " + String.valueOf(position));
-        return Long.valueOf(((Checkin)group.get(position)).getCheckinid());
+        return Long.valueOf(((Checkin)group.get(position)).getId());
     }
 }
