@@ -110,7 +110,7 @@ public class VenueSearchActivity extends ListActivity {
         menu.add(Menu.NONE, MENU_NEARBY, Menu.NONE, R.string.nearby_label) // More stuff.
                 .setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, MENU_REFRESH, Menu.NONE, R.string.refresh_label) // More stuff.
-                .setIcon(android.R.drawable.ic_search_category_default);
+                .setIcon(R.drawable.ic_menu_refresh);
         return true;
     }
 
@@ -138,7 +138,7 @@ public class VenueSearchActivity extends ListActivity {
         } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             if (DEBUG) Log.d(TAG, "onNewIntent received search intent and saving.");
             SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
-                   VenueQuerySuggestionsProvider.AUTHORITY, VenueQuerySuggestionsProvider.MODE);
+                    VenueQuerySuggestionsProvider.AUTHORITY, VenueQuerySuggestionsProvider.MODE);
             suggestions.saveRecentQuery(intent.getStringExtra(SearchManager.QUERY), null);
 
         }
@@ -174,6 +174,7 @@ public class VenueSearchActivity extends ListActivity {
     void startQuery(String query) {
         if (DEBUG) Log.d(TAG, "sendQuery()");
         mQuery = query;
+        mResults = null;
 
         // If a task is already running, don't start a new one.
         if (mSearchTask != null && mSearchTask.getStatus() != AsyncTask.Status.FINISHED) {
