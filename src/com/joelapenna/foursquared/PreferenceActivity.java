@@ -8,7 +8,6 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquare.error.FoursquareException;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,6 +16,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -29,17 +29,17 @@ import java.io.IOException;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class PreferenceActivity extends android.preference.PreferenceActivity {
+public class PreferenceActivity extends android.preference.PreferenceActivity implements
+        OnSharedPreferenceChangeListener {
     static final String TAG = "PreferenceActivity";
     static final boolean DEBUG = Foursquared.DEBUG;
 
     private static final int MENU_CLEAR = 0;
 
-    private static final int DIALOG_LOGGING_IN = 0;
-
     private AsyncTask<Void, Void, Boolean> mLoginTask = null;
     private SharedPreferences mPrefs;
-    private OnSharedPreferenceChangeListener mOnSharedPreferenceChangeListener;
+
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,35 +47,17 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         if (DEBUG) Log.d(TAG, "onCreate");
 
         this.addPreferencesFromResource(R.xml.preferences);
+
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mOnSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                if (key.equals(Preferences.PREFERENCE_PHONE)
-                        || key.equals(Preferences.PREFERENCE_PASSWORD)) {
-                    Log.d(TAG, key + " preference was changed");
-
-                    String phoneNumber = mPrefs.getString(Preferences.PREFERENCE_PHONE, null);
-                    String password = mPrefs.getString(Preferences.PREFERENCE_PASSWORD, null);
-
-                    if (TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(password)) {
-                        // If the user hasn't set both username and password, no reason to login.
-                        return;
-                    }
-
-                    Log.d(TAG, "Attempting to log-in.");
-                    if (mLoginTask == null
-                            || mLoginTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
-                        mLoginTask = new LoginTask().execute();
-                    }
-                }
-            }
-        };
-        mPrefs.registerOnSharedPreferenceChangeListener(mOnSharedPreferenceChangeListener);
 
         if (getLastNonConfigurationInstance() != null) {
             if (DEBUG) Log.d(TAG, "Restoring state.");
             mLoginTask = (LoginTask)getLastNonConfigurationInstance();
+            // Launch the task again if it was cancelled.
+            if (mLoginTask != null && mLoginTask.isCancelled()) {
+                if (DEBUG) Log.d(TAG, "LoginTask previously cancelled, trying again.");
+                mLoginTask = new LoginTask().execute();
+            }
         }
     }
 
@@ -84,21 +66,23 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         super.onStart();
         // Look up the phone number if its not set.
         setPhoneNumber();
+        mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
-    public Dialog onCreateDialog(int id) {
-        switch (id) {
-            case DIALOG_LOGGING_IN:
-                ProgressDialog dialog = new ProgressDialog(this);
-                dialog.setTitle("Logging in");
-                dialog.setMessage("Please wait while logging into Foursquare...");
-                dialog.setIndeterminate(true);
-                dialog.setCancelable(true);
-                return dialog;
-            default:
-                return null;
+    protected void onStop() {
+        super.onStop();
+        if (DEBUG) Log.d(TAG, "onStop");
+        mPrefs.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        if (DEBUG) Log.d(TAG, "onRetainNonConfigurationInstance()");
+        if (mLoginTask != null) {
+            mLoginTask.cancel(true);
         }
+        return mLoginTask;
     }
 
     @Override
@@ -114,6 +98,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_CLEAR:
+                // TODO(jlapenna): This does not clear the UI widgets of their settings.
                 Editor editor = mPrefs.edit();
                 editor.clear();
                 editor.commit();
@@ -124,9 +109,55 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         return false;
     }
 
+    /**
+     * This launches the login task when a user sets a username and password.
+     */
     @Override
-    public Object onRetainNonConfigurationInstance() {
-        return mLoginTask;
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(Preferences.PREFERENCE_PHONE) || key.equals(Preferences.PREFERENCE_PASSWORD)) {
+            Log.d(TAG, key + " preference was changed");
+
+            String phoneNumber = mPrefs.getString(Preferences.PREFERENCE_PHONE, null);
+            String password = mPrefs.getString(Preferences.PREFERENCE_PASSWORD, null);
+
+            if (TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(password)) {
+                // If the user hasn't set both username and password, no reason to login.
+                return;
+            }
+
+            String strippedPhoneNumber = PhoneNumberUtils.stripSeparators(phoneNumber);
+            if (!phoneNumber.equals(strippedPhoneNumber)) {
+                Editor editor = mPrefs.edit();
+                editor.putString(Preferences.PREFERENCE_PHONE, strippedPhoneNumber);
+                editor.commit();
+            }
+
+            Log.d(TAG, "Attempting to log-in.");
+            if (mLoginTask == null || mLoginTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
+                mLoginTask = new LoginTask().execute();
+            }
+        }
+    }
+
+    private ProgressDialog showProgressDialog() {
+        if (mProgressDialog == null) {
+            ProgressDialog dialog = new ProgressDialog(this);
+            dialog.setTitle("Logging in");
+            dialog.setMessage("Please wait while logging into Foursquare...");
+            dialog.setIndeterminate(true);
+            dialog.setCancelable(true);
+            mProgressDialog = dialog;
+        }
+        mProgressDialog.show();
+        return mProgressDialog;
+    }
+
+    private void dismissProgressDialog() {
+        try {
+            mProgressDialog.dismiss();
+        } catch (IllegalArgumentException e) {
+            // We don't mind. android cleared it for us.
+        }
     }
 
     private void setPhoneNumber() {
@@ -141,20 +172,21 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                 phoneNumber = phoneNumber.substring(1);
                 if (DEBUG) Log.d(TAG, "Phone number not found. Setting it: " + phoneNumber);
                 Editor editor = mPrefs.edit();
-                editor.putString(Preferences.PREFERENCE_PHONE, phoneNumber);
+                editor.putString(Preferences.PREFERENCE_PHONE, PhoneNumberUtils
+                        .stripSeparators(phoneNumber));
                 editor.commit();
             }
         }
     }
 
-    class LoginTask extends AsyncTask<Void, Void, Boolean> {
+    private class LoginTask extends AsyncTask<Void, Void, Boolean> {
         private static final String TAG = "LoginTask";
         private static final boolean DEBUG = Foursquared.DEBUG;
 
         @Override
         protected void onPreExecute() {
             if (DEBUG) Log.d(TAG, "onPreExecute()");
-            showDialog(DIALOG_LOGGING_IN);
+            showProgressDialog();
         }
 
         @Override
@@ -179,7 +211,6 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         @Override
         protected void onPostExecute(Boolean loggedIn) {
             if (DEBUG) Log.d(TAG, "onPostExecute(): " + loggedIn);
-            dismissDialog(DIALOG_LOGGING_IN);
 
             if (loggedIn) {
                 Toast.makeText(PreferenceActivity.this, "Welcome back to Foursquare.",
@@ -189,6 +220,12 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                         "Unable to log in. Please check your phone number and password.",
                         Toast.LENGTH_LONG).show();
             }
+            dismissProgressDialog();
+        }
+
+        @Override
+        protected void onCancelled() {
+            dismissProgressDialog();
         }
     }
 

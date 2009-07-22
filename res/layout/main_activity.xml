@@ -20,7 +20,7 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:textAppearance="@android:style/TextAppearance.Large"
-    android:text="@string/app_name" />
+    android:text="Shamu says you need to enter your phone number and password!" />
   <Button
     android:id="@+id/button"
     android:layout_width="fill_parent"

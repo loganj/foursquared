@@ -87,7 +87,7 @@ class FoursquareHttpApi {
             if (DEBUG) Log.d(TAG, "Clearing Credentials");
             mHttpClient.getCredentialsProvider().clear();
         } else {
-            if (DEBUG) Log.d(TAG, "Setting Credentials");
+            if (DEBUG) Log.d(TAG, "Setting Phone/Password");
             mHttpClient.getCredentialsProvider().setCredentials(new AuthScope(DOMAIN, 80),
                     new UsernamePasswordCredentials(phone, password));
         }

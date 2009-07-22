@@ -4,28 +4,24 @@
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <PreferenceScreen
-    android:key="credentials_screen"
+  <PreferenceCategory
     android:title="Foursquare Credentials">
-    <PreferenceCategory
-      android:title="Foursquare Credentials">
-      <EditTextPreference
-        android:key="phone"
-        android:persistent="true"
-        android:title="Phone Number"
-        android:hint="5558675309"
-        android:phoneNumber="true"
-        android:singleLine="true"
-        android:summary="Your Foursquare phone number, without country code or punctuation." />
-      <EditTextPreference
-        android:key="password"
-        android:persistent="true"
-        android:title="Password"
-        android:password="true"
-        android:singleLine="true"
-        android:summary="Your Foursquare password." />
-    </PreferenceCategory>
-  </PreferenceScreen>
+    <EditTextPreference
+      android:key="phone"
+      android:persistent="true"
+      android:title="Phone Number"
+      android:hint="5558675309"
+      android:phoneNumber="true"
+      android:singleLine="true"
+      android:summary="Your Foursquare phone number, without country code or punctuation." />
+    <EditTextPreference
+      android:key="password"
+      android:persistent="true"
+      android:title="Password"
+      android:password="true"
+      android:singleLine="true"
+      android:summary="Your Foursquare password." />
+  </PreferenceCategory>
 
   <PreferenceCategory
     android:title="Check-in Defaults">

@@ -30,12 +30,16 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.util.Log;
+
 import java.io.IOException;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class FoursquareHttpApiV1 {
+    private static final String TAG = "FoursquareHttpApiV1";
+    private static final boolean DEBUG = Foursquare.DEBUG;
 
     private static final String HTTP_SCHEME = "http://";
     private static final String DOMAIN = "api.playfoursquare.com";
@@ -70,10 +74,12 @@ public class FoursquareHttpApiV1 {
     }
 
     public void setOAuthConsumerCredentials(String oAuthConsumerKey, String oAuthConsumerSecret) {
+        if (DEBUG) Log.d(TAG, "Setting consumer key/secret: " + oAuthConsumerKey + " "+ oAuthConsumerSecret);
         mHttpApi.setOAuthConsumerCredentials(oAuthConsumerKey, oAuthConsumerSecret);
     }
 
     public void setOAuthTokenWithSecret(String token, String secret) {
+        if (DEBUG) Log.d(TAG, "Setting oauth token/secret: " + token + " " + secret);
         mHttpApi.setOAuthTokenWithSecret(token, secret);
     }
 
