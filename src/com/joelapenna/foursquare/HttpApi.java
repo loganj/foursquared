@@ -53,8 +53,13 @@ public class HttpApi {
         mHttpClient = httpClient;
     }
 
+<<<<<<< HEAD:src/com/joelapenna/foursquare/HttpApi.java
     public FoursquareType doHttpPost(String url,
             Parser<? extends FoursquareType> abstractParser, NameValuePair... nameValuePairs)
+=======
+    protected FoursquareType doHttpPost(String url,
+            Parser<? extends FoursquareType> parser, NameValuePair... nameValuePairs)
+>>>>>>> 512865b... rename abstractParser to parser in HttpApi.:src/com/joelapenna/foursquare/HttpApi.java
             throws FoursquareError, FoursquareParseException, IOException {
         if (DEBUG) Log.d(TAG, "doHttpPost: " + url);
         HttpPost httpPost = createHttpPost(url, nameValuePairs);
@@ -74,7 +79,7 @@ public class HttpApi {
                 return null;
         }
 
-        return abstractParser.parse(AuthParser.createParser(response.getEntity().getContent()));
+        return parser.parse(AuthParser.createParser(response.getEntity().getContent()));
     }
 
     public String doHttpPost(String url, NameValuePair... nameValuePairs)
