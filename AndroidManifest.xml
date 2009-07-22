@@ -119,6 +119,15 @@
 
 
     <activity
+      android:name=".StatsActivity">
+      <intent-filter>
+        <action
+          android:name="android.intent.action.MAIN" />
+      </intent-filter>
+    </activity>
+
+
+    <activity
       android:name=".UserActivity"
       android:theme="@android:style/Theme.Dialog">
       <intent-filter>

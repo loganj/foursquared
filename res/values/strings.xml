@@ -14,8 +14,6 @@
     name="venue_search_activity_name">Foursquare Search</string>
   <string
     name="venue_tips_activity_name">Foursquare Tips</string>
-  <string
-    name="venue_yelp_activity_name">Yelp!</string>
 
   <string
     name="preferences_label">Preferences</string>
@@ -32,6 +30,8 @@
     name="refresh_label">Refresh</string>
   <string
     name="search_label">Search</string>
+  <string
+    name="stats_label">Scoreboard</string>
 
   <string
     name="search_hint">Search for something...</string>
