@@ -93,7 +93,7 @@ public class TestActivity extends Activity {
      * @throws FoursquareError
      */
     private void testAddTip() throws FoursquareError, FoursquareParseException, IOException {
-        Venue venue = FoursquaredTest.createTestVenue("Test");
+        Venue venue = FoursquaredTest.createVenue("Test");
         Data result = mFoursquare.addTip("Testing adding a tip", venue.getVenueid(), null, null, null);
         if (result == null) {
             Log.d(TAG, "the tip result is null! loser.");
