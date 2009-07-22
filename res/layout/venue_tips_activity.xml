@@ -37,6 +37,6 @@
     android:layout_height="fill_parent"
     android:layout_width="fill_parent"
     android:layout_gravity="center"
-    android:text="No tips found, Add one!" />
+    android:text="Searching for tips!" />
 
 </LinearLayout>

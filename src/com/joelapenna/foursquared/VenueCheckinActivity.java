@@ -7,8 +7,6 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Checkin;
-import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 
@@ -35,7 +33,6 @@ import android.widget.ToggleButton;
 import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -59,7 +56,6 @@ public class VenueCheckinActivity extends ListActivity {
         getListView().setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Tip tip = (Tip)parent.getAdapter().getItem(position);
                 // fireVenueActivityIntent(venue);
             }
         });
@@ -109,42 +105,6 @@ public class VenueCheckinActivity extends ListActivity {
         twitterToggle
                 .setChecked(settings.getBoolean(Foursquared.PREFERENCE_TWITTER_CHECKIN, false));
 
-    }
-
-    private void putGroupsInAdapter(Group groups) {
-        if (groups == null) {
-            Toast.makeText(getApplicationContext(), "Could not complete TODO lookup!",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        SeparatedListAdapter mainAdapter = (SeparatedListAdapter)getListAdapter();
-        mainAdapter.clear();
-        int groupCount = groups.size();
-        for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
-            Group group = (Group)groups.get(groupsIndex);
-            if (mVenue.getVenueid() != null) {
-                filterByVenueid(mVenue.getVenueid(), group);
-                if (group.size() > 0) {
-                    TipsListAdapter groupAdapter = new TipsListAdapter(this, group);
-                    if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
-                    mainAdapter.addSection(group.getType(), groupAdapter);
-                }
-            }
-        }
-        mainAdapter.notifyDataSetInvalidated();
-    }
-
-    private void filterByVenueid(String venueid, Group group) {
-        ArrayList<Tip> venueTips = new ArrayList<Tip>();
-        int tipCount = group.size();
-        for (int tipIndex = 0; tipIndex < tipCount; tipIndex++) {
-            Tip tip = (Tip)group.get(tipIndex);
-            if (venueid.equals(tip.getVenueid())) {
-                venueTips.add(tip);
-            }
-        }
-        group.clear();
-        group.addAll(venueTips);
     }
 
     private void sendCheckin() {

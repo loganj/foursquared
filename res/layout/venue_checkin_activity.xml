@@ -48,6 +48,6 @@
     android:layout_height="fill_parent"
     android:layout_width="fill_parent"
     android:layout_gravity="center"
-    android:text="Searching for Nearby Venues." />
+    android:text="Searching for recent Checkins." />
 
 </LinearLayout>

@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -42,6 +43,7 @@ public class VenueSearchActivity extends ListActivity {
 
     private SearchAsyncTask mSearchTask;
     private String mQuery;
+    private TextView mEmpty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,8 @@ public class VenueSearchActivity extends ListActivity {
                 fireVenueActivityIntent(venue);
             }
         });
+
+        mEmpty = (TextView)findViewById(android.R.id.empty);
 
         if (getLastNonConfigurationInstance() != null) {
             if (DEBUG) Log.d(TAG, "Restoring configuration.");
@@ -223,6 +227,9 @@ public class VenueSearchActivity extends ListActivity {
                     setTitle("Nearby - Foursquared");
                 } else {
                     setTitle(mQuery + " - Foursquared");
+                }
+                if (getListAdapter().getCount() <= 0) {
+                    mEmpty.setText("No results found! Try another search!");
                 }
             }
         }

@@ -14,9 +14,10 @@
 
   <TextView
     android:id="@android:id/empty"
-    android:layout_height="wrap_content"
-    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
     android:layout_gravity="center|fill"
-    android:text="No results found. Try another search!" />
+    android:gravity="center"
+    android:text="Searching for venues!" />
 
 </LinearLayout>

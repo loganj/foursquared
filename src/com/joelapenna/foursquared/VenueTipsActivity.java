@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -35,6 +36,7 @@ public class VenueTipsActivity extends ListActivity {
     private Venue mVenue;
 
     private TipsAsyncTask mTipsTask;
+    private TextView mEmpty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +47,11 @@ public class VenueTipsActivity extends ListActivity {
         getListView().setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Tip tip = (Tip)parent.getAdapter().getItem(position);
                 // fireVenueActivityIntent(venue);
             }
         });
+
+        mEmpty = (TextView)findViewById(android.R.id.empty);
 
         setVenue((Venue)getIntent().getExtras().get(Foursquared.EXTRAS_VENUE_KEY));
 
@@ -143,8 +146,10 @@ public class VenueTipsActivity extends ListActivity {
                 Intent intent = new Intent(VenueActivity.ACTION_PROGRESS_BAR_STOP);
                 intent.putExtra(VenueActivity.EXTRA_TASK_ID, VENUE_ACTIVITY_PROGRESS_BAR_TASK_ID);
                 sendBroadcast(intent);
+                if (getListAdapter().getCount() <= 0) {
+                    mEmpty.setText("No tips for this venue! Add one!");
+                }
             }
         }
     }
-
 }
