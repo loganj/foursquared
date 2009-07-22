@@ -3,4 +3,4 @@ gen/
 R.java
 .project
 res/values/credentials.xml
-src/com/joelapenna/foursquare/test/TestCredentials.java
+tests/com/joelapenna/foursquare/TestCredentials.java
