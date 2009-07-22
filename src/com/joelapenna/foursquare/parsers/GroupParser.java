@@ -47,9 +47,7 @@ public class GroupParser extends AbstractParser<Group> {
                     if ("error".equals(name)) {
                         throw new FoursquareError(parser.getText());
                     } else if ("group".equals(name)) {
-                        Group items = new Group();
-                        parseGroupTag(parser, items);
-                        groups.add(items);
+                        parseGroupTag(parser, groups);
                     }
                     break;
 
@@ -61,11 +59,11 @@ public class GroupParser extends AbstractParser<Group> {
         return groups;
     }
 
-    public void parseGroupTag(XmlPullParser parser, Group group) throws XmlPullParserException,
+    public void parseGroupTag(XmlPullParser parser, Group parentGroup) throws XmlPullParserException,
             IOException {
-        assert parser.getName() == "group";
-
-        group.setType(parser.getAttributeValue(null, "type"));
+        Group currentGroup = new Group();
+        currentGroup.setType(parser.getAttributeValue(null, "type"));
+        parentGroup.add(currentGroup);
 
         int eventType = parser.getEventType();
 
@@ -77,7 +75,7 @@ public class GroupParser extends AbstractParser<Group> {
                         FoursquareType item = this.mSubParser.parse(parser);
                         if (item != null) {
                             if (DEBUG) Log.d(TAG, "adding item: " + item);
-                            group.add(item);
+                            currentGroup.add(item);
                         }
                     } catch (FoursquareError e) {
                         // TODO Auto-generated catch block
@@ -92,6 +90,7 @@ public class GroupParser extends AbstractParser<Group> {
                     if (parser.getName().equals("group")) {
                         return;
                     }
+                    break;
 
                 default:
                     if (DEBUG) Log.d(TAG, "Unhandled Event");
