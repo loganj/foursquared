@@ -82,7 +82,8 @@ def main():
       body=oauth_request.to_postdata(), headers=CONTENT_TYPE_HEADER)
   response_body = connection.getresponse().read()
 
-  print response_body
+  #print connection.getresponse().read()
+  print minidom.parse(connection.getresponse()).toprettyxml(indent='  ')
 
 
 if __name__ == '__main__':
