@@ -52,6 +52,7 @@ public class Foursquared extends Application {
 
     // Common menu items
     private static final int MENU_PREFERENCES = -1;
+    private static final int MENU_GROUP_SYSTEM = -1;
 
     private LocationListener mLocationListener = new LocationListener();
 
@@ -147,7 +148,7 @@ public class Foursquared extends Application {
 
     public static void addPreferencesToMenu(Context context, Menu menu) {
         Intent intent = new Intent(context, PreferenceActivity.class);
-        menu.add(Menu.NONE, MENU_PREFERENCES, Menu.NONE, R.string.preferences_label) //
+        menu.add(MENU_GROUP_SYSTEM, MENU_PREFERENCES, Menu.NONE, R.string.preferences_label) //
                 .setIcon(android.R.drawable.ic_menu_preferences).setIntent(intent);
     }
 

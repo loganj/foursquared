@@ -49,6 +49,8 @@ public class CheckinsActivity extends TabActivity {
     private static final int MENU_REFRESH = 1;
     private static final int MENU_NEARBY = 2;
 
+    private static final int MENU_GROUP_SEARCH = 0;
+
     private static final String QUERY_NEARBY = null;
 
     private SearchAsyncTask mSearchTask;
@@ -104,11 +106,11 @@ public class CheckinsActivity extends TabActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.search_label) //
+        menu.add(MENU_GROUP_SEARCH, MENU_SEARCH, Menu.NONE, R.string.search_label) //
                 .setIcon(android.R.drawable.ic_menu_search);
-        menu.add(Menu.NONE, MENU_NEARBY, Menu.NONE, R.string.nearby_label) //
+        menu.add(MENU_GROUP_SEARCH, MENU_NEARBY, Menu.NONE, R.string.nearby_label) //
                 .setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
+        menu.add(MENU_GROUP_SEARCH, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
                 .setIcon(R.drawable.ic_menu_refresh);
         Foursquared.addPreferencesToMenu(this, menu);
         return true;
@@ -300,15 +302,15 @@ public class CheckinsActivity extends TabActivity {
     private void ensureTitle(boolean finished) {
         if (finished) {
             if (mQuery == QUERY_NEARBY) {
-                setTitle("Nearby - Foursquared");
+                setTitle("Nearby Checkins - Foursquared");
             } else {
                 setTitle(mQuery + " - Foursquared");
             }
         } else {
             if (mQuery == QUERY_NEARBY) {
-                setTitle("Searching Nearby - Foursquared");
+                setTitle("Searching Nearby Checkins- Foursquared");
             } else {
-                setTitle("Searching \"" + mQuery + "\" - Foursquared");
+                setTitle("Searching \"" + mQuery + "\" Checkins - Foursquared");
             }
         }
 

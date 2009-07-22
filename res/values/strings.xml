@@ -3,9 +3,9 @@
   <string
     name="app_name">Foursquared!</string>
   <string
-    name="preference_activity_name">Preferences!</string>
-  <string
     name="checkins_activity_name">Foursquare Checkins</string>
+  <string
+    name="preference_activity_name">Preferences!</string>
   <string
     name="venue_checkin_activity_name">Check-In</string>
   <string
@@ -21,12 +21,14 @@
     name="preferences_label">Preferences</string>
 
   <string
-    name="refresh_label">Refresh</string>
+    name="checkins_label">Checkins</string>
   <string
     name="nearby_label">Nearby</string>
-
+  <string
+    name="refresh_label">Refresh</string>
   <string
     name="search_label">Search</string>
+
   <string
     name="search_hint">Search for something...</string>
 
