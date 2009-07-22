@@ -64,6 +64,8 @@ public class UserActivity extends Activity {
 
     private GridView mBadgesGrid;
     private LinearLayout mVenueLayout;
+    private AsyncTask<Void, Void, User> mUserTask = null;
+    private AsyncTask<Uri, Void, Uri> mUserPhotoTask = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,11 +84,29 @@ public class UserActivity extends Activity {
 
         mUserObservable.addObserver(mUserObserver);
         if (getLastNonConfigurationInstance() == null) {
-            new UserTask().execute();
+            mUserTask = new UserTask().execute();
         } else {
             User user = (User)getLastNonConfigurationInstance();
             setUser(user);
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (DEBUG) Log.d(TAG, "onStop()");
+        if (mUserTask != null) {
+            mUserTask.cancel(true);
+        }
+        if (mUserPhotoTask != null) {
+            mUserPhotoTask.cancel(true);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (DEBUG) Log.d(TAG, "onPause()");
     }
 
     @Override
@@ -181,7 +201,7 @@ public class UserActivity extends Activity {
             if (mUserPhotoManager.getFile(photo).exists()) {
                 setPhotoImageUri(photo);
             } else {
-                new UserPhotoTask().execute(Uri.parse(user.getPhoto()));
+                mUserPhotoTask = new UserPhotoTask().execute(Uri.parse(user.getPhoto()));
             }
         }
     }
@@ -266,6 +286,7 @@ public class UserActivity extends Activity {
         @Override
         protected void onCancelled() {
             setProgressBarIndeterminateVisibility(false);
+            dismissProgressDialog();
         }
     }
 
