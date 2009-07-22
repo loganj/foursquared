@@ -41,8 +41,8 @@ public class HttpApiWithOAuth extends HttpApi {
     }
 
     @Override
-    public FoursquareType doHttpRequest(HttpRequestBase httpRequest, Parser<? extends FoursquareType> parser)
-            throws FoursquareException, IOException {
+    public FoursquareType doHttpRequest(HttpRequestBase httpRequest,
+            Parser<? extends FoursquareType> parser) throws FoursquareException, IOException {
         if (DEBUG) Log.d(TAG, "doHttpRequest: " + httpRequest.getURI());
         try {
             if (DEBUG) Log.d(TAG, "Signing request: " + httpRequest.getURI());
@@ -61,10 +61,12 @@ public class HttpApiWithOAuth extends HttpApi {
             case 200:
                 break;
             case 401:
+                bestEffortConsumeContent(response);
                 throw new FoursquareCredentialsError(response.getStatusLine().toString());
             default:
                 if (DEBUG) Log.d(TAG, "Default case for status code reached: "
                         + response.getStatusLine().toString());
+                bestEffortConsumeContent(response);
                 return null;
         }
 

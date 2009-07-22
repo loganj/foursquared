@@ -32,6 +32,7 @@ import org.apache.http.conn.scheme.SocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
@@ -63,6 +64,7 @@ public class HttpApi {
 <<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
 <<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
 <<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
+<<<<<<< HEAD:src/com/joelapenna/foursquare/http/HttpApi.java
     public FoursquareType doHttpPost(String url,
             Parser<? extends FoursquareType> abstractParser, NameValuePair... nameValuePairs)
             throws FoursquareError, FoursquareParseException, IOException {
@@ -82,6 +84,10 @@ public class HttpApi {
 =======
     public FoursquareType doHttpRequest(HttpRequestBase httpRequest, Parser<? extends FoursquareType> parser)
             throws FoursquareException, IOException {
+=======
+    public FoursquareType doHttpRequest(HttpRequestBase httpRequest,
+            Parser<? extends FoursquareType> parser) throws FoursquareException, IOException {
+>>>>>>> 9041be0... Some random http client optimizations that may or may not help.:src/com/joelapenna/foursquare/http/HttpApi.java
         if (DEBUG) Log.d(TAG, "doHttpRequest: " + httpRequest.getURI());
         HttpResponse response = executeHttpRequest(httpRequest);
 >>>>>>> 69171d9... tips() works after realizing that authexchange causes tokens to expire!:src/com/joelapenna/foursquare/http/HttpApi.java
@@ -94,10 +100,12 @@ public class HttpApi {
             case 200:
                 break;
             case 401:
+                bestEffortConsumeContent(response);
                 throw new FoursquareCredentialsError(response.getStatusLine().toString());
             default:
                 if (DEBUG) Log.d(TAG, "Default case for status code reached: "
                         + response.getStatusLine().toString());
+                bestEffortConsumeContent(response);
                 return null;
         }
 
@@ -123,8 +131,10 @@ public class HttpApi {
             case 200:
                 break;
             case 401:
+                bestEffortConsumeContent(response);
                 throw new FoursquareCredentialsError(response.getStatusLine().toString());
             default:
+                bestEffortConsumeContent(response);
                 throw new FoursquareError(response.getStatusLine().toString());
         }
 
@@ -188,6 +198,19 @@ public class HttpApi {
      * @return HttpClient
      */
     public static final DefaultHttpClient createHttpClient() {
+
+        // Shamelessly cribbed from AndroidHttpClient
+        HttpParams params = new BasicHttpParams();
+
+        // Turn off stale checking. Our connections break all the time anyway,
+        // and it's not worth it to pay the penalty of checking every time.
+        HttpConnectionParams.setStaleCheckingEnabled(params, false);
+
+        // Default connection and socket timeout of 10 seconds. Tweak to taste.
+        HttpConnectionParams.setConnectionTimeout(params, 10 * 1000);
+        HttpConnectionParams.setSoTimeout(params, 10 * 1000);
+        HttpConnectionParams.setSocketBufferSize(params, 8192);
+
         // Sets up the http part of the service.
         final SchemeRegistry supportedSchemes = new SchemeRegistry();
 
@@ -196,13 +219,9 @@ public class HttpApi {
         final SocketFactory sf = PlainSocketFactory.getSocketFactory();
         supportedSchemes.register(new Scheme("http", sf, 80));
 
-        // Set some client http client parameter defaults.
-        final HttpParams httpParams = createHttpParams();
-        HttpClientParams.setRedirecting(httpParams, false);
-
-        final ClientConnectionManager ccm = new ThreadSafeClientConnManager(httpParams,
+        final ClientConnectionManager ccm = new ThreadSafeClientConnManager(params,
                 supportedSchemes);
-        return new DefaultHttpClient(ccm, httpParams);
+        return new DefaultHttpClient(ccm, params);
     }
 
     /**
@@ -217,4 +236,13 @@ public class HttpApi {
         return params;
     }
 
+    public static void bestEffortConsumeContent(HttpResponse response) {
+        try {
+            response.getEntity().consumeContent();
+        } catch (IOException e) {
+            // This is a-okay.
+        } catch (NullPointerException e) {
+            // This is a-okay too!
+        }
+    }
 }
