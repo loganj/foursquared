@@ -11,5 +11,8 @@ syntax: regexp
 ^main/.project
 ^tests/.project
 
+^main/\.settings
+^tests/\.settings
+
 ^main/res/values/credentials.xml
 ^tests/src/com/joelapenna/foursquare/TestCredentials.java
