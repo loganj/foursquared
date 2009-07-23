@@ -16,3 +16,6 @@ syntax: regexp
 
 ^main/res/values/credentials.xml
 ^tests/src/com/joelapenna/foursquare/TestCredentials.java
+
+\.*swp
+\.*py[co]
