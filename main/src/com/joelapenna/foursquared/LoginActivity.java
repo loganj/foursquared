@@ -5,7 +5,6 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
-import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.User;
@@ -17,7 +16,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
