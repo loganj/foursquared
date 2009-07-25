@@ -145,7 +145,8 @@ public class Preferences {
     static void storeUser(final Editor editor, User user) {
         if (user != null && user.getId() != null) {
             editor.putString(PREFERENCE_ID, user.getId());
-            if (DEBUG) Log.d(TAG, "Commiting user info: " + String.valueOf(editor.commit()));
+            editor.putBoolean(PREFERENCE_TWITTER_CHECKIN, user.getSettings().sendtotwitter());
+            if (DEBUG) Log.d(TAG, "Setting user info");
         } else {
             if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Unable to lookup user.");
         }

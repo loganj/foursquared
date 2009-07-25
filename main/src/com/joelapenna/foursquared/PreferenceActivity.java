@@ -9,8 +9,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -18,8 +22,6 @@ import android.view.MenuItem;
 public class PreferenceActivity extends android.preference.PreferenceActivity {
     static final String TAG = "PreferenceActivity";
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
-
-    private static final int MENU_LOGIN = 0;
 
     private SharedPreferences mPrefs;
 
@@ -29,29 +31,25 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         if (DEBUG) Log.d(TAG, "onCreate");
 
         this.addPreferencesFromResource(R.xml.preferences);
-
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        menu.add(Menu.NONE, MENU_LOGIN, Menu.NONE, R.string.login_label) //
-                .setIcon(android.R.drawable.ic_menu_revert);
-        return true;
-    }
+        // This here sir, is a nasty hack that will allow me to add a login button to view!
+        RelativeLayout l = (RelativeLayout)LayoutInflater.from(this).inflate(
+                R.layout.preference_activity, null);
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case MENU_LOGIN:
+        ((Button)l.findViewById(R.id.loginButton)).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 mPrefs.edit().clear().commit();
                 Foursquared.getFoursquare().clearAllCredentials();
 
-                startActivity(new Intent(this, LoginActivity.class));
+                startActivity(new Intent(PreferenceActivity.this, LoginActivity.class));
                 finish();
-                return true;
-        }
-        return false;
+            }
+        });
+
+        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(//
+                ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
+        this.addContentView(l, lp);
     }
 }
