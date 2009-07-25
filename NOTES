@@ -70,3 +70,6 @@ As long as they are named like this, the provided .project files should work.
    * auth_exchange timestamps invalidate all clients.
       - Option 1: Fix serverside
 	  - Option 2: Ditch oAuth
+
+  * city_switch should occur when ever the user changes his site, not only at
+    login.

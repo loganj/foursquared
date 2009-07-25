@@ -17,8 +17,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -68,11 +71,20 @@ public class UserActivity extends Activity {
     private AsyncTask<Void, Void, User> mUserTask = null;
     private AsyncTask<Uri, Void, Uri> mUserPhotoTask = null;
 
+    private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (DEBUG) Log.d(TAG, "onReceive: " + intent);
+            finish();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.user_activity);
+        registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         mBadgesGrid = (GridView)findViewById(R.id.badgesGrid);
         mVenueLayout = (LinearLayout)findViewById(R.id.venue);
@@ -105,6 +117,17 @@ public class UserActivity extends Activity {
         if (mUserPhotoTask != null) {
             mUserPhotoTask.cancel(true);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mLoggedInReceiver);
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        if (DEBUG) Log.d(TAG, "onNewIntent: " + intent);
     }
 
     @Override
@@ -245,7 +268,8 @@ public class UserActivity extends Activity {
         protected void onPostExecute(User user) {
             setProgressBarIndeterminateVisibility(false);
             if (user == null) {
-                Toast.makeText(UserActivity.this, "Unable to lookup user information", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UserActivity.this, "Unable to lookup user information",
+                        Toast.LENGTH_SHORT).show();
                 finish();
             } else {
                 setUser(user);
@@ -302,8 +326,8 @@ public class UserActivity extends Activity {
                 ((TextView)mVenueLayout.findViewById(R.id.venueName)).setText(venue.getName());
                 ((TextView)mVenueLayout.findViewById(R.id.venueLocationLine1)).setText(venue
                         .getAddress());
-                ((TextView)mVenueLayout.findViewById(R.id.venueLocationLine2)).setText(StringFormatters
-                        .getVenueLocationCrossStreetOrCity(venue));
+                ((TextView)mVenueLayout.findViewById(R.id.venueLocationLine2))
+                        .setText(StringFormatters.getVenueLocationCrossStreetOrCity(venue));
                 ((TextView)findViewById(R.id.venueHeader)).setVisibility(TextView.VISIBLE);
 
                 // Hell, I'm not even sure if this is the right place to put this... Whatever.

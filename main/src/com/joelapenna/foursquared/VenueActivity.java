@@ -15,8 +15,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -73,11 +76,20 @@ public class VenueActivity extends TabActivity {
     private MenuItem mCheckinMenuItem;
     private MenuItem mAddTipMenuItem;
 
+    private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (DEBUG) Log.d(TAG, "onReceive: " + intent);
+            finish();
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.venue_activity);
+        registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         initTabHost();
 
@@ -105,6 +117,12 @@ public class VenueActivity extends TabActivity {
             new VenueTask().execute(mStateHolder.venueId);
             new CheckinsTask().execute();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mLoggedInReceiver);
     }
 
     @Override

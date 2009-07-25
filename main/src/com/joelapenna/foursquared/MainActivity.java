@@ -23,11 +23,20 @@ public class MainActivity extends Activity {
 
         if (Foursquared.getFoursquare().hasCredentials()) {
             startActivity(new Intent(this, SearchVenuesActivity.class));
+            finish();
         } else {
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setAction(Intent.ACTION_MAIN);
-            startActivity(intent);
+            startActivityForResult(intent, LoginActivity.ACTIVITY_REQUEST_LOGIN);
         }
-        finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Activity.RESULT_OK) {
+            startActivity(new Intent(this, SearchVenuesActivity.class));
+        } else {
+            finish();
+        }
     }
 }

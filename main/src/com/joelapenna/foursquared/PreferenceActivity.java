@@ -43,7 +43,9 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                 mPrefs.edit().clear().commit();
                 Foursquared.getFoursquare().clearAllCredentials();
 
-                startActivity(new Intent(PreferenceActivity.this, LoginActivity.class));
+                startActivityForResult(new Intent(PreferenceActivity.this, LoginActivity.class),
+                        LoginActivity.ACTIVITY_REQUEST_LOGIN);
+                sendBroadcast(new Intent(Foursquared.INTENT_ACTION_LOGGED_OUT));
                 finish();
             }
         });

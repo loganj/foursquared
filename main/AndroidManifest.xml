@@ -93,6 +93,10 @@
         <action
           android:name="android.intent.action.MAIN" />
       </intent-filter>
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
     </activity>
 
     <activity
@@ -131,6 +135,10 @@
         <action
           android:name="android.intent.action.SEARCH" />
       </intent-filter>
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
       <meta-data
         android:name="android.app.default_searchable"
         android:value=".SearchVenueActivity" />
@@ -154,21 +162,10 @@
         <action
           android:name="android.intent.action.MAIN" />
       </intent-filter>
-    </activity>
-
-
-    <activity
-      android:name=".TipsActivity"
-      android:label="@string/tips_activity_name"
-      android:launchMode="singleTop">
       <intent-filter>
         <action
-          android:name="android.intent.action.MAIN" />
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
       </intent-filter>
-    </activity>
-
-    <activity
-      android:name=".TipsMapActivity">
     </activity>
 
 
@@ -179,6 +176,10 @@
         <action
           android:name="android.intent.action.MAIN" />
       </intent-filter>
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
     </activity>
 
 
@@ -187,6 +188,10 @@
       <intent-filter>
         <action
           android:name="android.intent.action.MAIN" />
+      </intent-filter>
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
       </intent-filter>
     </activity>
 

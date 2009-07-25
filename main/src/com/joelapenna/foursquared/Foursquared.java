@@ -35,7 +35,7 @@ public class Foursquared extends Application {
     public static final String TAG = "Foursquared";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    public static final int LAST_LOCATION_UPDATE_THRESHOLD = 1000 * 60 * 60;
+    public static final String INTENT_ACTION_LOGGED_OUT = "com.joelapenna.foursquared.intent.action.LOGGED_OUT";
 
     // Common menu items
     private static final int MENU_PREFERENCES = -1;

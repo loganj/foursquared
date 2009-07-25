@@ -16,8 +16,10 @@ import com.joelapenna.foursquared.widget.VenueListAdapter;
 
 import android.app.SearchManager;
 import android.app.TabActivity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -73,12 +75,21 @@ public class SearchVenuesActivity extends TabActivity {
     private TabHost mTabHost;
     private SeparatedListAdapter mListAdapter;
 
+    private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (DEBUG) Log.d(TAG, "onReceive: " + intent);
+            finish();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.d(TAG, "onCreate");
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.search_activity);
+        registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         mLocationListener = ((Foursquared)getApplication()).getLocationListener();
         mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
@@ -99,8 +110,14 @@ public class SearchVenuesActivity extends TabActivity {
                 putSearchResultsInAdapter(holder.results);
             }
         } else {
-            handleOnCreateIntent();
+            onNewIntent(getIntent());
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mLoggedInReceiver);
     }
 
     @Override
@@ -191,11 +208,6 @@ public class SearchVenuesActivity extends TabActivity {
         if (mSearchTask != null) {
             mSearchTask.cancel(true);
         }
-    }
-
-    public void handleOnCreateIntent() {
-        if (DEBUG) Log.d(TAG, "Running new intent.");
-        onNewIntent(getIntent());
     }
 
     public void putSearchResultsInAdapter(Group searchResults) {
