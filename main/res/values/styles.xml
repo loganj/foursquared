@@ -47,7 +47,13 @@
   	name="venueListItemStyle"
   	parent="@android:style/Widget.ListView">
   	<item
-      name="android:paddingLeft">20dip</item>
+      name="android:paddingLeft">40dip</item>
+    <item
+      name="android:paddingTop">4dip</item>
+    <item
+      name="android:paddingBottom">6dip</item>
+    <item
+      name="android:background">@drawable/venue_list_gradient</item>
   </style>
   <style
   	name="venueActivityHeaderStyle"
