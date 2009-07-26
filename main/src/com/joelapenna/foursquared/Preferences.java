@@ -32,6 +32,11 @@ public class Preferences {
     public static final String PREFERENCE_TWITTER_CHECKIN = "twitter_checkin";
     public static final String PREFERENCE_SHARE_CHECKIN = "share_checkin";
 
+    // Hacks for preference activity extra UI elements.
+    public static final String PREFERENCE_FRIEND_REQUESTS = "friend_requests";
+    public static final String PREFERENCE_FRIEND_ADD = "friend_add";
+    public static final String PREFERENCE_LOGOUT = "logout";
+
     // Not-in-XML preferences
     public static final String PREFERENCE_CITY_ID = "city_id";
     public static final String PREFERENCE_CITY_GEOLAT = "city_geolat";

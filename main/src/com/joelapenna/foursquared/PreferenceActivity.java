@@ -6,15 +6,12 @@ package com.joelapenna.foursquared;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.RelativeLayout;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -32,26 +29,28 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
 
         this.addPreferencesFromResource(R.xml.preferences);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+    }
 
-        // This here sir, is a nasty hack that will allow me to add a login button to view!
-        RelativeLayout l = (RelativeLayout)LayoutInflater.from(this).inflate(
-                R.layout.preference_activity, null);
+    @Override
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+        if (DEBUG) Log.d(TAG, "onPreferenceTreeClick");
+        String key = preference.getKey();
+        if (key.equals(Preferences.PREFERENCE_LOGOUT)) {
+            mPrefs.edit().clear().commit();
+            Foursquared.getFoursquare().clearAllCredentials();
 
-        ((Button)l.findViewById(R.id.loginButton)).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPrefs.edit().clear().commit();
-                Foursquared.getFoursquare().clearAllCredentials();
+            startActivityForResult(new Intent(PreferenceActivity.this, LoginActivity.class),
+                    LoginActivity.ACTIVITY_REQUEST_LOGIN);
+            sendBroadcast(new Intent(Foursquared.INTENT_ACTION_LOGGED_OUT));
+            finish();
+        } else if (key.equals(Preferences.PREFERENCE_FRIEND_ADD)) {
+            startActivity(new Intent( //
+                    Intent.ACTION_VIEW, Uri.parse("http://m.playfoursquare.com/addfriends")));
+        } else if (key.equals(Preferences.PREFERENCE_FRIEND_REQUESTS)) {
+            startActivity(new Intent( //
+                    Intent.ACTION_VIEW, Uri.parse("http://m.playfoursquare.com/friends")));
+        }
+        return true;
 
-                startActivityForResult(new Intent(PreferenceActivity.this, LoginActivity.class),
-                        LoginActivity.ACTIVITY_REQUEST_LOGIN);
-                sendBroadcast(new Intent(Foursquared.INTENT_ACTION_LOGGED_OUT));
-                finish();
-            }
-        });
-
-        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(//
-                ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
-        this.addContentView(l, lp);
     }
 }
