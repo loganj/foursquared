@@ -42,7 +42,7 @@
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="logout"
       android:title="Logout"
-      android:summary="Logout of Foursquare" />
+      android:summary="Sign out of Foursquare" />
   </PreferenceCategory>
 
 </PreferenceScreen>

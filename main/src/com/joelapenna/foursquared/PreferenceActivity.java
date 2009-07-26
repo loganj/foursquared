@@ -4,6 +4,7 @@
 
 package com.joelapenna.foursquared;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -42,7 +43,6 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
             startActivityForResult(new Intent(PreferenceActivity.this, LoginActivity.class),
                     LoginActivity.ACTIVITY_REQUEST_LOGIN);
             sendBroadcast(new Intent(Foursquared.INTENT_ACTION_LOGGED_OUT));
-            finish();
         } else if (key.equals(Preferences.PREFERENCE_FRIEND_ADD)) {
             startActivity(new Intent( //
                     Intent.ACTION_VIEW, Uri.parse("http://m.playfoursquare.com/addfriends")));
@@ -51,6 +51,13 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                     Intent.ACTION_VIEW, Uri.parse("http://m.playfoursquare.com/friends")));
         }
         return true;
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            startActivity(new Intent(this, SearchVenuesActivity.class));
+        }
+        finish();
     }
 }

@@ -33,10 +33,9 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
             startActivity(new Intent(this, SearchVenuesActivity.class));
-        } else {
-            finish();
         }
+        finish();
     }
 }
