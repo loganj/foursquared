@@ -59,7 +59,11 @@
   	name="venueActivityHeaderStyle"
   	parent="@android:style/Widget.ListView">
   	<item
-      name="android:paddingLeft">5dip</item>
+      name="android:paddingLeft">9dip</item>
+    <item
+      name="android:paddingTop">4dip</item>
+    <item
+      name="android:paddingBottom">6dip</item>
   </style>
 
   <!--
