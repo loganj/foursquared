@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
 <settings>
-  <sendtotwitter>false</sendtotwitter>
+  <sendtotwitter type="boolean"></sendtotwitter>
   <feeds_key>127e89691d51e7ce94c8dea27fddbe3d</feeds_key>
 </settings>

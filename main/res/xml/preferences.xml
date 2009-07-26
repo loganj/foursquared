@@ -11,7 +11,7 @@
       android:persistent="true"
       android:title="Share Checkins"
       android:summaryOn="By default, show checkins to other users."
-      android:summaryOff="By default, hide checkins to other users." 
+      android:summaryOff="By default, hide checkins to other users."
       android:defaultValue="true" />
     <CheckBoxPreference
       android:key="twitter_checkin"
@@ -21,6 +21,28 @@
       android:summaryOn="By default, tweet your checkins."
       android:summaryOff="By default, do not tweet your checkins."
       android:defaultValue="false" />
+  </PreferenceCategory>
+
+  <PreferenceCategory
+    android:title="Friends">
+    <com.joelapenna.foursquared.preferences.ClickPreference
+      android:key="friend_add"
+      android:title="Add Friends"
+      android:summary="Add Friends with playfoursquare.com" />
+
+    <com.joelapenna.foursquared.preferences.ClickPreference
+      android:key="friend_requests"
+      android:title="Friend Requests"
+      android:summary="Manage friends with playfoursquare.com" />
+  </PreferenceCategory>
+
+  <PreferenceCategory
+    android:title="Login">
+
+    <com.joelapenna.foursquared.preferences.ClickPreference
+      android:key="logout"
+      android:title="Logout"
+      android:summary="Sign out of Foursquare" />
   </PreferenceCategory>
 
 </PreferenceScreen>

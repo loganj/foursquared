@@ -8,72 +8,71 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Auto-generated: 2009-07-21 23:48:07.146223
+ * Auto-generated: 2009-07-25 12:33:09.006578
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Settings implements Parcelable, FoursquareType {
 
     private String mFeedsKey;
-    private String mSendtotwitter;
-
+    private boolean mSendtotwitter;
+    
     public Settings() {
     }
-
+    
     public String getFeedsKey() {
         return mFeedsKey;
     }
-
+    
     public void setFeedsKey(String feedsKey) {
         mFeedsKey = feedsKey;
     }
-
-    public String getSendtotwitter() {
+    
+    public boolean sendtotwitter() {
         return mSendtotwitter;
     }
-
-    public void setSendtotwitter(String sendtotwitter) {
+    
+    public void setSendtotwitter(boolean sendtotwitter) {
         mSendtotwitter = sendtotwitter;
     }
-
+    
     /* For Parcelable */
-
+    
     @Override
     public int describeContents() {
         return 0;
     }
-
+    
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         boolean[] booleanArray = {
-
+            mSendtotwitter,
         };
         dest.writeBooleanArray(booleanArray);
         dest.writeString(this.mFeedsKey);
-        dest.writeString(this.mSendtotwitter);
     }
-
+    
     private void readFromParcel(Parcel source) {
-        boolean[] booleanArray = new boolean[0];
+        boolean[] booleanArray = new boolean[1];
         source.readBooleanArray(booleanArray);
+        this.mSendtotwitter = booleanArray[0];    
         this.mFeedsKey = source.readString();
-        this.mSendtotwitter = source.readString();
     }
-
+    
     public static final Parcelable.Creator<Settings> CREATOR = new Parcelable.Creator<Settings>() {
-
+    
         @Override
         public Settings createFromParcel(Parcel source) {
             Settings instance = new Settings();
             instance.readFromParcel(source);
             return instance;
         }
-
+    
         @Override
         public Settings[] newArray(int size) {
             return new Settings[size];
         }
-
+    
     };
-
+    
 }

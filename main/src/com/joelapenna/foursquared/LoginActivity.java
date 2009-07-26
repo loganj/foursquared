@@ -5,7 +5,6 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
-import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.User;
@@ -17,7 +16,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -41,6 +39,10 @@ import java.io.IOException;
 public class LoginActivity extends Activity {
     public static final String TAG = "LoginActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
+
+    public static final String EXTRA_FIRST_LOGIN = "com.joelapenna.foursquare.LoginActivity.FirstLogin";
+
+    public static final int ACTIVITY_REQUEST_LOGIN = 1;
 
     private SharedPreferences mPrefs;
     private AsyncTask<Void, Void, Boolean> mLoginTask;
@@ -223,9 +225,7 @@ public class LoginActivity extends Activity {
                 String city = mPrefs.getString(Preferences.PREFERENCE_CITY_NAME, null);
                 Toast.makeText( //
                         LoginActivity.this, "Welcome to " + city + "!", Toast.LENGTH_LONG).show();
-                if (Intent.ACTION_MAIN.equals(getIntent().getAction())) {
-                    startActivity(new Intent(LoginActivity.this, SearchVenuesActivity.class));
-                }
+                setResult(Activity.RESULT_OK);
                 finish();
             } else {
                 Toast.makeText(LoginActivity.this,
@@ -234,6 +234,10 @@ public class LoginActivity extends Activity {
 
                 mPrefs.edit().clear().commit();
                 Foursquared.getFoursquare().clearAllCredentials();
+                // XXX I don't know if you can call setResult multiple times. If you can't and the
+                // first login result fails, then even a subsequent result OK will end up firing a
+                // CANCELED result
+                setResult(Activity.RESULT_CANCELED);
             }
             dismissProgressDialog();
         }

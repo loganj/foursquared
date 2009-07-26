@@ -16,12 +16,15 @@ import com.joelapenna.foursquared.widget.VenueListAdapter;
 
 import android.app.SearchManager;
 import android.app.TabActivity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.SearchRecentSuggestions;
 import android.util.Log;
 import android.view.Menu;
@@ -73,12 +76,22 @@ public class SearchVenuesActivity extends TabActivity {
     private TabHost mTabHost;
     private SeparatedListAdapter mListAdapter;
 
+    private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (DEBUG) Log.d(TAG, "onReceive: " + intent);
+            finish();
+        }
+    };
+    private boolean mIsShortcutPicker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.d(TAG, "onCreate");
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.search_activity);
+        registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         mLocationListener = ((Foursquared)getApplication()).getLocationListener();
         mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
@@ -87,6 +100,9 @@ public class SearchVenuesActivity extends TabActivity {
 
         initTabHost();
         initListViewAdapter();
+
+        // Watch to see if we've been called as a shortcut intent.
+        mIsShortcutPicker = Intent.ACTION_CREATE_SHORTCUT.equals(getIntent().getAction());
 
         if (getLastNonConfigurationInstance() != null) {
             if (DEBUG) Log.d(TAG, "Restoring state.");
@@ -99,8 +115,14 @@ public class SearchVenuesActivity extends TabActivity {
                 putSearchResultsInAdapter(holder.results);
             }
         } else {
-            handleOnCreateIntent();
+            onNewIntent(getIntent());
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mLoggedInReceiver);
     }
 
     @Override
@@ -191,11 +213,6 @@ public class SearchVenuesActivity extends TabActivity {
         if (mSearchTask != null) {
             mSearchTask.cancel(true);
         }
-    }
-
-    public void handleOnCreateIntent() {
-        if (DEBUG) Log.d(TAG, "Running new intent.");
-        onNewIntent(getIntent());
     }
 
     public void putSearchResultsInAdapter(Group searchResults) {
@@ -292,9 +309,36 @@ public class SearchVenuesActivity extends TabActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Venue venue = (Venue)parent.getAdapter().getItem(position);
-                startItemActivity(venue);
+                if (mIsShortcutPicker) {
+                    setupShortcut(venue);
+                    finish();
+                } else {
+                    startItemActivity(venue);
+                }
             }
         });
+    }
+
+    protected void setupShortcut(Venue venue) {
+        // First, set up the shortcut intent. For this example, we simply create an intent that
+        // will bring us directly back to this activity. A more typical implementation would use a
+        // data Uri in order to display a more specific result, or a custom action in order to
+        // launch a specific operation.
+
+        Intent shortcutIntent = new Intent(Intent.ACTION_MAIN);
+        shortcutIntent.setClassName(this, VenueActivity.class.getName());
+        shortcutIntent.putExtra(VenueActivity.EXTRA_VENUE, venue.getId());
+
+        // Then, set up the container intent (the response to the caller)
+        Intent intent = new Intent();
+        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, venue.getName());
+        Parcelable iconResource = Intent.ShortcutIconResource.fromContext(this, R.drawable.icon);
+        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconResource);
+
+        // Now, return the result to the launcher
+
+        setResult(RESULT_OK, intent);
     }
 
     private void initTabHost() {

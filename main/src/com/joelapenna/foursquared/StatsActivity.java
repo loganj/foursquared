@@ -5,6 +5,10 @@
 package com.joelapenna.foursquared;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -21,11 +25,20 @@ public class StatsActivity extends Activity {
     public static final String TAG = "StatsActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
+    private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (DEBUG) Log.d(TAG, "onReceive: " + intent);
+            finish();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_PROGRESS);
         setContentView(R.layout.stats_activity);
+        registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         setTitle("Foursquare Scoreboard");
 
@@ -34,6 +47,12 @@ public class StatsActivity extends Activity {
         webView.setWebChromeClient(new MyWebChromeClient());
 
         loadScoreboardUrl(webView);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mLoggedInReceiver);
     }
 
     private void loadScoreboardUrl(WebView webView) {

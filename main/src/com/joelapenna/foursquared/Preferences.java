@@ -32,6 +32,11 @@ public class Preferences {
     public static final String PREFERENCE_TWITTER_CHECKIN = "twitter_checkin";
     public static final String PREFERENCE_SHARE_CHECKIN = "share_checkin";
 
+    // Hacks for preference activity extra UI elements.
+    public static final String PREFERENCE_FRIEND_REQUESTS = "friend_requests";
+    public static final String PREFERENCE_FRIEND_ADD = "friend_add";
+    public static final String PREFERENCE_LOGOUT = "logout";
+
     // Not-in-XML preferences
     public static final String PREFERENCE_CITY_ID = "city_id";
     public static final String PREFERENCE_CITY_GEOLAT = "city_geolat";
@@ -145,7 +150,8 @@ public class Preferences {
     static void storeUser(final Editor editor, User user) {
         if (user != null && user.getId() != null) {
             editor.putString(PREFERENCE_ID, user.getId());
-            if (DEBUG) Log.d(TAG, "Commiting user info: " + String.valueOf(editor.commit()));
+            editor.putBoolean(PREFERENCE_TWITTER_CHECKIN, user.getSettings().sendtotwitter());
+            if (DEBUG) Log.d(TAG, "Setting user info");
         } else {
             if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Unable to lookup user.");
         }

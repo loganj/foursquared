@@ -10,6 +10,7 @@ import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -50,6 +51,14 @@ public class AddVenueActivity extends Activity {
     private EditText mPhoneEditText;
     private MenuItem mMenuSubmit;
 
+    private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (DEBUG) Log.d(TAG, "onReceive: " + intent);
+            finish();
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -72,6 +81,12 @@ public class AddVenueActivity extends Activity {
         } else {
             new AddressLookupTask().execute();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mLoggedInReceiver);
     }
 
     @Override

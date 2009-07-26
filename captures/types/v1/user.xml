@@ -7,7 +7,7 @@
   <gender></gender>
   <city type="City"></city>
   <checkin type="Checkin"></checkin>
-  <settings type="Settings"></checkin>
+  <settings type="Settings"></settings>
   <badges type="Group">
     <badge type="Badge"></badge>
   </badges>
