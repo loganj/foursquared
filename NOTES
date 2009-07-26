@@ -8,20 +8,6 @@ Templates are available in examples/
   + *Create main/res/values/credentials.xml*
   + *Create tests/src/com/joelapenna/foursquare/TestConstants.java*
 
-public class TestConstants {
-
-    static final String oAuthConsumerKey = "SOME_OTHER_KEY";
-    static final String oAuthConsumerSecret = "SOME_OTHER_OTHER_KEY";
-
-    static final String testFoursquareUsername = "testuser@example.com";
-    static final String testFoursquarePassword = "some_password";
-
-	public static final String testFoursquarePhone = "";
-	public static final String testFoursquarePassword = "";
-
-}
-
-
 
 ==Setting up Eclipse==
 
@@ -44,14 +30,10 @@ hg clone https://dumpcatcher.googlecode.com/hg/dumpcatcher
 
 ====Setup dumpcatcher project====
 Then, import that existing project into your workspace:
-File > Import > Existing project - Browse to $dumpcatcher/
+File > Import > Existing project - Browse to $dumpcatcher/clients/java/main
 
 ====Real foursquare projects====
-Create 2 android projects, one rooted at $foursquared_repo/main/ the other at
-$foursquared_repo/tests. Name the former "foursquared" and the latter
-"foursquared_tests."
-
-As long as they are named like this, the provided .project files should work.
+File > Import > Existing project - Browse to $foursquared/main
 
 
 
