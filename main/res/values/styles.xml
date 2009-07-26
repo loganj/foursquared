@@ -42,6 +42,19 @@
     <item
       name="android:textColor">#FFFFFF</item>
   </style>
+  
+  <style
+  	name="venueListItemStyle"
+  	parent="@android:style/Widget.ListView">
+  	<item
+      name="android:paddingLeft">20dip</item>
+  </style>
+  <style
+  	name="venueActivityHeaderStyle"
+  	parent="@android:style/Widget.ListView">
+  	<item
+      name="android:paddingLeft">5dip</item>
+  </style>
 
   <!--
     <style name="MyListView" parent="@android:style/Widget.ListView"> <item

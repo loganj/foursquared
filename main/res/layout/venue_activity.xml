@@ -20,7 +20,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
       <include
-        layout="@layout/venue_list_item" />
+        layout="@layout/venue_activity_header" />
       <FrameLayout
         android:id="@android:id/tabcontent"
         android:layout_width="fill_parent"

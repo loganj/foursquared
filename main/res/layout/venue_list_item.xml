@@ -4,7 +4,9 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:layout_width="fill_parent"
-  android:layout_height="?android:attr/listPreferredItemHeight">
+  android:layout_height="?android:attr/listPreferredItemHeight"
+  style="@style/venueListItemStyle">
+  
 
   <TextView
     android:id="@+id/venueName"
