@@ -5,12 +5,6 @@ syntax: regexp
 ^main/gen/
 ^tests/gen/
 
-^main/R.java
-^tests/R.java
-
-^main/.project
-^tests/.project
-
 ^main/\.settings
 ^tests/\.settings
 
