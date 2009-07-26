@@ -137,6 +137,12 @@
       </intent-filter>
       <intent-filter>
         <action
+          android:name="android.intent.action.CREATE_SHORTCUT" />
+        <category
+          android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+      <intent-filter>
+        <action
           android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
       </intent-filter>
       <meta-data
