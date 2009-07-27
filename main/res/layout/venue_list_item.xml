@@ -16,7 +16,7 @@
 
     android:src="@drawable/map_marker_blue"
 
-    android:scaleType="center" />
+    android:scaleType="matrix" />
 
   <TextView
     android:id="@+id/venueName"
