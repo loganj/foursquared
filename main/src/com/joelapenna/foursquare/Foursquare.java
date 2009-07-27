@@ -37,15 +37,14 @@ public class Foursquare {
 
     @V1
     @Classic
-    public Foursquare() {
+    public Foursquare(boolean debug) {
         mFoursquare = new FoursquareHttpApi();
-        mFoursquareV1 = new FoursquareHttpApiV1();
-    }
-
-    @V1
-    public Foursquare(String oAuthConsumerKey, String oAuthConsumerSecret) {
-        this();
-        mFoursquareV1.setOAuthConsumerCredentials(oAuthConsumerKey, oAuthConsumerSecret);
+        if (debug) {
+            if (DEBUG) Log.d(TAG, "Using DEBUG domain.");
+            mFoursquareV1 = new FoursquareHttpApiV1("10.0.2.2:8080");
+        } else {
+            mFoursquareV1 = new FoursquareHttpApiV1();
+        }
     }
 
     public void setCredentials(String phone, String password) {

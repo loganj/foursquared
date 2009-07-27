@@ -55,30 +55,25 @@ public class FoursquareHttpApiV1 {
     private static final String TAG = "FoursquareHttpApiV1";
     private static final boolean DEBUG = Foursquare.DEBUG;
 
-    private static final String HTTP_SCHEME = "http://";
-    private static final String DOMAIN = "api.playfoursquare.com";
-    private static final AuthScope AUTH_SCOPE = new AuthScope(DOMAIN, 80);
+    private static final String URL_API_AUTHEXCHANGE = "/authexchange";
 
-    private static final String URL_DOMAIN = HTTP_SCHEME + DOMAIN;
-
-    private static final String URL_API_BASE = URL_DOMAIN + "/v1";
-
-    private static final String URL_API_AUTHEXCHANGE = URL_API_BASE + "/authexchange";
-
-    private static final String URL_API_ADDVENUE = URL_API_BASE + "/addvenue";
-    private static final String URL_API_ADDTIP = URL_API_BASE + "/addtip";
-    private static final String URL_API_CITIES = URL_API_BASE + "/cities";
-    private static final String URL_API_CHECKCITY = URL_API_BASE + "/checkcity";
-    private static final String URL_API_SWITCHCITY = URL_API_BASE + "/switchcity";
-    private static final String URL_API_CHECKINS = URL_API_BASE + "/checkins";
-    private static final String URL_API_CHECKIN = URL_API_BASE + "/checkin";
-    private static final String URL_API_USER = URL_API_BASE + "/user";
-    private static final String URL_API_VENUE = URL_API_BASE + "/venue";
-    private static final String URL_API_VENUES = URL_API_BASE + "/venues";
-    private static final String URL_API_TIPS = URL_API_BASE + "/tips";
+    private static final String URL_API_ADDVENUE = "/addvenue";
+    private static final String URL_API_ADDTIP = "/addtip";
+    private static final String URL_API_CITIES = "/cities";
+    private static final String URL_API_CHECKCITY = "/checkcity";
+    private static final String URL_API_SWITCHCITY = "/switchcity";
+    private static final String URL_API_CHECKINS = "/checkins";
+    private static final String URL_API_CHECKIN = "/checkin";
+    private static final String URL_API_USER = "/user";
+    private static final String URL_API_VENUE = "/venue";
+    private static final String URL_API_VENUES = "/venues";
+    private static final String URL_API_TIPS = "/tips";
 
     private final DefaultHttpClient mHttpClient = HttpApi.createHttpClient();
     private HttpApiWithOAuth mHttpApi = new HttpApiWithOAuth(mHttpClient);
+
+    private final String mApiBaseUrl;
+    private final AuthScope mAuthScope;
 
     // XXX Foursquare requires "pre-emptive" basic auth, it won't do the normal challenge, response
     // stuff.
@@ -109,6 +104,13 @@ public class FoursquareHttpApiV1 {
     };
 
     public FoursquareHttpApiV1() {
+        this("api.playfoursquare.com");
+    }
+
+    public FoursquareHttpApiV1(String domain) {
+        mApiBaseUrl = "http://" + domain + "/v1";
+        mAuthScope = new AuthScope(domain, 80);
+
         mHttpClient.addRequestInterceptor(preemptiveAuth, 0);
     }
 
@@ -118,18 +120,13 @@ public class FoursquareHttpApiV1 {
             mHttpClient.getCredentialsProvider().clear();
         } else {
             if (DEBUG) Log.d(TAG, "Setting Phone/Password: " + phone + " " + password);
-            mHttpClient.getCredentialsProvider().setCredentials(AUTH_SCOPE,
+            mHttpClient.getCredentialsProvider().setCredentials(mAuthScope,
                     new UsernamePasswordCredentials(phone, password));
         }
     }
 
     public boolean hasCredentials() {
-        return mHttpClient.getCredentialsProvider().getCredentials(AUTH_SCOPE) != null;
-    }
-
-    public FoursquareHttpApiV1(String oAuthConsumerKey, String oAuthConsumerSecret) {
-        this();
-        setOAuthConsumerCredentials(oAuthConsumerKey, oAuthConsumerSecret);
+        return mHttpClient.getCredentialsProvider().getCredentials(mAuthScope) != null;
     }
 
     public void setOAuthConsumerCredentials(String oAuthConsumerKey, String oAuthConsumerSecret) {
@@ -158,7 +155,7 @@ public class FoursquareHttpApiV1 {
                 throw new IllegalStateException(
                         "Cannot do authExchange with OAuthToken already set");
             }
-            HttpPost httpPost = mHttpApi.createHttpPost(URL_API_AUTHEXCHANGE, //
+            HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_AUTHEXCHANGE), //
                     new BasicNameValuePair("fs_username", phone), //
                     new BasicNameValuePair("fs_password", password));
             return (Credentials)mHttpApi.doHttpRequest(httpPost, new CredentialsParser());
@@ -175,7 +172,7 @@ public class FoursquareHttpApiV1 {
      */
     Tip addtip(String vid, String text, String type) throws FoursquareException,
             FoursquareCredentialsError, FoursquareError, IOException {
-        HttpPost httpPost = mHttpApi.createHttpPost(URL_API_ADDTIP, //
+        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_ADDTIP), //
                 new BasicNameValuePair("vid", vid), //
                 new BasicNameValuePair("text", text), //
                 new BasicNameValuePair("type", type));
@@ -200,7 +197,7 @@ public class FoursquareHttpApiV1 {
     Venue addvenue(String name, String address, String crossstreet, String city, String state,
             String zip, String cityid, String phone) throws FoursquareException,
             FoursquareCredentialsError, FoursquareError, IOException {
-        HttpPost httpPost = mHttpApi.createHttpPost(URL_API_ADDVENUE, //
+        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_ADDVENUE), //
                 new BasicNameValuePair("name", name), //
                 new BasicNameValuePair("address", address), //
                 new BasicNameValuePair("crossstreet", crossstreet), //
@@ -218,7 +215,7 @@ public class FoursquareHttpApiV1 {
      */
     Group cities() throws FoursquareException, FoursquareCredentialsError, FoursquareError,
             IOException {
-        HttpGet httpGet = mHttpApi.createHttpGet(URL_API_CITIES);
+        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_CITIES));
         return (Group)mHttpApi.doHttpRequest(httpGet, new GroupParser(new CityParser()));
     }
 
@@ -227,7 +224,7 @@ public class FoursquareHttpApiV1 {
      */
     City checkcity(String geolat, String geolong) throws FoursquareException,
             FoursquareCredentialsError, FoursquareError, IOException {
-        HttpGet httpGet = mHttpApi.createHttpGet(URL_API_CHECKCITY, //
+        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_CHECKCITY), //
                 new BasicNameValuePair("geolat", geolat), //
                 new BasicNameValuePair("geolong", geolong));
         return (City)mHttpApi.doHttpRequest(httpGet, new CityParser());
@@ -238,7 +235,7 @@ public class FoursquareHttpApiV1 {
      */
     Data switchcity(String cityid) throws FoursquareException, FoursquareCredentialsError,
             FoursquareError, IOException {
-        HttpPost httpPost = mHttpApi.createHttpPost(URL_API_SWITCHCITY, //
+        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_SWITCHCITY), //
                 new BasicNameValuePair("cityid", cityid));
         return (Data)mHttpApi.doHttpRequest(httpPost, new DataParser());
     }
@@ -247,7 +244,7 @@ public class FoursquareHttpApiV1 {
      * /checkins?cityid=23
      */
     Group checkins(String cityid) throws FoursquareException, FoursquareError, IOException {
-        HttpGet httpGet = mHttpApi.createHttpGet(URL_API_CHECKINS, //
+        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_CHECKINS), //
                 new BasicNameValuePair("cityid", cityid));
         return (Group)mHttpApi.doHttpRequest(httpGet, new GroupParser(new CheckinParser()));
     }
@@ -257,7 +254,7 @@ public class FoursquareHttpApiV1 {
      */
     CheckinResult checkin(String vid, String venue, String shout, boolean isPrivate, boolean twitter)
             throws FoursquareException, FoursquareError, IOException {
-        HttpGet httpGet = mHttpApi.createHttpGet(URL_API_CHECKIN, //
+        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_CHECKIN), //
                 new BasicNameValuePair("vid", vid), //
                 new BasicNameValuePair("venue", venue), //
                 new BasicNameValuePair("shout", shout), //
@@ -271,7 +268,7 @@ public class FoursquareHttpApiV1 {
      */
     User user(String uid, boolean mayor, boolean badges) throws FoursquareException,
             FoursquareCredentialsError, FoursquareError, IOException {
-        HttpGet httpGet = mHttpApi.createHttpGet(URL_API_USER, //
+        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_USER), //
                 new BasicNameValuePair("uid", uid), //
                 new BasicNameValuePair("mayor", (mayor) ? "1" : "0"), //
                 new BasicNameValuePair("badges", (badges) ? "1" : "0"));
@@ -283,7 +280,7 @@ public class FoursquareHttpApiV1 {
      */
     Group venues(String geolat, String geolong, String query, int radius, int limit)
             throws FoursquareException, FoursquareError, IOException {
-        HttpGet httpGet = mHttpApi.createHttpGet(URL_API_VENUES, //
+        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_VENUES), //
                 new BasicNameValuePair("geolat", geolat), //
                 new BasicNameValuePair("geolong", geolong), //
                 new BasicNameValuePair("q", query), //
@@ -298,7 +295,7 @@ public class FoursquareHttpApiV1 {
      */
     Venue venue(String vid) throws FoursquareException, FoursquareCredentialsError,
             FoursquareError, IOException {
-        HttpGet httpGet = mHttpApi.createHttpGet(URL_API_VENUE, //
+        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_VENUE), //
                 new BasicNameValuePair("vid", vid));
         return (Venue)mHttpApi.doHttpRequest(httpGet, new VenueParser());
     }
@@ -308,11 +305,15 @@ public class FoursquareHttpApiV1 {
      */
     Group tips(String geolat, String geolong, int limit) throws FoursquareException,
             FoursquareError, IOException {
-        HttpGet httpGet = mHttpApi.createHttpGet(URL_API_TIPS, //
+        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_TIPS), //
                 new BasicNameValuePair("geolat", geolat), //
                 new BasicNameValuePair("geolong", geolong), //
                 new BasicNameValuePair("l", String.valueOf(limit)));
         return (Group)mHttpApi.doHttpRequest(httpGet, new GroupParser(new GroupParser(
                 new TipParser())));
+    }
+
+    private String fullUrl(String url) {
+        return mApiBaseUrl + url;
     }
 }

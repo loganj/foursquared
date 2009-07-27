@@ -4,17 +4,11 @@
 
 package com.joelapenna.foursquared;
 
-import com.googlecode.dumpcatcher.logging.Dumpcatcher;
-import com.googlecode.dumpcatcher.logging.DumpcatcherUncaughtExceptionHandler;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.util.DumpcatcherHelper;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Application;
 import android.content.Context;
@@ -27,9 +21,7 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
-import android.widget.Toast;
 
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.List;
 
 /**
@@ -45,8 +37,6 @@ public class Foursquared extends Application {
     private static final int MENU_PREFERENCES = -1;
     private static final int MENU_GROUP_SYSTEM = 20;
 
-    private Dumpcatcher mDumpcatcher;
-
     private LocationListener mLocationListener = new LocationListener();
 
     private SharedPreferences mPrefs;
@@ -55,19 +45,17 @@ public class Foursquared extends Application {
     private static RemoteResourceManager sUserPhotoManager;
     private static RemoteResourceManager sBadgeIconManager;
     private static Boolean sManagersInitialized = false;
-    private static DumpcatcherHelper sDumpcatcherHelper;
 
     @Override
     public void onCreate() {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (FoursquaredSettings.USE_DUMPCATCHER) {
-            sDumpcatcherHelper = new DumpcatcherHelper(Preferences.createUniqueId(mPrefs),
-                    getResources());
+            new DumpcatcherHelper(Preferences.createUniqueId(mPrefs), getResources());
             DumpcatcherHelper.sendUsage("Started");
         }
 
-        sFoursquare = new Foursquare();
+        sFoursquare = new Foursquare(FoursquaredSettings.USE_DEBUG_SERVER);
 
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             initResourceManagers();
@@ -88,7 +76,6 @@ public class Foursquared extends Application {
 
     @Override
     public void onTerminate() {
-        sDumpcatcherHelper = null;
         sFoursquare = null;
 
         sUserPhotoManager.shutdown();

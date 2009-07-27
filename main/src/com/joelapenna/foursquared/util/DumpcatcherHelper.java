@@ -7,7 +7,6 @@ package com.joelapenna.foursquared.util;
 import com.googlecode.dumpcatcher.logging.Dumpcatcher;
 import com.googlecode.dumpcatcher.logging.DumpcatcherUncaughtExceptionHandler;
 import com.joelapenna.foursquared.FoursquaredSettings;
-import com.joelapenna.foursquared.Preferences;
 import com.joelapenna.foursquared.R;
 
 import org.apache.http.HttpResponse;
