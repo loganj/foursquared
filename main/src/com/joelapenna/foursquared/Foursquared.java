@@ -26,6 +26,7 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.Toast;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.List;
@@ -64,15 +65,13 @@ public class Foursquared extends Application {
         sFoursquare = new Foursquare();
 
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            sUserPhotoManager = new RemoteResourceManager("user_photo");
-            sBadgeIconManager = new RemoteResourceManager("badges");
+            initResourceManagers();
         }
 
         // Set the oauth credentials.
         sFoursquare.setOAuthConsumerCredentials( //
                 getResources().getString(R.string.oauth_consumer_key), //
                 getResources().getString(R.string.oauth_consumer_secret));
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         try {
             loadCredentials();
@@ -182,15 +181,26 @@ public class Foursquared extends Application {
                 .setIcon(android.R.drawable.ic_menu_preferences).setIntent(intent);
     }
 
+    private static void initResourceManagers() {
+        if (sUserPhotoManager == null) {
+            sUserPhotoManager = new RemoteResourceManager("user_photo");
+        }
+        if (sBadgeIconManager == null) {
+            sBadgeIconManager = new RemoteResourceManager("badges");
+        }
+    }
+
     public static Foursquare getFoursquare() {
         return sFoursquare;
     }
 
     public static RemoteResourceManager getUserPhotoManager() {
+        initResourceManagers();
         return sUserPhotoManager;
     }
 
     public static RemoteResourceManager getBadgeIconManager() {
+        initResourceManagers();
         return sBadgeIconManager;
     }
 
