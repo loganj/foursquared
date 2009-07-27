@@ -8,15 +8,14 @@
     <shortname>SF</shortname>
   </city>
   <checkin>
-    <id>341140</id>
-    <venueid>44794</venueid>
-    <venuename>Bobby's place</venuename>
-    <address>123 Fake St</address>
-    <crossstreet>Imaginary</crossstreet>
-    <shout/>
-    <geolat>0</geolat>
-    <geolong>0</geolong>
-    <created>Mon, 08 Jun 09 23:56:15 +0000</created>
+    <venue>
+      <id>23035</id>
+      <name>The Page</name>
+      <address>298 Divisadero St</address>
+      <crossstreet>at Page</crossstreet>
+      <geolat>37.7722</geolat>
+      <geolong>-122.437</geolong>
+    </venue>
   </checkin>
   <badges>
     <badge>

@@ -14,13 +14,6 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
   """Handle playfoursquare.com requests, for testing."""
 
   def do_GET(self):
-    """Available attributes:
-    client_address
-    command, path
-    headers (mimetools.Message)
-    rfile
-    wfile
-    """
     logging.warn('do_GET: %s, %s', self.command, self.path)
 
     url = urlparse.urlparse(self.path)
