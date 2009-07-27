@@ -8,15 +8,15 @@
 
   <ImageView
     android:id="@+id/icon"
-    android:layout_width="40dip"
-    android:layout_height="wrap_content"
+    android:layout_width="30dip"
+    android:layout_height="fill_parent"
 
     android:layout_alignParentTop="true"
-    android:layout_alignParentLeft="true"
+    android:layout_alignParentBottom="true"
+    
+    android:scaleType="matrix"
 
-    android:src="@drawable/map_marker_blue"
-
-    android:scaleType="matrix" />
+    android:src="@drawable/map_marker_blue" />
 
   <TextView
     android:id="@+id/venueName"
@@ -27,8 +27,6 @@
     android:layout_alignParentRight="true"
     android:layout_alignParentTop="true"
     android:layout_alignWithParentIfMissing="true"
-
-    android:text="Venue Name"
 
     android:textAppearance="@android:style/TextAppearance.Medium" />
 
@@ -41,8 +39,6 @@
     android:layout_alignParentRight="true"
     android:layout_below="@id/venueName"
 
-    android:text="Line 1"
-
     android:textAppearance="@android:style/TextAppearance.Small" />
 
   <TextView
@@ -53,8 +49,6 @@
     android:layout_toRightOf="@id/icon"
     android:layout_alignParentRight="true"
     android:layout_below="@id/venueLocationLine1"
-
-    android:text="Line 2"
 
     android:textAppearance="@android:style/TextAppearance.Small" />
 

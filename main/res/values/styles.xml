@@ -63,10 +63,5 @@
     <item
       name="android:layout_marginBottom">6dip</item>
   </style>
-
-  <!--
-    <style name="MyListView" parent="@android:style/Widget.ListView"> <item
-    name="android:listSelector">@drawable/list_selector</item> </style>
-  -->
 </resources>
 
