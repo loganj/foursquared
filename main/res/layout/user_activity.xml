@@ -68,7 +68,7 @@
   <include
     android:id="@+id/venue"
 
-    layout="@layout/venue_list_item"
+    layout="@layout/venue_activity_header"
 
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"

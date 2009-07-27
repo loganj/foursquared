@@ -36,7 +36,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -63,7 +63,7 @@ public class UserActivity extends Activity {
     private UserObserver mUserObserver = new UserObserver();
 
     private GridView mBadgesGrid;
-    private RelativeLayout mVenueLayout;
+    private LinearLayout mVenueLayout;
     private AsyncTask<Void, Void, User> mUserTask = null;
     private AsyncTask<Uri, Void, Uri> mUserPhotoTask = null;
 
@@ -83,7 +83,7 @@ public class UserActivity extends Activity {
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         mBadgesGrid = (GridView)findViewById(R.id.badgesGrid);
-        mVenueLayout = (RelativeLayout)findViewById(R.id.venue);
+        mVenueLayout = (LinearLayout)findViewById(R.id.venue);
 
         if (getIntent().hasExtra(EXTRA_USER)) {
             mUserId = getIntent().getExtras().getString(EXTRA_USER);
