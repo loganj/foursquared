@@ -17,8 +17,8 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-06-19 00:18:40.620826
- *
+ * Auto-generated: 2009-07-26 20:59:17.143442
+ * 
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -44,10 +44,10 @@ public class BeenhereParser extends AbstractParser<Beenhere> {
 
             String name = parser.getName();
             if ("friends".equals(name)) {
-                beenhere.setFriends(parser.nextText().equals("1"));
+                beenhere.setFriends(Boolean.valueOf(parser.nextText()));
 
             } else if ("me".equals(name)) {
-                beenhere.setMe(parser.nextText().equals("1"));
+                beenhere.setMe(Boolean.valueOf(parser.nextText()));
 
             } else {
                 // Consume something we don't understand.

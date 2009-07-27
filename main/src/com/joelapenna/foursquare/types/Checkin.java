@@ -8,8 +8,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Auto-generated: 2009-06-19 00:18:41.114104
- *
+ * Auto-generated: 2009-07-26 20:59:17.495658
+ * 
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Checkin implements Parcelable, FoursquareType {

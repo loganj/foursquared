@@ -68,7 +68,7 @@ public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
 
 BOOLEAN_STANZA = """\
             } else if ("%(name)s".equals(name)) {
-                %(top_node_name)s.set%(camel_name)s(parser.nextText().equals("1"));
+                %(top_node_name)s.set%(camel_name)s(Boolean.valueOf(parser.nextText()));
 """
 
 GROUP_STANZA = """\

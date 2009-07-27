@@ -17,8 +17,8 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-07-25 12:33:06.103791
- *
+ * Auto-generated: 2009-07-26 20:59:18.539846
+ * 
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -47,7 +47,7 @@ public class SettingsParser extends AbstractParser<Settings> {
                 settings.setFeedsKey(parser.nextText());
 
             } else if ("sendtotwitter".equals(name)) {
-                settings.setSendtotwitter(parser.nextText().equals("1"));
+                settings.setSendtotwitter(Boolean.valueOf(parser.nextText()));
 
             } else {
                 // Consume something we don't understand.

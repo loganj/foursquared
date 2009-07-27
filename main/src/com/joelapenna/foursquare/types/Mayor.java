@@ -8,8 +8,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Auto-generated: 2009-07-19 11:20:21.311352
- *
+ * Auto-generated: 2009-07-26 20:59:18.048594
+ * 
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Mayor implements Parcelable, FoursquareType {

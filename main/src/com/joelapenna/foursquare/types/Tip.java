@@ -8,8 +8,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Auto-generated: 2009-06-19 00:18:42.238535
- *
+ * Auto-generated: 2009-07-26 20:59:18.891440
+ * 
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Tip implements Parcelable, FoursquareType {

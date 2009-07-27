@@ -8,8 +8,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Auto-generated: 2009-06-19 00:18:41.489378
- *
+ * Auto-generated: 2009-07-26 20:59:17.797807
+ * 
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Credentials implements Parcelable, FoursquareType {
