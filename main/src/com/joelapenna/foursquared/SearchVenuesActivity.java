@@ -405,27 +405,27 @@ public class SearchVenuesActivity extends TabActivity {
         public Group search() throws FoursquareException, IOException {
             Location location = mLocationListener.getLastKnownLocation();
             Foursquare foursquare = Foursquared.getFoursquare();
+            String geolat;
+            String geolong;
+            int radius;
             if (location == null) {
                 // Foursquare requires a lat, lng for a venue search, so we have to pull it from the
                 // server if we cannot determine it locally.
-                // This won't work
                 City city = foursquare.user(null, false, false).getCity();
-                return foursquare.venues(//
-                        city.getGeolat(), city.getGeolong(), mSearchHolder.query, 1, 10);
+                geolat = String.valueOf(city.getGeolat());
+                geolong = String.valueOf(city.getGeolong());
+                radius = 1;
             } else {
-                // Try to make the search radius to be the same as our
-                // accuracy.
                 if (DEBUG) Log.d(TAG, "Searching with location: " + location);
-                int radius;
+                geolat = String.valueOf(location.getLatitude());
+                geolong = String.valueOf(location.getLongitude());
                 if (location.hasAccuracy()) {
                     radius = (int)Math.round(location.getAccuracy() / (double)METERS_PER_MILE);
                 } else {
                     radius = 1;
                 }
-                Group venues = foursquare.venues(String.valueOf(location.getLatitude()), String
-                        .valueOf(location.getLongitude()), mSearchHolder.query, radius, 1);
-                return venues;
             }
+            return foursquare.venues(geolat, geolong, mSearchHolder.query, radius, 30);
         }
     }
 
