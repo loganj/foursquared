@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Stats;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -52,6 +54,7 @@ public class VenueListAdapter extends BaseVenueAdapter {
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
+            holder.icon = (ImageView)convertView.findViewById(R.id.icon);
             holder.venueName = (TextView)convertView.findViewById(R.id.venueName);
             holder.locationLine1 = (TextView)convertView.findViewById(R.id.venueLocationLine1);
             holder.locationLine2 = (TextView)convertView.findViewById(R.id.venueLocationLine2);
@@ -64,9 +67,18 @@ public class VenueListAdapter extends BaseVenueAdapter {
         }
 
         Venue venue = (Venue)getItem(position);
-        if (DEBUG) Log.d(TAG, "getView() is: " + venue);
+        Stats stats = venue.getStats();
+        if (stats != null && stats.getBeenhere() != null && stats.getBeenhere().me()) {
+            if (DEBUG) Log.d(TAG, "Using been here icon");
+            holder.icon.setImageResource(R.drawable.map_marker_blue);
+        } else {
+            if (DEBUG) Log.d(TAG, "Using never been here icon");
+            holder.icon.setImageResource(R.drawable.map_marker_blue_muted);
+        }
+
         holder.venueName.setText(venue.getName());
         holder.locationLine1.setText(venue.getAddress());
+
         String line2 = StringFormatters.getVenueLocationCrossStreetOrCity(venue);
         if (line2 == null) {
             holder.locationLine2.setVisibility(View.GONE);
@@ -78,6 +90,7 @@ public class VenueListAdapter extends BaseVenueAdapter {
     }
 
     private static class ViewHolder {
+        ImageView icon;
         TextView venueName;
         TextView locationLine1;
         TextView locationLine2;
