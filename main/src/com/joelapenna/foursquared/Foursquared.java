@@ -53,6 +53,7 @@ public class Foursquared extends Application {
     private static Foursquare sFoursquare;
     private static RemoteResourceManager sUserPhotoManager;
     private static RemoteResourceManager sBadgeIconManager;
+    private static Boolean sManagersInitialized = false;
 
     @Override
     public void onCreate() {
@@ -182,11 +183,12 @@ public class Foursquared extends Application {
     }
 
     private static void initResourceManagers() {
-        if (sUserPhotoManager == null) {
-            sUserPhotoManager = new RemoteResourceManager("user_photo");
-        }
-        if (sBadgeIconManager == null) {
-            sBadgeIconManager = new RemoteResourceManager("badges");
+        synchronized (sManagersInitialized) {
+            if (!sManagersInitialized) {
+                sUserPhotoManager = new RemoteResourceManager("user_photo");
+                sBadgeIconManager = new RemoteResourceManager("badges");
+                sManagersInitialized = true;
+            }
         }
     }
 
