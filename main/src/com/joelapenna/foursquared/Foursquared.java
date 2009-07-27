@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -61,8 +62,11 @@ public class Foursquared extends Application {
         }
 
         sFoursquare = new Foursquare();
-        sUserPhotoManager = new RemoteResourceManager("user_photo");
-        sBadgeIconManager = new RemoteResourceManager("badges");
+
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            sUserPhotoManager = new RemoteResourceManager("user_photo");
+            sBadgeIconManager = new RemoteResourceManager("badges");
+        }
 
         // Set the oauth credentials.
         sFoursquare.setOAuthConsumerCredentials( //
