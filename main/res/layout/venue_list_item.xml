@@ -1,28 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
   android:layout_width="fill_parent"
   android:layout_height="?android:attr/listPreferredItemHeight"
   style="@style/venueListItemStyle">
-  
+
+  <ImageView
+    android:id="@+id/icon"
+    android:layout_width="40dip"
+    android:layout_height="wrap_content"
+
+    android:layout_alignParentTop="true"
+    android:layout_alignParentLeft="true"
+    
+    android:src="@drawable/map_marker_blue"
+
+    android:scaleType="center" />
 
   <TextView
     android:id="@+id/venueName"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+
+    android:layout_toRightOf="@id/icon"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentTop="true"
+    android:layout_alignWithParentIfMissing="true"
+    
+    android:text="Venue Name"
+    
     android:textAppearance="@android:style/TextAppearance.Medium" />
+    
   <TextView
     android:id="@+id/venueLocationLine1"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_alignWithParentIfMissing="true"
+
+    android:layout_toRightOf="@id/icon"
+    android:layout_alignParentRight="true"
+    android:layout_below="@id/venueName"
+    
+    android:text="Line 1"
+
     android:textAppearance="@android:style/TextAppearance.Small" />
+    
   <TextView
     android:id="@+id/venueLocationLine2"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+
+    android:layout_toRightOf="@id/icon"
+    android:layout_alignParentRight="true"
+    android:layout_below="@id/venueLocationLine1"
+    
+    android:text="Line 2"
+    
     android:textAppearance="@android:style/TextAppearance.Small" />
 
-</LinearLayout>
+</RelativeLayout>

@@ -42,12 +42,10 @@
     <item
       name="android:textColor">#FFFFFF</item>
   </style>
-  
+
   <style
-  	name="venueListItemStyle"
-  	parent="@android:style/Widget.ListView">
-  	<item
-      name="android:paddingLeft">40dip</item>
+    name="venueListItemStyle"
+    parent="@android:style/Widget.ListView">
     <item
       name="android:paddingTop">4dip</item>
     <item
@@ -56,9 +54,9 @@
       name="android:background">@drawable/venue_list_gradient</item>
   </style>
   <style
-  	name="venueActivityHeaderStyle"
-  	parent="@android:style/Widget.ListView">
-  	<item
+    name="venueActivityHeaderStyle"
+    parent="@android:style/Widget.ListView">
+    <item
       name="android:paddingLeft">9dip</item>
     <item
       name="android:paddingTop">4dip</item>
