@@ -9,6 +9,7 @@ import com.googlecode.dumpcatcher.logging.DumpcatcherUncaughtExceptionHandler;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquared.maps.BestLocationListener;
+import com.joelapenna.foursquared.util.RemoteResourceManager;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -47,14 +48,22 @@ public class Foursquared extends Application {
 
     private SharedPreferences mPrefs;
 
-    private static Foursquare sFoursquare = new Foursquare();
+    private static Foursquare sFoursquare;
+    private static RemoteResourceManager sUserPhotoManager;
+    private static RemoteResourceManager sBadgeIconManager;
 
+    @Override
     public void onCreate() {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (FoursquaredSettings.USE_DUMPCATCHER) {
             setupDumpcatcher();
         }
+
+        sFoursquare = new Foursquare();
+        sUserPhotoManager = new RemoteResourceManager("user_photo");
+        sBadgeIconManager = new RemoteResourceManager("badges");
+
         // Set the oauth credentials.
         sFoursquare.setOAuthConsumerCredentials( //
                 getResources().getString(R.string.oauth_consumer_key), //
@@ -67,6 +76,17 @@ public class Foursquared extends Application {
             // We're not doing anything because hopefully our related activities
             // will handle the failure. This is simply convenience.
         }
+    }
+
+    @Override
+    public void onTerminate() {
+        sFoursquare = null;
+
+        sUserPhotoManager.shutdown();
+        sUserPhotoManager = null;
+
+        sBadgeIconManager.shutdown();
+        sBadgeIconManager = null;
     }
 
     public Location getLastKnownLocation() {
@@ -160,6 +180,14 @@ public class Foursquared extends Application {
 
     public static Foursquare getFoursquare() {
         return sFoursquare;
+    }
+
+    public static RemoteResourceManager getUserPhotoManager() {
+        return sUserPhotoManager;
+    }
+
+    public static RemoteResourceManager getBadgeIconManager() {
+        return sBadgeIconManager;
     }
 
     /**

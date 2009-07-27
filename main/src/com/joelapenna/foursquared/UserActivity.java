@@ -9,7 +9,6 @@ import com.joelapenna.foursquare.types.Badge;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
 import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
 
@@ -37,7 +36,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -55,9 +54,6 @@ public class UserActivity extends Activity {
 
     public static final String EXTRA_USER = "com.joelapenna.foursquared.UserId";
 
-    private RemoteResourceManager mUserPhotoManager = new RemoteResourceManager("user_photo");
-    private RemoteResourceManager mBadgeIconManager = new RemoteResourceManager("badges");
-
     private Dialog mProgressDialog;
     private AlertDialog mBadgeDialog;
 
@@ -67,7 +63,7 @@ public class UserActivity extends Activity {
     private UserObserver mUserObserver = new UserObserver();
 
     private GridView mBadgesGrid;
-    private LinearLayout mVenueLayout;
+    private RelativeLayout mVenueLayout;
     private AsyncTask<Void, Void, User> mUserTask = null;
     private AsyncTask<Uri, Void, Uri> mUserPhotoTask = null;
 
@@ -87,7 +83,7 @@ public class UserActivity extends Activity {
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         mBadgesGrid = (GridView)findViewById(R.id.badgesGrid);
-        mVenueLayout = (LinearLayout)findViewById(R.id.venue);
+        mVenueLayout = (RelativeLayout)findViewById(R.id.venue);
 
         if (getIntent().hasExtra(EXTRA_USER)) {
             mUserId = getIntent().getExtras().getString(EXTRA_USER);
@@ -108,8 +104,6 @@ public class UserActivity extends Activity {
     public void onStop() {
         super.onStop();
         if (DEBUG) Log.d(TAG, "onStop()");
-        mBadgeIconManager.shutdown();
-        mUserPhotoManager.shutdown();
 
         if (mUserTask != null) {
             mUserTask.cancel(true);
@@ -168,7 +162,7 @@ public class UserActivity extends Activity {
         try {
             Uri icon = Uri.parse(badge.getIcon());
             if (DEBUG) Log.d(TAG, icon.toString());
-            mBadgeDialog.setIcon(new BitmapDrawable(mBadgeIconManager.getInputStream(icon)));
+            mBadgeDialog.setIcon(new BitmapDrawable(Foursquared.getBadgeIconManager().getInputStream(icon)));
         } catch (IOException e) {
             if (DEBUG) Log.d(TAG, "IOException", e);
             mBadgeDialog.setIcon(R.drawable.default_on);
@@ -188,7 +182,7 @@ public class UserActivity extends Activity {
     void setPhotoImageUri(Uri photo) {
         try {
             Bitmap bitmap = BitmapFactory.decodeStream(//
-                    mUserPhotoManager.getInputStream(photo));
+                    Foursquared.getUserPhotoManager().getInputStream(photo));
             ((ImageView)findViewById(R.id.photo)).setImageBitmap(bitmap);
         } catch (IOException e) {
             if (DEBUG) Log.d(TAG, "Could not load bitmap. we don't have it yet.", e);
@@ -207,7 +201,7 @@ public class UserActivity extends Activity {
         }
         Uri photo = Uri.parse(user.getPhoto());
         if (photo != null) {
-            if (mUserPhotoManager.getFile(photo).exists()) {
+            if (Foursquared.getUserPhotoManager().getFile(photo).exists()) {
                 setPhotoImageUri(photo);
             } else {
                 mUserPhotoTask = new UserPhotoTask().execute(Uri.parse(user.getPhoto()));
@@ -226,7 +220,7 @@ public class UserActivity extends Activity {
         protected Uri doInBackground(Uri... params) {
             Uri uri = (Uri)params[0];
             try {
-                mUserPhotoManager.requestBlocking(uri);
+                Foursquared.getUserPhotoManager().requestBlocking(uri);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "IOException", e);
@@ -307,7 +301,7 @@ public class UserActivity extends Activity {
         private void displayBadges(User user) {
             if (user.getBadges() != null) {
                 mBadgesGrid.setAdapter(new BadgeWithIconListAdapter(UserActivity.this, user
-                        .getBadges(), mBadgeIconManager));
+                        .getBadges(), Foursquared.getBadgeIconManager()));
                 ((TextView)findViewById(R.id.badgesHeader)).setVisibility(TextView.VISIBLE);
                 mBadgesGrid.setOnItemClickListener(new OnItemClickListener() {
                     @Override

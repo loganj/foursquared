@@ -7,13 +7,26 @@
   android:layout_height="?android:attr/listPreferredItemHeight"
   android:padding="5px">
 
+  <ImageView
+    android:id="@+id/photo"
+    android:layout_width="50dip"
+    android:layout_height="50dip"
+
+    android:layout_alignParentTop="true"
+    android:layout_alignParentLeft="true"
+    android:layout_marginRight="3dip"
+
+    android:src="@drawable/blank_boy"
+
+    android:scaleType="fitXY" />
+
   <TextView
     android:id="@+id/firstLine"
 
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
 
-    android:layout_alignParentLeft="true"
+    android:layout_toRightOf="@id/photo"
     android:layout_alignParentRight="true"
     android:layout_alignParentTop="true"
     android:layout_alignWithParentIfMissing="true"
@@ -30,9 +43,11 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
 
+    android:layout_toRightOf="@id/photo"
     android:layout_alignParentBottom="true"
     android:layout_alignParentRight="true"
     android:layout_below="@id/firstLine"
+    android:layout_alignWithParentIfMissing="true"
 
     android:paddingRight="6dip"
 
@@ -50,10 +65,11 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
 
+    android:layout_toRightOf="@id/photo"
     android:layout_alignParentBottom="true"
-    android:layout_alignParentLeft="true"
     android:layout_below="@id/firstLine"
     android:layout_toLeftOf="@id/timeTextView"
+    android:layout_alignWithParentIfMissing="true"
 
     android:paddingRight="6dip"
 

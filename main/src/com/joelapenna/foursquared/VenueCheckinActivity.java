@@ -63,7 +63,8 @@ public class VenueCheckinActivity extends ListActivity {
         if (DEBUG) Log.d(TAG, "Putting groups in adapter.");
         SeparatedListAdapter mainAdapter = (SeparatedListAdapter)getListAdapter();
         mainAdapter.clear();
-        CheckinListAdapter groupAdapter = new CheckinListAdapter(this, checkins);
+        CheckinListAdapter groupAdapter = new CheckinListAdapter(//
+                this, checkins, Foursquared.getUserPhotoManager());
         mainAdapter.addSection("Recent Checkins", groupAdapter);
         mainAdapter.notifyDataSetInvalidated();
     }

@@ -192,7 +192,8 @@ public class CheckinsActivity extends TabActivity {
         }
         mListAdapter.clear();
 
-        CheckinListAdapter groupAdapter = new CheckinListAdapter(this, searchResults);
+        CheckinListAdapter groupAdapter = new CheckinListAdapter(this, searchResults, Foursquared
+                .getUserPhotoManager());
         mListAdapter.addSection("Checkins", groupAdapter);
         mListAdapter.notifyDataSetInvalidated();
     }
@@ -334,8 +335,6 @@ public class CheckinsActivity extends TabActivity {
                 if (DEBUG) Log.d(TAG, "Searching without location.");
                 return foursquare.checkins(null);
             } else {
-                // Try to make the search radius to be the same as our
-                // accuracy.
                 if (DEBUG) Log.d(TAG, "Searching with location: " + location);
                 return foursquare.checkins(null);
             }
