@@ -33,16 +33,6 @@ public class VenueTipsActivity extends ListActivity {
         setContentView(R.layout.venue_tips_activity);
 
         setListAdapter(new SeparatedListAdapter(this));
-        // TODO(jlapenna): Hey Joe, you need to make this work...
-        // TODO(foursquare): Hey Foursquare, you need to support this in the API.
-        /*
-         * getListView().setOnItemClickListener(new OnItemClickListener() {
-         * @Override public void onItemClick(AdapterView<?> parent, View view, int position, long
-         * id) { if (DEBUG) Log.d(TAG, "Click for: " + String.valueOf(position)); CheckBox checkbox
-         * = (CheckBox)view.findViewById(R.id.checkbox); checkbox.setChecked(!checkbox.isChecked());
-         * Tip tip = (Tip)((SeparatedListAdapter)getListAdapter()).getItem(position);
-         * updateTodo(tip.getId()); } });
-         */
 
         VenueActivity parent = (VenueActivity)getParent();
         if (parent.venueObservable.getVenue() != null) {

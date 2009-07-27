@@ -37,24 +37,30 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
   do_POST = do_GET
 
   def handle_url(self, url):
+    path = None
+
     if url.path == '/v1/venue':
-      return open('../captures/api/v1/venue.xml')
+      path = '../captures/api/v1/venue.xml'
     elif url.path == '/v1/venues':
-      return open('../captures/api/v1/venues.xml')
+      path = '../captures/api/v1/venues.xml'
     elif url.path == '/v1/user':
-      return open('../captures/api/v1/user.xml')
+      path = '../captures/api/v1/user.xml'
     elif url.path == '/v1/checkcity':
-      return open('../captures/api/v1/checkcity.xml')
+      path = '../captures/api/v1/checkcity.xml'
     elif url.path == '/v1/checkins':
-      return open('../captures/api/v1/checkins.xml')
+      path = '../captures/api/v1/checkins.xml'
     elif url.path == '/v1/cities':
-      return open('../captures/api/v1/cities.xml')
+      path = '../captures/api/v1/cities.xml'
     elif url.path == '/v1/switchcity':
-      return open('../captures/api/v1/switchcity.xml')
+      path = '../captures/api/v1/switchcity.xml'
     elif url.path == '/v1/tips':
-      return open('../captures/api/v1/tips.xml')
-    else:
+      path = '../captures/api/v1/tips.xml'
+
+    if path is None:
       self.send_error(404)
+    else:
+      logging.warn('Using: %s' % path)
+      return open(path)
 
   def send_200(self):
     self.send_response(200)

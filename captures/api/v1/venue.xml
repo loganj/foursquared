@@ -25,16 +25,24 @@
   </stats>
   <tips>
     <tip>
-      <id>4272</id>
-      <userid>1058</userid>
-      <firstname>Shannon</firstname>
-      <lastname>Clark</lastname>
-      <photo>http://playfoursquare.com/userpix/1058_1237850027.jpg</photo>
-      <text>Play games here - both on their games night every Wed but the
-        &quot;advanced&quot; tip is they have a phenomenal library of games you
-        can request to borrow - a serious gamer's library</text>
-      <url/>
-      <created>Wed, 25 Mar 09 02:31:55 +0000</created>
+      <id>8774</id>
+      <text>The burgers here are surprisingly delicious! Order one and wait out
+        the ten minutes by having a pleasant conversation with Margaret.
+      </text>
+      <distance>0</distance>
+      <created>Thu, 30 Apr 09 23:41:27 +0000</created>
+      <user>
+        <id>1818</id>
+        <firstname>Joe</firstname>
+        <lastname>LaPenna</lastname>
+        <photo>http://playfoursquare.com/userpix/1818_1239601037.jpg</photo>
+      </user>
+      <venue>
+        <id>36235</id>
+        <name>KK Cafe</name>
+        <address>252 Divisadero st</address>
+        <crossstreet>Haight</crossstreet>
+      </venue>
     </tip>
   </tips>
 </venue>
