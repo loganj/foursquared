@@ -11,11 +11,11 @@
     android:id="@+id/photo"
     android:layout_width="50dip"
     android:layout_height="50dip"
-
+    android:padding="2dip"
+    android:background="#ffffff"
     android:layout_alignParentTop="true"
     android:layout_alignParentLeft="true"
     android:layout_marginRight="3dip"
-
     android:src="@drawable/blank_boy"
 
     android:scaleType="fitXY" />
