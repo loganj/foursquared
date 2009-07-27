@@ -9,6 +9,7 @@ import com.googlecode.dumpcatcher.logging.DumpcatcherUncaughtExceptionHandler;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquared.maps.BestLocationListener;
+import com.joelapenna.foursquared.util.DumpcatcherHelper;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 
 import org.apache.http.HttpResponse;
@@ -35,8 +36,8 @@ import java.util.List;
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Foursquared extends Application {
-    public static final String TAG = "Foursquared";
-    public static final boolean DEBUG = FoursquaredSettings.DEBUG;
+    private static final String TAG = "Foursquared";
+    private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public static final String INTENT_ACTION_LOGGED_OUT = "com.joelapenna.foursquared.intent.action.LOGGED_OUT";
 
@@ -54,13 +55,16 @@ public class Foursquared extends Application {
     private static RemoteResourceManager sUserPhotoManager;
     private static RemoteResourceManager sBadgeIconManager;
     private static Boolean sManagersInitialized = false;
+    private static DumpcatcherHelper sDumpcatcherHelper;
 
     @Override
     public void onCreate() {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (FoursquaredSettings.USE_DUMPCATCHER) {
-            setupDumpcatcher();
+            sDumpcatcherHelper = new DumpcatcherHelper(Preferences.createUniqueId(mPrefs),
+                    getResources());
+            DumpcatcherHelper.sendUsage("Started");
         }
 
         sFoursquare = new Foursquare();
@@ -84,6 +88,7 @@ public class Foursquared extends Application {
 
     @Override
     public void onTerminate() {
+        sDumpcatcherHelper = null;
         sFoursquare = null;
 
         sUserPhotoManager.shutdown();
@@ -100,32 +105,6 @@ public class Foursquared extends Application {
     public LocationListener getLocationListener() {
         primeLocationListener();
         return mLocationListener;
-    }
-
-    private void setupDumpcatcher() {
-        String client = Preferences.createUniqueId(mPrefs);
-        if (FoursquaredSettings.DUMPCATCHER_TEST) {
-            if (FoursquaredSettings.DEBUG) Log.d(TAG, "Loading Dumpcatcher TEST");
-            mDumpcatcher = new Dumpcatcher( //
-                    getResources().getString(R.string.test_dumpcatcher_product_key), //
-                    getResources().getString(R.string.test_dumpcatcher_secret), //
-                    getResources().getString(R.string.test_dumpcatcher_url), client, 5);
-        } else {
-            if (FoursquaredSettings.DEBUG) Log.d(TAG, "Loading Dumpcatcher Live");
-            mDumpcatcher = new Dumpcatcher( //
-                    getResources().getString(R.string.dumpcatcher_product_key), //
-                    getResources().getString(R.string.dumpcatcher_secret), //
-                    getResources().getString(R.string.dumpcatcher_url), client, 5);
-        }
-
-        UncaughtExceptionHandler handler = new DefaultUnhandledExceptionHandler(mDumpcatcher);
-        // This can hang the app starving android of its ability to properly kill threads... maybe.
-        Thread.setDefaultUncaughtExceptionHandler(handler);
-        Thread.currentThread().setUncaughtExceptionHandler(handler);
-
-        // TODO(jlapenna): Usage related, async sendCrashes should be pooled together or something.
-        // This is nasty.
-        sendUsage("Started");
     }
 
     private void loadCredentials() throws FoursquareCredentialsError {
@@ -154,25 +133,6 @@ public class Foursquared extends Application {
             location = manager.getLastKnownLocation(providers.get(i));
             mLocationListener.getBetterLocation(location);
         }
-    }
-
-    private void sendUsage(final String usage) {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    NameValuePair[] parameters = {
-                            new BasicNameValuePair("tag", "usage"),
-                            new BasicNameValuePair("short", usage),
-                    };
-                    HttpResponse response = mDumpcatcher.sendCrash(parameters);
-                    response.getEntity().consumeContent();
-                } catch (Exception e) {
-                    // no biggie...
-                }
-            }
-        });
-        thread.start();
     }
 
     public static void addPreferencesToMenu(Context context, Menu menu) {
@@ -215,22 +175,5 @@ public class Foursquared extends Application {
             if (DEBUG) Log.d(TAG, "onLocationChanged: " + location);
             getBetterLocation(location);
         }
-    }
-
-    private static final class DefaultUnhandledExceptionHandler extends
-            DumpcatcherUncaughtExceptionHandler {
-
-        private static final UncaughtExceptionHandler mOriginalExceptionHandler = Thread
-                .getDefaultUncaughtExceptionHandler();
-
-        DefaultUnhandledExceptionHandler(Dumpcatcher dumpcatcher) {
-            super(dumpcatcher);
-        }
-
-        public void uncaughtException(Thread t, Throwable e) {
-            super.uncaughtException(t, e);
-            mOriginalExceptionHandler.uncaughtException(t, e);
-        }
-
     }
 }
