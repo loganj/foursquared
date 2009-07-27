@@ -333,7 +333,8 @@ public class SearchVenuesActivity extends TabActivity {
         Intent intent = new Intent();
         intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
         intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, venue.getName());
-        Parcelable iconResource = Intent.ShortcutIconResource.fromContext(this, R.drawable.icon);
+        Parcelable iconResource = Intent.ShortcutIconResource.fromContext(this,
+                R.drawable.venue_shortcut_icon);
         intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconResource);
 
         // Now, return the result to the launcher
