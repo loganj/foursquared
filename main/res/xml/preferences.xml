@@ -39,8 +39,9 @@
   <PreferenceCategory
     android:title="User Actions">
 
-    <com.joelapenna.foursquared.preferences.ClickPreference
-      android:key="update_city"
+    <com.joelapenna.foursquared.preferences.CityNamePreference
+      android:key="city_name"
+      android:persistent="true"
       android:title="Update City"
       android:summary="Update your foursquare city." />
 

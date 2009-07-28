@@ -34,10 +34,6 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
 
     private SharedPreferences mPrefs;
 
-    // XXX: This is super hack. The correct way would be to make a custom preference subclass to
-    // disply this information.
-    private Preference mUpdateCityPreference;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,10 +41,6 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
 
         this.addPreferencesFromResource(R.xml.preferences);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-        mUpdateCityPreference = findPreference(Preferences.PREFERENCE_UPDATE_CITY);
-        mUpdateCityPreference.setSummary("In "
-                + mPrefs.getString(Preferences.PREFERENCE_CITY_NAME, "unknown"));
     }
 
     @Override
@@ -71,7 +63,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
             startActivity(new Intent( //
                     Intent.ACTION_VIEW, Uri.parse("http://m.playfoursquare.com/friends")));
 
-        } else if (Preferences.PREFERENCE_UPDATE_CITY.equals(key)) {
+        } else if (Preferences.PREFERENCE_CITY_NAME.equals(key)) {
             new UpdateCityTask().execute();
         }
         return true;
@@ -102,6 +94,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
             try {
                 Location location = ((Foursquared)getApplication()).getLastKnownLocation();
                 if (location == null) {
+                    if (DEBUG) Log.d(TAG, "unable to determine location");
                     return null;
                 }
 
@@ -133,14 +126,16 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         @Override
         protected void onPostExecute(City city) {
             if (city != null) {
-                mUpdateCityPreference.setSummary("In " + city.getName());
                 Toast.makeText(PreferenceActivity.this, "Welcome to " + city.getName() + "!",
                         Toast.LENGTH_LONG).show();
+                // Back to the stupid lame-o hack of restarting the activity so it shows the
+                // background-updated preference.
+                finish();
+                startActivity(getIntent());
             } else {
                 Toast.makeText(PreferenceActivity.this, "Unable to determine your city!",
                         Toast.LENGTH_LONG).show();
             }
-
         }
 
         @Override

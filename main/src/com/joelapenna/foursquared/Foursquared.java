@@ -86,6 +86,7 @@ public class Foursquared extends Application {
     }
 
     public Location getLastKnownLocation() {
+        primeLocationListener();
         return mLocationListener.getLastKnownLocation();
     }
 

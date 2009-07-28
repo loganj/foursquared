@@ -35,7 +35,6 @@ public class Preferences {
     // Hacks for preference activity extra UI elements.
     public static final String PREFERENCE_FRIEND_REQUESTS = "friend_requests";
     public static final String PREFERENCE_FRIEND_ADD = "friend_add";
-    public static final String PREFERENCE_UPDATE_CITY = "update_city";
     public static final String PREFERENCE_LOGOUT = "logout";
 
     // Not-in-XML preferences
