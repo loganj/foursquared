@@ -17,6 +17,10 @@
       <geolong>-122.437</geolong>
     </venue>
   </checkin>
+  <settings>
+    <sendtotwitter type="boolean"></sendtotwitter>
+    <feeds_key>127e89691d51e7ce94c8dea27fddbe3d</feeds_key>
+  </settings>
   <badges>
     <badge>
       <name>Newbie</name>

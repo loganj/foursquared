@@ -6,6 +6,9 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
+import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.types.City;
+import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.util.DumpcatcherHelper;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
@@ -14,14 +17,18 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -162,6 +169,33 @@ public class Foursquared extends Application {
         public void onLocationChanged(Location location) {
             if (DEBUG) Log.d(TAG, "onLocationChanged: " + location);
             getBetterLocation(location);
+        }
+    }
+
+    private class UpdateUserTask extends AsyncTask<Void, Void, User> {
+        private static final String TAG = "UpdateUserTask";
+        private static final boolean DEBUG = FoursquaredSettings.DEBUG;
+
+        @Override
+        protected User doInBackground(Void... params) {
+            if (DEBUG) Log.d(TAG, "doInBackground()");
+            try {
+
+                User user = Foursquared.getFoursquare().user(null, false, false);
+                City city = Preferences.switchCityIfChanged(Foursquared.getFoursquare(), user,
+                        mLocationListener.getLastKnownLocation());
+                if (user != null && city != null) {
+                    Editor editor = mPrefs.edit();
+                    Preferences.storeUser(editor, user);
+                    Preferences.storeCity(editor, city);
+                    editor.commit();
+                }
+
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "Exception in best effort user info updater", e);
+            }
+            return null;
         }
     }
 }

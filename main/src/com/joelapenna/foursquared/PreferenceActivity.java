@@ -78,7 +78,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     }
 
     private class UpdateCityTask extends AsyncTask<Void, Void, City> {
-        private static final String TAG = "UpdateUserTask";
+        private static final String TAG = "UpdateCityTask";
         private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
         @Override
