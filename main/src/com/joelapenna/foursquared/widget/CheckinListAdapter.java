@@ -40,18 +40,13 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
 
     private RemoteResourceManager mRrm;
     private Handler mHandler = new Handler();
-    RemoteResourceManagerObserver mUserPhotoObserver = new RemoteResourceManagerObserver();
-
-    public CheckinListAdapter(Context context, Group checkins) {
-        super(context, checkins);
-        mInflater = LayoutInflater.from(context);
-    }
+    RemoteResourceManagerObserver mUserPhotosObserver = new RemoteResourceManagerObserver();
 
     public CheckinListAdapter(Context context, Group checkins, RemoteResourceManager rrm) {
         super(context, checkins);
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
-        mRrm.addObserver(mUserPhotoObserver);
+        mRrm.addObserver(mUserPhotosObserver);
     }
 
     @Override
@@ -86,17 +81,17 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
         User user = checkin.getUser();
         Uri photo = Uri.parse(user.getPhoto());
 
-        if (mRrm != null) {
-            if (mRrm.getFile(photo).exists()) {
-                try {
-                    Bitmap bitmap;
-                    bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photo));
-                    holder.photo.setImageBitmap(bitmap);
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    if (DEBUG) Log.d(TAG, "IOException", e);
-                }
+        if (mRrm.getFile(photo).exists()) {
+            try {
+                Bitmap bitmap;
+                bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photo));
+                holder.photo.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "IOException", e);
             }
+        } else {
+            mRrm.request(photo);
         }
 
         holder.firstLine.setText(StringFormatters.getCheckinMessage(checkin));
@@ -131,6 +126,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
+                    if (DEBUG) Log.d(TAG, "notifyDataSetChanged()");
                     notifyDataSetChanged();
                 }
             });

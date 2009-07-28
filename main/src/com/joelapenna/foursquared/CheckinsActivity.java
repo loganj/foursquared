@@ -194,7 +194,7 @@ public class CheckinsActivity extends TabActivity {
         mListAdapter.clear();
 
         CheckinListAdapter groupAdapter = new CheckinListAdapter(this, searchResults, Foursquared
-                .getUserPhotoManager());
+                .getUserPhotosManager());
         mListAdapter.addSection("Checkins", groupAdapter);
         mListAdapter.notifyDataSetInvalidated();
     }

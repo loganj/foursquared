@@ -182,7 +182,7 @@ public class UserActivity extends Activity {
     void setPhotoImageUri(Uri photo) {
         try {
             Bitmap bitmap = BitmapFactory.decodeStream(//
-                    Foursquared.getUserPhotoManager().getInputStream(photo));
+                    Foursquared.getUserPhotosManager().getInputStream(photo));
             ((ImageView)findViewById(R.id.photo)).setImageBitmap(bitmap);
         } catch (IOException e) {
             if (DEBUG) Log.d(TAG, "Could not load bitmap. we don't have it yet.", e);
@@ -201,7 +201,7 @@ public class UserActivity extends Activity {
         }
         Uri photo = Uri.parse(user.getPhoto());
         if (photo != null) {
-            if (Foursquared.getUserPhotoManager().getFile(photo).exists()) {
+            if (Foursquared.getUserPhotosManager().getFile(photo).exists()) {
                 setPhotoImageUri(photo);
             } else {
                 mUserPhotoTask = new UserPhotoTask().execute(Uri.parse(user.getPhoto()));
@@ -220,7 +220,7 @@ public class UserActivity extends Activity {
         protected Uri doInBackground(Uri... params) {
             Uri uri = (Uri)params[0];
             try {
-                Foursquared.getUserPhotoManager().requestBlocking(uri);
+                Foursquared.getUserPhotosManager().requestBlocking(uri);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "IOException", e);

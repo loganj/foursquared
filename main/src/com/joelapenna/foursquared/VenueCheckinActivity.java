@@ -64,7 +64,7 @@ public class VenueCheckinActivity extends ListActivity {
         SeparatedListAdapter mainAdapter = (SeparatedListAdapter)getListAdapter();
         mainAdapter.clear();
         CheckinListAdapter groupAdapter = new CheckinListAdapter(//
-                this, checkins, Foursquared.getUserPhotoManager());
+                this, checkins, Foursquared.getUserPhotosManager());
         mainAdapter.addSection("Recent Checkins", groupAdapter);
         mainAdapter.notifyDataSetInvalidated();
     }

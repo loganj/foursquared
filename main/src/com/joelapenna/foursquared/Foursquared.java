@@ -46,7 +46,7 @@ public class Foursquared extends Application {
     private SharedPreferences mPrefs;
 
     private static Foursquare sFoursquare;
-    private static RemoteResourceManager sUserPhotoManager;
+    private static RemoteResourceManager sUserPhotosManager;
     private static RemoteResourceManager sBadgeIconManager;
     private static Boolean sManagersInitialized = false;
 
@@ -82,8 +82,8 @@ public class Foursquared extends Application {
     public void onTerminate() {
         sFoursquare = null;
 
-        sUserPhotoManager.shutdown();
-        sUserPhotoManager = null;
+        sUserPhotosManager.shutdown();
+        sUserPhotosManager = null;
 
         sBadgeIconManager.shutdown();
         sBadgeIconManager = null;
@@ -137,7 +137,7 @@ public class Foursquared extends Application {
     private static void initResourceManagers() {
         synchronized (sManagersInitialized) {
             if (!sManagersInitialized) {
-                sUserPhotoManager = new RemoteResourceManager("user_photo");
+                sUserPhotosManager = new RemoteResourceManager("user_photos");
                 sBadgeIconManager = new RemoteResourceManager("badges");
                 sManagersInitialized = true;
             }
@@ -148,9 +148,9 @@ public class Foursquared extends Application {
         return sFoursquare;
     }
 
-    public static RemoteResourceManager getUserPhotoManager() {
+    public static RemoteResourceManager getUserPhotosManager() {
         initResourceManagers();
-        return sUserPhotoManager;
+        return sUserPhotosManager;
     }
 
     public static RemoteResourceManager getBadgeIconManager() {

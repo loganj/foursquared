@@ -123,6 +123,7 @@ class RemoteResourceFetcher extends Observable {
 
     private void makeRequest(Request request) throws IOException {
         try {
+            if (DEBUG) Log.d(TAG, "Requesting: " + request.uri);
             HttpGet httpGet = new HttpGet(request.uri.toString());
             httpGet.addHeader("Accept-Encoding", "gzip");
             HttpResponse response = mHttpClient.execute(httpGet);
@@ -168,7 +169,6 @@ class RemoteResourceFetcher extends Observable {
      * @return HttpClient
      */
     public static final DefaultHttpClient createHttpClient() {
-
         // Shamelessly cribbed from AndroidHttpClient
         HttpParams params = new BasicHttpParams();
 
