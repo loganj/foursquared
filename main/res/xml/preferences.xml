@@ -37,7 +37,12 @@
   </PreferenceCategory>
 
   <PreferenceCategory
-    android:title="Login">
+    android:title="User Actions">
+
+    <com.joelapenna.foursquared.preferences.ClickPreference
+      android:key="update_city"
+      android:title="Update City"
+      android:summary="Update your foursquare city." />
 
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="logout"
