@@ -92,8 +92,8 @@ public class AddVenueActivity extends Activity {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         // We should probably dynamically connect to any location provider we can find and not just
         // the gps/network providers.
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
@@ -105,8 +105,8 @@ public class AddVenueActivity extends Activity {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         mLocationManager.removeUpdates(mLocationListener);
     }
 

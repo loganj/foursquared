@@ -14,7 +14,7 @@ public abstract class BestLocationListener implements LocationListener {
     public static final String TAG = "BestLocationListener";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    public static final long LOCATION_UPDATE_MIN_TIME = 1000 * 60;
+    public static final long LOCATION_UPDATE_MIN_TIME = 1000;
     public static final long LOCATION_UPDATE_MIN_DISTANCE = 100;
     static final long MAX_LOCATION_UPDATE_DELTA_THRESHOLD = 1000 * 60 * 5;
 

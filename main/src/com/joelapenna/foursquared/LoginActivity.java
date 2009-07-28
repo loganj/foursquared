@@ -78,10 +78,8 @@ public class LoginActivity extends Activity {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        // We should probably dynamically connect to any location provider we can find and not just
-        // the gps/network providers.
+    public void onResume() {
+        super.onResume();
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 LocationListener.LOCATION_UPDATE_MIN_TIME,
                 LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
@@ -91,8 +89,8 @@ public class LoginActivity extends Activity {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         mLocationManager.removeUpdates(mLocationListener);
     }
 
