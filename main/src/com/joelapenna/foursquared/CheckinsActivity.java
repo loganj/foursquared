@@ -81,7 +81,6 @@ public class CheckinsActivity extends TabActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (DEBUG) Log.d(TAG, "onCreate");
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.search_activity);
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
@@ -116,6 +115,31 @@ public class CheckinsActivity extends TabActivity {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                LocationListener.LOCATION_UPDATE_MIN_TIME,
+                LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                LocationListener.LOCATION_UPDATE_MIN_TIME,
+                LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mLocationManager.removeUpdates(mLocationListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mSearchTask != null) {
+            mSearchTask.cancel(true);
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         menu.add(MENU_GROUP_SEARCH, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
@@ -139,7 +163,6 @@ public class CheckinsActivity extends TabActivity {
                 startActivity(intent);
                 return true;
             case MENU_MYINFO:
-                if (DEBUG) Log.d(TAG, "firing user activity");
                 startActivity(new Intent(CheckinsActivity.this, UserActivity.class));
                 return true;
         }
@@ -160,31 +183,6 @@ public class CheckinsActivity extends TabActivity {
     @Override
     public Object onRetainNonConfigurationInstance() {
         return mSearchHolder;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                LocationListener.LOCATION_UPDATE_MIN_TIME,
-                LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                LocationListener.LOCATION_UPDATE_MIN_TIME,
-                LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mLocationManager.removeUpdates(mLocationListener);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mSearchTask != null) {
-            mSearchTask.cancel(true);
-        }
     }
 
     public void putSearchResultsInAdapter(Group searchResults) {

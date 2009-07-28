@@ -88,7 +88,6 @@ public class SearchVenuesActivity extends TabActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (DEBUG) Log.d(TAG, "onCreate");
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.search_activity);
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
@@ -126,6 +125,31 @@ public class SearchVenuesActivity extends TabActivity {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                LocationListener.LOCATION_UPDATE_MIN_TIME,
+                LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                LocationListener.LOCATION_UPDATE_MIN_TIME,
+                LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mLocationManager.removeUpdates(mLocationListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mSearchTask != null) {
+            mSearchTask.cancel(true);
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         menu.add(MENU_GROUP_SEARCH, MENU_SEARCH, Menu.NONE, R.string.search_label) //
@@ -160,13 +184,11 @@ public class SearchVenuesActivity extends TabActivity {
                 startActivity(new Intent(SearchVenuesActivity.this, AddVenueActivity.class));
                 return true;
             case MENU_CHECKINS:
-                if (DEBUG) Log.d(TAG, "firing checkins activity");
                 Intent intent = new Intent(SearchVenuesActivity.this, CheckinsActivity.class);
                 intent.setAction(Intent.ACTION_SEARCH);
                 startActivity(intent);
                 return true;
             case MENU_MYINFO:
-                if (DEBUG) Log.d(TAG, "firing user activity");
                 startActivity(new Intent(SearchVenuesActivity.this, UserActivity.class));
                 return true;
         }
@@ -191,31 +213,6 @@ public class SearchVenuesActivity extends TabActivity {
     @Override
     public Object onRetainNonConfigurationInstance() {
         return mSearchHolder;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                LocationListener.LOCATION_UPDATE_MIN_TIME,
-                LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                LocationListener.LOCATION_UPDATE_MIN_TIME,
-                LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mLocationManager.removeUpdates(mLocationListener);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mSearchTask != null) {
-            mSearchTask.cancel(true);
-        }
     }
 
     public void putSearchResultsInAdapter(Group searchResults) {
@@ -263,7 +260,6 @@ public class SearchVenuesActivity extends TabActivity {
     }
 
     void startItemActivity(Venue venue) {
-        if (DEBUG) Log.d(TAG, "firing venue activity for venue");
         Intent intent = new Intent(SearchVenuesActivity.this, VenueActivity.class);
         intent.setAction(Intent.ACTION_VIEW);
         intent.putExtra(VenueActivity.EXTRA_VENUE, venue.getId());
