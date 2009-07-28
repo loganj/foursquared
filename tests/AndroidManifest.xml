@@ -26,29 +26,6 @@
     <uses-library
       android:name="com.google.android.maps" />
 
-
-    <activity
-      android:name=".TestCheckinsActivity"
-      android:launchMode="singleTop">
-      <intent-filter>
-        <action
-          android:name="android.intent.action.MAIN" />
-      </intent-filter>
-    </activity>
-
-
-    <activity
-      android:name=".TestSearchVenueActivity"
-      android:launchMode="singleTop">
-      <intent-filter>
-        <action
-          android:name="android.intent.action.MAIN" />
-        <action
-          android:name="android.intent.action.SEARCH" />
-      </intent-filter>
-
-    </activity>
-
   </application>
 
   <instrumentation

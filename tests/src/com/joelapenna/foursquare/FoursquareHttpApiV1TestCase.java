@@ -20,8 +20,9 @@ public class FoursquareHttpApiV1TestCase extends TestCase {
 
     @LargeTest
     public void test_authExchange() throws FoursquareException, IOException {
-        FoursquareHttpApiV1 foursquare = new FoursquareHttpApiV1(TestCredentials.oAuthConsumerKey,
-                TestCredentials.oAuthConsumerSecret);
+        FoursquareHttpApiV1 foursquare = new FoursquareHttpApiV1();
+        foursquare.setOAuthConsumerCredentials( //
+                TestCredentials.oAuthConsumerKey, TestCredentials.oAuthConsumerSecret);
         Credentials credentials = foursquare.authExchange(TestCredentials.testFoursquarePhone,
                 TestCredentials.testFoursquarePassword);
         assertNotNull(credentials.getOauthToken());
