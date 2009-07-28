@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
   xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.joelapenna.foursquared"
+  package="com.joelapenna.foursquared.tests"
   android:versionName="2009-07-04"
   android:versionCode="2009070400">
 
@@ -29,7 +29,7 @@
   </application>
 
   <instrumentation
-    android:name=".InstrumentationTestRunner"
+    android:name="android.test.InstrumentationTestRunner"
     android:targetPackage="com.joelapenna.foursquared">
   </instrumentation>
 </manifest>
