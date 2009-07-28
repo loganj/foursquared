@@ -44,7 +44,6 @@ File > Import > Existing project - Browse to $foursquared/main
    * A FoursquareType with child FoursquareType will not be able to load the Parcelable when reconstructing it with the ParcelableCreator:
       " android.os.BadParcelableException: ClassNotFoundException when unmarshalling"
    * Fix unittesting to actually work in split package mode.
-   * Use a decorator for dumpcatcher to allow pushing /any/ exception, not just uncaught ones to the dumpcatcher.
 
 
 == RELEASE BLOCKERS ==
@@ -52,6 +51,3 @@ File > Import > Existing project - Browse to $foursquared/main
    * auth_exchange timestamps invalidate all clients.
       - Option 1: Fix serverside
 	  - Option 2: Ditch oAuth
-
-  * city_switch should occur when ever the user changes his site, not only at
-    login.
