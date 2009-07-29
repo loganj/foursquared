@@ -48,7 +48,10 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
 
         // Immediately start trying to grab the user photos. All of them!
         for (int i = 0; i < checkins.size(); i++) {
-            mRrm.request(Uri.parse(((Checkin)checkins.get(i)).getUser().getPhoto()));
+            Uri photoUri = Uri.parse(((Checkin)checkins.get(i)).getUser().getPhoto());
+            if (!mRrm.getFile(photoUri).exists()) {
+                mRrm.request(photoUri);
+            }
         }
     }
 
