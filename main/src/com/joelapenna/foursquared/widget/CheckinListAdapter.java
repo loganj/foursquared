@@ -45,6 +45,11 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
         super(context, checkins);
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
+
+        // Immediately start trying to grab the user photos. All of them!
+        for (int i = 0; i < checkins.size(); i++) {
+            mRrm.request(Uri.parse(((Checkin)checkins.get(i)).getUser().getPhoto()));
+        }
     }
 
     @Override
@@ -101,25 +106,21 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
                 @Override
                 public void update(Observable observable, Object data) {
                     if (photoUri.equals((Uri)data)) {
-                        if (DEBUG) Log.d(TAG, "Observed my photo download");
                         // Stop observing once we get the correct image.
                         observable.deleteObserver(this);
-                        try {
-                            final Bitmap bitmap = BitmapFactory.decodeStream(mRrm
-                                    .getInputStream(photoUri));
-                            mHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Bitmap bitmap = BitmapFactory.decodeStream(mRrm
+                                            .getInputStream(photoUri));
                                     holder.photo.setImageBitmap(bitmap);
+                                } catch (IOException e) {
+                                    // TODO Auto-generated catch block
+                                    if (DEBUG) Log.d(TAG, "IOException", e);
                                 }
-                            });
-
-                        } catch (IOException e) {
-                            // its okay if we fail, for now...
-                        }
-                    } else {
-                        if (DEBUG) Log.d(TAG, "Photo does not match observable" + photo + ":"
-                                + data);
+                            }
+                        });
                     }
                 }
             });
