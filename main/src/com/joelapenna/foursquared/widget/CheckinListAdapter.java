@@ -40,13 +40,11 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
 
     private RemoteResourceManager mRrm;
     private Handler mHandler = new Handler();
-    RemoteResourceManagerObserver mUserPhotosObserver = new RemoteResourceManagerObserver();
 
     public CheckinListAdapter(Context context, Group checkins, RemoteResourceManager rrm) {
         super(context, checkins);
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
-        mRrm.addObserver(mUserPhotosObserver);
     }
 
     @Override
@@ -54,7 +52,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
         if (DEBUG) Log.d(TAG, "getView() called for position: " + position);
         // A ViewHolder keeps references to children views to avoid unnecessary
         // calls to findViewById() on each row.
-        ViewHolder holder;
+        final ViewHolder holder;
 
         // When convertView is not null, we can reuse it directly, there is no
         // need to re-inflate it. We only inflate a new View when the
@@ -79,19 +77,52 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
 
         Checkin checkin = (Checkin)getItem(position);
         User user = checkin.getUser();
-        Uri photo = Uri.parse(user.getPhoto());
+        final String photo = user.getPhoto();
+        final Uri photoUri = Uri.parse(photo);
 
-        if (mRrm.getFile(photo).exists()) {
+        if (mRrm.getFile(photoUri).exists()) {
             try {
-                Bitmap bitmap;
-                bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photo));
+                Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photoUri));
                 holder.photo.setImageBitmap(bitmap);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "IOException", e);
             }
         } else {
-            mRrm.request(photo);
+            mRrm.request(photoUri);
+            // XXX This solution won't scale when we fix the "convertView" bug in
+            // SeparatedListAdapter that forces us to render new list items for all list items
+            // instead of re-using them.
+            // Because mRrm is "static"-like, we're probably going to leak observers... if we run
+            // into memory issues, this is a good place to start looking. Otherwise, I'm just going
+            // to leave this as is because I'm not super smart and dont' know how to deal with this
+            // issue in a smart way.
+            mRrm.addObserver(new Observer() {
+                @Override
+                public void update(Observable observable, Object data) {
+                    if (photoUri.equals((Uri)data)) {
+                        if (DEBUG) Log.d(TAG, "Observed my photo download");
+                        // Stop observing once we get the correct image.
+                        observable.deleteObserver(this);
+                        try {
+                            final Bitmap bitmap = BitmapFactory.decodeStream(mRrm
+                                    .getInputStream(photoUri));
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    holder.photo.setImageBitmap(bitmap);
+                                }
+                            });
+
+                        } catch (IOException e) {
+                            // its okay if we fail, for now...
+                        }
+                    } else {
+                        if (DEBUG) Log.d(TAG, "Photo does not match observable" + photo + ":"
+                                + data);
+                    }
+                }
+            });
         }
 
         holder.firstLine.setText(StringFormatters.getCheckinMessage(checkin));
@@ -117,20 +148,6 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
         venue.setId(checkin.getVenue().getId());
         venue.setName(checkin.getVenue().getName());
         return venue;
-    }
-
-    private class RemoteResourceManagerObserver implements Observer {
-        @Override
-        public void update(Observable observable, Object data) {
-            if (DEBUG) Log.d(TAG, "Fetcher got: " + data);
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (DEBUG) Log.d(TAG, "notifyDataSetChanged()");
-                    notifyDataSetChanged();
-                }
-            });
-        }
     }
 
     private static class ViewHolder {
