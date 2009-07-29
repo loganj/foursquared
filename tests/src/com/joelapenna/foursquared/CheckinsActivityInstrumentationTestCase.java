@@ -1,6 +1,7 @@
 /**
  * Copyright 2009 Joe LaPenna
  */
+
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.Group;
@@ -12,9 +13,9 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
- *
  */
-public class CheckinsActivityInstrumentationTestCase extends ActivityInstrumentationTestCase2<CheckinsActivity> {
+public class CheckinsActivityInstrumentationTestCase extends
+        ActivityInstrumentationTestCase2<CheckinsActivity> {
 
     public CheckinsActivityInstrumentationTestCase() {
         super("com.joelapenna.foursquared", CheckinsActivity.class);
