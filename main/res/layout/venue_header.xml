@@ -40,6 +40,8 @@
     android:layout_below="@id/venueName"
     android:layout_alignWithParentIfMissing="true"
 
+    android:enabled="false"
+
     android:text="Checkin!" />
 
   <TextView

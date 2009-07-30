@@ -33,8 +33,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TabHost;
@@ -57,12 +59,10 @@ public class VenueActivity extends TabActivity {
     private static final int DIALOG_CHECKIN = 0;
     private static final int DIALOG_TIPADD = 1;
 
-    private static final int MENU_GROUP_CHECKIN = 1;
+    private static final int MENU_GROUP_SHOUT = 1;
 
-    private static final int MENU_CHECKIN = 1;
-    private static final int MENU_CHECKIN_TWITTER = 2;
-    private static final int MENU_CHECKIN_SILENT = 3;
-    private static final int MENU_TIPADD = 4;
+    private static final int MENU_SHOUT = 1;
+    private static final int MENU_TIPADD = 2;
 
     final VenueObservable venueObservable = new VenueObservable();
     final CheckinsObservable checkinsObservable = new CheckinsObservable();
@@ -71,10 +71,9 @@ public class VenueActivity extends TabActivity {
 
     private final HashSet<Object> mProgressBarTasks = new HashSet<Object>();
 
-    private MenuItem mShareToggle;
-    private MenuItem mTwitterToggle;
-    private MenuItem mCheckinMenuItem;
+    private MenuItem mShoutMenuItem;
     private MenuItem mAddTipMenuItem;
+    private Button mCheckinButton;
 
     private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
         @Override
@@ -94,6 +93,14 @@ public class VenueActivity extends TabActivity {
         initTabHost();
 
         StateHolder holder = (StateHolder)getLastNonConfigurationInstance();
+
+        mCheckinButton = (Button)findViewById(R.id.checkinButton);
+        mCheckinButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new VenueCheckinTask().execute(mStateHolder.venue);
+            }
+        });
 
         if (holder != null) {
             if (holder.venue == null) {
@@ -129,21 +136,11 @@ public class VenueActivity extends TabActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        mCheckinMenuItem = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN, 1, "Checkin") //
+        mShoutMenuItem = menu.add(MENU_GROUP_SHOUT, MENU_SHOUT, 1, "Shout!") //
                 .setIcon(android.R.drawable.ic_menu_add);
-
-        mShareToggle = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN_SILENT, 2, "Share").setCheckable(
-                true);
-        mTwitterToggle = menu.add(MENU_GROUP_CHECKIN, MENU_CHECKIN_TWITTER, 3, "Twitter")
-                .setCheckable(true);
 
         mAddTipMenuItem = menu.add(Menu.NONE, MENU_TIPADD, 4, "Add Tip") //
                 .setIcon(android.R.drawable.ic_menu_set_as);
-
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        mShareToggle.setChecked(settings.getBoolean(Preferences.PREFERENCE_SHARE_CHECKIN, true));
-        mTwitterToggle.setChecked(settings
-                .getBoolean(Preferences.PREFERENCE_TWITTER_CHECKIN, false));
 
         Foursquared.addPreferencesToMenu(this, menu);
         return true;
@@ -154,31 +151,8 @@ public class VenueActivity extends TabActivity {
         super.onPrepareOptionsMenu(menu);
 
         boolean checkinEnabled = (mStateHolder.venue != null) && (mStateHolder.checkin == null);
-        menu.setGroupEnabled(mCheckinMenuItem.getGroupId(), checkinEnabled);
+        menu.setGroupEnabled(mShoutMenuItem.getGroupId(), checkinEnabled);
         mAddTipMenuItem.setEnabled(checkinEnabled);
-
-        if (mTwitterToggle.isChecked()) {
-            mTwitterToggle.setIcon(android.R.drawable.button_onoff_indicator_on);
-            mTwitterToggle.setTitle("Telling Twitter");
-        } else {
-            mTwitterToggle.setIcon(android.R.drawable.button_onoff_indicator_off);
-            mTwitterToggle.setTitle("Hiding Tweet");
-        }
-
-        if (mShareToggle.isChecked()) {
-            mShareToggle.setIcon(android.R.drawable.button_onoff_indicator_on);
-            mShareToggle.setTitle("Telling friends");
-        } else {
-            mShareToggle.setIcon(android.R.drawable.button_onoff_indicator_off);
-            mShareToggle.setTitle("Hiding checkin");
-        }
-
-        if (mShareToggle.isChecked() && checkinEnabled) {
-            mTwitterToggle.setEnabled(true);
-        } else {
-            mTwitterToggle.setChecked(false);
-            mTwitterToggle.setEnabled(false);
-        }
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -186,14 +160,8 @@ public class VenueActivity extends TabActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case MENU_CHECKIN:
+            case MENU_SHOUT:
                 new VenueCheckinTask().execute(mStateHolder.venue);
-                return true;
-            case MENU_CHECKIN_TWITTER:
-                item.setChecked(!item.isChecked());
-                return true;
-            case MENU_CHECKIN_SILENT:
-                item.setChecked(!item.isChecked());
                 return true;
             case MENU_TIPADD:
                 showDialog(DIALOG_TIPADD);
@@ -321,6 +289,8 @@ public class VenueActivity extends TabActivity {
         if (line2 != null) {
             locationLine2.setText(line2);
         }
+
+        mCheckinButton.setEnabled(true);
     }
 
     private void setVenue(Venue venue) {
@@ -407,7 +377,7 @@ public class VenueActivity extends TabActivity {
 
         @Override
         public void onPreExecute() {
-            mCheckinMenuItem.setEnabled(false);
+            mCheckinButton.setEnabled(false);
             if (DEBUG) Log.d(TAG, "VenueCheckinTask: onPreExecute()");
             startProgressBar(PROGRESS_BAR_TASK_ID);
 
@@ -420,8 +390,11 @@ public class VenueActivity extends TabActivity {
                 final Venue venue = params[0];
                 if (DEBUG) Log.d(TAG, "Checking in to: " + venue.getName());
 
-                boolean silent = !mShareToggle.isChecked();
-                boolean twitter = mTwitterToggle.isChecked();
+                SharedPreferences settings = PreferenceManager
+                        .getDefaultSharedPreferences(VenueActivity.this);
+                boolean silent = !settings.getBoolean(Preferences.PREFERENCE_SHARE_CHECKIN, true);
+                boolean twitter = settings
+                        .getBoolean(Preferences.PREFERENCE_TWITTER_CHECKIN, false);
                 Location location = ((Foursquared)getApplication()).getLastKnownLocation();
                 if (location == null) {
                     return Foursquared.getFoursquare().checkin(venue.getName(), silent, twitter,
@@ -450,7 +423,7 @@ public class VenueActivity extends TabActivity {
             try {
                 mStateHolder.checkin = checkin;
                 if (checkin == null) {
-                    mCheckinMenuItem.setEnabled(true);
+                    mCheckinButton.setEnabled(true);
                     Toast.makeText(VenueActivity.this, "Unable to checkin! (FIX THIS!)",
                             Toast.LENGTH_LONG).show();
                     return;
