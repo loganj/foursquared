@@ -8,7 +8,7 @@
     android:id="@android:id/tabhost"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_below="@+id/venueLocationLine2"
+    android:layout_below="@+id/venueHeader"
     android:paddingTop="10dip">
     <LinearLayout
       android:id="@+id/address"
@@ -20,7 +20,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
       <include
-        layout="@layout/venue_activity_header" />
+        android:id="@id/venueHeader"
+        layout="@layout/venue_header" />
       <FrameLayout
         android:id="@android:id/tabcontent"
         android:layout_width="fill_parent"
