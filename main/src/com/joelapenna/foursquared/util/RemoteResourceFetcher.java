@@ -23,16 +23,15 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import android.net.Uri;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Looper;
-import android.os.Message;
-import android.os.Process;
 import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Observable;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -43,17 +42,14 @@ class RemoteResourceFetcher extends Observable {
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private DiskCache mResourceCache;
-    private Handler mFetcherHandler;
-    private HandlerThread mFetcherThread;
-    private Looper mFetcherLooper;
+    private ExecutorService mExecutor;
 
     private HttpClient mHttpClient;
 
     public RemoteResourceFetcher(DiskCache cache) {
         mResourceCache = cache;
         mHttpClient = createHttpClient();
-
-        startFetcher();
+        mExecutor = Executors.newCachedThreadPool();
     }
 
     @Override
@@ -63,65 +59,33 @@ class RemoteResourceFetcher extends Observable {
     }
 
     public void fetch(Uri uri, String hash) {
-        Message msg = mFetcherHandler.obtainMessage(FetcherHandler.MESSAGE_FETCH);
-        msg.obj = new Request(uri, hash);
-        mFetcherHandler.sendMessage(msg);
+        Callable fetcher = newRequestCall(new Request(uri, hash));
+        mExecutor.submit(fetcher);
     }
 
-    public void fetchBlocking(Uri uri, String hash) throws IOException {
-        makeRequest(new Request(uri, hash));
+    public void fetchBlocking(Uri uri, String hash) throws InterruptedException, ExecutionException {
+        Callable fetcher = newRequestCall(new Request(uri, hash));
+        mExecutor.submit(fetcher).get();
     }
 
     public void shutdown() {
-        if (mFetcherLooper != null) {
-            mFetcherLooper.quit();
-            mFetcherThread = null;
-            mFetcherHandler = null;
-            mFetcherLooper = null;
-        }
+        mExecutor.shutdownNow();
     }
 
-    private void startFetcher() {
-        if (DEBUG) Log.d(TAG, "Starting Initializer");
-        mFetcherThread = new HandlerThread("FetcherThread", Process.THREAD_PRIORITY_BACKGROUND);
-        mFetcherThread.start();
-        mFetcherLooper = mFetcherThread.getLooper();
-        mFetcherHandler = new FetcherHandler(mFetcherLooper);
-    }
-
-    private class FetcherHandler extends Handler {
-
-        /**
-         * Use to request a thumb fetch. (May contain large amounts of data). msg.obj will be the
-         * GUID of the resource to fetch.
-         */
-        static final int MESSAGE_FETCH = 0;
-
-        /**
-         * @param initializerLooper
-         */
-        FetcherHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            if (DEBUG) Log.d(TAG, "handle Message" + msg.toString());
-            switch (msg.what) {
-                case MESSAGE_FETCH:
-                    try {
-                        makeRequest((Request)msg.obj);
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        // There isn't anything we can really do here... that I want to implement.
-                    }
-                default:
-                    break;
+    private Callable newRequestCall(final Request request) {
+        return new Callable() {
+            public Object call() {
+                try {
+                    makeRequest(request);
+                } catch (IOException e) {
+                    if (DEBUG) Log.d(TAG, "IOException", e);
+                }
+                return null;
             }
-        }
+        };
     }
 
-    private void makeRequest(Request request) throws IOException {
+    private void makeRequest(final Request request) throws IOException {
         try {
             if (DEBUG) Log.d(TAG, "Requesting: " + request.uri);
             HttpGet httpGet = new HttpGet(request.uri.toString());
@@ -138,7 +102,7 @@ class RemoteResourceFetcher extends Observable {
     /**
      * Gets the input stream from a response entity. If the entity is gzipped then this will get a
      * stream over the uncompressed data.
-     *
+     * 
      * @param entity the entity whose content should be read
      * @return the input stream to read from
      * @throws IOException
@@ -165,7 +129,7 @@ class RemoteResourceFetcher extends Observable {
     /**
      * Create a thread-safe client. This client does not do redirecting, to allow us to capture
      * correct "error" codes.
-     *
+     * 
      * @return HttpClient
      */
     public static final DefaultHttpClient createHttpClient() {

@@ -44,6 +44,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -162,7 +163,8 @@ public class UserActivity extends Activity {
         try {
             Uri icon = Uri.parse(badge.getIcon());
             if (DEBUG) Log.d(TAG, icon.toString());
-            mBadgeDialog.setIcon(new BitmapDrawable(Foursquared.getBadgeIconManager().getInputStream(icon)));
+            mBadgeDialog.setIcon(new BitmapDrawable(Foursquared.getBadgeIconManager()
+                    .getInputStream(icon)));
         } catch (IOException e) {
             if (DEBUG) Log.d(TAG, "IOException", e);
             mBadgeDialog.setIcon(R.drawable.default_on);
@@ -218,15 +220,19 @@ public class UserActivity extends Activity {
 
         @Override
         protected Uri doInBackground(Uri... params) {
-            Uri uri = (Uri)params[0];
             try {
+                Uri uri = (Uri)params[0];
                 Foursquared.getUserPhotosManager().requestBlocking(uri);
-            } catch (IOException e) {
+                return uri;
+
+            } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "IOException", e);
-                return null;
+                if (DEBUG) Log.d(TAG, "InterruptedException", e);
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                if (DEBUG) Log.d(TAG, "ExecutionException", e);
             }
-            return uri;
+            return null;
         }
 
         @Override

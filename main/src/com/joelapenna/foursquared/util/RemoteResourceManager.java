@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -51,9 +52,11 @@ public class RemoteResourceManager extends Observable {
      * Request a resource be downloaded. Useful to call after a IOException from getInputStream.
      *
      * @param uri
+     * @throws ExecutionException 
+     * @throws InterruptedException 
      * @throws IOException
      */
-    public void requestBlocking(Uri uri) throws IOException {
+    public void requestBlocking(Uri uri) throws InterruptedException, ExecutionException {
         if (DEBUG) Log.d(TAG, "request(): " + uri);
         mRemoteResourceFetcher.fetchBlocking(uri, Uri.encode(uri.toString()));
     }
