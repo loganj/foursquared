@@ -5,8 +5,9 @@ The main foursquared repo is at http://joelapenna.com/git/foursquared.git
 *Some files must be created in order for the tests and source to build.*
 
 Templates are available in examples/
-  + *Create main/res/values/credentials.xml*
-  + *Create tests/src/com/joelapenna/foursquare/TestConstants.java*
+  + Create: main/res/values/credentials.xml
+  + Create: tests/src/com/joelapenna/foursquare/TestConstants.java
+  + Create: main/src/com/joelapenna/foursquard/FoursquaredSettings.java
 
 
 ==Setting up Eclipse==
