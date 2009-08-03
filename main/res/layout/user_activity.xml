@@ -3,6 +3,7 @@
 
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:foursquared="http://schemas.android.com/apk/res/com.joelapenna.foursquared"
   android:layout_width="fill_parent"
   android:layout_height="wrap_content"
   android:padding="5dip">
@@ -65,17 +66,17 @@
     android:layout_below="@id/photo"
     style="@style/listSeparatorTextViewStyle" />
 
-  <include
-    android:id="@+id/venue"
-
-    layout="@layout/user_activity_venue"
+  <com.joelapenna.foursquared.widget.VenueView
+    android:id="@id/venue"
 
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
 
     android:layout_alignParentRight="true"
     android:layout_alignParentLeft="true"
-    android:layout_below="@id/venueHeader" />
+    android:layout_below="@id/venueHeader"
+    
+    foursquared:checkinButton="false" />
 
   <TextView
     android:id="@+id/badgesHeader"

@@ -10,7 +10,7 @@ import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.util.StringFormatters;
+import com.joelapenna.foursquared.widget.VenueView;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -34,7 +34,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TabHost;
@@ -71,7 +70,8 @@ public class VenueActivity extends TabActivity {
 
     private MenuItem mShoutMenuItem;
     private MenuItem mAddTipMenuItem;
-    private Button mCheckinButton;
+
+    private VenueView mVenueView;
 
     private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
         @Override
@@ -92,8 +92,8 @@ public class VenueActivity extends TabActivity {
 
         StateHolder holder = (StateHolder)getLastNonConfigurationInstance();
 
-        mCheckinButton = (Button)findViewById(R.id.checkinButton);
-        mCheckinButton.setOnClickListener(new OnClickListener() {
+        mVenueView = (VenueView)findViewById(R.id.venue);
+        mVenueView.setCheckinButtonOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 new VenueCheckinTask().execute(mStateHolder.venue);
@@ -183,9 +183,10 @@ public class VenueActivity extends TabActivity {
                         Preferences.PREFERENCE_ID, "");
 
                 WebView webView = (WebView)layout.findViewById(R.id.webView);
-                webView.setBackgroundColor(0);  // make it transparent... how do we do this in xml?
+                webView.setBackgroundColor(0); // make it transparent... how do we do this in xml?
                 String breakdownUrl = "http://playfoursquare.com/incoming/breakdown";
-                String breakdownQuery = "?client=iphone&uid=" + userId + "&cid=" + checkinResult.getId();
+                String breakdownQuery = "?client=iphone&uid=" + userId + "&cid="
+                        + checkinResult.getId();
                 webView.loadUrl(breakdownUrl + breakdownQuery);
 
                 TextView messageView = (TextView)layout.findViewById(R.id.messageTextView);
@@ -287,19 +288,8 @@ public class VenueActivity extends TabActivity {
     private void onVenueSet(Venue venue) {
         if (DEBUG) Log.d(TAG, "onVenueSet:" + venue.getName());
         setTitle(venue.getName() + " - Foursquare");
-        TextView name = (TextView)findViewById(R.id.venueName);
-        TextView locationLine1 = (TextView)findViewById(R.id.venueLocationLine1);
-        TextView locationLine2 = (TextView)findViewById(R.id.venueLocationLine2);
-
-        name.setText(venue.getName());
-        locationLine1.setText(venue.getAddress());
-
-        String line2 = StringFormatters.getVenueLocationCrossStreetOrCity(venue);
-        if (line2 != null) {
-            locationLine2.setText(line2);
-        }
-
-        mCheckinButton.setEnabled(true);
+        mVenueView.setVenue(venue);
+        mVenueView.setCheckinButtonEnabled(true);
     }
 
     private void setVenue(Venue venue) {
@@ -385,7 +375,7 @@ public class VenueActivity extends TabActivity {
 
         @Override
         public void onPreExecute() {
-            mCheckinButton.setEnabled(false);
+            mVenueView.setCheckinButtonEnabled(false);
             if (DEBUG) Log.d(TAG, "VenueCheckinTask: onPreExecute()");
             startProgressBar(PROGRESS_BAR_TASK_ID);
 
@@ -421,7 +411,7 @@ public class VenueActivity extends TabActivity {
             try {
                 mStateHolder.checkinResult = checkinResult;
                 if (checkinResult == null) {
-                    mCheckinButton.setEnabled(true);
+                    mVenueView.setEnabled(true);
                     Toast.makeText(VenueActivity.this, "Unable to checkinResult! (FIX THIS!)",
                             Toast.LENGTH_LONG).show();
                     return;

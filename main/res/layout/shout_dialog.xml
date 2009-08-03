@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:foursquared="http://schemas.android.com/apk/res/com.joelapenna.foursquared"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:layout_weight="1"
+  android:orientation="vertical">
+
+  <com.joelapenna.foursquared.widget.VenueView
+    android:id="@+id/venue"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    foursquared:checkinButton="false" />
+
+  <CheckBox
+    android:id="@+id/tellFriendsCheckBox"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+
+    android:text="Tell my friends" />
+
+  <CheckBox
+    android:id="@+id/tellTwitterCheckBox"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+
+    android:text="Tell Twitter" />
+
+  <EditText
+    android:id="@+id/editText"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:lines="3" />
+</LinearLayout>

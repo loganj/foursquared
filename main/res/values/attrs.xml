@@ -1,0 +1,8 @@
+<resources>
+  <declare-styleable
+    name="VenueView">
+    <attr
+      name="checkinButton"
+      format="boolean" />
+  </declare-styleable>
+</resources>
