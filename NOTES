@@ -34,22 +34,3 @@ File > Import > Existing project - Browse to $dumpcatcher/clients/java/main
 
 ====Real foursquare projects====
 File > Import > Existing project - Browse to $foursquared/main
-
-
-
-== TODO ==
-
-   * Support removing and completing tips/todos (as of 7/09 no API)
-   * Eliminate final usage of "classic" api: /checkins (as of 7/09 cooky API)
-   * A FoursquareType with child FoursquareType will not be able to load the Parcelable when reconstructing it with the ParcelableCreator:
-      " android.os.BadParcelableException: ClassNotFoundException when unmarshalling"
-   * Fix unittesting to actually work in split package mode.
-
-
-== RELEASE BLOCKERS ==
-
-   * auth_exchange timestamps invalidate all clients.
-      - Option 1: Fix serverside
-	  - Option 2: Ditch oAuth
-   * parser/html instability
-   * serving a unclosed checkin.xml file on /checkin mock causes all further parsers to fail?
