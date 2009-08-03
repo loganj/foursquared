@@ -51,3 +51,5 @@ File > Import > Existing project - Browse to $foursquared/main
    * auth_exchange timestamps invalidate all clients.
       - Option 1: Fix serverside
 	  - Option 2: Ditch oAuth
+   * parser/html instability
+   * serving a unclosed checkin.xml file on /checkin mock causes all further parsers to fail?

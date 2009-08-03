@@ -6,10 +6,12 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Checkin;
+import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.StringFormatters;
+import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -21,7 +23,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -38,6 +39,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -116,8 +118,8 @@ public class VenueActivity extends TabActivity {
                 if (DEBUG) Log.d(TAG, "Restoring checkins: " + holder.checkins);
                 setCheckins(holder.checkins);
             }
-            if (holder.checkin != null) {
-                mStateHolder.checkin = holder.checkin;
+            if (holder.checkinResult != null) {
+                mStateHolder.checkinResult = holder.checkinResult;
             }
         } else {
             mStateHolder.venueId = getIntent().getExtras().getString(EXTRA_VENUE);
@@ -150,7 +152,8 @@ public class VenueActivity extends TabActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        boolean checkinEnabled = (mStateHolder.venue != null) && (mStateHolder.checkin == null);
+        boolean checkinEnabled = (mStateHolder.venue != null)
+                && (mStateHolder.checkinResult == null);
         menu.setGroupEnabled(mShoutMenuItem.getGroupId(), checkinEnabled);
         mAddTipMenuItem.setEnabled(checkinEnabled);
 
@@ -172,24 +175,34 @@ public class VenueActivity extends TabActivity {
 
     @Override
     public Dialog onCreateDialog(int id) {
+        LayoutInflater inflater = (LayoutInflater)getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        View layout;
+
         switch (id) {
             case DIALOG_CHECKIN:
-                com.joelapenna.foursquare.types.classic.Checkin checkin = mStateHolder.checkin;
+                CheckinResult checkinResult = mStateHolder.checkinResult;
+                layout = inflater.inflate(R.layout.checkin_dialog,
+                        (ViewGroup)findViewById(R.id.layout_root));
+                String userId = PreferenceManager.getDefaultSharedPreferences(this).getString(
+                        Preferences.PREFERENCE_ID, "");
 
-                WebView webView = new WebView(this);
-                webView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
-                        LayoutParams.FILL_PARENT));
-                webView.loadUrl(checkin.getUrl());
+                WebView webView = (WebView)layout.findViewById(R.id.webView);
+                webView.setBackgroundColor(0);  // make it transparent... how do we do this in xml?
+                String breakdownUrl = "http://playfoursquare.com/incoming/breakdown";
+                String breakdownQuery = "?client=iphone&uid=" + userId + "&cid=" + checkinResult.getId();
+                webView.loadUrl(breakdownUrl + breakdownQuery);
 
-                return new AlertDialog.Builder(this) // the builder
-                        .setView(webView) // use a web view
-                        .setIcon(android.R.drawable.ic_dialog_info) // show an icon
-                        .setTitle(Html.fromHtml(checkin.getMessage())) // title
-                        .create(); // return it.
+                TextView messageView = (TextView)layout.findViewById(R.id.messageTextView);
+                messageView.setText(checkinResult.getMessage());
+
+                return new AlertDialog.Builder(this) //
+                        .setView(layout) //
+                        .setIcon(android.R.drawable.ic_dialog_info) // icon
+                        .setTitle("Checked in @ " + checkinResult.getVenue().getName()) // title
+                        .create();
 
             case DIALOG_TIPADD:
-                LayoutInflater inflater = (LayoutInflater)getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-                View layout = inflater.inflate(R.layout.tip_add_dialog,
+                layout = inflater.inflate(R.layout.tip_add_dialog,
                         (ViewGroup)findViewById(R.id.layout_root));
 
                 final EditText editText = (EditText)layout.findViewById(R.id.editText);
@@ -370,8 +383,7 @@ public class VenueActivity extends TabActivity {
         }
     }
 
-    private class VenueCheckinTask extends
-            AsyncTask<Venue, Void, com.joelapenna.foursquare.types.classic.Checkin> {
+    private class VenueCheckinTask extends AsyncTask<Venue, Void, CheckinResult> {
 
         private static final String PROGRESS_BAR_TASK_ID = TAG + "AddCheckinAsyncTask";
 
@@ -384,7 +396,7 @@ public class VenueActivity extends TabActivity {
         }
 
         @Override
-        public com.joelapenna.foursquare.types.classic.Checkin doInBackground(Venue... params) {
+        public CheckinResult doInBackground(Venue... params) {
             if (DEBUG) Log.d(TAG, "VenueCheckinTask: doInBackground()");
             try {
                 final Venue venue = params[0];
@@ -395,18 +407,8 @@ public class VenueActivity extends TabActivity {
                 boolean silent = !settings.getBoolean(Preferences.PREFERENCE_SHARE_CHECKIN, true);
                 boolean twitter = settings
                         .getBoolean(Preferences.PREFERENCE_TWITTER_CHECKIN, false);
-                Location location = ((Foursquared)getApplication()).getLastKnownLocation();
-                if (location == null) {
-                    return Foursquared.getFoursquare().checkin(venue.getName(), silent, twitter,
-                            null, null);
-                } else {
-                    // I wonder if this could result in the backend logic to mis-calculate which
-                    // venue you're at because the phone gave too coarse or inaccurate location
-                    // information.
-                    return Foursquared.getFoursquare().checkin(venue.getName(), silent, twitter,
-                            String.valueOf(location.getLatitude()),
-                            String.valueOf(location.getLongitude()));
-                }
+                return Foursquared.getFoursquare().checkin(venue.getId(), null, null, silent,
+                        twitter);
             } catch (FoursquareException e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "FoursquareException", e);
@@ -418,13 +420,13 @@ public class VenueActivity extends TabActivity {
         }
 
         @Override
-        public void onPostExecute(com.joelapenna.foursquare.types.classic.Checkin checkin) {
+        public void onPostExecute(CheckinResult checkinResult) {
             if (DEBUG) Log.d(TAG, "VenueCheckinTask: onPostExecute()");
             try {
-                mStateHolder.checkin = checkin;
-                if (checkin == null) {
+                mStateHolder.checkinResult = checkinResult;
+                if (checkinResult == null) {
                     mCheckinButton.setEnabled(true);
-                    Toast.makeText(VenueActivity.this, "Unable to checkin! (FIX THIS!)",
+                    Toast.makeText(VenueActivity.this, "Unable to checkinResult! (FIX THIS!)",
                             Toast.LENGTH_LONG).show();
                     return;
                 } else {
@@ -557,6 +559,6 @@ public class VenueActivity extends TabActivity {
         Venue venue = null;
         String venueId = null;
         Group checkins = null;
-        com.joelapenna.foursquare.types.classic.Checkin checkin = null;
+        CheckinResult checkinResult = null;
     }
 }

@@ -8,14 +8,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Auto-generated: 2009-07-26 20:59:16.989600
- * 
+ * Auto-generated: 2009-08-01 10:38:31.592075
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Badge implements Parcelable, FoursquareType {
 
     private String mDescription;
     private String mIcon;
+    private String mId;
+    private String mMessage;
     private String mName;
 
     public Badge() {
@@ -35,6 +37,22 @@ public class Badge implements Parcelable, FoursquareType {
 
     public void setIcon(String icon) {
         mIcon = icon;
+    }
+
+    public String getId() {
+        return mId;
+    }
+
+    public void setId(String id) {
+        mId = id;
+    }
+
+    public String getMessage() {
+        return mMessage;
+    }
+
+    public void setMessage(String message) {
+        mMessage = message;
     }
 
     public String getName() {
@@ -60,6 +78,8 @@ public class Badge implements Parcelable, FoursquareType {
         dest.writeBooleanArray(booleanArray);
         dest.writeString(this.mDescription);
         dest.writeString(this.mIcon);
+        dest.writeString(this.mId);
+        dest.writeString(this.mMessage);
         dest.writeString(this.mName);
     }
 
@@ -68,6 +88,8 @@ public class Badge implements Parcelable, FoursquareType {
         source.readBooleanArray(booleanArray);
         this.mDescription = source.readString();
         this.mIcon = source.readString();
+        this.mId = source.readString();
+        this.mMessage = source.readString();
         this.mName = source.readString();
     }
 

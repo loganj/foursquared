@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-07-26 20:59:18.812528
+ * Auto-generated: 2009-08-01 10:38:33.388910
  * 
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>

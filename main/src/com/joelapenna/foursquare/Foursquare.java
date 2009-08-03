@@ -7,6 +7,7 @@ package com.joelapenna.foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsError;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.Data;
@@ -15,7 +16,6 @@ import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.types.classic.Auth;
-import com.joelapenna.foursquare.types.classic.Checkin;
 import com.joelapenna.foursquared.FoursquaredSettings;
 
 import android.util.Log;
@@ -107,10 +107,10 @@ public class Foursquare {
         return mFoursquareV1.addvenue(name, address, crossstreet, city, state, zip, cityid, phone);
     }
 
-    @Classic
-    public Checkin checkin(String venue, boolean silent, boolean twitter, String lat, String lng)
-            throws FoursquareException, FoursquareError, IOException {
-        return mFoursquare.checkin(mPhone, venue, silent, twitter, lat, lng, null);
+    @V1
+    public CheckinResult checkin(String venueName, String venueId, String shout, boolean isPrivate,
+            boolean twitter) throws FoursquareException, FoursquareError, IOException {
+        return mFoursquareV1.checkin(venueName, venueId, shout, isPrivate, twitter);
     }
 
     @V1

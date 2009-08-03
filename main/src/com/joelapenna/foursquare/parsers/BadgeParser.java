@@ -17,8 +17,8 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-07-26 20:59:16.855824
- * 
+ * Auto-generated: 2009-08-01 10:38:31.501404
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -48,6 +48,12 @@ public class BadgeParser extends AbstractParser<Badge> {
 
             } else if ("icon".equals(name)) {
                 badge.setIcon(parser.nextText());
+
+            } else if ("id".equals(name)) {
+                badge.setId(parser.nextText());
+
+            } else if ("message".equals(name)) {
+                badge.setMessage(parser.nextText());
 
             } else if ("name".equals(name)) {
                 badge.setName(parser.nextText());

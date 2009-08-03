@@ -10,6 +10,7 @@ import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.http.HttpApi;
 import com.joelapenna.foursquare.http.HttpApiWithOAuth;
 import com.joelapenna.foursquare.parsers.CheckinParser;
+import com.joelapenna.foursquare.parsers.CheckinResultParser;
 import com.joelapenna.foursquare.parsers.CityParser;
 import com.joelapenna.foursquare.parsers.CredentialsParser;
 import com.joelapenna.foursquare.parsers.DataParser;
@@ -260,7 +261,7 @@ public class FoursquareHttpApiV1 {
                 new BasicNameValuePair("shout", shout), //
                 new BasicNameValuePair("private", (isPrivate) ? "1" : "0"), //
                 new BasicNameValuePair("twitter", (twitter) ? "1" : "0"));
-        return (CheckinResult)mHttpApi.doHttpRequest(httpGet, new CheckinParser());
+        return (CheckinResult)mHttpApi.doHttpRequest(httpGet, new CheckinResultParser());
     }
 
     /**

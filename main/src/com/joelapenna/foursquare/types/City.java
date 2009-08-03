@@ -8,8 +8,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Auto-generated: 2009-07-26 20:59:17.636506
- * 
+ * Auto-generated: 2009-08-01 10:38:32.112829
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class City implements Parcelable, FoursquareType {

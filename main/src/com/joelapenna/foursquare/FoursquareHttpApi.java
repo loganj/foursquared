@@ -63,7 +63,7 @@ class FoursquareHttpApi {
     // Not the normal URL because, well, it doesn't have a normal URL!
     private static final String URL_API_INCOMING = URL_DOMAIN + "/incoming/incoming.php";
 
-    // Gets the html description of a checkin.
+    // Gets the html description of a checkinResult.
     private static final String URL_BREAKDOWN = URL_DOMAIN + "/incoming/breakdown";
 
     // Get the html achievements page.
@@ -146,6 +146,7 @@ class FoursquareHttpApi {
         return (Data)mHttpApi.doHttpRequest(httpPost, new DataParser());
     }
 
+    @Deprecated
     Checkin checkin(String phone, String venue, boolean silent, boolean twitter, String lat,
             String lng, String cityid) throws FoursquareException, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(URL_API_INCOMING, //
@@ -233,6 +234,7 @@ class FoursquareHttpApi {
     /**
      * /web/iphone/achievements?task=unlocked&uid=1818&cityid=23
      */
+    @Deprecated
     String achievements(String cityid, String task, String userId) throws FoursquareError,
             FoursquareParseException, IOException, FoursquareCredentialsError {
         return mHttpApi.doHttpPost(URL_ACHIEVEMENTS, //
@@ -245,6 +247,7 @@ class FoursquareHttpApi {
     /**
      * /incoming/breakdown?cid=67889&uid=9232&client=iphone
      */
+    @Deprecated
     String breakdown(String userId, String checkinId) throws FoursquareError,
             FoursquareParseException, IOException, FoursquareCredentialsError {
         return mHttpApi.doHttpPost(URL_BREAKDOWN, //
@@ -257,6 +260,7 @@ class FoursquareHttpApi {
     /**
      * /web/iphone/me?uid=9232&view=mini&cityid=23
      */
+    @Deprecated
     String me(String cityid, String userId) throws FoursquareError, FoursquareParseException,
             IOException, FoursquareCredentialsError {
         return mHttpApi.doHttpPost(URL_ME, // url

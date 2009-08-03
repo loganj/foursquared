@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkin>
+  <message>OK! We've got you @ 4SQ HQ - Soho. This is your 8th checkin here!</message>
+  <id>413421</id>
+  <created>Mon, 29 Jun 09 14:21:06 +0000</created>
+  <venue>
+    <id>45506</id>
+    <name>4SQ HQ - Soho</name>
+    <address>...</address>
+    <crossstreet>btw Grand &amp; Broome</crossstreet>
+    <city>New York</city>
+    <state>NY</state>
+    <zip>10013</zip>
+    <id>22</id>
+  </venue>
+  <mayor>
+    <type>nochange</type>
+    <checkins>11</checkins>
+    <message>You're still The Mayor of 4SQ HQ - Soho! (11 checkins in the past 2 months)</message>
+  </mayor>
+  <badges>
+    <badge>
+      <id>123</id>
+      <name>Newbie</name>
+      <icon>http://playfoursquare.com/images/badges/newbie_on.png</icon>
+      <message>Congrats on your first checkin!</message>
+    </badge>
+  </badges>
+  <specials>
+    <special>If you're the mayor, show the bartender and your first drink is free! (just beer and well drinks guys, let's be fair)</special>
+  </specials>
+</checkin>

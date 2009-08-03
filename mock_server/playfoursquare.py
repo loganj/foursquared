@@ -48,6 +48,8 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
       path = '../captures/api/v1/switchcity.xml'
     elif url.path == '/v1/tips':
       path = '../captures/api/v1/tips.xml'
+    elif url.path == '/v1/checkin':
+      path = '../captures/api/v1/checkin.xml'
 
     if path is None:
       self.send_error(404)

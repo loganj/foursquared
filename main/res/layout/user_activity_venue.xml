@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="?android:attr/listPreferredItemHeight"
+  style="@style/venueActivityHeaderStyle">
+
+  <TextView
+    android:id="@+id/venueName"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+
+    android:layout_toRightOf="@id/icon"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentTop="true"
+    android:layout_alignWithParentIfMissing="true"
+
+    android:textAppearance="@android:style/TextAppearance.Medium" />
+
+  <TextView
+    android:id="@+id/venueLocationLine1"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentRight="true"
+    android:layout_below="@id/venueName"
+
+    android:textAppearance="@android:style/TextAppearance.Small" />
+
+  <TextView
+    android:id="@+id/venueLocationLine2"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentRight="true"
+    android:layout_below="@id/venueLocationLine1"
+
+    android:textAppearance="@android:style/TextAppearance.Small" />
+
+</RelativeLayout>

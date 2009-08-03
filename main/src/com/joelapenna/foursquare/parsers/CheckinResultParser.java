@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-07-19 11:29:34.301748
+ * Auto-generated: 2009-08-01 10:39:23.426578
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -27,10 +27,10 @@ public class CheckinResultParser extends AbstractParser<CheckinResult> {
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
-    public CheckinResult parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
-            FoursquareError, FoursquareParseException {
+    public CheckinResult parseInner(XmlPullParser parser) throws XmlPullParserException,
+            IOException, FoursquareError, FoursquareParseException {
         try {
-            parser.require(XmlPullParser.START_TAG, null, "checkin_result");
+            parser.require(XmlPullParser.START_TAG, null, "checkin");
         } catch (XmlPullParserException e) {
             if (parser.getName().equals("error")) {
                 throw new FoursquareError(parser.getText());
@@ -43,7 +43,10 @@ public class CheckinResultParser extends AbstractParser<CheckinResult> {
             if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
 
             String name = parser.getName();
-            if ("created".equals(name)) {
+            if ("badges".equals(name)) {
+                checkin_result.setBadges(new GroupParser(new BadgeParser()).parse(parser));
+
+            } else if ("created".equals(name)) {
                 checkin_result.setCreated(parser.nextText());
 
             } else if ("id".equals(name)) {

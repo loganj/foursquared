@@ -17,8 +17,8 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-07-26 20:59:17.984496
- * 
+ * Auto-generated: 2009-08-01 10:38:32.514697
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -46,11 +46,17 @@ public class MayorParser extends AbstractParser<Mayor> {
             if ("checkins".equals(name)) {
                 mayor.setCheckins(parser.nextText());
 
+            } else if ("count".equals(name)) {
+                mayor.setCount(parser.nextText());
+
             } else if ("message".equals(name)) {
                 mayor.setMessage(parser.nextText());
 
             } else if ("type".equals(name)) {
                 mayor.setType(parser.nextText());
+
+            } else if ("user".equals(name)) {
+                mayor.setUser(new UserParser().parse(parser));
 
             } else {
                 // Consume something we don't understand.
