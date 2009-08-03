@@ -34,29 +34,27 @@ public class StringFormatters {
         }
     }
 
-    public static String getCheckinMessage(Checkin checkin) {
-        String venueName = (checkin.getVenue() != null) ? " @ " + checkin.getVenue().getName()
-                : ".";
-        String name = getUserAbbreviatedName(checkin.getUser());
-        return name + venueName;
+    public static String getCheckinMessage(Checkin checkin, boolean displayAtVenue) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(getUserAbbreviatedName(checkin.getUser()));
+        if (checkin.getVenue() != null && displayAtVenue) {
+            sb.append(" @ " + checkin.getVenue().getName());
+        }
+        return sb.toString();
     }
 
     public static String getUserAbbreviatedName(User user) {
-        String firstName = user.getFirstname();
+        StringBuffer sb = new StringBuffer();
+        sb.append(user.getFirstname());
 
         String lastName = user.getLastname();
         if (lastName.length() > 0) {
-            lastName = lastName.substring(0, 1) + ".";
+            sb.append(" ");
+            sb.append(lastName.substring(0, 1) + ".");
         }
-
-        String name = firstName + " " + lastName;
-        return name;
+        return sb.toString();
     }
-
-    /**
-     * @param created
-     * @return
-     */
+    
     public static CharSequence getRelativeTimeSpanString(String created) {
         try {
             return DateUtils.getRelativeTimeSpanString(DATE_FORMAT.parse(created).getTime());

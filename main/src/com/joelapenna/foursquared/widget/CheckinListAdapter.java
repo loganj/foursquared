@@ -41,10 +41,14 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
     private RemoteResourceManager mRrm;
     private Handler mHandler = new Handler();
 
-    public CheckinListAdapter(Context context, Group checkins, RemoteResourceManager rrm) {
+    private boolean mDisplayAtVenue;
+
+    public CheckinListAdapter(Context context, Group checkins, RemoteResourceManager rrm,
+            boolean displayAtVenue) {
         super(context, checkins);
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
+        mDisplayAtVenue = displayAtVenue;
 
         // Immediately start trying to grab the user photos. All of them!
         for (int i = 0; i < checkins.size(); i++) {
@@ -129,7 +133,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
             });
         }
 
-        holder.firstLine.setText(StringFormatters.getCheckinMessage(checkin));
+        holder.firstLine.setText(StringFormatters.getCheckinMessage(checkin, mDisplayAtVenue));
         holder.timeTextView.setText(StringFormatters
                 .getRelativeTimeSpanString(checkin.getCreated()));
 

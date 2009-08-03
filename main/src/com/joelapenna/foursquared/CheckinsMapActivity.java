@@ -217,7 +217,7 @@ public class CheckinsMapActivity extends MapActivity {
             Checkin checkin = item.getCheckin();
             mTappedVenue = checkin.getVenue();
             if (DEBUG) Log.d(TAG, "onTap: " + checkin.getVenue().getName());
-            mCheckinButton.setText(StringFormatters.getCheckinMessage(checkin));
+            mCheckinButton.setText(StringFormatters.getCheckinMessage(checkin, true));
             mCheckinButton.setVisibility(View.VISIBLE);
             return true;
         }
