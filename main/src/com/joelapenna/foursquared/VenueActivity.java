@@ -177,7 +177,7 @@ public class VenueActivity extends TabActivity {
         switch (id) {
             case DIALOG_CHECKIN:
                 CheckinResult checkinResult = mStateHolder.checkinResult;
-                layout = inflater.inflate(R.layout.checkin_dialog,
+                layout = inflater.inflate(R.layout.checkin_result_dialog,
                         (ViewGroup)findViewById(R.id.layout_root));
                 String userId = PreferenceManager.getDefaultSharedPreferences(this).getString(
                         Preferences.PREFERENCE_ID, "");
