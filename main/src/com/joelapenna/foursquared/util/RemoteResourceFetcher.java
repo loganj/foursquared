@@ -29,9 +29,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Observable;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -46,6 +48,8 @@ class RemoteResourceFetcher extends Observable {
 
     private HttpClient mHttpClient;
 
+    private ConcurrentHashMap<Request, Callable<Request>> mActiveRequestsMap = new ConcurrentHashMap<Request, Callable<Request>>();
+
     public RemoteResourceFetcher(DiskCache cache) {
         mResourceCache = cache;
         mHttpClient = createHttpClient();
@@ -58,45 +62,46 @@ class RemoteResourceFetcher extends Observable {
         super.notifyObservers(data);
     }
 
-    public void fetch(Uri uri, String hash) {
-        Callable fetcher = newRequestCall(new Request(uri, hash));
-        mExecutor.submit(fetcher);
+    public Future<Request> fetch(Uri uri, String hash) {
+        Request request = new Request(uri, hash);
+        Callable<Request> fetcher = newRequestCall(request);
+        if (mActiveRequestsMap.putIfAbsent(request, fetcher) == null) {
+            return mExecutor.submit(fetcher);
+        }
+        return null;
     }
 
     public void fetchBlocking(Uri uri, String hash) throws InterruptedException, ExecutionException {
-        Callable fetcher = newRequestCall(new Request(uri, hash));
-        mExecutor.submit(fetcher).get();
+        Future<Request> fetcherFuture = fetch(uri, hash);
+        if (fetcherFuture != null) {
+            fetcherFuture.get();
+        }
     }
 
     public void shutdown() {
         mExecutor.shutdownNow();
     }
 
-    private Callable newRequestCall(final Request request) {
-        return new Callable() {
-            public Object call() {
+    private Callable<Request> newRequestCall(final Request request) {
+        return new Callable<Request>() {
+            public Request call() {
                 try {
-                    makeRequest(request);
+                    if (DEBUG) Log.d(TAG, "Requesting: " + request.uri);
+                    HttpGet httpGet = new HttpGet(request.uri.toString());
+                    httpGet.addHeader("Accept-Encoding", "gzip");
+                    HttpResponse response = mHttpClient.execute(httpGet);
+                    HttpEntity entity = response.getEntity();
+                    InputStream is = getUngzippedContent(entity);
+                    mResourceCache.store(request.hash, is);
                 } catch (IOException e) {
                     if (DEBUG) Log.d(TAG, "IOException", e);
+                } finally {
+                    mActiveRequestsMap.remove(request);
+                    notifyObservers(request.uri);
                 }
-                return null;
+                return request;
             }
         };
-    }
-
-    private void makeRequest(final Request request) throws IOException {
-        try {
-            if (DEBUG) Log.d(TAG, "Requesting: " + request.uri);
-            HttpGet httpGet = new HttpGet(request.uri.toString());
-            httpGet.addHeader("Accept-Encoding", "gzip");
-            HttpResponse response = mHttpClient.execute(httpGet);
-            HttpEntity entity = response.getEntity();
-            InputStream is = getUngzippedContent(entity);
-            mResourceCache.store(request.hash, is);
-        } finally {
-            notifyObservers(request.uri);
-        }
     }
 
     /**
@@ -165,6 +170,11 @@ class RemoteResourceFetcher extends Observable {
         public Request(Uri requestUri, String requestHash) {
             uri = requestUri;
             hash = requestHash;
+        }
+
+        @Override
+        public int hashCode() {
+            return hash.hashCode();
         }
     }
 
