@@ -59,6 +59,7 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.d(TAG, "onCreate()");
+        setContentView(R.layout.login_activity);
 
         mLocationListener = ((Foursquared)getApplication()).getLocationListener();
         mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
@@ -125,7 +126,6 @@ public class LoginActivity extends Activity {
     }
 
     private void ensureUi() {
-        setContentView(R.layout.login_activity);
         mNewAccountTextView = (TextView)findViewById(R.id.newAccountTextView);
         mPhoneEditText = ((EditText)findViewById(R.id.phoneEditText));
         mPasswordEditText = ((EditText)findViewById(R.id.passwordEditText));
