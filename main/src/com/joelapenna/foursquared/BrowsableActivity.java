@@ -54,7 +54,7 @@ public class BrowsableActivity extends Activity {
             case URI_PATH_VENUE:
                 if (DEBUG) Log.d(TAG, "Matched: URI_PATH_VENUE");
                 intent = new Intent(this, VenueActivity.class);
-                intent.putExtra(VenueActivity.EXTRA_VENUE, uri.getLastPathSegment());
+                intent.putExtra(Foursquared.EXTRA_VENUE_ID, uri.getLastPathSegment());
                 startActivity(intent);
                 break;
             case URI_PATH_CHECKINS:

@@ -51,8 +51,6 @@ public class VenueActivity extends TabActivity {
     private static final String TAG = "VenueActivity";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    public static final String EXTRA_VENUE = "com.joelapenna.foursquared.VenueActivity.VenueId";
-
     private static final int DIALOG_CHECKIN = 0;
     private static final int DIALOG_TIPADD = 1;
 
@@ -118,7 +116,7 @@ public class VenueActivity extends TabActivity {
                 mStateHolder.checkinResult = holder.checkinResult;
             }
         } else {
-            mStateHolder.venueId = getIntent().getExtras().getString(EXTRA_VENUE);
+            mStateHolder.venueId = getIntent().getExtras().getString(Foursquared.EXTRA_VENUE_ID);
             new VenueTask().execute(mStateHolder.venueId);
             new CheckinsTask().execute();
         }

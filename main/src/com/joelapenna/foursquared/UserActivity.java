@@ -331,7 +331,7 @@ public class UserActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(UserActivity.this, VenueActivity.class);
-                        intent.putExtra(VenueActivity.EXTRA_VENUE, venue.getId());
+                        intent.putExtra(Foursquared.EXTRA_VENUE_ID, venue.getId());
                         startActivity(intent);
                     }
                 });

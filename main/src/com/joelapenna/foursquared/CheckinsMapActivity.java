@@ -56,7 +56,7 @@ public class CheckinsMapActivity extends MapActivity {
                 if (DEBUG) Log.d(TAG, "firing checkin activity for checkin");
                 Intent intent = new Intent(CheckinsMapActivity.this, VenueActivity.class);
                 intent.setAction(Intent.ACTION_VIEW);
-                intent.putExtra(VenueActivity.EXTRA_VENUE, mTappedVenue.getId());
+                intent.putExtra(Foursquared.EXTRA_VENUE_ID, mTappedVenue.getId());
                 startActivity(intent);
             }
         });

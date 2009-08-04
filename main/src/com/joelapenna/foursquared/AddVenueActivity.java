@@ -205,7 +205,7 @@ public class AddVenueActivity extends Activity {
                         .show();
             } else {
                 Intent intent = new Intent(AddVenueActivity.this, VenueActivity.class);
-                intent.putExtra(VenueActivity.EXTRA_VENUE, venue.getId());
+                intent.putExtra(Foursquared.EXTRA_VENUE_ID, venue.getId());
                 startActivity(intent);
                 finish();
             }
