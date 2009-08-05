@@ -11,15 +11,13 @@ GROUP = "Group"
 
 
 # Interfaces that all FoursquareTypes implement.
-DEFAULT_INTERFACES = ['Parcelable', 'FoursquareType']
+DEFAULT_INTERFACES = ['FoursquareType']
 
 # Interfaces that specific FoursqureTypes implement.
 INTERFACES = {
 }
 
 DEFAULT_CLASS_IMPORTS = [
-    'import android.os.Parcel',
-    'import android.os.Parcelable',
 ]
 
 CLASS_IMPORTS = {

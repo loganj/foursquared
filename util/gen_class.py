@@ -44,64 +44,6 @@ public %(attribute_type)s %(attribute_name)s() {
 }
 """
 
-PARCELABLE = """\
-/* For Parcelable */
-
-@Override
-public int describeContents() {
-    return 0;
-}
-
-@Override
-public void writeToParcel(Parcel dest, int flags) {
-    boolean[] booleanArray = {
-%(write_boolean_parcel_lines)s
-    };
-    dest.writeBooleanArray(booleanArray);
-%(write_parcel_lines)s
-}
-
-private void readFromParcel(Parcel source) {
-    boolean[] booleanArray = new boolean[%(size)s];
-    source.readBooleanArray(booleanArray);
-%(read_parcel_lines)s
-}
-
-public static final Parcelable.Creator<%(type_name)s> CREATOR = new Parcelable.Creator<%(type_name)s>() {
-
-    @Override
-    public %(type_name)s createFromParcel(Parcel source) {
-        %(type_name)s instance = new %(type_name)s();
-        instance.readFromParcel(source);
-        return instance;
-    }
-
-    @Override
-    public %(type_name)s[] newArray(int size) {
-        return new %(type_name)s[size];
-    }
-
-};
-"""
-
-PARCELABLE_COMPLEX_WRITE_PARCEL = (
-    '    dest.writeParcelable(this.m%(camel_name)s, 0);')
-
-PARCELABLE_COMPLEX_READ_PARCEL = (
-    '    this.m%(camel_name)s = source.readParcelable(null);')
-
-PARCELABLE_ATTRIBUTE_WRITE_PARCEL = (
-    '    dest.write%(attribute_type)s(this.m%(camel_name)s);')
-
-PARCELABLE_ATTRIBUTE_READ_PARCEL = (
-    '    this.m%(camel_name)s = source.read%(attribute_type)s();')
-
-PARCELABLE_GROUP_ATTRIBUTE_WRITE_PARCEL = (
-    '    dest.writeParcelable((Parcelable)this.m%(camel_name)s, flags);')
-
-PARCELABLE_GROUP_ATTRIBUTE_READ_PARCEL = (
-    '    this.m%(camel_name)s = (Group)source.readParcelable(null);')
-
 
 def main():
   type_name, top_node_name, attributes = common.WalkNodesForAttributes(
@@ -123,9 +65,6 @@ def GenerateClass(type_name, attributes):
   for attribute_name in sorted(attributes):
     attribute_type = attributes[attribute_name]
     lines.extend(Accessors(attribute_name, attribute_type).split('\n'))
-
-  # parcelable
-  lines.extend(Parcelable(type_name, attributes).split('\n'));
 
   print Header(type_name)
   print '    ' + '\n    '.join(lines)
@@ -175,67 +114,6 @@ def Accessors(name, attribute_type):
     return '%s\n%s' % (BOOLEAN_GETTER % replacements, SETTER % replacements)
   else:
     return '%s\n%s' % (GETTER % replacements, SETTER % replacements)
-
-
-def Parcelable(type_name, attributes):
-  booleans = []
-  # Write
-  write_parcel_lines = []
-  for attribute_name in sorted(attributes):
-    attribute_type = attributes[attribute_name];
-    replacements = AccessorReplacements(attribute_name, attribute_type)
-
-    # skip booleans put them all in a boolean array.
-    if attribute_type == common.BOOLEAN:
-      booleans.append(replacements['camel_name'])
-
-    elif attribute_type == common.GROUP:
-      write_parcel_lines.append(
-          PARCELABLE_GROUP_ATTRIBUTE_WRITE_PARCEL % replacements)
-
-    elif attribute_type in common.COMPLEX:
-      write_parcel_lines.append(
-          PARCELABLE_COMPLEX_WRITE_PARCEL % replacements)
-
-    else:
-      write_parcel_lines.append(
-          PARCELABLE_ATTRIBUTE_WRITE_PARCEL % replacements)
-  write_parcel_lines = '    \n'.join(write_parcel_lines)
-  write_boolean_parcel_lines = '    ' + '    \n'.join(
-      '    m%s,' % b for b in booleans)
-
-  # Read
-  read_parcel_lines = []
-  # handle booleans first.
-  for i, boolean in enumerate(booleans):
-    read_parcel_lines.append('    this.m%s = booleanArray[%s];' % ( boolean, i))
-  for attribute_name in sorted(attributes):
-    attribute_type = attributes[attribute_name];
-    replacements = AccessorReplacements(attribute_name, attribute_type)
-
-    # skip booleans put them all in a boolean array.
-    if attribute_type == common.BOOLEAN:
-      continue
-
-    elif attribute_type == common.GROUP:
-      read_parcel_lines.append(
-          PARCELABLE_GROUP_ATTRIBUTE_READ_PARCEL % replacements)
-
-    elif attribute_type in common.COMPLEX:
-      read_parcel_lines.append(
-          PARCELABLE_COMPLEX_READ_PARCEL % replacements)
-
-    else:
-      read_parcel_lines.append(PARCELABLE_ATTRIBUTE_READ_PARCEL % replacements)
-  read_parcel_lines = '    \n'.join(read_parcel_lines)
-
-  # Compose it.
-  return PARCELABLE % {'type_name': type_name,
-                       'write_parcel_lines': write_parcel_lines,
-                       'write_boolean_parcel_lines': write_boolean_parcel_lines,
-                       'read_parcel_lines': read_parcel_lines,
-                       'size': str(len(booleans))
-                      }
 
 
 def Footer():
