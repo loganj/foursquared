@@ -4,7 +4,7 @@
 
 package com.joelapenna.foursquare;
 
-import com.joelapenna.foursquare.error.FoursquareCredentialsError;
+import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.CheckinResult;
@@ -78,7 +78,7 @@ public class Foursquare {
 
     @V1
     public Credentials authExchange() throws FoursquareException, FoursquareError,
-            FoursquareCredentialsError, IOException {
+            FoursquareCredentialsException, IOException {
         if (mFoursquareV1 == null) {
             throw new NoSuchMethodError(
                     "authExchange is unavailable without a consumer key/secret.");
@@ -87,7 +87,7 @@ public class Foursquare {
     }
 
     @Classic
-    public Auth login() throws FoursquareException, FoursquareError, FoursquareCredentialsError,
+    public Auth login() throws FoursquareException, FoursquareError, FoursquareCredentialsException,
             IOException {
         if (DEBUG) Log.d(TAG, "login()");
         return mFoursquare.login(mPhone, mPassword);

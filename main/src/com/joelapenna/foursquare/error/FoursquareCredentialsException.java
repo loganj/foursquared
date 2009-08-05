@@ -7,10 +7,10 @@ package com.joelapenna.foursquare.error;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class FoursquareCredentialsError extends FoursquareException {
+public class FoursquareCredentialsException extends FoursquareException {
     private static final long serialVersionUID = 1L;
 
-    public FoursquareCredentialsError(String message) {
+    public FoursquareCredentialsException(String message) {
         super(message);
     }
 

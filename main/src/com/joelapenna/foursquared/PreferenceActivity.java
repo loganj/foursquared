@@ -5,7 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.error.FoursquareCredentialsError;
+import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 
@@ -110,9 +110,9 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                 editor.commit();
 
                 return newCity;
-            } catch (FoursquareCredentialsError e) {
+            } catch (FoursquareCredentialsException e) {
                 // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareCredentialsError", e);
+                if (DEBUG) Log.d(TAG, "FoursquareCredentialsException", e);
             } catch (FoursquareException e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "FoursquareException", e);

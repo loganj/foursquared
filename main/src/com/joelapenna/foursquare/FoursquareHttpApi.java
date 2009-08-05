@@ -4,7 +4,7 @@
 
 package com.joelapenna.foursquare;
 
-import com.joelapenna.foursquare.error.FoursquareCredentialsError;
+import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.error.FoursquareParseException;
@@ -236,7 +236,7 @@ class FoursquareHttpApi {
      */
     @Deprecated
     String achievements(String cityid, String task, String userId) throws FoursquareError,
-            FoursquareParseException, IOException, FoursquareCredentialsError {
+            FoursquareParseException, IOException, FoursquareCredentialsException {
         return mHttpApi.doHttpPost(URL_ACHIEVEMENTS, //
                 new BasicNameValuePair("cityid", cityid), //
                 new BasicNameValuePair("task", task), //
@@ -249,7 +249,7 @@ class FoursquareHttpApi {
      */
     @Deprecated
     String breakdown(String userId, String checkinId) throws FoursquareError,
-            FoursquareParseException, IOException, FoursquareCredentialsError {
+            FoursquareParseException, IOException, FoursquareCredentialsException {
         return mHttpApi.doHttpPost(URL_BREAKDOWN, //
                 new BasicNameValuePair("uid", userId), //
                 new BasicNameValuePair("cid", checkinId), //
@@ -262,7 +262,7 @@ class FoursquareHttpApi {
      */
     @Deprecated
     String me(String cityid, String userId) throws FoursquareError, FoursquareParseException,
-            IOException, FoursquareCredentialsError {
+            IOException, FoursquareCredentialsException {
         return mHttpApi.doHttpPost(URL_ME, // url
                 new BasicNameValuePair("cityid", cityid), //
                 new BasicNameValuePair("view", "mini"), //

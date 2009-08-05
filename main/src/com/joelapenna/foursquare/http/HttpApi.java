@@ -5,7 +5,7 @@
 package com.joelapenna.foursquare.http;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.error.FoursquareCredentialsError;
+import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.error.FoursquareParseException;
@@ -81,7 +81,7 @@ public class HttpApi {
                 }
             case 401:
                 response.getEntity().consumeContent();
-                throw new FoursquareCredentialsError(response.getStatusLine().toString());
+                throw new FoursquareCredentialsException(response.getStatusLine().toString());
             default:
                 if (DEBUG) {
                     Log.d(TAG, "Default case for status code reached: "
@@ -93,7 +93,7 @@ public class HttpApi {
     }
 
     public String doHttpPost(String url, NameValuePair... nameValuePairs) throws FoursquareError,
-            FoursquareParseException, IOException, FoursquareCredentialsError {
+            FoursquareParseException, IOException, FoursquareCredentialsException {
         if (DEBUG) Log.d(TAG, "doHttpPost: " + url);
         HttpPost httpPost = createHttpPost(url, nameValuePairs);
 
@@ -113,7 +113,7 @@ public class HttpApi {
                 }
             case 401:
                 response.getEntity().consumeContent();
-                throw new FoursquareCredentialsError(response.getStatusLine().toString());
+                throw new FoursquareCredentialsException(response.getStatusLine().toString());
             default:
                 response.getEntity().consumeContent();
                 throw new FoursquareError(response.getStatusLine().toString());

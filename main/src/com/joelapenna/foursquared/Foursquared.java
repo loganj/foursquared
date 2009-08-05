@@ -5,7 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.error.FoursquareCredentialsError;
+import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.maps.BestLocationListener;
@@ -73,7 +73,7 @@ public class Foursquared extends Application {
 
         try {
             loadCredentials();
-        } catch (FoursquareCredentialsError e) {
+        } catch (FoursquareCredentialsException e) {
             // We're not doing anything because hopefully our related activities
             // will handle the failure. This is simply convenience.
         }
@@ -100,7 +100,7 @@ public class Foursquared extends Application {
         return mLocationListener;
     }
 
-    private void loadCredentials() throws FoursquareCredentialsError {
+    private void loadCredentials() throws FoursquareCredentialsException {
         if (FoursquaredSettings.DEBUG) Log.d(TAG, "loadCredentials()");
         String phoneNumber = mPrefs.getString(Preferences.PREFERENCE_PHONE, null);
         String password = mPrefs.getString(Preferences.PREFERENCE_PASSWORD, null);
@@ -110,7 +110,7 @@ public class Foursquared extends Application {
 
         if (TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(password)
                 || TextUtils.isEmpty(oauthToken) || TextUtils.isEmpty(oauthTokenSecret)) {
-            throw new FoursquareCredentialsError("Phone number or password not set in preferences.");
+            throw new FoursquareCredentialsException("Phone number or password not set in preferences.");
         }
         sFoursquare.setCredentials(phoneNumber, password);
         sFoursquare.setOAuthToken(oauthToken, oauthTokenSecret);

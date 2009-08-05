@@ -4,7 +4,7 @@
 
 package com.joelapenna.foursquare;
 
-import com.joelapenna.foursquare.error.FoursquareCredentialsError;
+import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.http.HttpApi;
@@ -149,7 +149,7 @@ public class FoursquareHttpApiV1 {
      * /authexchange?oauth_consumer_key=d123...a1bffb5&oauth_consumer_secret=fec...18
      */
     public Credentials authExchange(String phone, String password) throws FoursquareException,
-            FoursquareCredentialsError, FoursquareError, IOException {
+            FoursquareCredentialsException, FoursquareError, IOException {
         // XXX Don't do a real lookup.
         if (false) {
             if (mHttpApi.hasOAuthTokenWithSecret()) {
@@ -172,7 +172,7 @@ public class FoursquareHttpApiV1 {
      * /addtip?vid=1234&text=I%20added%20a%20tip&type=todo (type defaults "tip")
      */
     Tip addtip(String vid, String text, String type) throws FoursquareException,
-            FoursquareCredentialsError, FoursquareError, IOException {
+            FoursquareCredentialsException, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_ADDTIP), //
                 new BasicNameValuePair("vid", vid), //
                 new BasicNameValuePair("text", text), //
@@ -191,13 +191,13 @@ public class FoursquareHttpApiV1 {
      * @param phone (optional) the phone number for the venue
      * @return
      * @throws FoursquareException
-     * @throws FoursquareCredentialsError
+     * @throws FoursquareCredentialsException
      * @throws FoursquareError
      * @throws IOException
      */
     Venue addvenue(String name, String address, String crossstreet, String city, String state,
             String zip, String cityid, String phone) throws FoursquareException,
-            FoursquareCredentialsError, FoursquareError, IOException {
+            FoursquareCredentialsException, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_ADDVENUE), //
                 new BasicNameValuePair("name", name), //
                 new BasicNameValuePair("address", address), //
@@ -214,7 +214,7 @@ public class FoursquareHttpApiV1 {
     /*
      * /cities
      */
-    Group cities() throws FoursquareException, FoursquareCredentialsError, FoursquareError,
+    Group cities() throws FoursquareException, FoursquareCredentialsException, FoursquareError,
             IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_CITIES));
         return (Group)mHttpApi.doHttpRequest(httpGet, new GroupParser(new CityParser()));
@@ -224,7 +224,7 @@ public class FoursquareHttpApiV1 {
      * /checkcity?geolat=37.770900&geolong=-122.436987
      */
     City checkcity(String geolat, String geolong) throws FoursquareException,
-            FoursquareCredentialsError, FoursquareError, IOException {
+            FoursquareCredentialsException, FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_CHECKCITY), //
                 new BasicNameValuePair("geolat", geolat), //
                 new BasicNameValuePair("geolong", geolong));
@@ -234,7 +234,7 @@ public class FoursquareHttpApiV1 {
     /*
      * /switchcity?cityid=24
      */
-    Data switchcity(String cityid) throws FoursquareException, FoursquareCredentialsError,
+    Data switchcity(String cityid) throws FoursquareException, FoursquareCredentialsException,
             FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_SWITCHCITY), //
                 new BasicNameValuePair("cityid", cityid));
@@ -268,7 +268,7 @@ public class FoursquareHttpApiV1 {
      * /user?uid=9937
      */
     User user(String uid, boolean mayor, boolean badges) throws FoursquareException,
-            FoursquareCredentialsError, FoursquareError, IOException {
+            FoursquareCredentialsException, FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_USER), //
                 new BasicNameValuePair("uid", uid), //
                 new BasicNameValuePair("mayor", (mayor) ? "1" : "0"), //
@@ -294,7 +294,7 @@ public class FoursquareHttpApiV1 {
     /**
      * /venue?vid=1234
      */
-    Venue venue(String vid) throws FoursquareException, FoursquareCredentialsError,
+    Venue venue(String vid) throws FoursquareException, FoursquareCredentialsException,
             FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_VENUE), //
                 new BasicNameValuePair("vid", vid));

@@ -5,7 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.error.FoursquareCredentialsError;
+import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
@@ -74,12 +74,12 @@ public class Preferences {
      * @param phoneNumber
      * @param password
      * @param editor
-     * @throws FoursquareCredentialsError
+     * @throws FoursquareCredentialsException
      * @throws FoursquareException
      * @throws IOException
      */
     static User loginUser(Foursquare foursquare, String phoneNumber, String password, Editor editor)
-            throws FoursquareCredentialsError, FoursquareException, IOException {
+            throws FoursquareCredentialsException, FoursquareException, IOException {
         if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Trying to log in.");
 
         foursquare.setCredentials(phoneNumber, password);
@@ -129,7 +129,7 @@ public class Preferences {
     }
 
     static void storeAuthExchangeCredentials(final Editor editor, Credentials credentials)
-            throws FoursquareCredentialsError {
+            throws FoursquareCredentialsException {
         if (credentials != null && credentials.getOauthToken() != null
                 && credentials.getOauthTokenSecret() != null) {
             if (DEBUG) Log.d(TAG, "Storing oauth token");
@@ -138,7 +138,7 @@ public class Preferences {
             if (DEBUG) Log.d(TAG, "Commiting authexchange token: "
                     + String.valueOf(editor.commit()));
         } else {
-            throw new FoursquareCredentialsError("Unable to auth exchange.");
+            throw new FoursquareCredentialsException("Unable to auth exchange.");
         }
     }
 
