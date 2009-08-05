@@ -6,7 +6,6 @@ package com.joelapenna.foursquare.http;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsException;
-import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.parsers.AbstractParser;
@@ -16,7 +15,6 @@ import com.joelapenna.foursquare.types.FoursquareType;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -62,14 +60,12 @@ public class HttpApi {
     }
 
     public FoursquareType doHttpRequest(HttpRequestBase httpRequest,
-            Parser<? extends FoursquareType> parser) throws FoursquareException, IOException {
+            Parser<? extends FoursquareType> parser) throws FoursquareCredentialsException,
+            FoursquareParseException, FoursquareException, IOException {
         if (DEBUG) Log.d(TAG, "doHttpRequest: " + httpRequest.getURI());
+
         HttpResponse response = executeHttpRequest(httpRequest);
         if (DEBUG) Log.d(TAG, "executed HttpRequest for: " + httpRequest.getURI().toString());
-        if (response == null) {
-            if (DEBUG) Log.d(TAG, "execute() call for the httpRequest generated an exception;");
-            return null;
-        }
 
         switch (response.getStatusLine().getStatusCode()) {
             case 200:
@@ -79,30 +75,29 @@ public class HttpApi {
                 } finally {
                     is.close();
                 }
+
             case 401:
                 response.getEntity().consumeContent();
                 throw new FoursquareCredentialsException(response.getStatusLine().toString());
+
             default:
                 if (DEBUG) {
                     Log.d(TAG, "Default case for status code reached: "
                             + response.getStatusLine().toString());
                 }
                 response.getEntity().consumeContent();
-                return null;
+                throw new IOException("Unknown HTTP status: " + response.getStatusLine());
         }
     }
 
-    public String doHttpPost(String url, NameValuePair... nameValuePairs) throws FoursquareError,
-            FoursquareParseException, IOException, FoursquareCredentialsException {
+    public String doHttpPost(String url, NameValuePair... nameValuePairs)
+            throws FoursquareCredentialsException, FoursquareParseException, FoursquareException,
+            IOException {
         if (DEBUG) Log.d(TAG, "doHttpPost: " + url);
         HttpPost httpPost = createHttpPost(url, nameValuePairs);
 
         HttpResponse response = executeHttpRequest(httpPost);
         if (DEBUG) Log.d(TAG, "executed HttpRequest for: " + httpPost.getURI().toString());
-        if (response == null) {
-            if (DEBUG) Log.d(TAG, "execute() call for the httpPost generated an exception;");
-            throw new FoursquareError("breakdown request unsuccessful.");
-        }
 
         switch (response.getStatusLine().getStatusCode()) {
             case 200:
@@ -116,7 +111,7 @@ public class HttpApi {
                 throw new FoursquareCredentialsException(response.getStatusLine().toString());
             default:
                 response.getEntity().consumeContent();
-                throw new FoursquareError(response.getStatusLine().toString());
+                throw new FoursquareException(response.getStatusLine().toString());
         }
     }
 
@@ -125,19 +120,16 @@ public class HttpApi {
      * 
      * @param httpRequest
      * @return
+     * @throws IOException
      */
-    public HttpResponse executeHttpRequest(HttpRequestBase httpRequest) {
+    public HttpResponse executeHttpRequest(HttpRequestBase httpRequest) throws IOException {
         if (DEBUG) Log.d(TAG, "executing HttpRequest for: " + httpRequest.getURI().toString());
         try {
             mHttpClient.getConnectionManager().closeExpiredConnections();
             return mHttpClient.execute(httpRequest);
-        } catch (ClientProtocolException e) {
-            Log.d(TAG, "ClientProtocolException for " + httpRequest, e);
-        } catch (IOException e) {
-            Log.d(TAG, "IOException for " + httpRequest, e);
+        } finally {
+            httpRequest.abort();
         }
-        httpRequest.abort();
-        return null;
     }
 
     public HttpGet createHttpGet(String url, NameValuePair... nameValuePairs) {

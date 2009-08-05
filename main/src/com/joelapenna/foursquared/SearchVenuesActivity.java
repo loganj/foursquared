@@ -11,6 +11,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
+import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
 
@@ -216,11 +217,6 @@ public class SearchVenuesActivity extends TabActivity {
     }
 
     public void putSearchResultsInAdapter(Group searchResults) {
-        if (searchResults == null) {
-            Toast.makeText(getApplicationContext(), "Could not complete search!",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
         mListAdapter.clear();
         int groupCount = searchResults.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
@@ -368,6 +364,8 @@ public class SearchVenuesActivity extends TabActivity {
 
         private static final int METERS_PER_MILE = 1609;
 
+        private Exception mReason = null;
+
         @Override
         public void onPreExecute() {
             if (DEBUG) Log.d(TAG, "SearchTask: onPreExecute()");
@@ -379,12 +377,8 @@ public class SearchVenuesActivity extends TabActivity {
         public Group doInBackground(Void... params) {
             try {
                 return search();
-            } catch (FoursquareException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareException", e);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "IOException", e);
+            } catch (Exception e) {
+                mReason = e;
             }
             return null;
         }
@@ -392,8 +386,13 @@ public class SearchVenuesActivity extends TabActivity {
         @Override
         public void onPostExecute(Group groups) {
             try {
-                setSearchResults(groups);
-                putSearchResultsInAdapter(groups);
+                if (groups == null) {
+                    NotificationsUtil.ToastReasonForFailure(SearchVenuesActivity.this, mReason);
+                } else {
+                    setSearchResults(groups);
+                    putSearchResultsInAdapter(groups);
+                }
+
             } finally {
                 setProgressBarIndeterminateVisibility(false);
                 ensureTitle(true);

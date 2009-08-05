@@ -45,7 +45,8 @@ public class HttpApiWithOAuth extends HttpApi {
 
     @Override
     public FoursquareType doHttpRequest(HttpRequestBase httpRequest,
-            Parser<? extends FoursquareType> parser) throws FoursquareException, IOException {
+            Parser<? extends FoursquareType> parser) throws FoursquareCredentialsException,
+            FoursquareParseException, FoursquareException, IOException {
         if (DEBUG) Log.d(TAG, "doHttpRequest: " + httpRequest.getURI());
         // XXX
         if (false) {
@@ -66,10 +67,6 @@ public class HttpApiWithOAuth extends HttpApi {
         }
         HttpResponse response = executeHttpRequest(httpRequest);
         if (DEBUG) Log.d(TAG, "executed HttpRequest for: " + httpRequest.getURI().toString());
-        if (response == null) {
-            if (DEBUG) Log.d(TAG, "execute() call for the httpRequest generated an exception;");
-            return null;
-        }
 
         switch (response.getStatusLine().getStatusCode()) {
             case 200:
@@ -87,7 +84,7 @@ public class HttpApiWithOAuth extends HttpApi {
                 if (DEBUG) Log.d(TAG, "Default case for status code reached: "
                         + response.getStatusLine().toString());
                 response.getEntity().consumeContent();
-                return null;
+                throw new IOException("Unknown HTTP status: " + response.getStatusLine());
         }
     }
 

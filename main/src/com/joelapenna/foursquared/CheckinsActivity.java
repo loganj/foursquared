@@ -10,6 +10,7 @@ import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
 import com.joelapenna.foursquared.R.drawable;
+import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.util.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
 
@@ -191,11 +192,6 @@ public class CheckinsActivity extends TabActivity {
     }
 
     public void putSearchResultsInAdapter(Group searchResults) {
-        if (searchResults == null) {
-            Toast.makeText(getApplicationContext(), "Could not complete search!",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
         mListAdapter.clear();
 
         CheckinListAdapter groupAdapter = new CheckinListAdapter(this, searchResults, Foursquared
@@ -301,6 +297,8 @@ public class CheckinsActivity extends TabActivity {
 
     private class SearchTask extends AsyncTask<Void, Void, Group> {
 
+        private Exception mReason = null;
+
         @Override
         public void onPreExecute() {
             if (DEBUG) Log.d(TAG, "SearchTask: onPreExecute()");
@@ -312,12 +310,8 @@ public class CheckinsActivity extends TabActivity {
         public Group doInBackground(Void... params) {
             try {
                 return search();
-            } catch (FoursquareException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquarException", e);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "IOException", e);
+            } catch (Exception e) {
+                mReason = e;
             }
             return null;
         }
@@ -325,8 +319,13 @@ public class CheckinsActivity extends TabActivity {
         @Override
         public void onPostExecute(Group groups) {
             try {
-                setSearchResults(groups);
-                putSearchResultsInAdapter(groups);
+                if (groups == null) {
+                    NotificationsUtil.ToastReasonForFailure(CheckinsActivity.this, mReason);
+                } else {
+                    setSearchResults(groups);
+                    putSearchResultsInAdapter(groups);
+                }
+
             } finally {
                 setProgressBarIndeterminateVisibility(false);
                 ensureTitle(true);

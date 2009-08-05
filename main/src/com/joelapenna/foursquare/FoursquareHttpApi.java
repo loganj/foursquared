@@ -101,8 +101,8 @@ class FoursquareHttpApi {
         return !(TextUtils.isEmpty(mPhone) || TextUtils.isEmpty(mPassword));
     }
 
-    Auth login(String phone, String password) throws FoursquareError, FoursquareParseException,
-            IllegalStateException, IOException {
+    Auth login(String phone, String password) throws FoursquareCredentialsException,
+            FoursquareParseException, FoursquareException, IOException {
         if (DEBUG) Log.d(TAG, "login()");
 
         HttpPost httpPost = mHttpApi.createHttpPost(URL_API_LOGIN, //
@@ -235,8 +235,9 @@ class FoursquareHttpApi {
      * /web/iphone/achievements?task=unlocked&uid=1818&cityid=23
      */
     @Deprecated
-    String achievements(String cityid, String task, String userId) throws FoursquareError,
-            FoursquareParseException, IOException, FoursquareCredentialsException {
+    String achievements(String cityid, String task, String userId)
+            throws FoursquareCredentialsException, FoursquareParseException, FoursquareException,
+            IOException {
         return mHttpApi.doHttpPost(URL_ACHIEVEMENTS, //
                 new BasicNameValuePair("cityid", cityid), //
                 new BasicNameValuePair("task", task), //
@@ -248,8 +249,8 @@ class FoursquareHttpApi {
      * /incoming/breakdown?cid=67889&uid=9232&client=iphone
      */
     @Deprecated
-    String breakdown(String userId, String checkinId) throws FoursquareError,
-            FoursquareParseException, IOException, FoursquareCredentialsException {
+    String breakdown(String userId, String checkinId) throws FoursquareCredentialsException,
+            FoursquareParseException, FoursquareException, IOException {
         return mHttpApi.doHttpPost(URL_BREAKDOWN, //
                 new BasicNameValuePair("uid", userId), //
                 new BasicNameValuePair("cid", checkinId), //
@@ -261,8 +262,8 @@ class FoursquareHttpApi {
      * /web/iphone/me?uid=9232&view=mini&cityid=23
      */
     @Deprecated
-    String me(String cityid, String userId) throws FoursquareError, FoursquareParseException,
-            IOException, FoursquareCredentialsException {
+    String me(String cityid, String userId) throws FoursquareCredentialsException,
+            FoursquareParseException, FoursquareException, IOException {
         return mHttpApi.doHttpPost(URL_ME, // url
                 new BasicNameValuePair("cityid", cityid), //
                 new BasicNameValuePair("view", "mini"), //
