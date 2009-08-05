@@ -158,6 +158,7 @@ public class ShoutActivity extends Activity {
                 dialog.setCancelable(true);
                 dialog.setIndeterminate(true);
                 dialog.setTitle("Checking in!");
+                dialog.setIcon(android.R.drawable.ic_dialog_info);
                 dialog.setMessage("Please wait while we check-in.");
                 dialog.setOnCancelListener(new OnCancelListener() {
                     @Override
