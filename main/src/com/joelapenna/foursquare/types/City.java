@@ -4,15 +4,14 @@
 
 package com.joelapenna.foursquare.types;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+;
 
 /**
- * Auto-generated: 2009-08-01 10:38:32.112829
- *
+ * Auto-generated: 2009-08-05 21:30:24.943147
+ * 
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class City implements Parcelable, FoursquareType {
+public class City implements FoursquareType {
 
     private String mGeolat;
     private String mGeolong;
@@ -71,53 +70,5 @@ public class City implements Parcelable, FoursquareType {
     public void setTimezone(String timezone) {
         mTimezone = timezone;
     }
-
-    /* For Parcelable */
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        boolean[] booleanArray = {
-
-        };
-        dest.writeBooleanArray(booleanArray);
-        dest.writeString(this.mGeolat);
-        dest.writeString(this.mGeolong);
-        dest.writeString(this.mId);
-        dest.writeString(this.mName);
-        dest.writeString(this.mShortname);
-        dest.writeString(this.mTimezone);
-    }
-
-    private void readFromParcel(Parcel source) {
-        boolean[] booleanArray = new boolean[0];
-        source.readBooleanArray(booleanArray);
-        this.mGeolat = source.readString();
-        this.mGeolong = source.readString();
-        this.mId = source.readString();
-        this.mName = source.readString();
-        this.mShortname = source.readString();
-        this.mTimezone = source.readString();
-    }
-
-    public static final Parcelable.Creator<City> CREATOR = new Parcelable.Creator<City>() {
-
-        @Override
-        public City createFromParcel(Parcel source) {
-            City instance = new City();
-            instance.readFromParcel(source);
-            return instance;
-        }
-
-        @Override
-        public City[] newArray(int size) {
-            return new City[size];
-        }
-
-    };
 
 }

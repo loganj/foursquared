@@ -4,15 +4,14 @@
 
 package com.joelapenna.foursquare.types;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+;
 
 /**
- * Auto-generated: 2009-08-01 10:38:33.708094
- *
+ * Auto-generated: 2009-08-05 21:30:26.446954
+ * 
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class Venue implements Parcelable, FoursquareType {
+public class Venue implements FoursquareType {
 
     private String mAddress;
     private String mCity;
@@ -143,69 +142,5 @@ public class Venue implements Parcelable, FoursquareType {
     public void setZip(String zip) {
         mZip = zip;
     }
-
-    /* For Parcelable */
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        boolean[] booleanArray = {
-
-        };
-        dest.writeBooleanArray(booleanArray);
-        dest.writeString(this.mAddress);
-        dest.writeString(this.mCity);
-        dest.writeString(this.mCrossstreet);
-        dest.writeString(this.mDistance);
-        dest.writeString(this.mGeolat);
-        dest.writeString(this.mGeolong);
-        dest.writeString(this.mId);
-        dest.writeString(this.mName);
-        dest.writeString(this.mPhone);
-        dest.writeString(this.mState);
-        dest.writeParcelable(this.mStats, 0);
-        dest.writeParcelable((Parcelable)this.mTips, flags);
-        dest.writeParcelable((Parcelable)this.mTodos, flags);
-        dest.writeString(this.mZip);
-    }
-
-    private void readFromParcel(Parcel source) {
-        boolean[] booleanArray = new boolean[0];
-        source.readBooleanArray(booleanArray);
-        this.mAddress = source.readString();
-        this.mCity = source.readString();
-        this.mCrossstreet = source.readString();
-        this.mDistance = source.readString();
-        this.mGeolat = source.readString();
-        this.mGeolong = source.readString();
-        this.mId = source.readString();
-        this.mName = source.readString();
-        this.mPhone = source.readString();
-        this.mState = source.readString();
-        this.mStats = source.readParcelable(null);
-        this.mTips = (Group)source.readParcelable(null);
-        this.mTodos = (Group)source.readParcelable(null);
-        this.mZip = source.readString();
-    }
-
-    public static final Parcelable.Creator<Venue> CREATOR = new Parcelable.Creator<Venue>() {
-
-        @Override
-        public Venue createFromParcel(Parcel source) {
-            Venue instance = new Venue();
-            instance.readFromParcel(source);
-            return instance;
-        }
-
-        @Override
-        public Venue[] newArray(int size) {
-            return new Venue[size];
-        }
-
-    };
 
 }

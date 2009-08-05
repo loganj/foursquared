@@ -12,7 +12,7 @@ import android.os.Parcelable;
  * 
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class CheckinResult implements Parcelable, FoursquareType {
+public class CheckinResult implements FoursquareType {
 
     private Group mBadges;
     private String mCreated;
@@ -80,55 +80,4 @@ public class CheckinResult implements Parcelable, FoursquareType {
     public void setVenue(Venue venue) {
         mVenue = venue;
     }
-
-    /* For Parcelable */
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        boolean[] booleanArray = {
-
-        };
-        dest.writeBooleanArray(booleanArray);
-        dest.writeParcelable((Parcelable)this.mBadges, flags);
-        dest.writeString(this.mCreated);
-        dest.writeString(this.mId);
-        dest.writeParcelable(this.mMayor, 0);
-        dest.writeString(this.mMessage);
-        dest.writeParcelable(this.mScoring, 0);
-        dest.writeParcelable(this.mVenue, 0);
-    }
-
-    private void readFromParcel(Parcel source) {
-        boolean[] booleanArray = new boolean[0];
-        source.readBooleanArray(booleanArray);
-        this.mBadges = (Group)source.readParcelable(null);
-        this.mCreated = source.readString();
-        this.mId = source.readString();
-        this.mMayor = source.readParcelable(null);
-        this.mMessage = source.readString();
-        this.mScoring = source.readParcelable(null);
-        this.mVenue = source.readParcelable(null);
-    }
-
-    public static final Parcelable.Creator<CheckinResult> CREATOR = new Parcelable.Creator<CheckinResult>() {
-
-        @Override
-        public CheckinResult createFromParcel(Parcel source) {
-            CheckinResult instance = new CheckinResult();
-            instance.readFromParcel(source);
-            return instance;
-        }
-
-        @Override
-        public CheckinResult[] newArray(int size) {
-            return new CheckinResult[size];
-        }
-
-    };
-
 }

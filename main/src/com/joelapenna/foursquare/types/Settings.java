@@ -4,15 +4,14 @@
 
 package com.joelapenna.foursquare.types;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+;
 
 /**
- * Auto-generated: 2009-08-01 10:38:33.122437
+ * Auto-generated: 2009-08-05 21:30:25.915811
  * 
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class Settings implements Parcelable, FoursquareType {
+public class Settings implements FoursquareType {
 
     private String mFeedsKey;
     private boolean mSendtotwitter;
@@ -35,44 +34,5 @@ public class Settings implements Parcelable, FoursquareType {
     public void setSendtotwitter(boolean sendtotwitter) {
         mSendtotwitter = sendtotwitter;
     }
-
-    /* For Parcelable */
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        boolean[] booleanArray = {
-            mSendtotwitter,
-        };
-        dest.writeBooleanArray(booleanArray);
-        dest.writeString(this.mFeedsKey);
-    }
-
-    private void readFromParcel(Parcel source) {
-        boolean[] booleanArray = new boolean[1];
-        source.readBooleanArray(booleanArray);
-        this.mSendtotwitter = booleanArray[0];
-        this.mFeedsKey = source.readString();
-    }
-
-    public static final Parcelable.Creator<Settings> CREATOR = new Parcelable.Creator<Settings>() {
-
-        @Override
-        public Settings createFromParcel(Parcel source) {
-            Settings instance = new Settings();
-            instance.readFromParcel(source);
-            return instance;
-        }
-
-        @Override
-        public Settings[] newArray(int size) {
-            return new Settings[size];
-        }
-
-    };
 
 }

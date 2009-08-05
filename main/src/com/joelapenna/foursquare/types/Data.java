@@ -4,15 +4,14 @@
 
 package com.joelapenna.foursquare.types;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+;
 
 /**
- * Auto-generated: 2009-08-01 10:38:32.440069
- *
+ * Auto-generated: 2009-08-05 21:30:25.224786
+ * 
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class Data implements Parcelable, FoursquareType {
+public class Data implements FoursquareType {
 
     private String mCityid;
     private String mMessage;
@@ -44,46 +43,5 @@ public class Data implements Parcelable, FoursquareType {
     public void setStatus(boolean status) {
         mStatus = status;
     }
-
-    /* For Parcelable */
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        boolean[] booleanArray = {
-            mStatus,
-        };
-        dest.writeBooleanArray(booleanArray);
-        dest.writeString(this.mCityid);
-        dest.writeString(this.mMessage);
-    }
-
-    private void readFromParcel(Parcel source) {
-        boolean[] booleanArray = new boolean[1];
-        source.readBooleanArray(booleanArray);
-        this.mStatus = booleanArray[0];
-        this.mCityid = source.readString();
-        this.mMessage = source.readString();
-    }
-
-    public static final Parcelable.Creator<Data> CREATOR = new Parcelable.Creator<Data>() {
-
-        @Override
-        public Data createFromParcel(Parcel source) {
-            Data instance = new Data();
-            instance.readFromParcel(source);
-            return instance;
-        }
-
-        @Override
-        public Data[] newArray(int size) {
-            return new Data[size];
-        }
-
-    };
 
 }

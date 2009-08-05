@@ -4,15 +4,14 @@
 
 package com.joelapenna.foursquare.types;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+;
 
 /**
- * Auto-generated: 2009-08-01 10:38:33.569690
+ * Auto-generated: 2009-08-05 21:30:26.311084
  * 
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class User implements Parcelable, FoursquareType {
+public class User implements FoursquareType {
 
     private Group mBadges;
     private Checkin mCheckin;
@@ -98,59 +97,5 @@ public class User implements Parcelable, FoursquareType {
     public void setSettings(Settings settings) {
         mSettings = settings;
     }
-
-    /* For Parcelable */
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        boolean[] booleanArray = {
-
-        };
-        dest.writeBooleanArray(booleanArray);
-        dest.writeParcelable((Parcelable)this.mBadges, flags);
-        dest.writeParcelable(this.mCheckin, 0);
-        dest.writeParcelable(this.mCity, 0);
-        dest.writeString(this.mFirstname);
-        dest.writeString(this.mGender);
-        dest.writeString(this.mId);
-        dest.writeString(this.mLastname);
-        dest.writeString(this.mPhoto);
-        dest.writeParcelable(this.mSettings, 0);
-    }
-
-    private void readFromParcel(Parcel source) {
-        boolean[] booleanArray = new boolean[0];
-        source.readBooleanArray(booleanArray);
-        this.mBadges = (Group)source.readParcelable(null);
-        this.mCheckin = source.readParcelable(null);
-        this.mCity = source.readParcelable(null);
-        this.mFirstname = source.readString();
-        this.mGender = source.readString();
-        this.mId = source.readString();
-        this.mLastname = source.readString();
-        this.mPhoto = source.readString();
-        this.mSettings = source.readParcelable(null);
-    }
-
-    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
-
-        @Override
-        public User createFromParcel(Parcel source) {
-            User instance = new User();
-            instance.readFromParcel(source);
-            return instance;
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-
-    };
 
 }
