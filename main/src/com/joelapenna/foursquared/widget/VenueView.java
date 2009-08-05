@@ -44,10 +44,10 @@ public class VenueView extends RelativeLayout {
     public void onFinishInflate() {
         super.onFinishInflate();
         ((Activity)getContext()).getLayoutInflater().inflate(R.layout.venue, this);
-        mCheckinButton = (Button)findViewById(R.id.checkinButton);
-        mVenueName = (TextView)findViewById(R.id.venueName);
-        mVenueLocationLine1 = (TextView)findViewById(R.id.venueLocationLine1);
-        mVenueLocationLine2 = (TextView)findViewById(R.id.venueLocationLine2);
+        mCheckinButton = (Button)findViewById(R.id.internal_checkinButton);
+        mVenueName = (TextView)findViewById(R.id.internal_venueName);
+        mVenueLocationLine1 = (TextView)findViewById(R.id.internal_venueLocationLine1);
+        mVenueLocationLine2 = (TextView)findViewById(R.id.internal_venueLocationLine2);
     }
 
     public void setCheckinButtonEnabled(boolean enabled) {

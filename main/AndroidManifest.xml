@@ -2,8 +2,8 @@
 <manifest
   xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.joelapenna.foursquared"
-  android:versionName="2009-07-27"
-  android:versionCode="2009072700">
+  android:versionName="2009-08-03"
+  android:versionCode="2009080300">
 
   <uses-permission
     android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -39,7 +39,7 @@
 
     <activity
       android:name=".AddVenueActivity"
-      android:label="@string/add_venue_activity_name">
+      android:label="@string/add_venue_activity_label">
       <intent-filter>
         <action
           android:name="android.intent.action.MAIN" />
@@ -87,7 +87,7 @@
 
     <activity
       android:name=".CheckinsActivity"
-      android:label="@string/checkins_activity_name"
+      android:label="@string/checkins_activity_label"
       android:launchMode="singleTop">
       <intent-filter>
         <action
@@ -115,7 +115,7 @@
 
     <activity
       android:name=".PreferenceActivity"
-      android:label="@string/preference_activity_name">
+      android:label="@string/preference_activity_label">
       <intent-filter>
         <action
           android:name="android.intent.action.MAIN" />
@@ -127,7 +127,7 @@
 
     <activity
       android:name=".SearchVenuesActivity"
-      android:label="@string/venue_search_activity_name"
+      android:label="@string/venue_search_activity_label"
       android:launchMode="singleTop">
       <intent-filter>
         <action
@@ -158,6 +158,20 @@
       <intent-filter>
         <category
           android:name="android.intent.category.TAB" />
+      </intent-filter>
+    </activity>
+
+
+    <activity
+      android:name=".ShoutActivity"
+      android:label="@string/shout_activity_label">
+      <intent-filter>
+        <action
+          android:name="android.intent.action.MAIN" />
+      </intent-filter>
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
       </intent-filter>
     </activity>
 

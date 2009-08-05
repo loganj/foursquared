@@ -3,21 +3,23 @@
   <string
     name="app_name">Foursquare</string>
   <string
-    name="add_venue_activity_name">Add a New Venue</string>
+    name="add_venue_activity_label">Add a New Venue</string>
   <string
-    name="checkins_activity_name">Foursquare Friends</string>
+    name="checkins_activity_label">Foursquare Friends</string>
   <string
-    name="preference_activity_name">Foursquare Preferences</string>
+    name="preference_activity_label">Foursquare Preferences</string>
   <string
-    name="tips_activity_name">foursquare Venue Tips</string>
+    name="shout_activity_label">Foursquare Checkin</string>
   <string
-    name="venue_checkin_activity_name">Foursquare Venue Check-In</string>
+    name="tips_activity_label">foursquare Venue Tips</string>
   <string
-    name="venue_info_activity_name">Foursquare Venue</string>
+    name="venue_checkin_activity_label">Foursquare Venue Check-In</string>
   <string
-    name="venue_search_activity_name">Foursquare Venues</string>
+    name="venue_info_activity_label">Foursquare Venue</string>
   <string
-    name="venue_tips_activity_name">Foursquare Tips</string>
+    name="venue_search_activity_label">Foursquare Venues</string>
+  <string
+    name="venue_tips_activity_label">Foursquare Tips</string>
 
   <string
     name="preferences_label">Preferences</string>

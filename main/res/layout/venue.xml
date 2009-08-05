@@ -7,7 +7,7 @@
   style="@style/venueActivityHeaderStyle">
 
   <TextView
-    android:id="@+id/venueName"
+    android:id="@+id/internal_venueName"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
 
@@ -20,24 +20,24 @@
     android:textAppearance="@android:style/TextAppearance.Medium" />
 
   <TextView
-    android:id="@+id/venueLocationLine1"
+    android:id="@+id/internal_venueLocationLine1"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
 
     android:layout_alignParentLeft="true"
     android:layout_alignParentRight="true"
-    android:layout_below="@id/venueName"
+    android:layout_below="@id/internal_venueName"
 
     android:textAppearance="@android:style/TextAppearance.Small" />
 
   <Button
-    android:id="@+id/checkinButton"
+    android:id="@+id/internal_checkinButton"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
 
     android:layout_alignParentBottom="true"
     android:layout_alignParentRight="true"
-    android:layout_below="@id/venueName"
+    android:layout_below="@id/internal_venueName"
     android:layout_alignWithParentIfMissing="true"
 
     android:enabled="false"
@@ -46,14 +46,14 @@
     android:text="Checkin!" />
 
   <TextView
-    android:id="@+id/venueLocationLine2"
+    android:id="@+id/internal_venueLocationLine2"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
 
     android:layout_alignParentLeft="true"
     android:layout_alignParentRight="true"
-    android:layout_below="@id/venueLocationLine1"
-    android:layout_toLeftOf="@id/checkinButton"
+    android:layout_below="@id/internal_venueLocationLine1"
+    android:layout_toLeftOf="@id/internal_checkinButton"
 
     android:textAppearance="@android:style/TextAppearance.Small" />
 

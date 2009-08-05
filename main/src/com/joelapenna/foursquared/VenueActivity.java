@@ -6,7 +6,6 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Checkin;
-import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
@@ -21,10 +20,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,11 +30,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.View.OnClickListener;
-import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TabHost;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -51,13 +46,14 @@ public class VenueActivity extends TabActivity {
     private static final String TAG = "VenueActivity";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    private static final int DIALOG_CHECKIN = 0;
     private static final int DIALOG_TIPADD = 1;
 
     private static final int MENU_GROUP_SHOUT = 1;
 
     private static final int MENU_SHOUT = 1;
     private static final int MENU_TIPADD = 2;
+
+    private static final int RESULT_SHOUT = 1;
 
     final VenueObservable venueObservable = new VenueObservable();
     final CheckinsObservable checkinsObservable = new CheckinsObservable();
@@ -67,9 +63,10 @@ public class VenueActivity extends TabActivity {
     private final HashSet<Object> mProgressBarTasks = new HashSet<Object>();
 
     private MenuItem mShoutMenuItem;
-    private MenuItem mAddTipMenuItem;
 
     private VenueView mVenueView;
+
+    private boolean mCheckedInSuccessfully = false;
 
     private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
         @Override
@@ -94,7 +91,10 @@ public class VenueActivity extends TabActivity {
         mVenueView.setCheckinButtonOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                new VenueCheckinTask().execute(mStateHolder.venue);
+                Intent intent = new Intent(VenueActivity.this, ShoutActivity.class);
+                intent.putExtra(ShoutActivity.EXTRA_IMMEDIATE_CHECKIN, true);
+                ShoutActivity.venueIntoIntentExtras(mStateHolder.venue, intent);
+                startActivityForResult(intent, RESULT_SHOUT);
             }
         });
 
@@ -111,9 +111,6 @@ public class VenueActivity extends TabActivity {
             } else {
                 if (DEBUG) Log.d(TAG, "Restoring checkins: " + holder.checkins);
                 setCheckins(holder.checkins);
-            }
-            if (holder.checkinResult != null) {
-                mStateHolder.checkinResult = holder.checkinResult;
             }
         } else {
             mStateHolder.venueId = getIntent().getExtras().getString(Foursquared.EXTRA_VENUE_ID);
@@ -135,8 +132,7 @@ public class VenueActivity extends TabActivity {
         mShoutMenuItem = menu.add(MENU_GROUP_SHOUT, MENU_SHOUT, 1, "Shout!") //
                 .setIcon(android.R.drawable.ic_menu_add);
 
-        mAddTipMenuItem = menu.add(Menu.NONE, MENU_TIPADD, 4, "Add Tip") //
-                .setIcon(android.R.drawable.ic_menu_set_as);
+        menu.add(Menu.NONE, MENU_TIPADD, 4, "Add Tip").setIcon(android.R.drawable.ic_menu_set_as);
 
         Foursquared.addPreferencesToMenu(this, menu);
         return true;
@@ -144,12 +140,8 @@ public class VenueActivity extends TabActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
-        boolean checkinEnabled = (mStateHolder.venue != null)
-                && (mStateHolder.checkinResult == null);
+        boolean checkinEnabled = (mStateHolder.venue != null) && !mCheckedInSuccessfully;
         menu.setGroupEnabled(mShoutMenuItem.getGroupId(), checkinEnabled);
-        mAddTipMenuItem.setEnabled(checkinEnabled);
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -158,7 +150,9 @@ public class VenueActivity extends TabActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_SHOUT:
-                new VenueCheckinTask().execute(mStateHolder.venue);
+                Intent intent = new Intent(VenueActivity.this, ShoutActivity.class);
+                ShoutActivity.venueIntoIntentExtras(mStateHolder.venue, intent);
+                startActivityForResult(intent, RESULT_SHOUT);
                 return true;
             case MENU_TIPADD:
                 showDialog(DIALOG_TIPADD);
@@ -173,29 +167,6 @@ public class VenueActivity extends TabActivity {
         View layout;
 
         switch (id) {
-            case DIALOG_CHECKIN:
-                CheckinResult checkinResult = mStateHolder.checkinResult;
-                layout = inflater.inflate(R.layout.checkin_result_dialog,
-                        (ViewGroup)findViewById(R.id.layout_root));
-                String userId = PreferenceManager.getDefaultSharedPreferences(this).getString(
-                        Preferences.PREFERENCE_ID, "");
-
-                WebView webView = (WebView)layout.findViewById(R.id.webView);
-                webView.setBackgroundColor(0); // make it transparent... how do we do this in xml?
-                String breakdownUrl = "http://playfoursquare.com/incoming/breakdown";
-                String breakdownQuery = "?client=iphone&uid=" + userId + "&cid="
-                        + checkinResult.getId();
-                webView.loadUrl(breakdownUrl + breakdownQuery);
-
-                TextView messageView = (TextView)layout.findViewById(R.id.messageTextView);
-                messageView.setText(checkinResult.getMessage());
-
-                return new AlertDialog.Builder(this) //
-                        .setView(layout) //
-                        .setIcon(android.R.drawable.ic_dialog_info) // icon
-                        .setTitle("Checked in @ " + checkinResult.getVenue().getName()) // title
-                        .create();
-
             case DIALOG_TIPADD:
                 layout = inflater.inflate(R.layout.tip_add_dialog,
                         (ViewGroup)findViewById(R.id.layout_root));
@@ -234,6 +205,14 @@ public class VenueActivity extends TabActivity {
         return mStateHolder;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            mCheckedInSuccessfully = true;
+            mVenueView.setCheckinButtonEnabled(false);
+        }
+    }
+
     public void startProgressBar(String taskId) {
         boolean added = mProgressBarTasks.add(taskId);
         if (!added) {
@@ -256,7 +235,7 @@ public class VenueActivity extends TabActivity {
         String tag;
         Intent intent;
 
-        tag = (String)this.getText(R.string.venue_tips_activity_name);
+        tag = (String)this.getText(R.string.venue_tips_activity_label);
         intent = new Intent(this, VenueTipsActivity.class);
         tabHost.addTab(tabHost.newTabSpec(tag)
                 // Info Tab
@@ -265,7 +244,7 @@ public class VenueActivity extends TabActivity {
                 .setContent(intent) // The contained activity
                 );
 
-        tag = (String)this.getText(R.string.venue_info_activity_name);
+        tag = (String)this.getText(R.string.venue_info_activity_label);
         intent = new Intent(this, VenueMapActivity.class);
         tabHost.addTab(tabHost.newTabSpec(tag)
                 // Info Tab
@@ -273,7 +252,7 @@ public class VenueActivity extends TabActivity {
                 .setContent(intent) // The contained activity
                 );
 
-        tag = (String)this.getText(R.string.venue_checkin_activity_name);
+        tag = (String)this.getText(R.string.venue_checkin_activity_label);
         intent = new Intent(this, VenueCheckinActivity.class);
         tabHost.addTab(tabHost.newTabSpec(tag)
                 // Checkin Tab
@@ -363,68 +342,6 @@ public class VenueActivity extends TabActivity {
 
         @Override
         protected void onCancelled() {
-            stopProgressBar(PROGRESS_BAR_TASK_ID);
-        }
-    }
-
-    private class VenueCheckinTask extends AsyncTask<Venue, Void, CheckinResult> {
-
-        private static final String PROGRESS_BAR_TASK_ID = TAG + "AddCheckinAsyncTask";
-
-        @Override
-        public void onPreExecute() {
-            mVenueView.setCheckinButtonEnabled(false);
-            if (DEBUG) Log.d(TAG, "VenueCheckinTask: onPreExecute()");
-            startProgressBar(PROGRESS_BAR_TASK_ID);
-
-        }
-
-        @Override
-        public CheckinResult doInBackground(Venue... params) {
-            if (DEBUG) Log.d(TAG, "VenueCheckinTask: doInBackground()");
-            try {
-                final Venue venue = params[0];
-                if (DEBUG) Log.d(TAG, "Checking in to: " + venue.getName());
-
-                SharedPreferences settings = PreferenceManager
-                        .getDefaultSharedPreferences(VenueActivity.this);
-                boolean silent = !settings.getBoolean(Preferences.PREFERENCE_SHARE_CHECKIN, true);
-                boolean twitter = settings
-                        .getBoolean(Preferences.PREFERENCE_TWITTER_CHECKIN, false);
-                return Foursquared.getFoursquare().checkin(venue.getId(), null, null, silent,
-                        twitter);
-            } catch (FoursquareException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareException", e);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "IOException", e);
-            }
-            return null;
-        }
-
-        @Override
-        public void onPostExecute(CheckinResult checkinResult) {
-            if (DEBUG) Log.d(TAG, "VenueCheckinTask: onPostExecute()");
-            try {
-                mStateHolder.checkinResult = checkinResult;
-                if (checkinResult == null) {
-                    mVenueView.setEnabled(true);
-                    Toast.makeText(VenueActivity.this, "Unable to checkinResult! (FIX THIS!)",
-                            Toast.LENGTH_LONG).show();
-                    return;
-                } else {
-                    showDialog(DIALOG_CHECKIN);
-                }
-                new CheckinsTask().execute();
-            } finally {
-                if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
-                stopProgressBar(PROGRESS_BAR_TASK_ID);
-            }
-        }
-
-        @Override
-        public void onCancelled() {
             stopProgressBar(PROGRESS_BAR_TASK_ID);
         }
     }
@@ -543,6 +460,5 @@ public class VenueActivity extends TabActivity {
         Venue venue = null;
         String venueId = null;
         Group checkins = null;
-        CheckinResult checkinResult = null;
     }
 }

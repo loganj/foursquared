@@ -28,8 +28,17 @@
     android:text="Tell Twitter" />
 
   <EditText
-    android:id="@+id/editText"
+    android:id="@+id/shoutEditText"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:lines="3" />
+    android:lines="2"
+    android:hint="Shout. Shout. Let it all out!" />
+
+  <Button
+    android:id="@+id/checkinButton"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+
+    android:text="Check-in!" />
+
 </LinearLayout>
