@@ -11,6 +11,7 @@ import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.StringFormatters;
 import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
+import com.joelapenna.foursquared.widget.VenueView;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -65,6 +66,7 @@ public class UserActivity extends Activity {
 
     private GridView mBadgesGrid;
     private RelativeLayout mVenueLayout;
+    private VenueView mVenueView;
     private AsyncTask<Void, Void, User> mUserTask = null;
     private AsyncTask<Uri, Void, Uri> mUserPhotoTask = null;
 
@@ -83,6 +85,7 @@ public class UserActivity extends Activity {
         setContentView(R.layout.user_activity);
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
+        mVenueView = (VenueView)findViewById(R.id.venue);
         mBadgesGrid = (GridView)findViewById(R.id.badgesGrid);
         mVenueLayout = (RelativeLayout)findViewById(R.id.venue);
 
@@ -319,11 +322,7 @@ public class UserActivity extends Activity {
             Checkin checkin = user.getCheckin();
             if (checkin != null && checkin.getVenue() != null) {
                 final Venue venue = user.getCheckin().getVenue();
-                ((TextView)mVenueLayout.findViewById(R.id.venueName)).setText(venue.getName());
-                ((TextView)mVenueLayout.findViewById(R.id.venueLocationLine1)).setText(venue
-                        .getAddress());
-                ((TextView)mVenueLayout.findViewById(R.id.venueLocationLine2))
-                        .setText(StringFormatters.getVenueLocationCrossStreetOrCity(venue));
+                mVenueView.setVenue(venue);
                 ((TextView)findViewById(R.id.venueHeader)).setVisibility(TextView.VISIBLE);
 
                 // Hell, I'm not even sure if this is the right place to put this... Whatever.
