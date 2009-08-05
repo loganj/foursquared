@@ -53,6 +53,10 @@ public class Foursquared extends Application {
 
     @Override
     public void onCreate() {
+        Log.i(TAG, "Using Debug Server:\t" + FoursquaredSettings.USE_DEBUG_SERVER);
+        Log.i(TAG, "Using Dumpcatcher:\t" + FoursquaredSettings.USE_DUMPCATCHER);
+        Log.i(TAG, "Using Debug Log:\t" + DEBUG);
+
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (FoursquaredSettings.USE_DUMPCATCHER) {
@@ -110,7 +114,8 @@ public class Foursquared extends Application {
 
         if (TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(password)
                 || TextUtils.isEmpty(oauthToken) || TextUtils.isEmpty(oauthTokenSecret)) {
-            throw new FoursquareCredentialsException("Phone number or password not set in preferences.");
+            throw new FoursquareCredentialsException(
+                    "Phone number or password not set in preferences.");
         }
         sFoursquare.setCredentials(phoneNumber, password);
         sFoursquare.setOAuthToken(oauthToken, oauthTokenSecret);
