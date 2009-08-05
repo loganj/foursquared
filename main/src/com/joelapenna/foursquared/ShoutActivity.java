@@ -29,6 +29,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -78,6 +79,7 @@ public class ShoutActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.d(TAG, "onCreate");
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.shout_activity);
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
@@ -135,7 +137,6 @@ public class ShoutActivity extends Activity {
         } else {
             mVenueView.setVisibility(ViewGroup.GONE);
             mCheckinButton.setText("Shout!");
-            this.setTitle(R.string.shout_no_venue_activity_label);
         }
     }
 
