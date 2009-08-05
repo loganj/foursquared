@@ -11,6 +11,8 @@
   <string
     name="shout_activity_label">Foursquare Checkin</string>
   <string
+    name="shout_no_venue_activity_label">Foursquare Shout</string>
+  <string
     name="tips_activity_label">foursquare Venue Tips</string>
   <string
     name="venue_checkin_activity_label">Foursquare Venue Check-In</string>

@@ -118,16 +118,24 @@ public class ShoutActivity extends Activity {
         } else {
             // Translate the extras received in this intent int a venue, then attach it to the venue
             // view.
+            mStateHolder.venue = new Venue();
             intentExtrasIntoVenue(getIntent(), mStateHolder.venue);
         }
 
-        mVenueView.setVenue(mStateHolder.venue);
+        if (mStateHolder.venue.getId() != null) {
+            mVenueView.setVenue(mStateHolder.venue);
 
-        if (getIntent().getBooleanExtra(EXTRA_IMMEDIATE_CHECKIN, false)) {
-            if (mStateHolder.checkinTask == null) {
-                if (DEBUG) Log.d(TAG, "Immediate checkin is set.");
-                mStateHolder.checkinTask = new CheckinTask().execute();
+            if (getIntent().getBooleanExtra(EXTRA_IMMEDIATE_CHECKIN, false)) {
+                if (mStateHolder.checkinTask == null) {
+                    if (DEBUG) Log.d(TAG, "Immediate checkin is set.");
+                    mStateHolder.checkinTask = new CheckinTask().execute();
+                }
             }
+
+        } else {
+            mVenueView.setVisibility(ViewGroup.GONE);
+            mCheckinButton.setText("Shout!");
+            this.setTitle(R.string.shout_no_venue_activity_label);
         }
     }
 
@@ -271,7 +279,7 @@ public class ShoutActivity extends Activity {
 
     private static class StateHolder {
         // These are all enumerated because we currently cannot handle parceling venues! How sad!
-        Venue venue = new Venue();
+        Venue venue = null;
         AsyncTask<Void, Void, CheckinResult> checkinTask = null;
     }
 
