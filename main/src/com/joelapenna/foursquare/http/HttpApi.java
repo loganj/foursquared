@@ -80,6 +80,10 @@ public class HttpApi {
                 response.getEntity().consumeContent();
                 throw new FoursquareCredentialsException(response.getStatusLine().toString());
 
+            case 404:
+                response.getEntity().consumeContent();
+                throw new FoursquareException(response.getStatusLine().toString());
+
             default:
                 if (DEBUG) {
                     Log.d(TAG, "Default case for status code reached: "
@@ -110,6 +114,10 @@ public class HttpApi {
             case 401:
                 response.getEntity().consumeContent();
                 throw new FoursquareCredentialsException(response.getStatusLine().toString());
+
+            case 404:
+                response.getEntity().consumeContent();
+                throw new FoursquareException(response.getStatusLine().toString());
 
             default:
                 response.getEntity().consumeContent();

@@ -4,11 +4,11 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.VenueView;
 
 import android.app.Activity;
@@ -35,7 +35,6 @@ import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Observable;
 
@@ -306,6 +305,8 @@ public class VenueActivity extends TabActivity {
     private class VenueTask extends AsyncTask<String, Void, Venue> {
         private static final String PROGRESS_BAR_TASK_ID = TAG + "VenueTask";
 
+        private Exception mReason;
+
         @Override
         protected void onPreExecute() {
             startProgressBar(PROGRESS_BAR_TASK_ID);
@@ -315,12 +316,8 @@ public class VenueActivity extends TabActivity {
         protected Venue doInBackground(String... params) {
             try {
                 return Foursquared.getFoursquare().venue(params[0]);
-            } catch (FoursquareException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareException", e);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "IOException", e);
+            } catch (Exception e) {
+                mReason = e;
             }
             return null;
         }
@@ -329,8 +326,7 @@ public class VenueActivity extends TabActivity {
         protected void onPostExecute(Venue venue) {
             try {
                 if (venue == null) {
-                    Toast.makeText(VenueActivity.this, "Unable to lookup the venue.",
-                            Toast.LENGTH_LONG).show();
+                    NotificationsUtil.ToastReasonForFailure(VenueActivity.this, mReason);
                     finish();
                 } else {
                     setVenue(venue);
@@ -349,6 +345,8 @@ public class VenueActivity extends TabActivity {
     private class TipAddTask extends AsyncTask<String, Void, Tip> {
         private static final String PROGRESS_BAR_TASK_ID = TAG + "TipAddTask";
 
+        private Exception mReason;
+
         @Override
         public void onPreExecute() {
             if (DEBUG) Log.d(TAG, "TipAddTask: onPreExecute()");
@@ -363,12 +361,8 @@ public class VenueActivity extends TabActivity {
                 String tip = params[0];
                 String type = params[1];
                 return Foursquared.getFoursquare().addTip(mStateHolder.venueId, tip, type);
-            } catch (FoursquareException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareError", e);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "IOException", e);
+            } catch (Exception e) {
+                mReason = e;
             }
             return null;
         }
@@ -377,14 +371,13 @@ public class VenueActivity extends TabActivity {
         public void onPostExecute(Tip tip) {
             if (DEBUG) Log.d(TAG, "TipAddTask: onPostExecute()");
             try {
-                if (tip != null) {
+                if (tip == null) {
+                    NotificationsUtil.ToastReasonForFailure(VenueActivity.this, mReason);
+                } else {
                     String tipToastString = "Added Tip #" + tip.getId() + " " + tip.getText();
                     // Refresh the tips list.
                     Toast.makeText(VenueActivity.this, tipToastString, Toast.LENGTH_LONG).show();
                     new VenueTask().execute(mStateHolder.venueId);
-                } else {
-                    Toast.makeText(VenueActivity.this, "Unable to add your tip! (Sorry!)",
-                            Toast.LENGTH_LONG).show();
                 }
             } finally {
                 stopProgressBar(PROGRESS_BAR_TASK_ID);
@@ -400,6 +393,8 @@ public class VenueActivity extends TabActivity {
     private class CheckinsTask extends AsyncTask<Void, Void, Group> {
         private static final String PROGRESS_BAR_TASK_ID = TAG + "CheckinsTask";
 
+        private Exception mReason;
+
         @Override
         public void onPreExecute() {
             if (DEBUG) Log.d(TAG, "CheckinsTask: onPreExecute()");
@@ -411,12 +406,8 @@ public class VenueActivity extends TabActivity {
             if (DEBUG) Log.d(TAG, "CheckinsTask: doInBackground()");
             try {
                 return Foursquared.getFoursquare().checkins(null);
-            } catch (FoursquareException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareError", e);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "IOException", e);
+            } catch (Exception e) {
+                mReason = e;
             }
             return null;
         }
@@ -426,6 +417,8 @@ public class VenueActivity extends TabActivity {
             if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
             try {
                 setCheckins(filterCheckins(checkins));
+            } catch (Exception e) {
+                NotificationsUtil.ToastReasonForFailure(VenueActivity.this, mReason);
             } finally {
                 stopProgressBar(PROGRESS_BAR_TASK_ID);
             }

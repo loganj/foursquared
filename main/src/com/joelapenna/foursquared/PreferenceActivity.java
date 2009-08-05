@@ -5,9 +5,8 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.error.FoursquareCredentialsException;
-import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
+import com.joelapenna.foursquared.util.NotificationsUtil;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -22,8 +21,6 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.widget.Toast;
-
-import java.io.IOException;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -81,6 +78,8 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         private static final String TAG = "UpdateCityTask";
         private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
+        private Exception mReason;
+
         @Override
         protected void onPreExecute() {
             if (DEBUG) Log.d(TAG, "onPreExecute()");
@@ -110,31 +109,23 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                 editor.commit();
 
                 return newCity;
-            } catch (FoursquareCredentialsException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareCredentialsException", e);
-            } catch (FoursquareException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareException", e);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "IOException", e);
+            } catch (Exception e) {
+                mReason = e;
             }
             return null;
         }
 
         @Override
         protected void onPostExecute(City city) {
-            if (city != null) {
+            if (city == null) {
+                NotificationsUtil.ToastReasonForFailure(PreferenceActivity.this, mReason);
+            } else {
                 Toast.makeText(PreferenceActivity.this, "Welcome to " + city.getName() + "!",
                         Toast.LENGTH_LONG).show();
                 // Back to the stupid lame-o hack of restarting the activity so it shows the
                 // background-updated preference.
                 finish();
                 startActivity(getIntent());
-            } else {
-                Toast.makeText(PreferenceActivity.this, "Unable to determine your city!",
-                        Toast.LENGTH_LONG).show();
             }
         }
 

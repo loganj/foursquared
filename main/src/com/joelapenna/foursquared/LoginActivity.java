@@ -4,8 +4,6 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.error.FoursquareCredentialsException;
-import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
@@ -30,8 +28,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.IOException;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -174,6 +170,8 @@ public class LoginActivity extends Activity {
         private static final String TAG = "LoginTask";
         private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
+        private Exception mReason;
+
         @Override
         protected void onPreExecute() {
             if (DEBUG) Log.d(TAG, "onPreExecute()");
@@ -202,15 +200,8 @@ public class LoginActivity extends Activity {
                 editor.commit();
                 return true;
 
-            } catch (FoursquareCredentialsException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareCredentialsException", e);
-            } catch (FoursquareException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareException", e);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "IOException", e);
+            } catch (Exception e) {
+                mReason = e;
             }
             return false;
         }
@@ -229,6 +220,7 @@ public class LoginActivity extends Activity {
                 Toast.makeText(LoginActivity.this,
                         "Unable to log in. Please check your phone number and password.",
                         Toast.LENGTH_LONG).show();
+                if (DEBUG) Log.d(TAG, "Reason for login failure: ", mReason);
 
                 mPrefs.edit().clear().commit();
                 Foursquared.getFoursquare().clearAllCredentials();

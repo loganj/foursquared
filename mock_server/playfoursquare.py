@@ -50,7 +50,6 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
       path = '../captures/api/v1/tips.xml'
     elif url.path == '/v1/checkin':
       path = '../captures/api/v1/checkin.xml'
-      import time; time.sleep(7)
 
     if path is None:
       self.send_error(404)

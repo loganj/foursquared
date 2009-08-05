@@ -4,10 +4,9 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.error.FoursquareError;
-import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.VenueView;
 
 import android.app.Activity;
@@ -37,10 +36,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-
-import java.io.IOException;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -236,6 +232,8 @@ public class ShoutActivity extends Activity {
 
     class CheckinTask extends AsyncTask<Void, Void, CheckinResult> {
 
+        private Exception mReason;
+
         @Override
         public void onPreExecute() {
             mCheckinButton.setEnabled(false);
@@ -252,15 +250,8 @@ public class ShoutActivity extends Activity {
             try {
                 return Foursquared.getFoursquare()
                         .checkin(null, venueId, shout, isPrivate, twitter);
-            } catch (FoursquareError e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareError", e);
-            } catch (FoursquareException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareException", e);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "IOException", e);
+            } catch (Exception e) {
+                mReason = e;
             }
             return null;
         }
@@ -271,7 +262,7 @@ public class ShoutActivity extends Activity {
             dismissDialog(DIALOG_CHECKIN_PROGRESS);
             if (checkinResult == null) {
                 mCheckinButton.setEnabled(true);
-                Toast.makeText(ShoutActivity.this, "Unable to checkin!", Toast.LENGTH_LONG).show();
+                NotificationsUtil.ToastReasonForFailure(ShoutActivity.this, mReason);
                 return;
             } else {
                 setResult(Activity.RESULT_OK);

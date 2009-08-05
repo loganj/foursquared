@@ -8,6 +8,7 @@ import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
+import com.joelapenna.foursquared.util.NotificationsUtil;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -219,6 +220,8 @@ public class AddVenueActivity extends Activity {
 
     class AddressLookupTask extends AsyncTask<Void, Void, FieldsHolder> {
 
+        private Exception mReason;
+
         @Override
         protected void onPreExecute() {
             setProgressBarIndeterminateVisibility(true);
@@ -239,12 +242,8 @@ public class AddVenueActivity extends Activity {
                 fieldsHolder.geocodedAddress = geocoder.getFromLocation(location.getLatitude(),
                         location.getLongitude(), 1).get(0);
 
-            } catch (FoursquareException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareException", e);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "IOException", e);
+            } catch (Exception e) {
+                mReason = e;
             }
             return fieldsHolder;
         }
@@ -255,9 +254,7 @@ public class AddVenueActivity extends Activity {
 
             try {
                 if (fields == null) {
-                    Toast.makeText(AddVenueActivity.this,
-                            "Unable to lookup venue city. Try again later.", Toast.LENGTH_LONG)
-                            .show();
+                    NotificationsUtil.ToastReasonForFailure(AddVenueActivity.this, mReason);
                     finish();
                 } else {
                     setFields(fields);

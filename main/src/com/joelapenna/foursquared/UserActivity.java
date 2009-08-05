@@ -4,11 +4,11 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Badge;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
 import com.joelapenna.foursquared.widget.VenueView;
 
@@ -38,7 +38,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.IOException;
@@ -246,6 +245,8 @@ public class UserActivity extends Activity {
 
     private class UserTask extends AsyncTask<Void, Void, User> {
 
+        private Exception mReason;
+
         @Override
         protected void onPreExecute() {
             setProgressBarIndeterminateVisibility(true);
@@ -256,12 +257,8 @@ public class UserActivity extends Activity {
         protected User doInBackground(Void... params) {
             try {
                 return Foursquared.getFoursquare().user(mUserId, false, true);
-            } catch (FoursquareException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareException", e);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "IOException", e);
+            } catch (Exception e) {
+                mReason = e;
             }
             return null;
         }
@@ -270,8 +267,7 @@ public class UserActivity extends Activity {
         protected void onPostExecute(User user) {
             setProgressBarIndeterminateVisibility(false);
             if (user == null) {
-                Toast.makeText(UserActivity.this, "Unable to lookup user information",
-                        Toast.LENGTH_SHORT).show();
+                NotificationsUtil.ToastReasonForFailure(UserActivity.this, mReason);
                 finish();
             } else {
                 setUser(user);
