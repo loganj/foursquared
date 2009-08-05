@@ -5,11 +5,6 @@
   <style
     name="FoursquareTheme"
     parent="android:Theme">
-    <!--
-      <item name="android:windowNoTitle">true</item> <item
-      name="android:windowBackground">@color/translucent_blue</item> <item
-      name="android:listViewStyle">@style/MyListView</item>
-    -->
     <item
       name="android:listSeparatorTextViewStyle">@style/listSeparatorTextViewStyle</item>
   </style>
@@ -44,15 +39,16 @@
   </style>
 
   <style
-    name="venueListItemStyle"
+    name="listItemStyle"
     parent="@android:style/Widget.ListView">
     <item
       name="android:paddingTop">4dip</item>
     <item
       name="android:paddingBottom">6dip</item>
     <item
-      name="android:background">@drawable/venue_list_gradient</item>
+      name="android:background">@drawable/list_item_gradient</item>
   </style>
+
   <style
     name="venueActivityHeaderStyle"
     parent="@android:style/Widget.ListView">
