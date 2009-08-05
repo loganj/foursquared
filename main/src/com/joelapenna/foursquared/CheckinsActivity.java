@@ -51,8 +51,9 @@ public class CheckinsActivity extends TabActivity {
     public static SearchResultsObservable searchResultsObservable;
 
     private static final int MENU_REFRESH = 1;
-    private static final int MENU_STATS = 2;
-    private static final int MENU_MYINFO = 3;
+    private static final int MENU_SHOUT = 2;
+    private static final int MENU_STATS = 3;
+    private static final int MENU_MYINFO = 4;
 
     private static final int MENU_GROUP_SEARCH = 0;
 
@@ -144,6 +145,8 @@ public class CheckinsActivity extends TabActivity {
         super.onCreateOptionsMenu(menu);
         menu.add(MENU_GROUP_SEARCH, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
                 .setIcon(R.drawable.ic_menu_refresh);
+        menu.add(Menu.NONE, MENU_SHOUT, Menu.NONE, R.string.shout_action_label) //
+                .setIcon(android.R.drawable.ic_menu_send);
         menu.add(Menu.NONE, MENU_STATS, Menu.NONE, R.string.stats_label) //
                 .setIcon(android.R.drawable.ic_menu_recent_history);
         menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
@@ -158,9 +161,11 @@ public class CheckinsActivity extends TabActivity {
             case MENU_REFRESH:
                 executeSearchTask(mSearchHolder.query);
                 return true;
+            case MENU_SHOUT:
+                startActivity(new Intent(CheckinsActivity.this, ShoutActivity.class));
+                return true;
             case MENU_STATS:
-                Intent intent = new Intent(CheckinsActivity.this, StatsActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(CheckinsActivity.this, StatsActivity.class));
                 return true;
             case MENU_MYINFO:
                 startActivity(new Intent(CheckinsActivity.this, UserActivity.class));

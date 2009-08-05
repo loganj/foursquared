@@ -46,6 +46,10 @@
     name="search_label">Search</string>
   <string
     name="stats_label">Leaderboard</string>
+  <string
+    name="shout_action_label">Shout!</string>
+  <string
+    name="checkin_action_label">Check-in!</string>
 
   <string
     name="search_hint">Search for something...</string>

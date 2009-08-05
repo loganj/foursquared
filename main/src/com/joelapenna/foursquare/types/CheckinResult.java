@@ -4,9 +4,6 @@
 
 package com.joelapenna.foursquare.types;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 /**
  * Auto-generated: 2009-08-01 10:39:25.277407
  * 

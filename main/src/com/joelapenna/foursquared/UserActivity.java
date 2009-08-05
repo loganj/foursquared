@@ -9,7 +9,6 @@ import com.joelapenna.foursquare.types.Badge;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.util.StringFormatters;
 import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
 import com.joelapenna.foursquared.widget.VenueView;
 

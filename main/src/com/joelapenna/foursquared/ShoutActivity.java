@@ -61,6 +61,8 @@ public class ShoutActivity extends Activity {
 
     private StateHolder mStateHolder = new StateHolder();
 
+    private boolean isShouting = true;
+
     private Button mCheckinButton;
     private CheckBox mTwitterCheckBox;
     private CheckBox mFriendsCheckBox;
@@ -114,17 +116,24 @@ public class ShoutActivity extends Activity {
         mFriendsCheckBox
                 .setChecked(settings.getBoolean(Preferences.PREFERENCE_SHARE_CHECKIN, true));
 
+        isShouting = !getIntent().hasExtra(Foursquared.EXTRA_VENUE_ID);
+
         if (getLastNonConfigurationInstance() != null) {
             if (DEBUG) Log.d(TAG, "Using last non configuration instance");
             mStateHolder = (StateHolder)getLastNonConfigurationInstance();
-        } else {
-            // Translate the extras received in this intent int a venue, then attach it to the venue
-            // view.
+        } else if (!isShouting) {
+            // Translate the extras received in this intent int a venue, then attach it to the
+            // venue view.
             mStateHolder.venue = new Venue();
             intentExtrasIntoVenue(getIntent(), mStateHolder.venue);
         }
 
-        if (mStateHolder.venue.getId() != null) {
+        if (isShouting) {
+            mVenueView.setVisibility(ViewGroup.GONE);
+            mFriendsCheckBox.setChecked(true);
+            mCheckinButton.setText("Shout!");
+
+        } else {
             mVenueView.setVenue(mStateHolder.venue);
 
             if (getIntent().getBooleanExtra(EXTRA_IMMEDIATE_CHECKIN, false)) {
@@ -133,10 +142,6 @@ public class ShoutActivity extends Activity {
                     mStateHolder.checkinTask = new CheckinTask().execute();
                 }
             }
-
-        } else {
-            mVenueView.setVisibility(ViewGroup.GONE);
-            mCheckinButton.setText("Shout!");
         }
     }
 
@@ -177,13 +182,14 @@ public class ShoutActivity extends Activity {
      * extras into a venue so that we can code to this future possibility.
      */
     public static void intentExtrasIntoVenue(Intent intent, Venue venue) {
-        venue.setId(intent.getExtras().getString(Foursquared.EXTRA_VENUE_ID));
-        venue.setName(intent.getExtras().getString(EXTRA_VENUE_NAME));
-        venue.setAddress(intent.getExtras().getString(EXTRA_VENUE_ADDRESS));
-        venue.setCrossstreet(intent.getExtras().getString(EXTRA_VENUE_CROSSSTREET));
-        venue.setCity(intent.getExtras().getString(EXTRA_VENUE_CITY));
-        venue.setZip(intent.getExtras().getString(EXTRA_VENUE_ZIP));
-        venue.setState(intent.getExtras().getString(EXTRA_VENUE_STATE));
+        Bundle extras = intent.getExtras();
+        venue.setId(extras.getString(Foursquared.EXTRA_VENUE_ID));
+        venue.setName(extras.getString(EXTRA_VENUE_NAME));
+        venue.setAddress(extras.getString(EXTRA_VENUE_ADDRESS));
+        venue.setCrossstreet(extras.getString(EXTRA_VENUE_CROSSSTREET));
+        venue.setCity(extras.getString(EXTRA_VENUE_CITY));
+        venue.setZip(extras.getString(EXTRA_VENUE_ZIP));
+        venue.setState(extras.getString(EXTRA_VENUE_STATE));
     }
 
     public static void venueIntoIntentExtras(Venue venue, Intent intent) {
@@ -236,13 +242,14 @@ public class ShoutActivity extends Activity {
 
         @Override
         public CheckinResult doInBackground(Void... params) {
+            String venueId = (mStateHolder.venue == null) ? null : mStateHolder.venue.getId();
             boolean isPrivate = !mFriendsCheckBox.isChecked();
             boolean twitter = mTwitterCheckBox.isChecked();
             String shout = TextUtils.isEmpty(mShoutEditText.getText()) ? null : mShoutEditText
                     .getText().toString();
             try {
-                return Foursquared.getFoursquare().checkin(null, mStateHolder.venue.getId(), shout,
-                        isPrivate, twitter);
+                return Foursquared.getFoursquare()
+                        .checkin(null, venueId, shout, isPrivate, twitter);
             } catch (FoursquareError e) {
                 // TODO Auto-generated catch block
                 if (DEBUG) Log.d(TAG, "FoursquareError", e);
