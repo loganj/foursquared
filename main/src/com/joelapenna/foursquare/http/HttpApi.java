@@ -127,8 +127,9 @@ public class HttpApi {
         try {
             mHttpClient.getConnectionManager().closeExpiredConnections();
             return mHttpClient.execute(httpRequest);
-        } finally {
+        } catch (IOException e) {
             httpRequest.abort();
+            throw e;
         }
     }
 
