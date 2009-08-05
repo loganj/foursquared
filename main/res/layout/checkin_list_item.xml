@@ -73,10 +73,6 @@
     android:paddingRight="6dip"
 
     android:gravity="left"
-    android:textAppearance="@android:style/TextAppearance.Small"
-
-    android:maxLines="1"
-    android:scrollHorizontally="true"
-    android:ellipsize="end" />
+    android:textAppearance="@android:style/TextAppearance.Small" />
 
 </RelativeLayout>
