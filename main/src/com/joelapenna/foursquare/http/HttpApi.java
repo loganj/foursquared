@@ -106,9 +106,11 @@ public class HttpApi {
                 } catch (ParseException e) {
                     throw new FoursquareParseException(e.getMessage());
                 }
+
             case 401:
                 response.getEntity().consumeContent();
                 throw new FoursquareCredentialsException(response.getStatusLine().toString());
+
             default:
                 response.getEntity().consumeContent();
                 throw new FoursquareException(response.getStatusLine().toString());
