@@ -160,12 +160,14 @@ public class ShoutActivity extends Activity {
     public Dialog onCreateDialog(int id) {
         switch (id) {
             case DIALOG_CHECKIN_PROGRESS:
+                String title = (isShouting) ? "Shouting!" : "Checking in!";
+                String messageAction = (isShouting) ? "shout!" : "check-in!";
                 ProgressDialog dialog = new ProgressDialog(this);
                 dialog.setCancelable(true);
                 dialog.setIndeterminate(true);
-                dialog.setTitle("Checking in!");
+                dialog.setTitle(title);
                 dialog.setIcon(android.R.drawable.ic_dialog_info);
-                dialog.setMessage("Please wait while we check-in.");
+                dialog.setMessage("Please wait while we " + messageAction);
                 dialog.setOnCancelListener(new OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
