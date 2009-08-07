@@ -5,12 +5,11 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:foursquared="http://schemas.android.com/apk/res/com.joelapenna.foursquared"
   android:layout_width="fill_parent"
-  android:layout_height="wrap_content"
-  android:padding="5dip">
+  android:layout_height="wrap_content">
 
   <RelativeLayout
     android:id="@+id/userLayout"
-    
+
     android:layout_height="wrap_content"
     android:layout_width="fill_parent"
 
@@ -27,6 +26,9 @@
       android:layout_alignParentTop="true"
       android:layout_alignParentLeft="true"
       android:layout_marginRight="6dip"
+
+      gravity="center_vertical"
+      android:layout_gravity="center_vertical"
 
       android:scaleType="center" />
 
@@ -48,7 +50,7 @@
       android:gravity="center_vertical" />
 
     <TextView
-      android:id="@+id/city"
+      android:id="@+id/secondLine"
 
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
@@ -57,19 +59,6 @@
       android:layout_below="@id/name"
       android:layout_alignParentRight="true"
 
-      android:singleLine="true"
-      android:ellipsize="marquee" />
-
-    <TextView
-      android:id="@+id/shout"
-
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-
-      android:layout_toRightOf="@id/photo"
-      android:layout_below="@id/city"
-      android:layout_alignParentRight="true"
-      
       android:textStyle="italic" />
   </RelativeLayout>
 

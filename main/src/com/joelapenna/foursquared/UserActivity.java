@@ -317,7 +317,7 @@ public class UserActivity extends Activity {
         private void displayCheckin(User user) {
             Checkin checkin = user.getCheckin();
             if (checkin != null && !TextUtils.isEmpty(checkin.getShout())) {
-                ((TextView)findViewById(R.id.shout)).setText(checkin.getShout());
+                ((TextView)findViewById(R.id.secondLine)).setText(checkin.getShout());
             }
 
             if (checkin != null && checkin.getVenue() != null) {
@@ -347,12 +347,14 @@ public class UserActivity extends Activity {
             if (DEBUG) Log.d(TAG, "loading user");
             String fullName = user.getFirstname() + " " + user.getLastname();
             TextView name = (TextView)findViewById(R.id.name);
-            TextView city = (TextView)findViewById(R.id.city);
 
             name.setText(fullName);
-            city.setText(user.getCity().getShortname());
-
             ensureUserPhoto(user);
+
+            Checkin checkin = user.getCheckin();
+            if (checkin == null || TextUtils.isEmpty(checkin.getShout())) {
+                ((TextView)findViewById(R.id.secondLine)).setText(user.getCity().getName());
+            }
         }
     }
 }
