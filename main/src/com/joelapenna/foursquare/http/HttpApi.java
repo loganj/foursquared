@@ -85,10 +85,8 @@ public class HttpApi {
                 throw new FoursquareException(response.getStatusLine().toString());
 
             default:
-                if (DEBUG) {
-                    Log.d(TAG, "Default case for status code reached: "
-                            + response.getStatusLine().toString());
-                }
+                if (DEBUG) Log.d(TAG, "Default case for status code reached: "
+                        + response.getStatusLine().toString());
                 response.getEntity().consumeContent();
                 throw new IOException("Unknown HTTP status: " + response.getStatusLine());
         }
@@ -127,7 +125,7 @@ public class HttpApi {
 
     /**
      * execute() an httpRequest catching exceptions and returning null instead.
-     * 
+     *
      * @param httpRequest
      * @return
      * @throws IOException
@@ -171,7 +169,7 @@ public class HttpApi {
     /**
      * Create a thread-safe client. This client does not do redirecting, to allow us to capture
      * correct "error" codes.
-     * 
+     *
      * @return HttpClient
      */
     public static final DefaultHttpClient createHttpClient() {

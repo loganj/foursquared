@@ -255,13 +255,13 @@ public class FoursquareHttpApiV1 {
      */
     CheckinResult checkin(String vid, String venue, String shout, boolean isPrivate, boolean twitter)
             throws FoursquareException, FoursquareError, IOException {
-        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_CHECKIN), //
+        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_CHECKIN), //
                 new BasicNameValuePair("vid", vid), //
                 new BasicNameValuePair("venue", venue), //
                 new BasicNameValuePair("shout", shout), //
                 new BasicNameValuePair("private", (isPrivate) ? "1" : "0"), //
                 new BasicNameValuePair("twitter", (twitter) ? "1" : "0"));
-        return (CheckinResult)mHttpApi.doHttpRequest(httpGet, new CheckinResultParser());
+        return (CheckinResult)mHttpApi.doHttpRequest(httpPost, new CheckinResultParser());
     }
 
     /**
