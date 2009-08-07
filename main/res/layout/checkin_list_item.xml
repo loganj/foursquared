@@ -11,12 +11,13 @@
     android:id="@+id/photo"
     android:layout_width="50dip"
     android:layout_height="50dip"
-    android:padding="2dip"
     android:background="#ffffff"
     android:layout_alignParentTop="true"
     android:layout_alignParentLeft="true"
     android:layout_marginRight="3dip"
     android:src="@drawable/blank_boy"
+
+    android:gravity="center_vertical"
 
     android:scaleType="fitXY" />
 
@@ -43,14 +44,13 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
 
-    android:layout_alignParentBottom="true"
     android:layout_alignParentRight="true"
+    android:layout_alignParentBottom="true"
     android:layout_below="@id/firstLine"
     android:layout_alignWithParentIfMissing="true"
 
-    android:paddingRight="6dip"
+    android:paddingRight="3dip"
 
-    android:gravity="right"
     android:textAppearance="@android:style/TextAppearance.Small"
     android:textColor="#7EDDFC"
 
@@ -65,14 +65,17 @@
     android:layout_height="wrap_content"
 
     android:layout_toRightOf="@id/photo"
-    android:layout_alignParentBottom="true"
-    android:layout_below="@id/firstLine"
     android:layout_toLeftOf="@id/timeTextView"
-    android:layout_alignWithParentIfMissing="true"
+    android:layout_below="@id/firstLine"
+    android:layout_alignParentBottom="true"
 
-    android:paddingRight="6dip"
+    android:paddingRight="3dip"
 
     android:gravity="left"
-    android:textAppearance="@android:style/TextAppearance.Small" />
+    android:textAppearance="@android:style/TextAppearance.Small"
+    android:textStyle="italic"
+
+    android:maxLines="2"
+    android:ellipsize="end" />
 
 </RelativeLayout>

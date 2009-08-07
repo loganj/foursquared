@@ -13,6 +13,7 @@ import android.text.format.DateUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class StringFormatters {
 
@@ -54,10 +55,12 @@ public class StringFormatters {
         }
         return sb.toString();
     }
-    
+
     public static CharSequence getRelativeTimeSpanString(String created) {
         try {
-            return DateUtils.getRelativeTimeSpanString(DATE_FORMAT.parse(created).getTime());
+            return DateUtils.getRelativeTimeSpanString(DATE_FORMAT.parse(created).getTime(),
+                    new Date().getTime(), DateUtils.MINUTE_IN_MILLIS,
+                    DateUtils.FORMAT_ABBREV_RELATIVE);
         } catch (ParseException e) {
             return created;
         }
