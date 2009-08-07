@@ -15,7 +15,6 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquare.types.classic.Auth;
 import com.joelapenna.foursquared.FoursquaredSettings;
 
 import android.util.Log;
@@ -84,14 +83,6 @@ public class Foursquare {
                     "authExchange is unavailable without a consumer key/secret.");
         }
         return mFoursquareV1.authExchange(mPhone, mPassword);
-    }
-
-    @Classic
-    public Auth login() throws FoursquareException, FoursquareError,
-            FoursquareCredentialsException, IOException {
-        if (DEBUG) Log.d(TAG, "login()");
-        return mFoursquare.login(mPhone, mPassword);
-
     }
 
     @V1
