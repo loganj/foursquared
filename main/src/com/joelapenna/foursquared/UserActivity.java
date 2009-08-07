@@ -28,6 +28,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -315,6 +316,10 @@ public class UserActivity extends Activity {
 
         private void displayCheckin(User user) {
             Checkin checkin = user.getCheckin();
+            if (checkin != null && !TextUtils.isEmpty(checkin.getShout())) {
+                ((TextView)findViewById(R.id.shout)).setText(checkin.getShout());
+            }
+
             if (checkin != null && checkin.getVenue() != null) {
                 final Venue venue = user.getCheckin().getVenue();
                 mVenueView.setVenue(venue);
