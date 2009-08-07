@@ -9,8 +9,8 @@
 
   <ImageView
     android:id="@+id/photo"
-    android:layout_width="50dip"
-    android:layout_height="50dip"
+    android:layout_width="?android:attr/listPreferredItemHeight"
+    android:layout_height="?android:attr/listPreferredItemHeight"
     android:background="#ffffff"
     android:layout_alignParentTop="true"
     android:layout_alignParentLeft="true"
