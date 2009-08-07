@@ -60,36 +60,28 @@ public abstract class AbstractParser<T extends FoursquareType> implements Parser
     public static final XmlPullParser createXmlPullParser(InputStream is) {
         XmlPullParser parser;
         try {
-            StringBuffer sb = new StringBuffer();
-            if (DEBUG) {
-                while (true) {
-                    final int ch = is.read();
-                    if (ch < 0) {
-                        break;
-                    } else {
-                        sb.append((char)ch);
-                    }
-                }
-                is.close();
-                Log.d(TAG, sb.toString());
-            }
-
             parser = sFactory.newPullParser();
-            parser.setInput(new StringReader(sb.toString()));
+            if (DEBUG) {
+                StringBuffer sb = new StringBuffer();
+                if (DEBUG) {
+                    while (true) {
+                        final int ch = is.read();
+                        if (ch < 0) {
+                            break;
+                        } else {
+                            sb.append((char)ch);
+                        }
+                    }
+                    is.close();
+                    Log.d(TAG, sb.toString());
+                }
+                parser.setInput(new StringReader(sb.toString()));
+            } else {
+                parser.setInput(is, null);
+            }
         } catch (XmlPullParserException e) {
             throw new IllegalArgumentException();
         } catch (IOException e) {
-            throw new IllegalArgumentException();
-        }
-        return parser;
-    }
-
-    public static final XmlPullParser createXmlPullParser(String xmlString) {
-        XmlPullParser parser;
-        try {
-            parser = sFactory.newPullParser();
-            parser.setInput(new StringReader(xmlString));
-        } catch (XmlPullParserException e) {
             throw new IllegalArgumentException();
         }
         return parser;
