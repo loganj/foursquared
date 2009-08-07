@@ -9,6 +9,7 @@ import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.NotificationsUtil;
+import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
 import com.joelapenna.foursquared.widget.VenueView;
 
@@ -44,7 +45,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.concurrent.ExecutionException;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -67,7 +67,6 @@ public class UserActivity extends Activity {
     private RelativeLayout mVenueLayout;
     private VenueView mVenueView;
     private AsyncTask<Void, Void, User> mUserTask = null;
-    private AsyncTask<Uri, Void, Uri> mUserPhotoTask = null;
 
     private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
         @Override
@@ -110,9 +109,6 @@ public class UserActivity extends Activity {
 
         if (mUserTask != null) {
             mUserTask.cancel(true);
-        }
-        if (mUserPhotoTask != null) {
-            mUserPhotoTask.cancel(true);
         }
     }
 
@@ -203,44 +199,24 @@ public class UserActivity extends Activity {
             ((ImageView)findViewById(R.id.photo)).setImageResource(R.drawable.blank_boy);
             return;
         }
-        Uri photo = Uri.parse(user.getPhoto());
+        final Uri photo = Uri.parse(user.getPhoto());
         if (photo != null) {
-            if (Foursquared.getUserPhotosManager().getFile(photo).exists()) {
+            RemoteResourceManager userPhotosManager = Foursquared.getUserPhotosManager();
+            if (userPhotosManager.getFile(photo).exists()) {
                 setPhotoImageUri(photo);
             } else {
-                mUserPhotoTask = new UserPhotoTask().execute(Uri.parse(user.getPhoto()));
+                userPhotosManager.addObserver(new Observer() {
+                    @Override
+                    public void update(Observable observable, Object data) {
+                        // XXX Not sure this will work, make it sure it does before the next
+                        // release.
+                        if ((Uri)data == photo) {
+                            observable.deleteObserver(this);
+                            setPhotoImageUri(photo);
+                        }
+                    }
+                });
             }
-        }
-    }
-
-    private class UserPhotoTask extends AsyncTask<Uri, Void, Uri> {
-
-        @Override
-        protected void onPreExecute() {
-            setProgressBarIndeterminateVisibility(true);
-        }
-
-        @Override
-        protected Uri doInBackground(Uri... params) {
-            try {
-                Uri uri = (Uri)params[0];
-                Foursquared.getUserPhotosManager().requestBlocking(uri);
-                return uri;
-
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "InterruptedException", e);
-            } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "ExecutionException", e);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Uri uri) {
-            setProgressBarIndeterminateVisibility(false);
-            setPhotoImageUri(uri);
         }
     }
 
