@@ -249,7 +249,7 @@ public class ShoutActivity extends Activity {
                     .getText().toString();
             try {
                 return Foursquared.getFoursquare()
-                        .checkin(null, venueId, shout, isPrivate, twitter);
+                        .checkin(venueId, null, shout, isPrivate, twitter);
             } catch (Exception e) {
                 mReason = e;
             }

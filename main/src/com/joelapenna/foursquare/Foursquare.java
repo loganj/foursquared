@@ -87,8 +87,8 @@ public class Foursquare {
     }
 
     @Classic
-    public Auth login() throws FoursquareException, FoursquareError, FoursquareCredentialsException,
-            IOException {
+    public Auth login() throws FoursquareException, FoursquareError,
+            FoursquareCredentialsException, IOException {
         if (DEBUG) Log.d(TAG, "login()");
         return mFoursquare.login(mPhone, mPassword);
 
@@ -108,9 +108,9 @@ public class Foursquare {
     }
 
     @V1
-    public CheckinResult checkin(String venueName, String venueId, String shout, boolean isPrivate,
+    public CheckinResult checkin(String venueId, String venueName, String shout, boolean isPrivate,
             boolean twitter) throws FoursquareException, FoursquareError, IOException {
-        return mFoursquareV1.checkin(venueName, venueId, shout, isPrivate, twitter);
+        return mFoursquareV1.checkin(venueId, venueName, shout, isPrivate, twitter);
     }
 
     @V1
