@@ -23,7 +23,7 @@
       <id>123</id>
       <name>Newbie</name>
       <icon>http://playfoursquare.com/images/badges/newbie_on.png</icon>
-      <message>Congrats on your first checkin!</message>
+      <description>Congrats on your first checkin!</description>
     </badge>
   </badges>
   <specials>
