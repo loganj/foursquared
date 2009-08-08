@@ -43,7 +43,7 @@ public class VenueView extends RelativeLayout {
     @Override
     public void onFinishInflate() {
         super.onFinishInflate();
-        ((Activity)getContext()).getLayoutInflater().inflate(R.layout.venue, this);
+        ((Activity)getContext()).getLayoutInflater().inflate(R.layout.venue_view, this);
         mCheckinButton = (Button)findViewById(R.id.internal_checkinButton);
         mVenueName = (TextView)findViewById(R.id.internal_venueName);
         mVenueLocationLine1 = (TextView)findViewById(R.id.internal_venueLocationLine1);
