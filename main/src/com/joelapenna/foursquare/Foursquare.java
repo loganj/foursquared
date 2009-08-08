@@ -139,6 +139,17 @@ public class Foursquare {
         return mFoursquareV1.venues(geolat, geolong, query, radius, limit);
     }
 
+    @Classic
+    public String checkinResultUrl(String userId, String checkinId) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("http://playfoursquare.com/incoming/breakdown");
+        sb.append("?client=iphone&uid=");
+        sb.append(userId);
+        sb.append("&cid=");
+        sb.append(checkinId);
+        return sb.toString();
+    }
+
     /**
      * This api is supported in the V1 API documented at:
      * http://groups.google.com/group/foursquare-api/web/api-documentation

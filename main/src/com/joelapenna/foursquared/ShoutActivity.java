@@ -207,12 +207,12 @@ public class ShoutActivity extends Activity {
 
         String userId = PreferenceManager.getDefaultSharedPreferences(this).getString(
                 Preferences.PREFERENCE_ID, "");
+        String checkinId = checkinResult.getId();
 
         WebView webView = (WebView)layout.findViewById(R.id.webView);
-        webView.setBackgroundColor(0); // make it transparent... how do we do this in xml?
-        String breakdownUrl = "http://playfoursquare.com/incoming/breakdown";
-        String breakdownQuery = "?client=iphone&uid=" + userId + "&cid=" + checkinResult.getId();
-        webView.loadUrl(breakdownUrl + breakdownQuery);
+        // Hrmm... Checkin scores look ugly when the background is dialog-colored, back to white...
+        // webView.setBackgroundColor(0); // make it transparent... how do we do this in xml?
+        webView.loadUrl(Foursquared.getFoursquare().checkinResultUrl(userId, checkinId));
 
         TextView messageView = (TextView)layout.findViewById(R.id.messageTextView);
         messageView.setText(checkinResult.getMessage());
