@@ -43,7 +43,7 @@
     android:enabled="false"
     android:visibility="gone"
 
-    android:text="Checkin!" />
+    android:text="Quick Checkin!" />
 
   <TextView
     android:id="@+id/internal_venueLocationLine2"
