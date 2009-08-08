@@ -61,6 +61,7 @@ public class ShoutActivity extends Activity {
     private boolean mImmediateCheckin = false;
     private boolean mTellFriends = false;
     private boolean mTellTwitter = false;
+    private String mShout = null;
 
     private Button mCheckinButton;
     private CheckBox mTwitterCheckBox;
@@ -93,15 +94,6 @@ public class ShoutActivity extends Activity {
                     "Cannot do immediate checkin and shout at the same time!");
         }
 
-        if (!mImmediateCheckin) {
-            setTheme(android.R.style.Theme_Dialog);
-            requestWindowFeature(Window.FEATURE_NO_TITLE);
-            setContentView(R.layout.shout_activity);
-            initializeUiComponents();
-        } else {
-            setVisible(false);
-        }
-
         if (getLastNonConfigurationInstance() != null) {
             if (DEBUG) Log.d(TAG, "Using last non configuration instance");
             mStateHolder = (StateHolder)getLastNonConfigurationInstance();
@@ -110,6 +102,12 @@ public class ShoutActivity extends Activity {
             // venue view.
             mStateHolder.venue = new Venue();
             intentExtrasIntoVenue(getIntent(), mStateHolder.venue);
+        }
+
+        if (!mImmediateCheckin) {
+            initializeUi();
+        } else {
+            setVisible(false);
         }
 
         if (mImmediateCheckin) {
@@ -209,7 +207,11 @@ public class ShoutActivity extends Activity {
                 .create();
     }
 
-    private void initializeUiComponents() {
+    private void initializeUi() {
+        setTheme(android.R.style.Theme_Dialog);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.shout_activity);
+
         mCheckinButton = (Button)findViewById(R.id.checkinButton);
         mFriendsCheckBox = (CheckBox)findViewById(R.id.tellFriendsCheckBox);
         mTwitterCheckBox = (CheckBox)findViewById(R.id.tellTwitterCheckBox);
@@ -222,6 +224,10 @@ public class ShoutActivity extends Activity {
         mCheckinButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                String shout = mShoutEditText.getText().toString();
+                if (!TextUtils.isEmpty(shout)) {
+                    mShout = shout;
+                }
                 mStateHolder.checkinTask = new CheckinTask().execute();
             }
         });
@@ -248,9 +254,14 @@ public class ShoutActivity extends Activity {
             }
         });
 
-        mVenueView.setVisibility(ViewGroup.GONE);
-        mFriendsCheckBox.setChecked(true);
-        mCheckinButton.setText("Shout!");
+        if (mIsShouting) {
+            mVenueView.setVisibility(ViewGroup.GONE);
+            mFriendsCheckBox.setChecked(true);
+            mFriendsCheckBox.setEnabled(false);
+            mCheckinButton.setText("Shout!");
+        } else {
+            mVenueView.setVenue(mStateHolder.venue);
+        }
     }
 
     class CheckinTask extends AsyncTask<Void, Void, CheckinResult> {
@@ -274,15 +285,10 @@ public class ShoutActivity extends Activity {
                 venueId = mStateHolder.venue.getId();
             }
 
-            String shout = null;
-            if (!mImmediateCheckin && !TextUtils.isEmpty(mShoutEditText.getText())) {
-                shout = mShoutEditText.getText().toString();
-            }
-
             boolean isPrivate = !mTellFriends;
 
             try {
-                return Foursquared.getFoursquare().checkin(venueId, null, shout, isPrivate,
+                return Foursquared.getFoursquare().checkin(venueId, null, mShout, isPrivate,
                         mTellTwitter);
             } catch (Exception e) {
                 mReason = e;
@@ -308,7 +314,10 @@ public class ShoutActivity extends Activity {
 
         @Override
         public void onCancelled() {
-            mCheckinButton.setEnabled(true);
+            if (!mImmediateCheckin) {
+                mCheckinButton.setEnabled(true);
+            }
+
             dismissDialog(DIALOG_CHECKIN_PROGRESS);
             setResult(Activity.RESULT_CANCELED);
             finish();
