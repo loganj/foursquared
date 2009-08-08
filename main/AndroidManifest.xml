@@ -164,9 +164,9 @@
 
 
     <activity
-      android:name=".ShoutActivity"
-      android:label="@string/shout_activity_label"
-      android:theme="@android:style/Theme.Dialog">
+  android:name=".ShoutActivity"
+  android:label="@string/shout_activity_label"
+  android:theme="@android:style/Theme.Dialog">
       <intent-filter>
         <action
           android:name="android.intent.action.MAIN" />

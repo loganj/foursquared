@@ -57,7 +57,10 @@ public class ShoutActivity extends Activity {
 
     private StateHolder mStateHolder = new StateHolder();
 
-    private boolean isShouting = true;
+    private boolean mIsShouting = true;
+    private boolean mImmediateCheckin = false;
+    private boolean mTellFriends = false;
+    private boolean mTellTwitter = false;
 
     private Button mCheckinButton;
     private CheckBox mTwitterCheckBox;
@@ -77,66 +80,42 @@ public class ShoutActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.d(TAG, "onCreate");
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.shout_activity);
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
-        SharedPreferences settings = PreferenceManager
-                .getDefaultSharedPreferences(ShoutActivity.this);
+        // Implies there is no associated venue.
+        mIsShouting = !getIntent().hasExtra(Foursquared.EXTRA_VENUE_ID);
 
-        mCheckinButton = (Button)findViewById(R.id.checkinButton);
-        mFriendsCheckBox = (CheckBox)findViewById(R.id.tellFriendsCheckBox);
-        mTwitterCheckBox = (CheckBox)findViewById(R.id.tellTwitterCheckBox);
-        mShoutEditText = (EditText)findViewById(R.id.shoutEditText);
-        mVenueView = (VenueView)findViewById(R.id.venue);
+        // Implies there is no UI.
+        mImmediateCheckin = getIntent().getBooleanExtra(EXTRA_IMMEDIATE_CHECKIN, mImmediateCheckin);
 
-        mCheckinButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mStateHolder.checkinTask = new CheckinTask().execute();
-            }
-        });
+        if (mImmediateCheckin && mIsShouting) {
+            throw new IllegalStateException(
+                    "Cannot do immediate checkin and shout at the same time!");
+        }
 
-        mTwitterCheckBox.setChecked(settings.getBoolean(Preferences.PREFERENCE_TWITTER_CHECKIN,
-                false));
-
-        mFriendsCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mTwitterCheckBox.setEnabled(isChecked);
-                if (!isChecked) {
-                    mTwitterCheckBox.setChecked(false);
-                }
-            }
-        });
-        mFriendsCheckBox
-                .setChecked(settings.getBoolean(Preferences.PREFERENCE_SHARE_CHECKIN, true));
-
-        isShouting = !getIntent().hasExtra(Foursquared.EXTRA_VENUE_ID);
+        if (!mImmediateCheckin) {
+            setTheme(android.R.style.Theme_Dialog);
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            setContentView(R.layout.shout_activity);
+            initializeUiComponents();
+        } else {
+            setVisible(false);
+        }
 
         if (getLastNonConfigurationInstance() != null) {
             if (DEBUG) Log.d(TAG, "Using last non configuration instance");
             mStateHolder = (StateHolder)getLastNonConfigurationInstance();
-        } else if (!isShouting) {
+        } else if (!mIsShouting) {
             // Translate the extras received in this intent int a venue, then attach it to the
             // venue view.
             mStateHolder.venue = new Venue();
             intentExtrasIntoVenue(getIntent(), mStateHolder.venue);
         }
 
-        if (isShouting) {
-            mVenueView.setVisibility(ViewGroup.GONE);
-            mFriendsCheckBox.setChecked(true);
-            mCheckinButton.setText("Shout!");
-
-        } else {
-            mVenueView.setVenue(mStateHolder.venue);
-
-            if (getIntent().getBooleanExtra(EXTRA_IMMEDIATE_CHECKIN, false)) {
-                if (mStateHolder.checkinTask == null) {
-                    if (DEBUG) Log.d(TAG, "Immediate checkin is set.");
-                    mStateHolder.checkinTask = new CheckinTask().execute();
-                }
+        if (mImmediateCheckin) {
+            if (mStateHolder.checkinTask == null) {
+                if (DEBUG) Log.d(TAG, "Immediate checkin is set.");
+                mStateHolder.checkinTask = new CheckinTask().execute();
             }
         }
     }
@@ -156,8 +135,8 @@ public class ShoutActivity extends Activity {
     public Dialog onCreateDialog(int id) {
         switch (id) {
             case DIALOG_CHECKIN_PROGRESS:
-                String title = (isShouting) ? "Shouting!" : "Checking in!";
-                String messageAction = (isShouting) ? "shout!" : "check-in!";
+                String title = (mIsShouting) ? "Shouting!" : "Checking in!";
+                String messageAction = (mIsShouting) ? "shout!" : "check-in!";
                 ProgressDialog dialog = new ProgressDialog(this);
                 dialog.setCancelable(true);
                 dialog.setIndeterminate(true);
@@ -230,26 +209,81 @@ public class ShoutActivity extends Activity {
                 .create();
     }
 
+    private void initializeUiComponents() {
+        mCheckinButton = (Button)findViewById(R.id.checkinButton);
+        mFriendsCheckBox = (CheckBox)findViewById(R.id.tellFriendsCheckBox);
+        mTwitterCheckBox = (CheckBox)findViewById(R.id.tellTwitterCheckBox);
+        mShoutEditText = (EditText)findViewById(R.id.shoutEditText);
+        mVenueView = (VenueView)findViewById(R.id.venue);
+
+        SharedPreferences settings = PreferenceManager
+                .getDefaultSharedPreferences(ShoutActivity.this);
+
+        mCheckinButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mStateHolder.checkinTask = new CheckinTask().execute();
+            }
+        });
+
+        mTwitterCheckBox.setChecked(settings.getBoolean(Preferences.PREFERENCE_TWITTER_CHECKIN,
+                mTellTwitter));
+
+        mFriendsCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mTellTwitter = isChecked;
+                mTwitterCheckBox.setEnabled(isChecked);
+                if (!isChecked) {
+                    mTwitterCheckBox.setChecked(false);
+                }
+            }
+        });
+        mFriendsCheckBox.setChecked(settings.getBoolean(Preferences.PREFERENCE_SHARE_CHECKIN,
+                mTellFriends));
+        mFriendsCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mTellFriends = isChecked;
+            }
+        });
+
+        mVenueView.setVisibility(ViewGroup.GONE);
+        mFriendsCheckBox.setChecked(true);
+        mCheckinButton.setText("Shout!");
+    }
+
     class CheckinTask extends AsyncTask<Void, Void, CheckinResult> {
 
         private Exception mReason;
 
         @Override
         public void onPreExecute() {
-            mCheckinButton.setEnabled(false);
+            if (!mImmediateCheckin) {
+                mCheckinButton.setEnabled(false);
+            }
             showDialog(DIALOG_CHECKIN_PROGRESS);
         }
 
         @Override
         public CheckinResult doInBackground(Void... params) {
-            String venueId = (mStateHolder.venue == null) ? null : mStateHolder.venue.getId();
-            boolean isPrivate = !mFriendsCheckBox.isChecked();
-            boolean twitter = mTwitterCheckBox.isChecked();
-            String shout = TextUtils.isEmpty(mShoutEditText.getText()) ? null : mShoutEditText
-                    .getText().toString();
+            String venueId;
+            if (mStateHolder.venue == null) {
+                venueId = null;
+            } else {
+                venueId = mStateHolder.venue.getId();
+            }
+
+            String shout = null;
+            if (!mImmediateCheckin && !TextUtils.isEmpty(mShoutEditText.getText())) {
+                shout = mShoutEditText.getText().toString();
+            }
+
+            boolean isPrivate = !mTellFriends;
+
             try {
-                return Foursquared.getFoursquare()
-                        .checkin(venueId, null, shout, isPrivate, twitter);
+                return Foursquared.getFoursquare().checkin(venueId, null, shout, isPrivate,
+                        mTellTwitter);
             } catch (Exception e) {
                 mReason = e;
             }
@@ -261,7 +295,9 @@ public class ShoutActivity extends Activity {
             if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
             dismissDialog(DIALOG_CHECKIN_PROGRESS);
             if (checkinResult == null) {
-                mCheckinButton.setEnabled(true);
+                if (!mImmediateCheckin) {
+                    mCheckinButton.setEnabled(true);
+                }
                 NotificationsUtil.ToastReasonForFailure(ShoutActivity.this, mReason);
                 return;
             } else {
