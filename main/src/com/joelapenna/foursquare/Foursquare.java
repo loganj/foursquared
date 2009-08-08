@@ -31,13 +31,11 @@ public class Foursquare {
 
     private String mPhone;
     private String mPassword;
-    private FoursquareHttpApi mFoursquare;
     private FoursquareHttpApiV1 mFoursquareV1;
 
     @V1
     @Classic
     public Foursquare(boolean debug) {
-        mFoursquare = new FoursquareHttpApi();
         if (debug) {
             if (DEBUG) Log.d(TAG, "Using DEBUG domain.");
             mFoursquareV1 = new FoursquareHttpApiV1("10.0.2.2:8080");
@@ -49,7 +47,6 @@ public class Foursquare {
     public void setCredentials(String phone, String password) {
         mPhone = phone;
         mPassword = password;
-        mFoursquare.setCredentials(phone, password);
         mFoursquareV1.setCredentials(phone, password);
     }
 
@@ -71,8 +68,7 @@ public class Foursquare {
     @V1
     @Classic
     public boolean hasCredentials() {
-        return mFoursquare.hasCredentials() && mFoursquareV1.hasCredentials()
-                && mFoursquareV1.hasOAuthTokenWithSecret();
+        return mFoursquareV1.hasCredentials() && mFoursquareV1.hasOAuthTokenWithSecret();
     }
 
     @V1
@@ -124,12 +120,6 @@ public class Foursquare {
     public Group tips(String geolat, String geolong, int limit) throws FoursquareException,
             FoursquareError, IOException {
         return mFoursquareV1.tips(geolat, geolong, limit);
-    }
-
-    @Classic
-    public Data update(String status, String tipid) throws FoursquareException, FoursquareError,
-            IOException {
-        return mFoursquare.update(status, tipid);
     }
 
     @V1

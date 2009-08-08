@@ -9,13 +9,9 @@ import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.http.HttpApi;
-import com.joelapenna.foursquare.parsers.AbstractParser;
 import com.joelapenna.foursquare.parsers.DataParser;
-import com.joelapenna.foursquare.parsers.GroupParser;
 import com.joelapenna.foursquare.types.Data;
-import com.joelapenna.foursquare.types.Group;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpPost;
@@ -30,7 +26,6 @@ import java.io.IOException;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-@SuppressWarnings("deprecation")
 class FoursquareHttpApi {
     private static final String TAG = "FoursquareHttpApi";
     private static final boolean DEBUG = Foursquare.DEBUG;
@@ -42,16 +37,7 @@ class FoursquareHttpApi {
 
     private static final String URL_API_BASE = URL_DOMAIN + "/api";
     private static final String URL_API_ADD = URL_API_BASE + "/add";
-    private static final String URL_API_CHECKINS = URL_API_BASE + "/checkins";
-    private static final String URL_API_LOGIN = URL_API_BASE + "/login";
-    private static final String URL_API_TODO = URL_API_BASE + "/todo";
     private static final String URL_API_UPDATE = URL_API_BASE + "/update";
-    private static final String URL_API_USER = URL_API_BASE + "/user";
-    private static final String URL_API_VENUE = URL_API_BASE + "/venue";
-    private static final String URL_API_VENUES = URL_API_BASE + "/venues";
-
-    // Not the normal URL because, well, it doesn't have a normal URL!
-    private static final String URL_API_INCOMING = URL_DOMAIN + "/incoming/incoming.php";
 
     // Gets the html description of a checkinResult.
     private static final String URL_BREAKDOWN = URL_DOMAIN + "/incoming/breakdown";
