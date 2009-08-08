@@ -129,7 +129,7 @@ public class VenueActivity extends TabActivity {
         super.onCreateOptionsMenu(menu);
 
         mShoutMenuItem = menu.add(MENU_GROUP_SHOUT, MENU_SHOUT, 1, "Shout!") //
-                .setIcon(android.R.drawable.ic_menu_add);
+                .setIcon(R.drawable.ic_menu_shout);
 
         menu.add(Menu.NONE, MENU_TIPADD, 4, "Add Tip").setIcon(android.R.drawable.ic_menu_set_as);
 

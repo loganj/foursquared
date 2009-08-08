@@ -147,7 +147,7 @@ public class CheckinsActivity extends TabActivity {
         menu.add(MENU_GROUP_SEARCH, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
                 .setIcon(R.drawable.ic_menu_refresh);
         // menu.add(Menu.NONE, MENU_SHOUT, Menu.NONE, R.string.shout_action_label) //
-        // .setIcon(android.R.drawable.ic_menu_send);
+        // .setIcon(R.drawable.ic_menu_shout);
         menu.add(Menu.NONE, MENU_STATS, Menu.NONE, R.string.stats_label) //
                 .setIcon(android.R.drawable.ic_menu_recent_history);
         menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
