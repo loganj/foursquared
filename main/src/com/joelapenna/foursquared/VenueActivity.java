@@ -252,7 +252,7 @@ public class VenueActivity extends TabActivity {
                 );
 
         tag = (String)this.getText(R.string.venue_checkin_activity_label);
-        intent = new Intent(this, VenueCheckinActivity.class);
+        intent = new Intent(this, VenueCheckinsActivity.class);
         tabHost.addTab(tabHost.newTabSpec(tag)
                 // Checkin Tab
                 .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_agenda))

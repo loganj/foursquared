@@ -30,8 +30,8 @@ import java.util.Observer;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class CheckinsMapActivity extends MapActivity {
-    public static final String TAG = "CheckinsMapActivity";
+public class FriendsMapActivity extends MapActivity {
+    public static final String TAG = "FriendsMapActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private Venue mTappedVenue;
@@ -54,7 +54,7 @@ public class CheckinsMapActivity extends MapActivity {
             @Override
             public void onClick(View v) {
                 if (DEBUG) Log.d(TAG, "firing checkin activity for checkin");
-                Intent intent = new Intent(CheckinsMapActivity.this, VenueActivity.class);
+                Intent intent = new Intent(FriendsMapActivity.this, VenueActivity.class);
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.putExtra(Foursquared.EXTRA_VENUE_ID, mTappedVenue.getId());
                 startActivity(intent);
@@ -68,7 +68,7 @@ public class CheckinsMapActivity extends MapActivity {
             public void update(Observable observable, Object data) {
                 if (DEBUG) Log.d(TAG, "Observed search results change.");
                 clearMap();
-                loadSearchResults(CheckinsActivity.searchResultsObservable.getSearchResults());
+                loadSearchResults(FriendsActivity.searchResultsObservable.getSearchResults());
                 recenterMap();
             }
         };
@@ -82,10 +82,10 @@ public class CheckinsMapActivity extends MapActivity {
         // mMyLocationOverlay.enableCompass(); // Disabled due to a sdk 1.5 emulator bug
 
         clearMap();
-        loadSearchResults(CheckinsActivity.searchResultsObservable.getSearchResults());
+        loadSearchResults(FriendsActivity.searchResultsObservable.getSearchResults());
         recenterMap();
 
-        CheckinsActivity.searchResultsObservable.addObserver(mSearchResultsObserver);
+        FriendsActivity.searchResultsObservable.addObserver(mSearchResultsObserver);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class CheckinsMapActivity extends MapActivity {
         if (DEBUG) Log.d(TAG, "onPause()");
         mMyLocationOverlay.disableMyLocation();
         mMyLocationOverlay.disableCompass();
-        CheckinsActivity.searchResultsObservable.deleteObserver(mSearchResultsObserver);
+        FriendsActivity.searchResultsObservable.deleteObserver(mSearchResultsObserver);
     }
 
     @Override
@@ -171,7 +171,7 @@ public class CheckinsMapActivity extends MapActivity {
     private void recenterMap() {
         GeoPoint center = mMyLocationOverlay.getMyLocation();
         if (center != null
-                && CheckinsActivity.searchResultsObservable.getQuery() == CheckinsActivity.QUERY_NEARBY) {
+                && FriendsActivity.searchResultsObservable.getQuery() == FriendsActivity.QUERY_NEARBY) {
             if (DEBUG) Log.d(TAG, "recenterMap via MyLocation as we are doing a nearby search");
             mMapController.animateTo(center);
             mMapController.setZoom(16);

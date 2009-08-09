@@ -36,8 +36,8 @@ import java.util.Observer;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class VenueCheckinActivity extends ListActivity {
-    public static final String TAG = "VenueCheckinActivity";
+public class VenueCheckinsActivity extends ListActivity {
+    public static final String TAG = "VenueCheckinsActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private Observer mParentDataObserver = new ParentDataObserver();
@@ -124,7 +124,7 @@ public class VenueCheckinActivity extends ListActivity {
 
     private void startItemActivity(User user) {
         if (DEBUG) Log.d(TAG, "firing venue activity for venue");
-        Intent intent = new Intent(VenueCheckinActivity.this, UserActivity.class);
+        Intent intent = new Intent(VenueCheckinsActivity.this, UserActivity.class);
         intent.putExtra(UserActivity.EXTRA_USER, user.getId());
         startActivity(intent);
     }

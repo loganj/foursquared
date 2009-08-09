@@ -59,7 +59,7 @@ public class BrowsableActivity extends Activity {
                 break;
             case URI_PATH_CHECKINS:
                 if (DEBUG) Log.d(TAG, "Matched: URI_PATH_CHECKINS");
-                intent = new Intent(this, CheckinsActivity.class);
+                intent = new Intent(this, FriendsActivity.class);
                 intent.setAction(Intent.ACTION_MAIN);
                 startActivity(intent);
                 break;

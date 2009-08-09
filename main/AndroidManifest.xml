@@ -87,7 +87,7 @@
 
 
     <activity
-      android:name=".CheckinsActivity"
+      android:name=".FriendsActivity"
       android:label="@string/checkins_activity_label"
       android:launchMode="singleTop">
       <intent-filter>
@@ -101,7 +101,7 @@
     </activity>
 
     <activity
-      android:name=".CheckinsMapActivity">
+      android:name=".FriendsMapActivity">
     </activity>
 
 
@@ -156,9 +156,9 @@
 
 
     <activity
-  android:name=".ShoutActivity"
-  android:label="@string/shout_activity_label"
-  android:theme="@android:style/Theme.Dialog">
+      android:name=".ShoutActivity"
+      android:label="@string/shout_activity_label"
+      android:theme="@android:style/Theme.Dialog">
       <intent-filter>
         <action
           android:name="android.intent.action.MAIN" />
@@ -210,7 +210,7 @@
     </activity>
 
     <activity
-      android:name=".VenueCheckinActivity">
+      android:name=".VenueCheckinsActivity">
     </activity>
 
     <activity

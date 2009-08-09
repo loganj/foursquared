@@ -44,8 +44,8 @@ import java.util.Observable;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class CheckinsActivity extends TabActivity {
-    static final String TAG = "CheckinsActivity";
+public class FriendsActivity extends TabActivity {
+    static final String TAG = "FriendsActivity";
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public static final String QUERY_NEARBY = null;
@@ -163,13 +163,13 @@ public class CheckinsActivity extends TabActivity {
                 executeSearchTask(mSearchHolder.query);
                 return true;
             case MENU_SHOUT:
-                startActivity(new Intent(CheckinsActivity.this, ShoutActivity.class));
+                startActivity(new Intent(FriendsActivity.this, ShoutActivity.class));
                 return true;
             case MENU_STATS:
-                startActivity(new Intent(CheckinsActivity.this, StatsActivity.class));
+                startActivity(new Intent(FriendsActivity.this, StatsActivity.class));
                 return true;
             case MENU_MYINFO:
-                startActivity(new Intent(CheckinsActivity.this, UserActivity.class));
+                startActivity(new Intent(FriendsActivity.this, UserActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -253,7 +253,7 @@ public class CheckinsActivity extends TabActivity {
                 Checkin checkin = (Checkin)parent.getAdapter().getItem(position);
                 if (checkin.getUser() != null) {
                     if (DEBUG) Log.d(TAG, "firing venue activity for venue");
-                    Intent intent = new Intent(CheckinsActivity.this, UserActivity.class);
+                    Intent intent = new Intent(FriendsActivity.this, UserActivity.class);
                     intent.putExtra(UserActivity.EXTRA_USER, checkin.getUser().getId());
                     startActivity(intent);
                 }
@@ -275,7 +275,7 @@ public class CheckinsActivity extends TabActivity {
                 );
 
         // Maps tab
-        Intent intent = new Intent(this, CheckinsMapActivity.class);
+        Intent intent = new Intent(this, FriendsMapActivity.class);
         mTabHost.addTab(mTabHost.newTabSpec("map")
                 // Map Tab
                 .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_mapmode))
@@ -320,7 +320,7 @@ public class CheckinsActivity extends TabActivity {
         public void onPostExecute(Group groups) {
             try {
                 if (groups == null) {
-                    NotificationsUtil.ToastReasonForFailure(CheckinsActivity.this, mReason);
+                    NotificationsUtil.ToastReasonForFailure(FriendsActivity.this, mReason);
                 } else {
                     setSearchResults(groups);
                     putSearchResultsInAdapter(groups);

@@ -185,7 +185,7 @@ public class SearchVenuesActivity extends TabActivity {
                 startActivity(new Intent(SearchVenuesActivity.this, AddVenueActivity.class));
                 return true;
             case MENU_CHECKINS:
-                Intent intent = new Intent(SearchVenuesActivity.this, CheckinsActivity.class);
+                Intent intent = new Intent(SearchVenuesActivity.this, FriendsActivity.class);
                 intent.setAction(Intent.ACTION_SEARCH);
                 startActivity(intent);
                 return true;
