@@ -6,6 +6,7 @@ package com.joelapenna.foursquared.util;
 
 import com.googlecode.dumpcatcher.logging.Dumpcatcher;
 import com.googlecode.dumpcatcher.logging.DumpcatcherUncaughtExceptionHandler;
+import com.googlecode.dumpcatcher.logging.StackFormattingUtil;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
 
@@ -17,6 +18,7 @@ import android.util.Log;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -70,6 +72,14 @@ public class DumpcatcherHelper {
                 }
             }
         });
+    }
+
+    public static void sendException(Throwable e) {
+        sendCrash(//
+                StackFormattingUtil.getStackMessageString(e), //
+                StackFormattingUtil.getStackTraceString(e), //
+                String.valueOf(Level.INFO.intValue()), //
+                "exception");
     }
 
     public static void sendUsage(final String usage) {
