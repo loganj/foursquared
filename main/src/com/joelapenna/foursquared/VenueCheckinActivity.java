@@ -10,9 +10,9 @@ import com.joelapenna.foursquare.types.Mayor;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
-import com.joelapenna.foursquared.util.SeparatedListAdapter;
 import com.joelapenna.foursquared.util.StringFormatters;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
+import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 
 import android.app.Activity;
 import android.app.ListActivity;

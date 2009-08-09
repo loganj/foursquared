@@ -11,8 +11,8 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
 import com.joelapenna.foursquared.R.drawable;
 import com.joelapenna.foursquared.util.NotificationsUtil;
-import com.joelapenna.foursquared.util.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
+import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 
 import android.app.SearchManager;
 import android.app.TabActivity;

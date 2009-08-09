@@ -6,7 +6,7 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.util.SeparatedListAdapter;
+import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.TipListAdapter;
 
 import android.app.ListActivity;

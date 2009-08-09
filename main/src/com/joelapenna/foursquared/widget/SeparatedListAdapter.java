@@ -3,7 +3,7 @@
  *  From: http://www.jsharkey.org/blog/2008/08/18/separating-lists-with-headers-in-android-09/
  */
 
-package com.joelapenna.foursquared.util;
+package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquared.R;
 

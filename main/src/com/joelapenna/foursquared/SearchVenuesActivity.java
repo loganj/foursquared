@@ -12,7 +12,7 @@ import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
 import com.joelapenna.foursquared.util.NotificationsUtil;
-import com.joelapenna.foursquared.util.SeparatedListAdapter;
+import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
 
 import android.app.SearchManager;
