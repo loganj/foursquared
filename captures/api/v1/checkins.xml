@@ -6,7 +6,7 @@
       <id>9923</id>
       <firstname>Test2</firstname>
       <lastname>User2</lastname>
-      <photo>http://playfoursquare.com/userpix/blank_girl.png</photo>
+      <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/blank_girl.png</photo>
     </user>
     <venue>
       <id>23035</id>
@@ -25,7 +25,7 @@
       <id>9711</id>
       <firstname>testuser</firstname>
       <lastname>lapenna</lastname>
-      <photo>http://playfoursquare.com/userpix/blank_boy.png</photo>
+      <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/blank_boy.png</photo>
     </user>
     <venue>
       <id>44794</id>
