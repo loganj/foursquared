@@ -102,10 +102,6 @@
 
     <activity
       android:name=".CheckinsMapActivity">
-      <intent-filter>
-        <category
-          android:name="android.intent.category.TAB" />
-      </intent-filter>
     </activity>
 
 
@@ -156,10 +152,6 @@
 
     <activity
       android:name=".SearchVenuesMapActivity">
-      <intent-filter>
-        <category
-          android:name="android.intent.category.TAB" />
-      </intent-filter>
     </activity>
 
 
@@ -219,26 +211,14 @@
 
     <activity
       android:name=".VenueCheckinActivity">
-      <intent-filter>
-        <category
-          android:name="android.intent.category.TAB" />
-      </intent-filter>
     </activity>
 
     <activity
       android:name=".VenueMapActivity">
-      <intent-filter>
-        <category
-          android:name="android.intent.category.TAB" />
-      </intent-filter>
     </activity>
 
     <activity
       android:name=".VenueTipsActivity">
-      <intent-filter>
-        <category
-          android:name="android.intent.category.TAB" />
-      </intent-filter>
     </activity>
 
 
