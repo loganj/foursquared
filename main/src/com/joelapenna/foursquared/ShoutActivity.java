@@ -98,23 +98,20 @@ public class ShoutActivity extends Activity {
             if (DEBUG) Log.d(TAG, "Using last non configuration instance");
             mStateHolder = (StateHolder)getLastNonConfigurationInstance();
         } else if (!mIsShouting) {
-            // Translate the extras received in this intent int a venue, then attach it to the
+            // Translate the extras received in this intent into a venue, then attach it to the
             // venue view.
             mStateHolder.venue = new Venue();
             intentExtrasIntoVenue(getIntent(), mStateHolder.venue);
         }
 
-        if (!mImmediateCheckin) {
-            initializeUi();
-        } else {
-            setVisible(false);
-        }
-
         if (mImmediateCheckin) {
+            setVisible(false);
             if (mStateHolder.checkinTask == null) {
                 if (DEBUG) Log.d(TAG, "Immediate checkin is set.");
                 mStateHolder.checkinTask = new CheckinTask().execute();
             }
+        } else {
+            initializeUi();
         }
     }
 
@@ -205,12 +202,6 @@ public class ShoutActivity extends Activity {
                     }
                 }) //
                 .create();
-    }
-
-    private void setCheckinButtonEnabled(boolean enabled) {
-        if (!mImmediateCheckin) {
-            mCheckinButton.setEnabled(enabled);
-        }
     }
 
     private void initializeUi() {
@@ -307,10 +298,11 @@ public class ShoutActivity extends Activity {
             dismissDialog(DIALOG_CHECKIN_PROGRESS);
 
             if (checkinResult != null) {
-                setCheckinButtonEnabled(true);
                 NotificationsUtil.ToastReasonForFailure(ShoutActivity.this, mReason);
                 if (mImmediateCheckin) {
                     finish();
+                } else {
+                    mCheckinButton.setEnabled(true);
                 }
                 return;
 
@@ -323,10 +315,10 @@ public class ShoutActivity extends Activity {
         @Override
         public void onCancelled() {
             dismissDialog(DIALOG_CHECKIN_PROGRESS);
-
-            setCheckinButtonEnabled(true);
             if (mImmediateCheckin) {
                 finish();
+            } else {
+                mCheckinButton.setEnabled(true);
             }
         }
     }
