@@ -85,9 +85,11 @@ public class ShoutActivity extends Activity {
 
         // Implies there is no associated venue.
         mIsShouting = !getIntent().hasExtra(Foursquared.EXTRA_VENUE_ID);
+        if (DEBUG) Log.d(TAG, "Is Shouting: " + mIsShouting);
 
         // Implies there is no UI.
         mImmediateCheckin = getIntent().getBooleanExtra(EXTRA_IMMEDIATE_CHECKIN, mImmediateCheckin);
+        if (DEBUG) Log.d(TAG, "Immediate Checkin: " + mImmediateCheckin);
 
         if (mImmediateCheckin && mIsShouting) {
             throw new IllegalStateException(
@@ -115,9 +117,10 @@ public class ShoutActivity extends Activity {
             if (mStateHolder.checkinTask == null) {
                 if (DEBUG) Log.d(TAG, "Immediate checkin is set.");
                 mStateHolder.checkinTask = new CheckinTask().execute();
-            } else {
-                initializeUi();
             }
+
+        } else {
+            initializeUi();
         }
     }
 
