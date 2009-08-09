@@ -86,8 +86,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
 
         Checkin checkin = (Checkin)getItem(position);
         User user = checkin.getUser();
-        final String photo = user.getPhoto();
-        final Uri photoUri = Uri.parse(photo);
+        final Uri photoUri = Uri.parse(user.getPhoto());
 
         try {
             Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photoUri));

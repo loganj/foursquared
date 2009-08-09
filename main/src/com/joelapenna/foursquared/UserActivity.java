@@ -185,9 +185,9 @@ public class UserActivity extends Activity {
     }
 
     private void ensureUserPhoto(User user) {
-        final ImageView photoImageView = (ImageView)findViewById(R.id.photo);
+        final ImageView photo = (ImageView)findViewById(R.id.photo);
         if (user.getPhoto() == null) {
-            photoImageView.setImageResource(R.drawable.blank_boy);
+            photo.setImageResource(R.drawable.blank_boy);
             return;
         }
         final Uri photoUri = Uri.parse(user.getPhoto());
@@ -196,7 +196,7 @@ public class UserActivity extends Activity {
             try {
                 Bitmap bitmap = BitmapFactory.decodeStream(userPhotosManager
                         .getInputStream(photoUri));
-                photoImageView.setImageBitmap(bitmap);
+                photo.setImageBitmap(bitmap);
             } catch (IOException e) {
                 userPhotosManager.addObserver(new RemoteResourceManager.ResourceRequestObserver(
                         photoUri) {
@@ -206,7 +206,7 @@ public class UserActivity extends Activity {
                         try {
                             Bitmap bitmap = BitmapFactory.decodeStream(userPhotosManager
                                     .getInputStream(uri));
-                            photoImageView.setImageBitmap(bitmap);
+                            photo.setImageBitmap(bitmap);
                         } catch (IOException e) {
                             // its okay to do nothing if we can't handle loading the image.
                         }
