@@ -11,7 +11,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_below="@+id/venueLocationLine2"
-    android:paddingTop="10dip">
+    style="@style/tabHostStyle">
     <TabWidget
       android:id="@android:id/tabs"
       android:layout_width="fill_parent"
@@ -25,7 +25,7 @@
         android:id="@+id/listviewLayout"
         android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="fill_parent">
         <ListView
           android:id="@+id/list"
           android:layout_width="fill_parent"

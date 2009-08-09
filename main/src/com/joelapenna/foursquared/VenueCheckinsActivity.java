@@ -45,7 +45,7 @@ public class VenueCheckinsActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.venue_checkin_activity);
+        setContentView(R.layout.venue_checkins_activity);
 
         getListView().setOnItemClickListener(new OnItemClickListener() {
             @Override

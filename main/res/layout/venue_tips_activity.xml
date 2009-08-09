@@ -11,7 +11,7 @@
     android:layout_width="fill_parent" />
 
   <include
-    android:id="@+id/empty"
+    android:id="@android:id/empty"
     layout="@layout/empty_loading"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" />

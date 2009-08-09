@@ -10,7 +10,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_below="@+id/venueHeader"
-    android:paddingTop="10dip">
+    style="@style/tabHostStyle">
     <LinearLayout
       android:id="@+id/address"
       android:orientation="vertical"

@@ -52,11 +52,9 @@
     android:layout_alignWithParentIfMissing="true"
     android:layout_below="@id/tipTextView"
 
-    android:paddingRight="6dip"
+    android:gravity="right|bottom"
 
-    android:gravity="right"
-    android:textAppearance="@android:style/TextAppearance.Small"
-    android:textColor="#7EDDFC"
+    style="@style/secondaryTextStyle"
 
     android:maxLines="1"
     android:scrollHorizontally="true"

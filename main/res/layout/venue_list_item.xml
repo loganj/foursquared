@@ -4,6 +4,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="?android:attr/listPreferredItemHeight"
+  android:padding="3dip"
   style="@style/listItemStyle">
 
   <ImageView
@@ -13,7 +14,7 @@
 
     android:layout_alignParentTop="true"
     android:layout_alignParentBottom="true"
-    
+
     android:scaleType="matrix"
 
     android:src="@drawable/map_marker_blue" />

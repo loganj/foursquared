@@ -4,7 +4,7 @@
 <resources>
   <style
     name="FoursquareTheme"
-    parent="android:Theme">
+    parent="android:Theme.Light">
     <item
       name="android:listSeparatorTextViewStyle">@style/listSeparatorTextViewStyle</item>
   </style>
@@ -42,6 +42,10 @@
     name="listItemStyle"
     parent="@android:style/Widget.ListView">
     <item
+      name="android:paddingLeft">3dip</item>
+    <item
+      name="android:paddingRight">3dip</item>
+    <item
       name="android:paddingTop">4dip</item>
     <item
       name="android:paddingBottom">6dip</item>
@@ -50,6 +54,24 @@
     <!-- <item
       name="android:background">@drawable/list_item_gradient</item>
     -->
+  </style>
+
+  <style
+    name="secondaryTextStyle">
+    <item
+      name="android:paddingRight">4dip</item>
+    <item
+      name="android:textAppearance">@android:style/TextAppearance.Small</item>
+    <item
+      name="android:textColor">#74CBE7</item>
+  </style>
+
+  <style
+    name="tabHostStyle">
+    <item
+      name="android:background">@drawable/foursquare_gradient</item>
+    <item
+      name="android:paddingTop">4dip</item>
   </style>
 
   <style

@@ -4,14 +4,12 @@
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
-  android:layout_height="?android:attr/listPreferredItemHeight"
-  style="@style/listItemStyle">
+  android:layout_height="?android:attr/listPreferredItemHeight">
 
   <TextView
     android:id="@+id/mayorHeader"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="5dip"
     android:layout_marginBottom="3dip"
 
     android:text="Mayor"
@@ -64,12 +62,9 @@
     android:layout_alignParentRight="true"
     android:layout_alignWithParentIfMissing="true"
 
-    android:gravity="bottom"
+    android:gravity="right|bottom"
 
-    android:paddingRight="3dip"
-
-    android:textAppearance="@android:style/TextAppearance.Small"
-    android:textColor="#7EDDFC"
+    style="@style/secondaryTextStyle"
 
     android:maxLines="1"
     android:scrollHorizontally="true"
