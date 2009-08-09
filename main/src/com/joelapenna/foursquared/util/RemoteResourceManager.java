@@ -40,8 +40,6 @@ public class RemoteResourceManager extends Observable {
 
     /**
      * Request a resource be downloaded. Useful to call after a IOException from getInputStream.
-     *
-     * @param uri
      */
     public void request(Uri uri) {
         if (DEBUG) Log.d(TAG, "request(): " + uri);
@@ -50,11 +48,6 @@ public class RemoteResourceManager extends Observable {
 
     /**
      * Request a resource be downloaded. Useful to call after a IOException from getInputStream.
-     *
-     * @param uri
-     * @throws ExecutionException
-     * @throws InterruptedException
-     * @throws IOException
      */
     public void requestBlocking(Uri uri) throws InterruptedException, ExecutionException {
         if (DEBUG) Log.d(TAG, "request(): " + uri);
@@ -63,10 +56,6 @@ public class RemoteResourceManager extends Observable {
 
     /**
      * If IOException is thrown, we don't have the resource available.
-     *
-     * @param uri
-     * @return
-     * @throws IOException
      */
     public File getFile(Uri uri) {
         if (DEBUG) Log.d(TAG, "getInputStream(): " + uri);
@@ -75,20 +64,33 @@ public class RemoteResourceManager extends Observable {
 
     /**
      * If IOException is thrown, we don't have the resource available.
-     *
-     * @param uri
-     * @return
-     * @throws IOException
      */
     public InputStream getInputStream(Uri uri) throws IOException {
         if (DEBUG) Log.d(TAG, "getInputStream(): " + uri);
         return mDiskCache.getInputStream(Uri.encode(uri.toString()));
     }
 
+    public static abstract class ResourceRequestObserver implements Observer {
+
+        private Uri mRequestUri;
+
+        abstract public void requestReceived(Observable observable, Uri uri);
+
+        public ResourceRequestObserver(Uri requestUri) {
+            mRequestUri = requestUri;
+        }
+
+        @Override
+        public void update(Observable observable, Object data) {
+            Uri dataUri = (Uri)data;
+            if (dataUri == mRequestUri) {
+                requestReceived(observable, dataUri);
+            }
+        }
+    }
+
     /**
      * Relay the observed download to the controlling class.
-     *
-     * @author Joe LaPenna (joe@joelapenna.com)
      */
     private class FetcherObserver implements Observer {
 

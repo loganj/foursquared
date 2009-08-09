@@ -17,7 +17,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +26,6 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.Observable;
-import java.util.Observer;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -39,7 +37,6 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
     private LayoutInflater mInflater;
 
     private RemoteResourceManager mRrm;
-    private Handler mHandler = new Handler();
 
     private boolean mDisplayAtVenue;
 
@@ -92,45 +89,25 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
         final String photo = user.getPhoto();
         final Uri photoUri = Uri.parse(photo);
 
-        if (mRrm.getFile(photoUri).exists()) {
-            try {
-                Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photoUri));
-                holder.photo.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "IOException", e);
-            }
-        } else {
-            mRrm.request(photoUri);
-            // XXX This solution won't scale when we fix the "convertView" bug in
-            // SeparatedListAdapter that forces us to render new list items for all list items
-            // instead of re-using them.
-            // Because mRrm is "static"-like, we're probably going to leak observers... if we run
-            // into memory issues, this is a good place to start looking. Otherwise, I'm just going
-            // to leave this as is because I'm not super smart and dont' know how to deal with this
-            // issue in a smart way.
-            mRrm.addObserver(new Observer() {
+        try {
+            Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photoUri));
+            holder.photo.setImageBitmap(bitmap);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            if (DEBUG) Log.d(TAG, "IOException", e);
+            mRrm.addObserver(new RemoteResourceManager.ResourceRequestObserver(photoUri) {
                 @Override
-                public void update(Observable observable, Object data) {
-                    if (photoUri.equals((Uri)data)) {
-                        // Stop observing once we get the correct image.
-                        observable.deleteObserver(this);
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Bitmap bitmap = BitmapFactory.decodeStream(mRrm
-                                            .getInputStream(photoUri));
-                                    holder.photo.setImageBitmap(bitmap);
-                                } catch (IOException e) {
-                                    // TODO Auto-generated catch block
-                                    if (DEBUG) Log.d(TAG, "IOException", e);
-                                }
-                            }
-                        });
+                public void requestReceived(Observable observable, Uri uri) {
+                    observable.deleteObserver(this);
+                    try {
+                        Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(uri));
+                        holder.photo.setImageBitmap(bitmap);
+                    } catch (IOException e) {
+                        // its okay to do nothing if we can't handle loading the image.
                     }
                 }
             });
+            mRrm.request(photoUri);
         }
 
         holder.firstLine.setText(StringFormatters.getCheckinMessage(checkin, mDisplayAtVenue));

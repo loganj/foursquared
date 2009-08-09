@@ -179,43 +179,40 @@ public class UserActivity extends Activity {
         }
     }
 
-    void setPhotoImageUri(Uri photo) {
-        try {
-            Bitmap bitmap = BitmapFactory.decodeStream(//
-                    Foursquared.getUserPhotosManager().getInputStream(photo));
-            ((ImageView)findViewById(R.id.photo)).setImageBitmap(bitmap);
-        } catch (IOException e) {
-            if (DEBUG) Log.d(TAG, "Could not load bitmap. we don't have it yet.", e);
-        }
-    }
-
     private void setUser(User user) {
         mUser = user;
         mUserObservable.notifyObservers(user);
     }
 
     private void ensureUserPhoto(User user) {
+        final ImageView photoImageView = (ImageView)findViewById(R.id.photo);
         if (user.getPhoto() == null) {
-            ((ImageView)findViewById(R.id.photo)).setImageResource(R.drawable.blank_boy);
+            photoImageView.setImageResource(R.drawable.blank_boy);
             return;
         }
-        final Uri photo = Uri.parse(user.getPhoto());
-        if (photo != null) {
-            RemoteResourceManager userPhotosManager = Foursquared.getUserPhotosManager();
-            if (userPhotosManager.getFile(photo).exists()) {
-                setPhotoImageUri(photo);
-            } else {
-                userPhotosManager.addObserver(new Observer() {
+        final Uri photoUri = Uri.parse(user.getPhoto());
+        if (photoUri != null) {
+            final RemoteResourceManager userPhotosManager = Foursquared.getUserPhotosManager();
+            try {
+                Bitmap bitmap = BitmapFactory.decodeStream(userPhotosManager
+                        .getInputStream(photoUri));
+                photoImageView.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                userPhotosManager.addObserver(new RemoteResourceManager.ResourceRequestObserver(
+                        photoUri) {
                     @Override
-                    public void update(Observable observable, Object data) {
-                        // XXX Not sure this will work, make it sure it does before the next
-                        // release.
-                        if ((Uri)data == photo) {
-                            observable.deleteObserver(this);
-                            setPhotoImageUri(photo);
+                    public void requestReceived(Observable observable, Uri uri) {
+                        observable.deleteObserver(this);
+                        try {
+                            Bitmap bitmap = BitmapFactory.decodeStream(userPhotosManager
+                                    .getInputStream(uri));
+                            photoImageView.setImageBitmap(bitmap);
+                        } catch (IOException e) {
+                            // its okay to do nothing if we can't handle loading the image.
                         }
                     }
                 });
+                userPhotosManager.request(photoUri);
             }
         }
     }

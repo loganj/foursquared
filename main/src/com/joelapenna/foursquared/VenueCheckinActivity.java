@@ -101,32 +101,23 @@ public class VenueCheckinActivity extends ListActivity {
         final RemoteResourceManager rrm = Foursquared.getUserPhotosManager();
         final Uri photoUri = Uri.parse(mayor.getUser().getPhoto());
 
-        if (rrm.getFile(photoUri).exists()) {
-            try {
-                Bitmap bitmap = BitmapFactory.decodeStream(rrm.getInputStream(photoUri));
-                photo.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                // its okay to do nothing if we can't handle loading the image.
-            }
-        } else {
-            rrm.addObserver(new Observer() {
+        try {
+            Bitmap bitmap = BitmapFactory.decodeStream(rrm.getInputStream(photoUri));
+            photo.setImageBitmap(bitmap);
+        } catch (IOException e) {
+            rrm.addObserver(new RemoteResourceManager.ResourceRequestObserver(photoUri) {
                 @Override
-                public void update(Observable observable, Object data) {
-                    // XXX Not sure this will work, make it sure it does before the next
-                    // release.
-                    if ((Uri)data == photoUri) {
-                        observable.deleteObserver(this);
-
-                        try {
-                            Bitmap bitmap = BitmapFactory
-                                    .decodeStream(rrm.getInputStream(photoUri));
-                            photo.setImageBitmap(bitmap);
-                        } catch (IOException e) {
-                            // its okay to do nothing if we can't handle loading the image.
-                        }
+                public void requestReceived(Observable observable, Uri uri) {
+                    observable.deleteObserver(this);
+                    try {
+                        Bitmap bitmap = BitmapFactory.decodeStream(rrm.getInputStream(uri));
+                        photo.setImageBitmap(bitmap);
+                    } catch (IOException e) {
+                        // its okay to do nothing if we can't handle loading the image.
                     }
                 }
             });
+            rrm.request(photoUri);
         }
         getListView().addHeaderView(mayorLayout);
     }
