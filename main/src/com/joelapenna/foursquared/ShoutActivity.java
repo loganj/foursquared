@@ -207,6 +207,12 @@ public class ShoutActivity extends Activity {
                 .create();
     }
 
+    private void setCheckinButtonEnabled(boolean enabled) {
+        if (!mImmediateCheckin) {
+            mCheckinButton.setEnabled(enabled);
+        }
+    }
+
     private void initializeUi() {
         setTheme(android.R.style.Theme_Dialog);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -224,6 +230,7 @@ public class ShoutActivity extends Activity {
         mCheckinButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                mCheckinButton.setEnabled(false);
                 String shout = mShoutEditText.getText().toString();
                 if (!TextUtils.isEmpty(shout)) {
                     mShout = shout;
@@ -270,9 +277,6 @@ public class ShoutActivity extends Activity {
 
         @Override
         public void onPreExecute() {
-            if (!mImmediateCheckin) {
-                mCheckinButton.setEnabled(false);
-            }
             showDialog(DIALOG_CHECKIN_PROGRESS);
         }
 
@@ -299,13 +303,17 @@ public class ShoutActivity extends Activity {
         @Override
         public void onPostExecute(CheckinResult checkinResult) {
             if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
+
             dismissDialog(DIALOG_CHECKIN_PROGRESS);
-            if (checkinResult == null) {
-                if (!mImmediateCheckin) {
-                    mCheckinButton.setEnabled(true);
-                }
+
+            if (checkinResult != null) {
+                setCheckinButtonEnabled(true);
                 NotificationsUtil.ToastReasonForFailure(ShoutActivity.this, mReason);
+                if (mImmediateCheckin) {
+                    finish();
+                }
                 return;
+
             } else {
                 setResult(Activity.RESULT_OK);
                 createCheckinResultDialog(checkinResult).show();
@@ -314,13 +322,12 @@ public class ShoutActivity extends Activity {
 
         @Override
         public void onCancelled() {
-            if (!mImmediateCheckin) {
-                mCheckinButton.setEnabled(true);
-            }
-
             dismissDialog(DIALOG_CHECKIN_PROGRESS);
-            setResult(Activity.RESULT_CANCELED);
-            finish();
+
+            setCheckinButtonEnabled(true);
+            if (mImmediateCheckin) {
+                finish();
+            }
         }
     }
 
