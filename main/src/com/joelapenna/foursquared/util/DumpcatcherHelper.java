@@ -10,8 +10,6 @@ import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 
 import android.content.res.Resources;
 import android.util.Log;
@@ -58,22 +56,24 @@ public class DumpcatcherHelper {
         Thread.currentThread().setUncaughtExceptionHandler(handler);
     }
 
-    public static void sendUsage(final String usage) {
+    public static void sendCrash(final String shortMessage, final String longMessage,
+            final String level, final String tag) {
         mExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    NameValuePair[] parameters = {
-                            new BasicNameValuePair("tag", "usage"),
-                            new BasicNameValuePair("short", usage),
-                    };
-                    HttpResponse response = sDumpcatcher.sendCrash(parameters);
+                    HttpResponse response = sDumpcatcher.sendCrash(shortMessage, longMessage,
+                            level, "usage");
                     response.getEntity().consumeContent();
                 } catch (Exception e) {
                     if (DEBUG) Log.d(TAG, "Unable to sendCrash");
                 }
             }
         });
+    }
+
+    public static void sendUsage(final String usage) {
+        sendCrash(usage, null, null, "usage");
     }
 
     private static final class DefaultUnhandledExceptionHandler extends
