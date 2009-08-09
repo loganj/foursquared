@@ -22,7 +22,6 @@ public class VenueTipsActivity extends ListActivity {
     public static final String TAG = "VenueTipsActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    private Venue mVenue;
     private Group mGroups;
 
     private Observer mVenueObserver = new VenueObserver();
@@ -32,8 +31,6 @@ public class VenueTipsActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.venue_tips_activity);
 
-        setListAdapter(new SeparatedListAdapter(this));
-
         VenueActivity parent = (VenueActivity)getParent();
         if (parent.venueObservable.getVenue() != null) {
             mVenueObserver.update(parent.venueObservable, parent.venueObservable.getVenue());
@@ -42,7 +39,7 @@ public class VenueTipsActivity extends ListActivity {
         }
     }
 
-    private Group onVenueSet(Venue venue) {
+    private Group getVenueTipsAndTodos(Venue venue) {
         Group tipsAndTodos = new Group();
 
         Group tips = venue.getTips();
@@ -61,6 +58,7 @@ public class VenueTipsActivity extends ListActivity {
 
     private void setTipGroups(Group groups) {
         mGroups = groups;
+        setListAdapter(new SeparatedListAdapter(this));
         putGroupsInAdapter(mGroups);
     }
 
@@ -79,8 +77,7 @@ public class VenueTipsActivity extends ListActivity {
     private final class VenueObserver implements Observer {
         @Override
         public void update(Observable observable, Object data) {
-            mVenue = (Venue)data;
-            setTipGroups(onVenueSet(mVenue));
+            setTipGroups(getVenueTipsAndTodos((Venue)data));
         }
     }
 }

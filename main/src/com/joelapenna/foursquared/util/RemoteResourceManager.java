@@ -52,8 +52,8 @@ public class RemoteResourceManager extends Observable {
      * Request a resource be downloaded. Useful to call after a IOException from getInputStream.
      *
      * @param uri
-     * @throws ExecutionException 
-     * @throws InterruptedException 
+     * @throws ExecutionException
+     * @throws InterruptedException
      * @throws IOException
      */
     public void requestBlocking(Uri uri) throws InterruptedException, ExecutionException {
