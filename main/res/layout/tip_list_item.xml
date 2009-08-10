@@ -1,40 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
   <!-- Copyright 2009 Joe LaPenna -->
 
-<RelativeLayout
+<LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="?android:attr/listPreferredItemHeight"
+  android:orientation="vertical"
   style="@style/listItemStyle">
-
-  <!--
-    If this were focusable, we wouldn't be able to put a click listener on the list view. Combine
-    this with an on item click listener on the list adapter and you can simulate click=check.
-  -->
-  <CheckBox
-    android:id="@+id/checkbox"
-
-    android:layout_width="wrap_content"
-    android:layout_height="fill_parent"
-    android:layout_alignParentTop="true"
-    android:layout_alignParentBottom="true"
-    android:layout_marginRight="6dip"
-
-    android:visibility="gone"
-
-    android:clickable="false"
-    android:focusable="false" />
 
   <TextView
     android:id="@+id/tipTextView"
 
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-
-    android:layout_toRightOf="@id/checkbox"
-    android:layout_alignParentRight="true"
-    android:layout_alignParentTop="true"
-    android:layout_alignWithParentIfMissing="true"
 
     android:maxLines="3"
     android:ellipsize="end"
@@ -46,12 +24,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
 
-    android:layout_toRightOf="@id/checkbox"
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentRight="true"
-    android:layout_alignWithParentIfMissing="true"
-    android:layout_below="@id/tipTextView"
-
     android:gravity="right|bottom"
 
     style="@style/secondaryTextStyle"
@@ -60,4 +32,4 @@
     android:scrollHorizontally="true"
     android:ellipsize="end" />
 
-</RelativeLayout>
+</LinearLayout>
