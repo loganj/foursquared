@@ -13,6 +13,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.AlertDialog.Builder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -186,40 +187,41 @@ public class ShoutActivity extends Activity {
     }
 
     private AlertDialog createCheckinResultDialog(CheckinResult checkinResult) {
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.checkin_result_dialog,
-                (ViewGroup)findViewById(R.id.layout_root));
-
-        String userId = PreferenceManager.getDefaultSharedPreferences(this).getString(
-                Preferences.PREFERENCE_ID, "");
-        String checkinId = checkinResult.getId();
-
-        WebView webView = (WebView)layout.findViewById(R.id.webView);
-        // Hrmm... Checkin scores look ugly when the background is dialog-colored, back to white...
-        // webView.setBackgroundColor(0); // make it transparent... how do we do this in xml?
-        webView.loadUrl(Foursquared.getFoursquare().checkinResultUrl(userId, checkinId));
-
-        TextView messageView = (TextView)layout.findViewById(R.id.messageTextView);
-        messageView.setText(checkinResult.getMessage());
-
-        String title;
-        if (mIsShouting) {
-            title = "Shouted!";
-        } else {
-            title = "Checked in @ " + checkinResult.getVenue().getName();
-        }
-
-        return new AlertDialog.Builder(this) //
-                .setView(layout) //
+        Builder dialogBuilder = new AlertDialog.Builder(this) //
                 .setIcon(android.R.drawable.ic_dialog_info) // icon
-                .setTitle(title) // title
                 .setOnCancelListener(new OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
                         finish();
                     }
-                }) //
-                .create();
+                }); //
+
+        // Set up the custom view for it.
+        LayoutInflater inflater = (LayoutInflater)getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.checkin_result_dialog,
+                (ViewGroup)findViewById(R.id.layout_root));
+        dialogBuilder.setView(layout);
+
+        // Set the text message of the result.
+        TextView messageView = (TextView)layout.findViewById(R.id.messageTextView);
+        messageView.setText(checkinResult.getMessage());
+
+        // Set the title and web view which vary based on if the user is shouting.
+
+        if (mIsShouting) {
+            dialogBuilder.setTitle("Shouted!");
+
+        } else {
+            dialogBuilder.setTitle("Checked in @ " + checkinResult.getVenue().getName());
+            WebView webView = (WebView)layout.findViewById(R.id.webView);
+
+            String checkinId = checkinResult.getId();
+            String userId = PreferenceManager.getDefaultSharedPreferences(this).getString(
+                    Preferences.PREFERENCE_ID, "");
+            webView.loadUrl(Foursquared.getFoursquare().checkinResultUrl(userId, checkinId));
+
+        }
+        return dialogBuilder.create();
     }
 
     private void initializeUi() {
