@@ -115,7 +115,13 @@ public class ShoutActivity extends Activity {
         mTellFriends = settings.getBoolean(Preferences.PREFERENCE_SHARE_CHECKIN, mTellFriends);
         mTellTwitter = settings.getBoolean(Preferences.PREFERENCE_TWITTER_CHECKIN, mTellTwitter);
 
-        if (mImmediateCheckin) {
+        // Depending on how we were initialized, we finish up by either displaying a UI, checking
+        // in, or displaying a checkin result.
+
+        if (mStateHolder.checkinResult != null) {
+            createCheckinResultDialog(mStateHolder.checkinResult).show();
+
+        } else if (mImmediateCheckin) {
             setVisible(false);
             if (mStateHolder.checkinTask == null) {
                 if (DEBUG) Log.d(TAG, "Immediate checkin is set.");
@@ -323,7 +329,13 @@ public class ShoutActivity extends Activity {
                 return;
 
             } else {
+                // Store that we completed this action.
+                mStateHolder.checkinResult = checkinResult;
+
+                // Make sure the caller knows things worked out alright.
                 setResult(Activity.RESULT_OK);
+
+                // Show the dialog that will dismiss this activity.
                 createCheckinResultDialog(checkinResult).show();
             }
         }
@@ -343,6 +355,7 @@ public class ShoutActivity extends Activity {
         // These are all enumerated because we currently cannot handle parceling venues! How sad!
         Venue venue = null;
         AsyncTask<Void, Void, CheckinResult> checkinTask = null;
+        CheckinResult checkinResult = null;
     }
 
 }
