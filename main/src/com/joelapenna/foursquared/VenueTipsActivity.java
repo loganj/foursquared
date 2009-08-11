@@ -29,7 +29,9 @@ public class VenueTipsActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.venue_tips_activity);
+        setContentView(R.layout.venue_tab_with_list);
+
+        setListAdapter(new SeparatedListAdapter(this));
 
         VenueActivity parent = (VenueActivity)getParent();
         if (parent.venueObservable.getVenue() != null) {
@@ -43,28 +45,35 @@ public class VenueTipsActivity extends ListActivity {
         Group tipsAndTodos = new Group();
 
         Group tips = venue.getTips();
-        if (tips != null) {
+        if (tips != null && tips.size() > 0) {
             tips.setType("Tips");
             tipsAndTodos.add(tips);
         }
 
         tips = venue.getTodos();
-        if (tips != null) {
+        if (tips != null && tips.size() > 0) {
             tips.setType("Todos");
             tipsAndTodos.add(tips);
+        }
+
+        // We want to still show a header in the list view in case of no results (so that the empty
+        // view stops showing) so we'll fill tips and todos with an empty group.
+        if (tipsAndTodos.size() == 0) {
+            Group emptyGroup = new Group();
+            emptyGroup.setType("Tips");
+            tipsAndTodos.add(emptyGroup);
         }
         return tipsAndTodos;
     }
 
     private void setTipGroups(Group groups) {
         mGroups = groups;
-        setListAdapter(new SeparatedListAdapter(this));
         putGroupsInAdapter(mGroups);
     }
 
     private void putGroupsInAdapter(Group groups) {
         SeparatedListAdapter mainAdapter = (SeparatedListAdapter)getListAdapter();
-        mainAdapter.clear();
+
         int groupCount = groups.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
             Group group = (Group)groups.get(groupsIndex);
