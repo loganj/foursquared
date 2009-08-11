@@ -31,6 +31,7 @@ public class Preferences {
     public static final String PREFERENCE_PASSWORD = "password";
     public static final String PREFERENCE_TWITTER_CHECKIN = "twitter_checkin";
     public static final String PREFERENCE_SHARE_CHECKIN = "share_checkin";
+    public static final String PREFERENCE_IMMEDIATE_CHECKIN = "immediate_checkin";
 
     // Hacks for preference activity extra UI elements.
     public static final String PREFERENCE_FRIEND_REQUESTS = "friend_requests";

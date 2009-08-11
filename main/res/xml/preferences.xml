@@ -21,6 +21,13 @@
       android:summaryOn="By default, tweet my checkins."
       android:summaryOff="By default, don't tweet my checkins."
       android:defaultValue="false" />
+    <CheckBoxPreference
+      android:key="immediate_checkin"
+      android:persistent="true"
+      android:title="Checkin without prompt"
+      android:summaryOn="Checkin without confirmation when using 'Quick Checkin'"
+      android:summaryOff="Prompt for a shout when using 'Quick Checkin'"
+      android:defaultValue="true" />
   </PreferenceCategory>
 
   <PreferenceCategory

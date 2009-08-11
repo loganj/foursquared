@@ -89,6 +89,8 @@ public class ShoutActivity extends Activity {
 
         // Implies there is no UI.
         mImmediateCheckin = getIntent().getBooleanExtra(EXTRA_IMMEDIATE_CHECKIN, mImmediateCheckin);
+        mImmediateCheckin = PreferenceManager.getDefaultSharedPreferences(ShoutActivity.this)
+                .getBoolean(Preferences.PREFERENCE_IMMEDIATE_CHECKIN, true);
         if (DEBUG) Log.d(TAG, "Immediate Checkin: " + mImmediateCheckin);
 
         if (mImmediateCheckin && mIsShouting) {
