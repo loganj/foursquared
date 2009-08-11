@@ -20,7 +20,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -122,10 +124,15 @@ public class LoginActivity extends Activity {
     }
 
     private void ensureUi() {
-        mNewAccountTextView = (TextView)findViewById(R.id.newAccountTextView);
-        mPhoneEditText = ((EditText)findViewById(R.id.phoneEditText));
-        mPasswordEditText = ((EditText)findViewById(R.id.passwordEditText));
+        final Button button = (Button)findViewById(R.id.button);
+        button.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLoginTask = new LoginTask().execute();
+            }
+        });
 
+        mNewAccountTextView = (TextView)findViewById(R.id.newAccountTextView);
         mNewAccountTextView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,20 +141,39 @@ public class LoginActivity extends Activity {
             }
         });
 
-        ensurePhoneNumber();
+        mPhoneEditText = ((EditText)findViewById(R.id.phoneEditText));
+        mPasswordEditText = ((EditText)findViewById(R.id.passwordEditText));
 
-        String password = mPrefs.getString(Preferences.PREFERENCE_PASSWORD, null);
-        if (!TextUtils.isEmpty(password)) {
-            mPasswordEditText.setText(password);
-        }
-
-        Button button = (Button)findViewById(R.id.button);
-        button.setOnClickListener(new OnClickListener() {
+        TextWatcher FieldValidatorTextWatcher = new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                mLoginTask = new LoginTask().execute();
+            public void afterTextChanged(Editable s) {
             }
-        });
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                button.setEnabled(phoneNumberEditTextFieldIsValid()
+                        && passwordEditTextFieldIsValid());
+            }
+
+            private boolean phoneNumberEditTextFieldIsValid() {
+                CharSequence phone = mPhoneEditText.getText();
+                return !TextUtils.isEmpty(phone) && TextUtils.isDigitsOnly(phone);
+            }
+
+            private boolean passwordEditTextFieldIsValid() {
+                CharSequence password = mPasswordEditText.getText();
+                return !TextUtils.isEmpty(password);
+            }
+        };
+
+        mPhoneEditText.addTextChangedListener(FieldValidatorTextWatcher);
+        mPasswordEditText.addTextChangedListener(FieldValidatorTextWatcher);
+
+        ensurePhoneNumber();
     }
 
     private void ensurePhoneNumber() {
