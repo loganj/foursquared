@@ -200,10 +200,17 @@ public class ShoutActivity extends Activity {
         TextView messageView = (TextView)layout.findViewById(R.id.messageTextView);
         messageView.setText(checkinResult.getMessage());
 
+        String title;
+        if (mIsShouting) {
+            title = "Shouted!";
+        } else {
+            title = "Checked in @ " + checkinResult.getVenue().getName();
+        }
+
         return new AlertDialog.Builder(this) //
                 .setView(layout) //
                 .setIcon(android.R.drawable.ic_dialog_info) // icon
-                .setTitle("Checked in @ " + checkinResult.getVenue().getName()) // title
+                .setTitle(title) // title
                 .setOnCancelListener(new OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
