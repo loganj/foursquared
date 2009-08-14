@@ -91,7 +91,6 @@ public class VenueActivity extends TabActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(VenueActivity.this, ShoutActivity.class);
-                intent.putExtra(ShoutActivity.EXTRA_IMMEDIATE_CHECKIN, true);
                 ShoutActivity.venueIntoIntentExtras(mStateHolder.venue, intent);
                 startActivityForResult(intent, RESULT_SHOUT);
             }
@@ -151,6 +150,9 @@ public class VenueActivity extends TabActivity {
             case MENU_SHOUT:
                 Intent intent = new Intent(VenueActivity.this, ShoutActivity.class);
                 ShoutActivity.venueIntoIntentExtras(mStateHolder.venue, intent);
+                // No matter what the immediate checkin user preference is, never auto-checkin
+                // (always present the shout prompt).
+                intent.putExtra(ShoutActivity.EXTRA_IMMEDIATE_CHECKIN, false);
                 startActivityForResult(intent, RESULT_SHOUT);
                 return true;
             case MENU_TIPADD:

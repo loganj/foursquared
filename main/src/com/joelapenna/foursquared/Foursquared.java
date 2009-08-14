@@ -14,6 +14,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Environment;
@@ -56,7 +57,8 @@ public class Foursquared extends Application {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (FoursquaredSettings.USE_DUMPCATCHER) {
-            new DumpcatcherHelper(Preferences.createUniqueId(mPrefs), getResources());
+            Resources resources = getResources();
+            new DumpcatcherHelper(Preferences.createUniqueId(mPrefs), resources);
             DumpcatcherHelper.sendUsage("Started");
         }
 

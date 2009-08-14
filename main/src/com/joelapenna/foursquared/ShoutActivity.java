@@ -59,7 +59,7 @@ public class ShoutActivity extends Activity {
     private StateHolder mStateHolder = new StateHolder();
 
     private boolean mIsShouting = true;
-    private boolean mImmediateCheckin = false;
+    private boolean mImmediateCheckin = true;
     private boolean mTellFriends = true;
     private boolean mTellTwitter = false;
     private String mShout = null;
@@ -89,9 +89,13 @@ public class ShoutActivity extends Activity {
         if (DEBUG) Log.d(TAG, "Is Shouting: " + mIsShouting);
 
         // Implies there is no UI.
-        mImmediateCheckin = getIntent().getBooleanExtra(EXTRA_IMMEDIATE_CHECKIN, mImmediateCheckin);
-        mImmediateCheckin = PreferenceManager.getDefaultSharedPreferences(ShoutActivity.this)
-                .getBoolean(Preferences.PREFERENCE_IMMEDIATE_CHECKIN, true);
+        if (getIntent().hasExtra(EXTRA_IMMEDIATE_CHECKIN)) {
+            mImmediateCheckin = getIntent().getBooleanExtra(EXTRA_IMMEDIATE_CHECKIN, true);
+        } else {
+            mImmediateCheckin = PreferenceManager.getDefaultSharedPreferences(ShoutActivity.this)
+                    .getBoolean(Preferences.PREFERENCE_IMMEDIATE_CHECKIN, true);
+        }
+        if (DEBUG) Log.d(TAG, "Immediate Checkin (from extra): " + mImmediateCheckin);
         if (DEBUG) Log.d(TAG, "Immediate Checkin: " + mImmediateCheckin);
 
         if (mImmediateCheckin && mIsShouting) {
@@ -255,14 +259,11 @@ public class ShoutActivity extends Activity {
 
         mTwitterCheckBox.setChecked(mTellTwitter);
 
-        mFriendsCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        mTwitterCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mTellTwitter = isChecked;
                 mTwitterCheckBox.setEnabled(isChecked);
-                if (!isChecked) {
-                    mTwitterCheckBox.setChecked(false);
-                }
             }
         });
         mFriendsCheckBox.setChecked(mTellFriends);
@@ -270,6 +271,12 @@ public class ShoutActivity extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mTellFriends = isChecked;
+                mTwitterCheckBox.setEnabled(isChecked);
+
+                if (!isChecked) {
+                    mTellTwitter = false;
+                    mTwitterCheckBox.setChecked(false);
+                }
             }
         });
 
