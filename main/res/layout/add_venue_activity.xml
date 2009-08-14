@@ -39,7 +39,6 @@
         android:id="@+id/cityEditText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:editable="false"
         android:hint="City" />
 
 
