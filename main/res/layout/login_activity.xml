@@ -28,17 +28,17 @@
       android:id="@+id/phoneEditText"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
+      android:inputType="phone"
       android:lines="1"
-      android:singleLine="true"
       android:textAppearance="@android:style/TextAppearance.Large"
       android:hint="Phone Number" />
     <EditText
       android:id="@+id/passwordEditText"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
+      android:inputType="textPassword"
+      android:imeOptions="actionDone"
       android:lines="1"
-      android:singleLine="true"
-      android:password="true"
       android:textAppearance="@android:style/TextAppearance.Large"
       android:hint="Password" />
     <Button
