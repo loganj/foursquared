@@ -53,6 +53,7 @@ public class ShoutActivity extends Activity {
     public static final String EXTRA_VENUE_ZIP = "com.joelapenna.foursquared.ShoutActivity.VENUE_ZIP";
     public static final String EXTRA_VENUE_STATE = "com.joelapenna.foursquared.ShoutActivity.VENUE_STATE";
     public static final String EXTRA_IMMEDIATE_CHECKIN = "com.joelapenna.foursquared.ShoutActivity.IMMEDIATE_CHECKIN";
+    public static final String EXTRA_SHOUT = "com.joelapenna.foursquared.ShoutActivity.SHOUT";
 
     private static final int DIALOG_CHECKIN_PROGRESS = 1;
 
@@ -84,24 +85,24 @@ public class ShoutActivity extends Activity {
         if (DEBUG) Log.d(TAG, "onCreate");
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
-        // Implies there is no associated venue.
-        mIsShouting = !getIntent().hasExtra(Foursquared.EXTRA_VENUE_ID);
-        if (DEBUG) Log.d(TAG, "Is Shouting: " + mIsShouting);
-
         // Implies there is no UI.
         if (getIntent().hasExtra(EXTRA_IMMEDIATE_CHECKIN)) {
             mImmediateCheckin = getIntent().getBooleanExtra(EXTRA_IMMEDIATE_CHECKIN, true);
+            if (DEBUG) Log.d(TAG, "Immediate Checkin (from extra): " + mImmediateCheckin);
         } else {
             mImmediateCheckin = PreferenceManager.getDefaultSharedPreferences(ShoutActivity.this)
                     .getBoolean(Preferences.PREFERENCE_IMMEDIATE_CHECKIN, true);
+            if (DEBUG) Log.d(TAG, "Immediate Checkin (from preference): " + mImmediateCheckin);
         }
-        if (DEBUG) Log.d(TAG, "Immediate Checkin (from extra): " + mImmediateCheckin);
-        if (DEBUG) Log.d(TAG, "Immediate Checkin: " + mImmediateCheckin);
 
-        if (mImmediateCheckin && mIsShouting) {
-            throw new IllegalStateException(
-                    "Cannot do immediate checkin and shout at the same time!");
+        mIsShouting = getIntent().getBooleanExtra(ShoutActivity.EXTRA_SHOUT, false);
+        if (mIsShouting) {
+            if (DEBUG) Log.d(TAG, "Immediate checkin disabled, this is a shout.");
+            mImmediateCheckin = false;
         }
+
+        if (DEBUG) Log.d(TAG, "Is Shouting: " + mIsShouting);
+        if (DEBUG) Log.d(TAG, "Immediate Checkin: " + mImmediateCheckin);
 
         if (getLastNonConfigurationInstance() != null) {
             if (DEBUG) Log.d(TAG, "Using last non configuration instance");

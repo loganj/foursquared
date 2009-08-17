@@ -163,7 +163,9 @@ public class FriendsActivity extends TabActivity {
                 executeSearchTask(mSearchHolder.query);
                 return true;
             case MENU_SHOUT:
-                startActivity(new Intent(FriendsActivity.this, ShoutActivity.class));
+                Intent intent = new Intent(FriendsActivity.this, ShoutActivity.class);
+                intent.putExtra(ShoutActivity.EXTRA_SHOUT, true);
+                startActivity(intent);
                 return true;
             case MENU_STATS:
                 startActivity(new Intent(FriendsActivity.this, StatsActivity.class));
