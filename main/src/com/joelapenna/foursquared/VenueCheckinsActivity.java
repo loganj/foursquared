@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -86,7 +87,7 @@ public class VenueCheckinsActivity extends ListActivity {
         mainAdapter.notifyDataSetInvalidated();
     }
 
-    private void setMayor(Mayor mayor) {
+    private void setMayor(final Mayor mayor) {
         if (DEBUG) Log.d(TAG, "Setting mayor.");
         if (mayor == null) {
             return;
@@ -94,6 +95,15 @@ public class VenueCheckinsActivity extends ListActivity {
 
         LayoutInflater inflater = (LayoutInflater)getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View mayorLayout = inflater.inflate(R.layout.mayor, null);
+        mayorLayout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(VenueCheckinsActivity.this, UserActivity.class);
+                intent.putExtra(UserActivity.EXTRA_USER, mayor.getUser().getId());
+                startActivity(intent);
+            }
+        });
+
         ((TextView)mayorLayout.findViewById(R.id.nameTextView)).setText(StringFormatters
                 .getUserAbbreviatedName(mayor.getUser()));
         ((TextView)mayorLayout.findViewById(R.id.countTextView)).setText( //
