@@ -143,7 +143,6 @@ public class AddVenueActivity extends Activity {
 
     private void setFields(FieldsHolder fields) {
         mFieldsHolder = fields;
-        mCityEditText.setText(fields.foursquareCity.getName());
 
         if (fields.geocodedAddress != null) {
             String address = fields.geocodedAddress.getAddressLine(0);
@@ -154,6 +153,11 @@ public class AddVenueActivity extends Activity {
             String zip = fields.geocodedAddress.getPostalCode();
             if (zip != null) {
                 mZipEditText.setText(zip);
+            }
+
+            String city = fields.geocodedAddress.getLocality();
+            if (city != null) {
+                mCityEditText.setText(city);
             }
 
             String state = fields.geocodedAddress.getAdminArea();
