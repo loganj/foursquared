@@ -69,7 +69,7 @@
   <style
     name="tabHostStyle">
     <item
-      name="android:background">@drawable/foursquare_gradient</item>
+      name="android:background">#000000</item>
     <item
       name="android:paddingTop">4dip</item>
   </style>
