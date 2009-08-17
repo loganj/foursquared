@@ -174,6 +174,8 @@ public class AddVenueActivity extends Activity {
 
     class AddVenueTask extends AsyncTask<Void, Void, Venue> {
 
+        private Exception mReason;
+
         @Override
         protected void onPreExecute() {
             setProgressBarIndeterminateVisibility(true);
@@ -192,27 +194,25 @@ public class AddVenueActivity extends Activity {
                         mZipEditText.getText().toString(), //
                         mFieldsHolder.foursquareCity.getId(), //
                         mPhoneEditText.getText().toString());
-            } catch (FoursquareException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "FoursquareException", e);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                if (DEBUG) Log.d(TAG, "IOException", e);
+            } catch (Exception e) {
+                if (DEBUG) Log.d(TAG, "Exception doing add venue", e);
+                mReason = e;
             }
             return null;
         }
 
         @Override
         protected void onPostExecute(Venue venue) {
-            setProgressBarIndeterminateVisibility(false);
-            if (venue == null) {
-                Toast.makeText(AddVenueActivity.this, "Unable to add venue!", Toast.LENGTH_LONG)
-                        .show();
-            } else {
+            if (DEBUG) Log.d(TAG, "onPostExecute()");
+            try {
                 Intent intent = new Intent(AddVenueActivity.this, VenueActivity.class);
                 intent.putExtra(Foursquared.EXTRA_VENUE_ID, venue.getId());
                 startActivity(intent);
                 finish();
+            } catch (Exception e) {
+                NotificationsUtil.ToastReasonForFailure(AddVenueActivity.this, mReason);
+            } finally {
+                setProgressBarIndeterminateVisibility(false);
             }
         }
 
