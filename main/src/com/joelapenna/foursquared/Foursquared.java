@@ -17,7 +17,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -43,10 +42,9 @@ public class Foursquared extends Application {
 
     private SharedPreferences mPrefs;
 
-    private static Foursquare sFoursquare;
-    private static RemoteResourceManager sUserPhotosManager;
-    private static RemoteResourceManager sBadgeIconManager;
-    private static Boolean sManagersInitialized = false;
+    private Foursquare mFoursquare;
+    private RemoteResourceManager sUserPhotosManager = new RemoteResourceManager("user_photos");
+    private RemoteResourceManager sBadgeIconManager = new RemoteResourceManager("badges");
 
     @Override
     public void onCreate() {
@@ -62,14 +60,10 @@ public class Foursquared extends Application {
             DumpcatcherHelper.sendUsage("Started");
         }
 
-        sFoursquare = new Foursquare(FoursquaredSettings.USE_DEBUG_SERVER);
-
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            initResourceManagers();
-        }
+        mFoursquare = new Foursquare(FoursquaredSettings.USE_DEBUG_SERVER);
 
         // Set the oauth credentials.
-        sFoursquare.setOAuthConsumerCredentials( //
+        mFoursquare.setOAuthConsumerCredentials( //
                 getResources().getString(R.string.oauth_consumer_key), //
                 getResources().getString(R.string.oauth_consumer_secret));
 
@@ -83,13 +77,17 @@ public class Foursquared extends Application {
 
     @Override
     public void onTerminate() {
-        sFoursquare = null;
+        mFoursquare = null;
 
         sUserPhotosManager.shutdown();
         sUserPhotosManager = null;
 
         sBadgeIconManager.shutdown();
         sBadgeIconManager = null;
+    }
+
+    public Foursquare getFoursquare() {
+        return mFoursquare;
     }
 
     public Location getLastKnownLocation() {
@@ -115,8 +113,8 @@ public class Foursquared extends Application {
             throw new FoursquareCredentialsException(
                     "Phone number or password not set in preferences.");
         }
-        sFoursquare.setCredentials(phoneNumber, password);
-        sFoursquare.setOAuthToken(oauthToken, oauthTokenSecret);
+        mFoursquare.setCredentials(phoneNumber, password);
+        mFoursquare.setOAuthToken(oauthToken, oauthTokenSecret);
     }
 
     private void primeLocationListener() {
@@ -138,27 +136,11 @@ public class Foursquared extends Application {
                 .setIcon(android.R.drawable.ic_menu_preferences).setIntent(intent);
     }
 
-    private static void initResourceManagers() {
-        synchronized (sManagersInitialized) {
-            if (!sManagersInitialized) {
-                sUserPhotosManager = new RemoteResourceManager("user_photos");
-                sBadgeIconManager = new RemoteResourceManager("badges");
-                sManagersInitialized = true;
-            }
-        }
-    }
-
-    public static Foursquare getFoursquare() {
-        return sFoursquare;
-    }
-
-    public static RemoteResourceManager getUserPhotosManager() {
-        initResourceManagers();
+    public RemoteResourceManager getUserPhotosManager() {
         return sUserPhotosManager;
     }
 
-    public static RemoteResourceManager getBadgeIconManager() {
-        initResourceManagers();
+    public RemoteResourceManager getBadgeIconManager() {
         return sBadgeIconManager;
     }
 

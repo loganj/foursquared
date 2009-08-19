@@ -213,14 +213,16 @@ public class LoginActivity extends Activity {
 
                 Editor editor = mPrefs.edit();
 
-                User user = Preferences.loginUser( //
-                        Foursquared.getFoursquare(), phoneNumber, password, editor);
+                User user = Preferences.loginUser(
+                        //
+                        ((Foursquared)getApplication()).getFoursquare(), phoneNumber, password,
+                        editor);
                 if (user == null) {
                     return false;
                 }
 
-                City city = Preferences.switchCityIfChanged(Foursquared.getFoursquare(), user,
-                        mLocationListener.getLastKnownLocation());
+                City city = Preferences.switchCityIfChanged(((Foursquared)getApplication())
+                        .getFoursquare(), user, mLocationListener.getLastKnownLocation());
                 Preferences.storeCity(editor, city);
 
                 editor.commit();
@@ -249,7 +251,7 @@ public class LoginActivity extends Activity {
                 if (DEBUG) Log.d(TAG, "Reason for login failure: ", mReason);
 
                 mPrefs.edit().clear().commit();
-                Foursquared.getFoursquare().clearAllCredentials();
+                ((Foursquared)getApplication()).getFoursquare().clearAllCredentials();
                 // XXX I don't know if you can call setResult multiple times. If you can't and the
                 // first login result fails, then even a subsequent result OK will end up firing a
                 // CANCELED result

@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
             return;
         }
 
-        if (Foursquared.getFoursquare().hasCredentials()) {
+        if (((Foursquared)getApplication()).getFoursquare().hasCredentials()) {
             startActivity(new Intent(this, SearchVenuesActivity.class));
             finish();
         } else {

@@ -317,7 +317,7 @@ public class VenueActivity extends TabActivity {
         @Override
         protected Venue doInBackground(String... params) {
             try {
-                return Foursquared.getFoursquare().venue(params[0]);
+                return ((Foursquared)getApplication()).getFoursquare().venue(params[0]);
             } catch (Exception e) {
                 mReason = e;
             }
@@ -362,7 +362,7 @@ public class VenueActivity extends TabActivity {
                 assert params.length == 2;
                 String tip = params[0];
                 String type = params[1];
-                return Foursquared.getFoursquare().addTip(mStateHolder.venueId, tip, type);
+                return ((Foursquared)getApplication()).getFoursquare().addTip(mStateHolder.venueId, tip, type);
             } catch (Exception e) {
                 mReason = e;
             }
@@ -407,7 +407,7 @@ public class VenueActivity extends TabActivity {
         public Group doInBackground(Void... params) {
             if (DEBUG) Log.d(TAG, "CheckinsTask: doInBackground()");
             try {
-                return Foursquared.getFoursquare().checkins(null);
+                return ((Foursquared)getApplication()).getFoursquare().checkins(null);
             } catch (Exception e) {
                 mReason = e;
             }

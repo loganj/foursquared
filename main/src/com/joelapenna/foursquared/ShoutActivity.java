@@ -229,7 +229,7 @@ public class ShoutActivity extends Activity {
             String checkinId = checkinResult.getId();
             String userId = PreferenceManager.getDefaultSharedPreferences(this).getString(
                     Preferences.PREFERENCE_ID, "");
-            webView.loadUrl(Foursquared.getFoursquare().checkinResultUrl(userId, checkinId));
+            webView.loadUrl(((Foursquared)getApplication()).getFoursquare().checkinResultUrl(userId, checkinId));
 
         }
         return dialogBuilder.create();
@@ -312,7 +312,7 @@ public class ShoutActivity extends Activity {
             boolean isPrivate = !mTellFriends;
 
             try {
-                return Foursquared.getFoursquare().checkin(venueId, null, mShout, isPrivate,
+                return ((Foursquared)getApplication()).getFoursquare().checkin(venueId, null, mShout, isPrivate,
                         mTellTwitter);
             } catch (Exception e) {
                 Log.d(TAG, "Storing reason: ", e);

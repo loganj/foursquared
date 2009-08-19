@@ -193,7 +193,7 @@ public class AddVenueActivity extends Activity {
         protected Venue doInBackground(Void... params) {
             // name, address, crossstreet, city, state, zip, cityid, phone
             try {
-                return Foursquared.getFoursquare().addVenue( //
+                return ((Foursquared)getApplication()).getFoursquare().addVenue( //
                         mNameEditText.getText().toString(), //
                         mAddressEditText.getText().toString(), //
                         mCrossstreetEditText.getText().toString(), //
@@ -247,7 +247,7 @@ public class AddVenueActivity extends Activity {
             try {
                 if (DEBUG) Log.d(TAG, stateHolder.location.toString());
 
-                stateHolder.foursquareCity = Foursquared.getFoursquare().checkCity(
+                stateHolder.foursquareCity = ((Foursquared)getApplication()).getFoursquare().checkCity(
                         String.valueOf(stateHolder.location.getLatitude()),
                         String.valueOf(stateHolder.location.getLongitude()));
 

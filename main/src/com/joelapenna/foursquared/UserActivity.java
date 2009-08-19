@@ -161,7 +161,8 @@ public class UserActivity extends Activity {
         try {
             Uri icon = Uri.parse(badge.getIcon());
             if (DEBUG) Log.d(TAG, icon.toString());
-            mBadgeDialog.setIcon(new BitmapDrawable(Foursquared.getBadgeIconManager()
+            mBadgeDialog.setIcon(new BitmapDrawable(((Foursquared)getApplication())
+                    .getBadgeIconManager()
                     .getInputStream(icon)));
         } catch (IOException e) {
             if (DEBUG) Log.d(TAG, "IOException", e);
@@ -192,7 +193,8 @@ public class UserActivity extends Activity {
         }
         final Uri photoUri = Uri.parse(user.getPhoto());
         if (photoUri != null) {
-            final RemoteResourceManager userPhotosManager = Foursquared.getUserPhotosManager();
+            final RemoteResourceManager userPhotosManager = ((Foursquared)getApplication())
+                    .getUserPhotosManager();
             try {
                 Bitmap bitmap = BitmapFactory.decodeStream(userPhotosManager
                         .getInputStream(photoUri));
@@ -230,7 +232,7 @@ public class UserActivity extends Activity {
         @Override
         protected User doInBackground(Void... params) {
             try {
-                return Foursquared.getFoursquare().user(mUserId, false, true);
+                return ((Foursquared)getApplication()).getFoursquare().user(mUserId, false, true);
             } catch (Exception e) {
                 mReason = e;
             }
@@ -275,7 +277,7 @@ public class UserActivity extends Activity {
         private void displayBadges(User user) {
             if (user.getBadges() != null) {
                 mBadgesGrid.setAdapter(new BadgeWithIconListAdapter(UserActivity.this, user
-                        .getBadges(), Foursquared.getBadgeIconManager()));
+                        .getBadges(), ((Foursquared)getApplication()).getBadgeIconManager()));
                 ((TextView)findViewById(R.id.badgesHeader)).setVisibility(TextView.VISIBLE);
                 mBadgesGrid.setOnItemClickListener(new OnItemClickListener() {
                     @Override

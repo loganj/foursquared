@@ -196,7 +196,8 @@ public class FriendsActivity extends TabActivity {
     public void putSearchResultsInAdapter(Group searchResults) {
         mListAdapter.clear();
 
-        CheckinListAdapter groupAdapter = new CheckinListAdapter(this, searchResults, Foursquared
+        CheckinListAdapter groupAdapter = new CheckinListAdapter(this, searchResults,
+                ((Foursquared)getApplication())
                 .getUserPhotosManager(), true);
         mListAdapter.addSection("Checkins", groupAdapter);
         mListAdapter.notifyDataSetInvalidated();
@@ -337,7 +338,7 @@ public class FriendsActivity extends TabActivity {
 
         Group search() throws FoursquareException, IOException {
             Location location = mLocationListener.getLastKnownLocation();
-            Foursquare foursquare = Foursquared.getFoursquare();
+            Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
             if (location == null) {
                 if (DEBUG) Log.d(TAG, "Searching without location.");
                 return foursquare.checkins(null);

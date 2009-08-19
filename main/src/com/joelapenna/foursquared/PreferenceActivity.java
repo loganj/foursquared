@@ -46,7 +46,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         String key = preference.getKey();
         if (Preferences.PREFERENCE_LOGOUT.equals(key)) {
             mPrefs.edit().clear().commit();
-            Foursquared.getFoursquare().clearAllCredentials();
+            ((Foursquared)getApplication()).getFoursquare().clearAllCredentials();
 
             startActivityForResult(new Intent(PreferenceActivity.this, LoginActivity.class),
                     LoginActivity.ACTIVITY_REQUEST_LOGIN);
@@ -97,7 +97,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                     return null;
                 }
 
-                Foursquare foursquare = Foursquared.getFoursquare();
+                Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
 
                 City newCity = foursquare.checkCity(//
                         String.valueOf(location.getLatitude()), //

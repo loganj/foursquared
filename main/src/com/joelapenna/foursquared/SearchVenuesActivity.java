@@ -402,7 +402,7 @@ public class SearchVenuesActivity extends TabActivity {
 
         public Group search() throws FoursquareException, IOException {
             Location location = mLocationListener.getLastKnownLocation();
-            Foursquare foursquare = Foursquared.getFoursquare();
+            Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
             String geolat;
             String geolong;
             int radius;

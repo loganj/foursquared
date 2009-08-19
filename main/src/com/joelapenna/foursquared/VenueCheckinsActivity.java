@@ -82,7 +82,7 @@ public class VenueCheckinsActivity extends ListActivity {
         SeparatedListAdapter mainAdapter = (SeparatedListAdapter)getListAdapter();
         mainAdapter.clear();
         CheckinListAdapter groupAdapter = new CheckinListAdapter(//
-                this, checkins, Foursquared.getUserPhotosManager(), false);
+                this, checkins, ((Foursquared)getApplication()).getUserPhotosManager(), false);
         mainAdapter.addSection("Recent Checkins", groupAdapter);
         mainAdapter.notifyDataSetInvalidated();
     }
@@ -110,7 +110,7 @@ public class VenueCheckinsActivity extends ListActivity {
                 mayor.getCount() + " Checkins");
 
         final ImageView photo = (ImageView)mayorLayout.findViewById(R.id.photoImageView);
-        final RemoteResourceManager rrm = Foursquared.getUserPhotosManager();
+        final RemoteResourceManager rrm = ((Foursquared)getApplication()).getUserPhotosManager();
         final Uri photoUri = Uri.parse(mayor.getUser().getPhoto());
 
         try {
