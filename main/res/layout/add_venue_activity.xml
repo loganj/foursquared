@@ -15,6 +15,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="textCapWords"
+        android:imeOptions="actionNext"
         android:hint="Venue Name" />
 
       <TextView
@@ -28,18 +29,21 @@
         android:id="@+id/addressEditText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:imeOptions="actionNext"
         android:hint="Address" />
 
       <EditText
         android:id="@+id/crossstreetEditText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:imeOptions="actionNext"
         android:hint="Cross Street" />
 
       <EditText
         android:id="@+id/cityEditText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:imeOptions="actionNext"
         android:hint="City" />
 
 
@@ -53,12 +57,14 @@
             android:layout_width="0px"
             android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
             android:hint="State" />
           <EditText
             android:id="@+id/zipEditText"
             android:layout_width="0px"
             android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
             android:numeric="integer"
             android:hint="Zip Code" />
         </TableRow>
@@ -77,6 +83,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:phoneNumber="true"
+        android:imeOptions="actionDone"
         android:hint="555-2368" />
     </LinearLayout>
   </ScrollView>

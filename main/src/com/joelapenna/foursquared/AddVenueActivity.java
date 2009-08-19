@@ -4,7 +4,6 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.Foursquared.LocationListener;
@@ -15,20 +14,19 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.EditText;
-import android.widget.Toast;
-
-import java.io.IOException;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -37,12 +35,14 @@ public class AddVenueActivity extends Activity {
     private static final String TAG = "AddVenueActivity";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
+    private static final double MINIMUM_ACCURACY_FOR_ADDRESS = 100.0;
+
     private static final int MENU_SUBMIT = 1;
 
     private LocationListener mLocationListener;
     private LocationManager mLocationManager;
 
-    FieldsHolder mFieldsHolder = new FieldsHolder();
+    final private StateHolder mFieldsHolder = new StateHolder();
 
     private EditText mNameEditText;
     private EditText mCityEditText;
@@ -79,17 +79,20 @@ public class AddVenueActivity extends Activity {
         mZipEditText = (EditText)findViewById(R.id.zipEditText);
         mPhoneEditText = (EditText)findViewById(R.id.phoneEditText);
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
         if (getLastNonConfigurationInstance() != null) {
-            setFields((FieldsHolder)getLastNonConfigurationInstance());
+            setFields((StateHolder)getLastNonConfigurationInstance());
         } else {
             new AddressLookupTask().execute();
         }
-    }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(mLoggedInReceiver);
+        City city = new City();
+        city.setId(prefs.getString(Preferences.PREFERENCE_CITY_ID, null));
+        city.setName(prefs.getString(Preferences.PREFERENCE_CITY_NAME, null));
+        city.setGeolat(prefs.getString(Preferences.PREFERENCE_CITY_GEOLAT, null));
+        city.setGeolong(prefs.getString(Preferences.PREFERENCE_CITY_GEOLONG, null));
+        mFieldsHolder.foursquareCity = city;
     }
 
     @Override
@@ -109,6 +112,12 @@ public class AddVenueActivity extends Activity {
     public void onPause() {
         super.onPause();
         mLocationManager.removeUpdates(mLocationListener);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mLoggedInReceiver);
     }
 
     @Override
@@ -141,18 +150,18 @@ public class AddVenueActivity extends Activity {
         return mFieldsHolder;
     }
 
-    private void setFields(FieldsHolder fields) {
-        mFieldsHolder = fields;
+    private void setFields(StateHolder fields) {
+        mFieldsHolder.geocodedAddress = fields.geocodedAddress;
+        mFieldsHolder.location = fields.location;
 
         if (fields.geocodedAddress != null) {
-            String address = fields.geocodedAddress.getAddressLine(0);
-            if (address != null) {
-                mAddressEditText.setText(address);
-            }
 
-            String zip = fields.geocodedAddress.getPostalCode();
-            if (zip != null) {
-                mZipEditText.setText(zip);
+            // Don't fill in the street unless we're reasonably confident we know where the user is.
+            String address = fields.geocodedAddress.getAddressLine(0);
+            double accuracy = fields.location.getAccuracy();
+            if (address != null && (accuracy > 0.0 && accuracy < MINIMUM_ACCURACY_FOR_ADDRESS)) {
+                if (DEBUG) Log.d(TAG, "Accuracy good enough, setting address field.");
+                mAddressEditText.setText(address);
             }
 
             String city = fields.geocodedAddress.getLocality();
@@ -163,6 +172,11 @@ public class AddVenueActivity extends Activity {
             String state = fields.geocodedAddress.getAdminArea();
             if (state != null) {
                 mStateEditText.setText(state);
+            }
+
+            String zip = fields.geocodedAddress.getPostalCode();
+            if (zip != null) {
+                mZipEditText.setText(zip);
             }
 
             String phone = fields.geocodedAddress.getPhone();
@@ -222,7 +236,7 @@ public class AddVenueActivity extends Activity {
         }
     }
 
-    class AddressLookupTask extends AsyncTask<Void, Void, FieldsHolder> {
+    class AddressLookupTask extends AsyncTask<Void, Void, StateHolder> {
 
         private Exception mReason;
 
@@ -232,28 +246,25 @@ public class AddVenueActivity extends Activity {
         }
 
         @Override
-        protected FieldsHolder doInBackground(Void... params) {
-            FieldsHolder fieldsHolder = new FieldsHolder();
+        protected StateHolder doInBackground(Void... params) {
+            StateHolder stateHolder = new StateHolder();
 
-            Location location = mLocationListener.getLastKnownLocation();
+            stateHolder.location = mLocationListener.getLastKnownLocation();
             try {
-                if (DEBUG) Log.d(TAG, location.toString());
-                fieldsHolder.foursquareCity = Foursquared.getFoursquare().checkCity(
-                        String.valueOf(location.getLatitude()),
-                        String.valueOf(location.getLongitude()));
-
+                if (DEBUG) Log.d(TAG, stateHolder.location.toString());
                 Geocoder geocoder = new Geocoder(AddVenueActivity.this);
-                fieldsHolder.geocodedAddress = geocoder.getFromLocation(location.getLatitude(),
-                        location.getLongitude(), 1).get(0);
+                stateHolder.geocodedAddress = geocoder.getFromLocation(
+                        stateHolder.location.getLatitude(), stateHolder.location.getLongitude(), 1)
+                        .get(0);
 
             } catch (Exception e) {
                 mReason = e;
             }
-            return fieldsHolder;
+            return stateHolder;
         }
 
         @Override
-        protected void onPostExecute(FieldsHolder fields) {
+        protected void onPostExecute(StateHolder fields) {
             setProgressBarIndeterminateVisibility(false);
 
             try {
@@ -275,8 +286,9 @@ public class AddVenueActivity extends Activity {
         }
     }
 
-    private static class FieldsHolder {
+    private static class StateHolder {
         City foursquareCity = null;
+        Location location = null;
         Address geocodedAddress = null;
     }
 }
