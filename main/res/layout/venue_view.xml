@@ -33,7 +33,8 @@
   <Button
     android:id="@+id/internal_checkinButton"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="1dip"
+    android:maxHeight="1dip"
 
     android:layout_alignParentBottom="true"
     android:layout_alignParentRight="true"
@@ -42,8 +43,15 @@
 
     android:enabled="false"
     android:visibility="gone"
+    android:background="@drawable/quick_checkin"
 
-    android:text="Quick Checkin!" />
+    android:text="Quick-Checkin"
+    android:textAppearance="@android:style/TextAppearance.Small"
+    android:shadowColor="#111111"
+    android:shadowRadius="1"
+    android:shadowDy="1"
+    android:textColor="#FFFFFF"
+     />
 
   <TextView
     android:id="@+id/internal_venueLocationLine2"
