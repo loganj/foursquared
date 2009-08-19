@@ -291,9 +291,9 @@ public class FriendsActivity extends TabActivity {
 
     private void ensureTitle(boolean finished) {
         if (finished) {
-            setTitle("Foursquare Friends");
+            setTitle(R.string.friendsactivity_title_finished);
         } else {
-            setTitle("Foursquare - Searching for Friends");
+            setTitle(R.string.friendsactivity_title_searching);
         }
 
     }

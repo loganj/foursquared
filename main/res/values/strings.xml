@@ -32,6 +32,9 @@
     name="add_venue_label">Add Venue</string>
 
   <string
+     name="add_venue_error_toast_venue_null">Unable to add venue!</string>
+
+  <string
     name="refresh_address_label">Refresh Address</string>
 
   <string
@@ -56,5 +59,11 @@
 
   <string
     name="tip_add_spinner_prompt">Select a List</string>
+
+  <string
+     name="friendsactivity_title_finished">Foursquare Friends</string>
+  <string
+     name="friendsactivity_title_searching">Foursquare - Searching for Friends</string>
+
 
 </resources>
