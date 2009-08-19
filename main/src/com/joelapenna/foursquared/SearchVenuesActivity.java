@@ -346,7 +346,7 @@ public class SearchVenuesActivity extends TabActivity {
         // Results tab
         mTabHost.addTab(mTabHost.newTabSpec("results")
                 // Checkin Tab
-                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_search))
+                .setIndicator("", getResources().getDrawable(R.drawable.tab_search))
                 .setContent(R.id.listviewLayout) //
                 );
 
