@@ -10,6 +10,7 @@ import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Credentials;
+import com.joelapenna.foursquare.types.Settings;
 import com.joelapenna.foursquare.types.User;
 
 import android.content.SharedPreferences;
@@ -127,6 +128,28 @@ public class Preferences {
             city = currentCity;
         }
         return city;
+    }
+
+    static User getUser(SharedPreferences prefs) {
+        City city = new City();
+        city.setId(prefs.getString(Preferences.PREFERENCE_CITY_ID, null));
+        city.setName(prefs.getString(Preferences.PREFERENCE_CITY_NAME, null));
+        city.setGeolat(prefs.getString(Preferences.PREFERENCE_CITY_GEOLAT, null));
+        city.setGeolong(prefs.getString(Preferences.PREFERENCE_CITY_GEOLONG, null));
+
+        Settings settings = new Settings();
+        settings.setSendtotwitter(prefs.getBoolean(PREFERENCE_TWITTER_CHECKIN, false));
+
+        User user = new User();
+        user.setId(prefs.getString(PREFERENCE_ID, null));
+        user.setFirstname(prefs.getString(PREFERENCE_ID, null));
+        user.setLastname(prefs.getString(PREFERENCE_ID, null));
+        user.setGender(prefs.getString(PREFERENCE_ID, null));
+        user.setPhoto(prefs.getString(PREFERENCE_ID, null));
+        user.setCity(city);
+        user.setSettings(settings);
+
+        return user;
     }
 
     static void storeAuthExchangeCredentials(final Editor editor, Credentials credentials)

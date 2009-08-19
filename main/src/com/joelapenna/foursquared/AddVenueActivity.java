@@ -79,20 +79,14 @@ public class AddVenueActivity extends Activity {
         mZipEditText = (EditText)findViewById(R.id.zipEditText);
         mPhoneEditText = (EditText)findViewById(R.id.phoneEditText);
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
         if (getLastNonConfigurationInstance() != null) {
             setFields((StateHolder)getLastNonConfigurationInstance());
         } else {
             new AddressLookupTask().execute();
         }
 
-        City city = new City();
-        city.setId(prefs.getString(Preferences.PREFERENCE_CITY_ID, null));
-        city.setName(prefs.getString(Preferences.PREFERENCE_CITY_NAME, null));
-        city.setGeolat(prefs.getString(Preferences.PREFERENCE_CITY_GEOLAT, null));
-        city.setGeolong(prefs.getString(Preferences.PREFERENCE_CITY_GEOLONG, null));
-        mFieldsHolder.foursquareCity = city;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mFieldsHolder.foursquareCity = Preferences.getUser(prefs).getCity();
     }
 
     @Override
