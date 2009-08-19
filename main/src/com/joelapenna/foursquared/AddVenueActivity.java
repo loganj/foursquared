@@ -252,6 +252,11 @@ public class AddVenueActivity extends Activity {
             stateHolder.location = mLocationListener.getLastKnownLocation();
             try {
                 if (DEBUG) Log.d(TAG, stateHolder.location.toString());
+
+                stateHolder.foursquareCity = Foursquared.getFoursquare().checkCity(
+                        String.valueOf(stateHolder.location.getLatitude()),
+                        String.valueOf(stateHolder.location.getLongitude()));
+
                 Geocoder geocoder = new Geocoder(AddVenueActivity.this);
                 stateHolder.geocodedAddress = geocoder.getFromLocation(
                         stateHolder.location.getLatitude(), stateHolder.location.getLongitude(), 1)
