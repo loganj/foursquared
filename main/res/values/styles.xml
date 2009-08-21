@@ -84,5 +84,29 @@
     <item
       name="android:layout_marginBottom">6dip</item>
   </style>
+
+  <style
+    name="venueQuickCheckinStyle">
+    <item
+      name="android:paddingTop">0px</item>
+    <item
+      name="android:paddingBottom">0px</item>
+    <item
+      name="android:paddingLeft">16px</item>
+    <item
+      name="android:background">@drawable/quick_checkin</item>
+    <item
+      name="android:text">Quick-Checkin</item>
+    <item
+      name="android:textAppearance">@android:style/TextAppearance.Small</item>
+    <item
+      name="android:shadowColor">#111111</item>
+    <item
+      name="android:shadowRadius">1</item>
+    <item
+      name="android:shadowDy">1</item>
+    <item
+      name="android:textColor">#FFFFFF</item>
+  </style>
 </resources>
 

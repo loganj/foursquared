@@ -34,36 +34,15 @@
     android:id="@+id/internal_checkinButton"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentRight="true"
-    android:layout_below="@id/internal_venueName"
-    android:layout_alignWithParentIfMissing="true"
-
-    android:enabled="false"
-    android:visibility="gone"
-
-    android:text="Quick Checkin!" />
-
-  <!--  Chris' cool stuff.
-  <Button
-    android:id="@+id/internal_checkinButton"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    style="@style/venueQuickCheckinStyle"
 
     android:layout_alignParentRight="true"
     android:layout_below="@id/internal_venueName"
+    android:layout_centerVertical="true"
+    android:gravity="center_vertical"
 
     android:enabled="false"
-    android:visibility="gone"
-
-    android:text="Quick-Checkin"
-    android:textAppearance="@android:style/TextAppearance.Small"
-    android:shadowColor="#111111"
-    android:shadowRadius="1"
-    android:shadowDy="1"
-    android:textColor="#FFFFFF" />
-  -->
+    android:visibility="gone" />
 
   <TextView
     android:id="@+id/internal_venueLocationLine2"
