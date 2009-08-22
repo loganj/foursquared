@@ -69,7 +69,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            startActivity(new Intent(this, SearchVenuesActivity.class));
+            startActivity(new Intent(this, NearbyVenuesActivity.class));
         }
         finish();
     }

@@ -14,8 +14,8 @@ import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 
+import android.app.Activity;
 import android.app.SearchManager;
-import android.app.TabActivity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -33,7 +33,6 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -44,7 +43,7 @@ import java.util.Observable;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class FriendsActivity extends TabActivity {
+public class FriendsActivity extends Activity {
     static final String TAG = "FriendsActivity";
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
@@ -69,7 +68,6 @@ public class FriendsActivity extends TabActivity {
     private LinearLayout mEmpty;
     private TextView mEmptyText;
     private ProgressBar mEmptyProgress;
-    private TabHost mTabHost;
     private SeparatedListAdapter mListAdapter;
 
     private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
@@ -84,7 +82,7 @@ public class FriendsActivity extends TabActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setContentView(R.layout.search_activity);
+        setContentView(R.layout.search_list_activity);
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         mLocationListener = ((Foursquared)getApplication()).getLocationListener();
@@ -92,7 +90,6 @@ public class FriendsActivity extends TabActivity {
 
         searchResultsObservable = new SearchResultsObservable();
 
-        initTabHost();
         initListViewAdapter();
 
         if (getLastNonConfigurationInstance() != null) {
@@ -160,7 +157,7 @@ public class FriendsActivity extends TabActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_REFRESH:
-                executeSearchTask(mSearchHolder.query);
+                executeSearchTask(null);
                 return true;
             case MENU_SHOUT:
                 Intent intent = new Intent(FriendsActivity.this, ShoutActivity.class);
@@ -197,8 +194,7 @@ public class FriendsActivity extends TabActivity {
         mListAdapter.clear();
 
         CheckinListAdapter groupAdapter = new CheckinListAdapter(this, searchResults,
-                ((Foursquared)getApplication())
-                .getUserPhotosManager(), true);
+                ((Foursquared)getApplication()).getUserPhotosManager(), true);
         mListAdapter.addSection("Checkins", groupAdapter);
         mListAdapter.notifyDataSetInvalidated();
     }
@@ -262,31 +258,6 @@ public class FriendsActivity extends TabActivity {
                 }
             }
         });
-    }
-
-    private void initTabHost() {
-        if (mTabHost != null) {
-            throw new IllegalStateException("Trying to intialize already initializd TabHost");
-        }
-        mTabHost = getTabHost();
-
-        // Results tab
-        mTabHost.addTab(mTabHost.newTabSpec("results")
-                // Checkin Tab
-                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_search))
-                .setContent(R.id.listviewLayout) //
-                );
-
-        // Maps tab
-        Intent intent = new Intent(this, FriendsMapActivity.class);
-        mTabHost.addTab(mTabHost.newTabSpec("map")
-                // Map Tab
-                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_mapmode))
-                .setContent(intent) // The
-                // contained
-                // activity
-                );
-        mTabHost.setCurrentTab(0);
     }
 
     private void ensureTitle(boolean finished) {

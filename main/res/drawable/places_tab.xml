@@ -3,8 +3,8 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
   <item
     android:state_selected="true"
-    android:drawable="@drawable/tab_search_focus" />
+    android:drawable="@drawable/places_tab_selected" />
   <item
     android:state_selected="false"
-    android:drawable="@drawable/tab_search_unfocus" />
+    android:drawable="@drawable/places_tab_unselected" />
 </selector>

@@ -15,8 +15,8 @@ import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
 
+import android.app.Activity;
 import android.app.SearchManager;
-import android.app.TabActivity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -36,7 +36,6 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -47,22 +46,17 @@ import java.util.Observable;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class SearchVenuesActivity extends TabActivity {
-    static final String TAG = "SearchVenuesActivity";
+public class NearbyVenuesActivity extends Activity {
+    static final String TAG = "NearbyVenuesActivity";
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public static final String QUERY_NEARBY = null;
     public static SearchResultsObservable searchResultsObservable;
 
-    private static final int MENU_SEARCH = 0;
-    private static final int MENU_REFRESH = 1;
-    private static final int MENU_NEARBY = 2;
-    private static final int MENU_ADD_VENUE = 3;
-    private static final int MENU_CHECKINS = 4;
-    private static final int MENU_MYINFO = 5;
-
-    private static final int MENU_GROUP_SEARCH = 0;
-    private static final int MENU_GROUP_ACTIVITIES = 1;
+    private static final int MENU_REFRESH = 0;
+    private static final int MENU_ADD_VENUE = 1;
+    private static final int MENU_SEARCH = 2;
+    private static final int MENU_MYINFO = 3;
 
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
@@ -74,7 +68,6 @@ public class SearchVenuesActivity extends TabActivity {
     private LinearLayout mEmpty;
     private TextView mEmptyText;
     private ProgressBar mEmptyProgress;
-    private TabHost mTabHost;
     private SeparatedListAdapter mListAdapter;
 
     private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
@@ -90,7 +83,7 @@ public class SearchVenuesActivity extends TabActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setContentView(R.layout.search_venues_activity);
+        setContentView(R.layout.search_list_activity);
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         mLocationListener = ((Foursquared)getApplication()).getLocationListener();
@@ -98,7 +91,6 @@ public class SearchVenuesActivity extends TabActivity {
 
         searchResultsObservable = new SearchResultsObservable();
 
-        initTabHost();
         initListViewAdapter();
 
         // Watch to see if we've been called as a shortcut intent.
@@ -153,25 +145,16 @@ public class SearchVenuesActivity extends TabActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-
-        // Always show these.
-        menu.add(MENU_GROUP_SEARCH, MENU_SEARCH, Menu.NONE, R.string.search_label) //
+        menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.search_label) //
                 .setIcon(android.R.drawable.ic_menu_search) //
                 .setAlphabeticShortcut(SearchManager.MENU_KEY);
-        menu.add(MENU_GROUP_SEARCH, MENU_NEARBY, Menu.NONE, R.string.nearby_label) //
-                .setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(MENU_GROUP_SEARCH, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
+        menu.add(Menu.NONE, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
                 .setIcon(R.drawable.ic_menu_refresh);
-
-        if (!mIsShortcutPicker) {
-            menu.add(Menu.NONE, MENU_ADD_VENUE, Menu.NONE, R.string.add_venue_label) //
-                    .setIcon(android.R.drawable.ic_menu_add);
-            menu.add(MENU_GROUP_ACTIVITIES, MENU_CHECKINS, Menu.NONE, R.string.checkins_label) //
-                    .setIcon(R.drawable.ic_menu_allfriends);
-            menu.add(MENU_GROUP_ACTIVITIES, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
-                    .setIcon(R.drawable.ic_menu_myinfo);
-            Foursquared.addPreferencesToMenu(this, menu);
-        }
+        menu.add(Menu.NONE, MENU_ADD_VENUE, Menu.NONE, R.string.add_venue_label) //
+                .setIcon(android.R.drawable.ic_menu_add);
+        menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
+                .setIcon(R.drawable.ic_menu_myinfo);
+        Foursquared.addPreferencesToMenu(this, menu);
         return true;
     }
 
@@ -179,24 +162,18 @@ public class SearchVenuesActivity extends TabActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_SEARCH:
-                onSearchRequested();
-                return true;
-            case MENU_NEARBY:
-                executeSearchTask(null);
-                return true;
-            case MENU_REFRESH:
-                executeSearchTask(mSearchHolder.query);
-                return true;
-            case MENU_ADD_VENUE:
-                startActivity(new Intent(SearchVenuesActivity.this, AddVenueActivity.class));
-                return true;
-            case MENU_CHECKINS:
-                Intent intent = new Intent(SearchVenuesActivity.this, FriendsActivity.class);
+                Intent intent = new Intent(NearbyVenuesActivity.this, SearchVenuesActivity.class);
                 intent.setAction(Intent.ACTION_SEARCH);
                 startActivity(intent);
                 return true;
+            case MENU_REFRESH:
+                executeSearchTask(null);
+                return true;
+            case MENU_ADD_VENUE:
+                startActivity(new Intent(NearbyVenuesActivity.this, AddVenueActivity.class));
+                return true;
             case MENU_MYINFO:
-                startActivity(new Intent(SearchVenuesActivity.this, UserActivity.class));
+                startActivity(new Intent(NearbyVenuesActivity.this, UserActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -205,22 +182,16 @@ public class SearchVenuesActivity extends TabActivity {
     @Override
     public void onNewIntent(Intent intent) {
         if (DEBUG) Log.d(TAG, "New Intent: " + intent);
-        String action = intent.getAction();
-        String query = intent.getStringExtra(SearchManager.QUERY);
-
         if (intent == null) {
             if (DEBUG) Log.d(TAG, "No intent to search, querying default.");
-            executeSearchTask(query);
-
-        } else if (Intent.ACTION_SEARCH.equals(action) && query != null) {
+        } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             if (DEBUG) Log.d(TAG, "onNewIntent received search intent and saving.");
             SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
                     VenueQuerySuggestionsProvider.AUTHORITY, VenueQuerySuggestionsProvider.MODE);
-            suggestions.saveRecentQuery(query, null);
-            executeSearchTask(query);
-        } else {
-            onSearchRequested();
+            suggestions.saveRecentQuery(intent.getStringExtra(SearchManager.QUERY), null);
+
         }
+        executeSearchTask(intent.getStringExtra(SearchManager.QUERY));
     }
 
     @Override
@@ -268,7 +239,7 @@ public class SearchVenuesActivity extends TabActivity {
     }
 
     void startItemActivity(Venue venue) {
-        Intent intent = new Intent(SearchVenuesActivity.this, VenueActivity.class);
+        Intent intent = new Intent(NearbyVenuesActivity.this, VenueActivity.class);
         intent.setAction(Intent.ACTION_VIEW);
         intent.putExtra(Foursquared.EXTRA_VENUE_ID, venue.getId());
         startActivity(intent);
@@ -349,29 +320,6 @@ public class SearchVenuesActivity extends TabActivity {
         setResult(RESULT_OK, intent);
     }
 
-    private void initTabHost() {
-        if (mTabHost != null) {
-            throw new IllegalStateException("Trying to intialize already initializd TabHost");
-        }
-        mTabHost = getTabHost();
-
-        // Results tab
-        mTabHost.addTab(mTabHost.newTabSpec("results")
-        // Checkin Tab
-                .setIndicator("", getResources().getDrawable(R.drawable.places_tab)) //
-                .setContent(R.id.listviewLayout) //
-                );
-
-        // Maps tab
-        Intent intent = new Intent(this, SearchVenuesMapActivity.class);
-        mTabHost.addTab(mTabHost.newTabSpec("map")
-                // Map Tab
-                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_mapmode))
-                .setContent(intent) // The contained activity
-                );
-        mTabHost.setCurrentTab(0);
-    }
-
     private class SearchTask extends AsyncTask<Void, Void, Group> {
 
         private static final int METERS_PER_MILE = 1609;
@@ -399,7 +347,7 @@ public class SearchVenuesActivity extends TabActivity {
         public void onPostExecute(Group groups) {
             try {
                 if (groups == null) {
-                    NotificationsUtil.ToastReasonForFailure(SearchVenuesActivity.this, mReason);
+                    NotificationsUtil.ToastReasonForFailure(NearbyVenuesActivity.this, mReason);
                 } else {
                     setSearchResults(groups);
                     putSearchResultsInAdapter(groups);

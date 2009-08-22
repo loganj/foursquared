@@ -68,7 +68,7 @@ public class SearchVenuesMapActivity extends MapActivity {
             public void update(Observable observable, Object data) {
                 if (DEBUG) Log.d(TAG, "Observed search results change.");
                 clearMap();
-                loadSearchResults(SearchVenuesActivity.searchResultsObservable.getSearchResults());
+                loadSearchResults(NearbyVenuesActivity.searchResultsObservable.getSearchResults());
                 recenterMap();
             }
         };
@@ -82,10 +82,10 @@ public class SearchVenuesMapActivity extends MapActivity {
         // mMyLocationOverlay.enableCompass(); // Disabled due to a sdk 1.5 emulator bug
 
         clearMap();
-        loadSearchResults(SearchVenuesActivity.searchResultsObservable.getSearchResults());
+        loadSearchResults(NearbyVenuesActivity.searchResultsObservable.getSearchResults());
         recenterMap();
 
-        SearchVenuesActivity.searchResultsObservable.addObserver(mSearchResultsObserver);
+        NearbyVenuesActivity.searchResultsObservable.addObserver(mSearchResultsObserver);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class SearchVenuesMapActivity extends MapActivity {
         if (DEBUG) Log.d(TAG, "onPause()");
         mMyLocationOverlay.disableMyLocation();
         mMyLocationOverlay.disableCompass();
-        SearchVenuesActivity.searchResultsObservable.deleteObserver(mSearchResultsObserver);
+        NearbyVenuesActivity.searchResultsObservable.deleteObserver(mSearchResultsObserver);
     }
 
     @Override
@@ -184,7 +184,7 @@ public class SearchVenuesMapActivity extends MapActivity {
     private void recenterMap() {
         GeoPoint center = mMyLocationOverlay.getMyLocation();
         if (center != null
-                && SearchVenuesActivity.searchResultsObservable.getQuery() == SearchVenuesActivity.QUERY_NEARBY) {
+                && NearbyVenuesActivity.searchResultsObservable.getQuery() == NearbyVenuesActivity.QUERY_NEARBY) {
             if (DEBUG) Log.d(TAG, "recenterMap via MyLocation as we are doing a nearby search");
             mMapController.animateTo(center);
             mMapController.setZoom(16);
