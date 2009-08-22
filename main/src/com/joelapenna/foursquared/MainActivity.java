@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.Window;
 import android.widget.TabHost;
 import android.widget.Toast;
 
@@ -25,7 +26,6 @@ public class MainActivity extends TabActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (DEBUG) Log.d(TAG, "onCreate()");
 
         // Don't start the main activity if we don't have credentials
         if (!((Foursquared)getApplication()).getFoursquare().hasCredentials()) {
@@ -45,6 +45,7 @@ public class MainActivity extends TabActivity {
             return;
         }
 
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.main_activity);
         initTabHost();
     }
