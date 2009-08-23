@@ -14,6 +14,8 @@
 
     android:layout_alignParentTop="true"
     android:layout_alignParentBottom="true"
+    android:paddingLeft="7dip"
+    android:paddingTop="5dip"
 
     android:scaleType="matrix"
 
@@ -28,6 +30,7 @@
     android:layout_alignParentRight="true"
     android:layout_alignParentTop="true"
     android:layout_alignWithParentIfMissing="true"
+    android:paddingLeft="7dip"
 
     android:textAppearance="@android:style/TextAppearance.Medium" />
 
@@ -39,6 +42,7 @@
     android:layout_toRightOf="@id/icon"
     android:layout_alignParentRight="true"
     android:layout_below="@id/venueName"
+    android:paddingLeft="7dip"
 
     android:textAppearance="@android:style/TextAppearance.Small" />
 
@@ -50,6 +54,7 @@
     android:layout_toRightOf="@id/icon"
     android:layout_alignParentRight="true"
     android:layout_below="@id/venueLocationLine1"
+    android:paddingLeft="7dip"
 
     android:textAppearance="@android:style/TextAppearance.Small" />
 
