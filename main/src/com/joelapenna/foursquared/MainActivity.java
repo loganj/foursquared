@@ -7,9 +7,9 @@ package com.joelapenna.foursquared;
 import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.Window;
 import android.widget.TabHost;
 import android.widget.Toast;
@@ -62,19 +62,22 @@ public class MainActivity extends TabActivity {
         if (mTabHost != null) {
             throw new IllegalStateException("Trying to intialize already initializd TabHost");
         }
+
+        Resources resources = getResources();
+
         mTabHost = getTabHost();
 
         // Places tab
-        mTabHost.addTab(mTabHost.newTabSpec("places")
-        // Map Tab
-                .setIndicator("", getResources().getDrawable(R.drawable.places_tab)) // the tab icon
+        mTabHost.addTab(mTabHost.newTabSpec("places") //
+                .setIndicator(resources.getString(R.string.nearby_label),
+                        getResources().getDrawable(R.drawable.places_tab)) // the tab icon
                 .setContent(new Intent(this, NearbyVenuesActivity.class)) // The contained activity
                 );
 
         // Friends tab
-        mTabHost.addTab(mTabHost.newTabSpec("friends")
-        // Map Tab
-                .setIndicator("", getResources().getDrawable(R.drawable.friends_tab)) // the tab
+        mTabHost.addTab(mTabHost.newTabSpec("friends") //
+                .setIndicator(resources.getString(R.string.checkins_label),
+                        getResources().getDrawable(R.drawable.friends_tab)) // the tab
                 // icon
                 .setContent(new Intent(this, FriendsActivity.class)) // The contained activity
                 );
