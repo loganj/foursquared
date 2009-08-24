@@ -156,7 +156,7 @@ public class SearchVenuesActivity extends TabActivity {
 
         // Always show these.
         menu.add(MENU_GROUP_SEARCH, MENU_SEARCH, Menu.NONE, R.string.search_label) //
-                .setIcon(android.R.drawable.ic_menu_search) //
+                .setIcon(android.R.drawable.ic_search_category_default) //
                 .setAlphabeticShortcut(SearchManager.MENU_KEY);
         menu.add(MENU_GROUP_SEARCH, MENU_NEARBY, Menu.NONE, R.string.nearby_label) //
                 .setIcon(android.R.drawable.ic_menu_compass);

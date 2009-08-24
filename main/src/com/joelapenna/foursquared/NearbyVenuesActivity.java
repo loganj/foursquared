@@ -146,7 +146,7 @@ public class NearbyVenuesActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.search_label) //
-                .setIcon(android.R.drawable.ic_menu_search) //
+                .setIcon(android.R.drawable.ic_search_category_default) //
                 .setAlphabeticShortcut(SearchManager.MENU_KEY);
         menu.add(Menu.NONE, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
                 .setIcon(R.drawable.ic_menu_refresh);
