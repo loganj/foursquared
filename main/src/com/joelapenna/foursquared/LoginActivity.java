@@ -221,7 +221,7 @@ public class LoginActivity extends Activity {
                     return false;
                 }
 
-                City city = Preferences.switchCityIfChanged(((Foursquared)getApplication())
+                City city = Preferences.switchCity(((Foursquared)getApplication())
                         .getFoursquare(), user, mLocationListener.getLastKnownLocation());
                 Preferences.storeCity(editor, city);
 

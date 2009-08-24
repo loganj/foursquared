@@ -7,6 +7,7 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquared.maps.BestLocationListener;
+import com.joelapenna.foursquared.maps.CityLocationListener;
 import com.joelapenna.foursquared.util.DumpcatcherHelper;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 
@@ -39,8 +40,10 @@ public class Foursquared extends Application {
     private static final int MENU_GROUP_SYSTEM = 20;
 
     private SharedPreferences mPrefs;
+    private CityLocationListener mCityLocationListener;
+    private LocationManager mLocationManager;
 
-    final private BestLocationListener mLocationListener = new BestLocationListener();
+    final private BestLocationListener mBestLocationListener = new BestLocationListener();
 
     final private RemoteResourceManager sBadgeIconManager = new RemoteResourceManager("badges");
     final private RemoteResourceManager sUserPhotosManager = new RemoteResourceManager(
@@ -55,6 +58,8 @@ public class Foursquared extends Application {
         Log.i(TAG, "Using Debug Log:\t" + DEBUG);
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mCityLocationListener = new CityLocationListener(mFoursquare, mPrefs);
+        mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
         if (FoursquaredSettings.USE_DUMPCATCHER) {
             Resources resources = getResources();
@@ -87,12 +92,12 @@ public class Foursquared extends Application {
 
     public Location getLastKnownLocation() {
         primeLocationListener();
-        return mLocationListener.getLastKnownLocation();
+        return mBestLocationListener.getLastKnownLocation();
     }
 
     public BestLocationListener getLocationListener() {
         primeLocationListener();
-        return mLocationListener;
+        return mBestLocationListener;
     }
 
     private void loadCredentials() throws FoursquareCredentialsException {
@@ -120,7 +125,7 @@ public class Foursquared extends Application {
         int providersCount = providers.size();
         for (int i = 0; i < providersCount; i++) {
             location = manager.getLastKnownLocation(providers.get(i));
-            mLocationListener.getBetterLocation(location);
+            mBestLocationListener.getBetterLocation(location);
         }
     }
 

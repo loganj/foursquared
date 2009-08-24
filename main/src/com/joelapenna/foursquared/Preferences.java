@@ -58,7 +58,7 @@ public class Preferences {
     // Not-in-XML preferences for dumpcatcher
     public static final String PREFERENCE_DUMPCATCHER_CLIENT = "dumpcatcher_client";
 
-    static String createUniqueId(SharedPreferences preferences) {
+    public static String createUniqueId(SharedPreferences preferences) {
         String uniqueId = preferences.getString(PREFERENCE_DUMPCATCHER_CLIENT, null);
         if (uniqueId == null) {
             uniqueId = UUID.randomUUID().toString();
@@ -80,8 +80,8 @@ public class Preferences {
      * @throws FoursquareException
      * @throws IOException
      */
-    static User loginUser(Foursquare foursquare, String phoneNumber, String password, Editor editor)
-            throws FoursquareCredentialsException, FoursquareException, IOException {
+    public static User loginUser(Foursquare foursquare, String phoneNumber, String password,
+            Editor editor) throws FoursquareCredentialsException, FoursquareException, IOException {
         if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Trying to log in.");
 
         foursquare.setCredentials(phoneNumber, password);
@@ -100,9 +100,9 @@ public class Preferences {
         return user;
     }
 
-    static City switchCityIfChanged(Foursquare foursquare, User user, Location location)
+    public static City switchCity(Foursquare foursquare, User user, Location location)
             throws FoursquareException, FoursquareError, IOException {
-        City city = null;
+        City finalCity = null;
         City currentCity = user.getCity();
         if (location != null) {
             City newCity = foursquare.checkCity(//
@@ -112,25 +112,25 @@ public class Preferences {
             if (currentCity != null && newCity != null) {
                 if (!currentCity.getId().equals(newCity.getId())) {
                     foursquare.switchCity(newCity.getId());
-                    city = newCity;
+                    finalCity = newCity;
                 } else {
-                    city = currentCity;
+                    finalCity = currentCity;
                 }
             } else if (newCity != null) {
                 foursquare.switchCity(newCity.getId());
-                city = newCity;
+                finalCity = newCity;
 
             } else if (currentCity != null) {
-                city = currentCity;
+                finalCity = currentCity;
             }
 
         } else {
-            city = currentCity;
+            finalCity = currentCity;
         }
-        return city;
+        return finalCity;
     }
 
-    static User getUser(SharedPreferences prefs) {
+    public static User getUser(SharedPreferences prefs) {
         City city = new City();
         city.setId(prefs.getString(Preferences.PREFERENCE_CITY_ID, null));
         city.setName(prefs.getString(Preferences.PREFERENCE_CITY_NAME, null));
@@ -152,7 +152,7 @@ public class Preferences {
         return user;
     }
 
-    static void storeAuthExchangeCredentials(final Editor editor, Credentials credentials)
+    public static void storeAuthExchangeCredentials(final Editor editor, Credentials credentials)
             throws FoursquareCredentialsException {
         if (credentials != null && credentials.getOauthToken() != null
                 && credentials.getOauthTokenSecret() != null) {
@@ -166,12 +166,13 @@ public class Preferences {
         }
     }
 
-    static void storePhoneAndPassword(final Editor editor, String phoneNumber, String password) {
+    public static void storePhoneAndPassword(final Editor editor, String phoneNumber,
+            String password) {
         editor.putString(PREFERENCE_PHONE, phoneNumber);
         editor.putString(PREFERENCE_PASSWORD, password);
     }
 
-    static void storeUser(final Editor editor, User user) {
+    public static void storeUser(final Editor editor, User user) {
         if (user != null && user.getId() != null) {
             editor.putString(PREFERENCE_ID, user.getId());
             editor.putBoolean(PREFERENCE_TWITTER_CHECKIN, user.getSettings().sendtotwitter());
@@ -181,7 +182,7 @@ public class Preferences {
         }
     }
 
-    static void storeCity(final Editor editor, City city) {
+    public static void storeCity(final Editor editor, City city) {
         if (city != null) {
             editor.putString(PREFERENCE_CITY_ID, city.getId());
             editor.putString(PREFERENCE_CITY_GEOLAT, city.getGeolat());

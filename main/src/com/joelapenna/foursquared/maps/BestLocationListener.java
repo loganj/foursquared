@@ -16,7 +16,8 @@ public class BestLocationListener implements LocationListener {
 
     public static final long LOCATION_UPDATE_MIN_TIME = 1000;
     public static final long LOCATION_UPDATE_MIN_DISTANCE = 100;
-    static final long MAX_LOCATION_UPDATE_DELTA_THRESHOLD = 1000 * 60 * 5;
+
+    private static final long LOCATION_UPDATE_MAX_DELTA_THRESHOLD = 1000 * 60 * 5;
 
     private Location mLastLocation;
 
@@ -71,8 +72,8 @@ public class BestLocationListener implements LocationListener {
         boolean accuracyComparable = location.hasAccuracy() && mLastLocation.hasAccuracy();
         boolean locationIsMoreAccurate = location.getAccuracy() < mLastLocation.getAccuracy();
 
-        boolean locationIsInTimeThreshold = locationUpdateDelta <= MAX_LOCATION_UPDATE_DELTA_THRESHOLD;
-        boolean lastLocationIsInTimeThreshold = lastLocationUpdateDelta <= MAX_LOCATION_UPDATE_DELTA_THRESHOLD;
+        boolean locationIsInTimeThreshold = locationUpdateDelta <= LOCATION_UPDATE_MAX_DELTA_THRESHOLD;
+        boolean lastLocationIsInTimeThreshold = lastLocationUpdateDelta <= LOCATION_UPDATE_MAX_DELTA_THRESHOLD;
 
         if (DEBUG) {
             Log.d(TAG, "locationUpdateDelta:\t\t\t" + locationUpdateDelta);
