@@ -6,6 +6,7 @@ syntax: regexp
 ^tests/gen/
 
 ^main/\.settings
+^main/local\.properties
 ^tests/\.settings
 
 ^main/src/com/joelapenna/foursquared/FoursquaredSettings.java

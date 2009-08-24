@@ -8,6 +8,8 @@ Templates are available in examples/
   + Create: main/res/values/credentials.xml
   + Create: tests/src/com/joelapenna/foursquare/TestConstants.java
   + Create: main/src/com/joelapenna/foursquard/FoursquaredSettings.java
+Optional if using ant to build instead of Eclipse:
+  + Create: main/local.properties
 
 
 ==Setting up Eclipse==
