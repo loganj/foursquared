@@ -18,3 +18,4 @@ syntax: regexp
 \.*py[co]
 
 \.DS_Store
+~$
