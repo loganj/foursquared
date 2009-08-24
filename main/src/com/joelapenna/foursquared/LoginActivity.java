@@ -105,8 +105,8 @@ public class LoginActivity extends Activity {
     private ProgressDialog showProgressDialog() {
         if (mProgressDialog == null) {
             ProgressDialog dialog = new ProgressDialog(this);
-            dialog.setTitle("Logging in");
-            dialog.setMessage("Please wait while logging into Foursquare...");
+	    dialog.setTitle(R.string.login_dialog_title);
+            dialog.setMessage(getResources().getText(R.string.login_dialog_message));
             dialog.setIndeterminate(true);
             dialog.setCancelable(true);
             mProgressDialog = dialog;
@@ -241,12 +241,12 @@ public class LoginActivity extends Activity {
             if (loggedIn) {
                 String city = mPrefs.getString(Preferences.PREFERENCE_CITY_NAME, null);
                 Toast.makeText( //
-                        LoginActivity.this, "Welcome to " + city + "!", Toast.LENGTH_LONG).show();
+			       LoginActivity.this, getString(R.string.login_welcome_toast, city), Toast.LENGTH_LONG).show();
                 setResult(Activity.RESULT_OK);
                 finish();
             } else {
                 Toast.makeText(LoginActivity.this,
-                        "Unable to log in. Please check your phone number and password.",
+                        R.string.login_failed_login_toast,
                         Toast.LENGTH_LONG).show();
                 if (DEBUG) Log.d(TAG, "Reason for login failure: ", mReason);
 

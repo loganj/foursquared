@@ -65,5 +65,14 @@
   <string
      name="friendsactivity_title_searching">Foursquare - Searching for Friends</string>
 
+  <string
+     name="login_dialog_title">Logging in</string>
+  <string
+     name="login_dialog_message">Please wait while logging into Foursquare...</string>
 
+  <string 
+     name="login_welcome_toast">Welcome to %s!</string>
+  <string 
+     name="login_failed_login_toast">Unable to log in. Please check your phone number and password.</string>
+  
 </resources>
