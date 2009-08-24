@@ -6,7 +6,7 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.User;
-import com.joelapenna.foursquared.Foursquared.LocationListener;
+import com.joelapenna.foursquared.maps.BestLocationListener;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -50,7 +50,7 @@ public class LoginActivity extends Activity {
     private EditText mPasswordEditText;
 
     private ProgressDialog mProgressDialog;
-    private LocationListener mLocationListener;
+    private BestLocationListener mLocationListener;
     private LocationManager mLocationManager;
 
     @Override
@@ -80,11 +80,11 @@ public class LoginActivity extends Activity {
     public void onResume() {
         super.onResume();
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                LocationListener.LOCATION_UPDATE_MIN_TIME,
-                LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
+                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
         mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                LocationListener.LOCATION_UPDATE_MIN_TIME,
-                LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
+                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
     }
 
     @Override

@@ -10,7 +10,7 @@ import android.util.Log;
 
 import java.util.Date;
 
-public abstract class BestLocationListener implements LocationListener {
+public class BestLocationListener implements LocationListener {
     public static final String TAG = "BestLocationListener";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
@@ -37,6 +37,12 @@ public abstract class BestLocationListener implements LocationListener {
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         // do nothing.
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if (DEBUG) Log.d(TAG, "onLocationChanged: " + location);
+        getBetterLocation(location);
     }
 
     public Location getLastKnownLocation() {

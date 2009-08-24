@@ -38,13 +38,15 @@ public class Foursquared extends Application {
     private static final int MENU_PREFERENCES = -1;
     private static final int MENU_GROUP_SYSTEM = 20;
 
-    private LocationListener mLocationListener = new LocationListener();
-
     private SharedPreferences mPrefs;
 
-    private Foursquare mFoursquare;
-    private RemoteResourceManager sUserPhotosManager = new RemoteResourceManager("user_photos");
-    private RemoteResourceManager sBadgeIconManager = new RemoteResourceManager("badges");
+    final private BestLocationListener mLocationListener = new BestLocationListener();
+
+    final private RemoteResourceManager sBadgeIconManager = new RemoteResourceManager("badges");
+    final private RemoteResourceManager sUserPhotosManager = new RemoteResourceManager(
+            "user_photos");
+
+    final private Foursquare mFoursquare = new Foursquare(FoursquaredSettings.USE_DEBUG_SERVER);
 
     @Override
     public void onCreate() {
@@ -59,8 +61,6 @@ public class Foursquared extends Application {
             new DumpcatcherHelper(Preferences.createUniqueId(mPrefs), resources);
             DumpcatcherHelper.sendUsage("Started");
         }
-
-        mFoursquare = new Foursquare(FoursquaredSettings.USE_DEBUG_SERVER);
 
         // Set the oauth credentials.
         mFoursquare.setOAuthConsumerCredentials( //
@@ -77,13 +77,8 @@ public class Foursquared extends Application {
 
     @Override
     public void onTerminate() {
-        mFoursquare = null;
-
         sUserPhotosManager.shutdown();
-        sUserPhotosManager = null;
-
         sBadgeIconManager.shutdown();
-        sBadgeIconManager = null;
     }
 
     public Foursquare getFoursquare() {
@@ -95,7 +90,7 @@ public class Foursquared extends Application {
         return mLocationListener.getLastKnownLocation();
     }
 
-    public LocationListener getLocationListener() {
+    public BestLocationListener getLocationListener() {
         primeLocationListener();
         return mLocationListener;
     }
@@ -142,16 +137,5 @@ public class Foursquared extends Application {
 
     public RemoteResourceManager getBadgeIconManager() {
         return sBadgeIconManager;
-    }
-
-    /**
-     * Used for the accuracy algorithm getBetterLocation.
-     */
-    public static class LocationListener extends BestLocationListener {
-        @Override
-        public void onLocationChanged(Location location) {
-            if (DEBUG) Log.d(TAG, "onLocationChanged: " + location);
-            getBetterLocation(location);
-        }
     }
 }

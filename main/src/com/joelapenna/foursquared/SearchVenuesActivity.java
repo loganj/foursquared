@@ -9,7 +9,7 @@ import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.Foursquared.LocationListener;
+import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
@@ -65,7 +65,7 @@ public class SearchVenuesActivity extends TabActivity {
     private static final int MENU_GROUP_ACTIVITIES = 1;
 
     private LocationManager mLocationManager;
-    private LocationListener mLocationListener;
+    private BestLocationListener mLocationListener;
 
     private SearchTask mSearchTask;
     private SearchHolder mSearchHolder = new SearchHolder();
@@ -129,11 +129,11 @@ public class SearchVenuesActivity extends TabActivity {
     public void onResume() {
         super.onResume();
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                LocationListener.LOCATION_UPDATE_MIN_TIME,
-                LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
+                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
         mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                LocationListener.LOCATION_UPDATE_MIN_TIME,
-                LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
+                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
     }
 
     @Override

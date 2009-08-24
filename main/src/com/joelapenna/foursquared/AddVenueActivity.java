@@ -6,7 +6,7 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.Foursquared.LocationListener;
+import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
 import android.app.Activity;
@@ -39,7 +39,7 @@ public class AddVenueActivity extends Activity {
 
     private static final int MENU_SUBMIT = 1;
 
-    private LocationListener mLocationListener;
+    private BestLocationListener mLocationListener;
     private LocationManager mLocationManager;
 
     final private StateHolder mFieldsHolder = new StateHolder();
@@ -95,11 +95,11 @@ public class AddVenueActivity extends Activity {
         // We should probably dynamically connect to any location provider we can find and not just
         // the gps/network providers.
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                LocationListener.LOCATION_UPDATE_MIN_TIME,
-                LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
+                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
         mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                LocationListener.LOCATION_UPDATE_MIN_TIME,
-                LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
+                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
     }
 
     @Override
@@ -247,9 +247,9 @@ public class AddVenueActivity extends Activity {
             try {
                 if (DEBUG) Log.d(TAG, stateHolder.location.toString());
 
-                stateHolder.foursquareCity = ((Foursquared)getApplication()).getFoursquare().checkCity(
-                        String.valueOf(stateHolder.location.getLatitude()),
-                        String.valueOf(stateHolder.location.getLongitude()));
+                stateHolder.foursquareCity = ((Foursquared)getApplication()).getFoursquare()
+                        .checkCity(String.valueOf(stateHolder.location.getLatitude()),
+                                String.valueOf(stateHolder.location.getLongitude()));
 
                 Geocoder geocoder = new Geocoder(AddVenueActivity.this);
                 stateHolder.geocodedAddress = geocoder.getFromLocation(

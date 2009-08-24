@@ -8,8 +8,8 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquared.Foursquared.LocationListener;
 import com.joelapenna.foursquared.R.drawable;
+import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
@@ -60,7 +60,7 @@ public class FriendsActivity extends ListActivity {
     private SearchTask mSearchTask;
 
     private LocationManager mLocationManager;
-    private LocationListener mLocationListener;
+    private BestLocationListener mLocationListener;
 
     private SearchHolder mSearchHolder = new SearchHolder();
 
@@ -117,11 +117,11 @@ public class FriendsActivity extends ListActivity {
     public void onResume() {
         super.onResume();
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                LocationListener.LOCATION_UPDATE_MIN_TIME,
-                LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
+                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
         mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                LocationListener.LOCATION_UPDATE_MIN_TIME,
-                LocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
+                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
     }
 
     @Override
