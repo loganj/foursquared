@@ -4,6 +4,7 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Badge;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.User;
@@ -162,8 +163,7 @@ public class UserActivity extends Activity {
             Uri icon = Uri.parse(badge.getIcon());
             if (DEBUG) Log.d(TAG, icon.toString());
             mBadgeDialog.setIcon(new BitmapDrawable(((Foursquared)getApplication())
-                    .getBadgeIconManager()
-                    .getInputStream(icon)));
+                    .getBadgeIconManager().getInputStream(icon)));
         } catch (IOException e) {
             if (DEBUG) Log.d(TAG, "IOException", e);
             mBadgeDialog.setIcon(R.drawable.default_on);
@@ -185,7 +185,7 @@ public class UserActivity extends Activity {
         mUserObservable.notifyObservers(user);
     }
 
-    private void ensureUserPhoto(User user) {
+    private void ensureUserPhoto(final User user) {
         final ImageView photo = (ImageView)findViewById(R.id.photo);
         if (user.getPhoto() == null) {
             photo.setImageResource(R.drawable.blank_boy);
@@ -193,30 +193,51 @@ public class UserActivity extends Activity {
         }
         final Uri photoUri = Uri.parse(user.getPhoto());
         if (photoUri != null) {
-            final RemoteResourceManager userPhotosManager = ((Foursquared)getApplication())
+            RemoteResourceManager userPhotosManager = ((Foursquared)getApplication())
                     .getUserPhotosManager();
             try {
                 Bitmap bitmap = BitmapFactory.decodeStream(userPhotosManager
                         .getInputStream(photoUri));
                 photo.setImageBitmap(bitmap);
             } catch (IOException e) {
+                if (DEBUG) Log.d(TAG, "photo not already retrieved, requesting: " + photoUri);
                 userPhotosManager.addObserver(new RemoteResourceManager.ResourceRequestObserver(
                         photoUri) {
                     @Override
                     public void requestReceived(Observable observable, Uri uri) {
                         observable.deleteObserver(this);
-                        try {
-                            Bitmap bitmap = BitmapFactory.decodeStream(userPhotosManager
-                                    .getInputStream(uri));
-                            photo.setImageBitmap(bitmap);
-                        } catch (IOException e) {
-                            // its okay to do nothing if we can't handle loading the image.
-                        }
+                        updateUserPhoto(photo, uri, user);
                     }
                 });
                 userPhotosManager.request(photoUri);
             }
         }
+    }
+
+    private void updateUserPhoto(final ImageView photo, final Uri uri, final User user) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (DEBUG) Log.d(TAG, "Loading mayor photo: " + uri);
+                    RemoteResourceManager userPhotosManager = ((Foursquared)getApplication())
+                            .getUserPhotosManager();
+                    Bitmap bitmap = BitmapFactory.decodeStream(userPhotosManager
+                            .getInputStream(uri));
+                    photo.setImageBitmap(bitmap);
+                    if (DEBUG) Log.d(TAG, "Loaded mayor photo: " + uri);
+                } catch (IOException e) {
+                    if (DEBUG) Log.d(TAG, "Unable to load mayor photo: " + uri);
+                    if (Foursquare.MALE.equals(user.getGender())) {
+                        photo.setImageResource(R.drawable.blank_boy);
+                    } else {
+                        photo.setImageResource(R.drawable.blank_girl);
+                    }
+                } catch (Exception e) {
+                    Log.d(TAG, "Ummm............", e);
+                }
+            }
+        });
     }
 
     private class UserTask extends AsyncTask<Void, Void, User> {
