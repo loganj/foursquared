@@ -30,7 +30,6 @@ import java.io.InputStream;
 import java.util.Observable;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -64,18 +63,16 @@ class RemoteResourceFetcher extends Observable {
 
     public Future<Request> fetch(Uri uri, String hash) {
         Request request = new Request(uri, hash);
-        Callable<Request> fetcher = newRequestCall(request);
-        if (mActiveRequestsMap.putIfAbsent(request, fetcher) == null) {
-            return mExecutor.submit(fetcher);
+        synchronized (mActiveRequestsMap) {
+            Callable<Request> fetcher = newRequestCall(request);
+            if (mActiveRequestsMap.putIfAbsent(request, fetcher) == null) {
+                if (DEBUG) Log.d(TAG, "issuing new request for: " + uri);
+                return mExecutor.submit(fetcher);
+            } else {
+                if (DEBUG) Log.d(TAG, "Already have a pending request for: " + uri);
+            }
         }
         return null;
-    }
-
-    public void fetchBlocking(Uri uri, String hash) throws InterruptedException, ExecutionException {
-        Future<Request> fetcherFuture = fetch(uri, hash);
-        if (fetcherFuture != null) {
-            fetcherFuture.get();
-        }
     }
 
     public void shutdown() {
@@ -93,9 +90,11 @@ class RemoteResourceFetcher extends Observable {
                     HttpEntity entity = response.getEntity();
                     InputStream is = getUngzippedContent(entity);
                     mResourceCache.store(request.hash, is);
+                    if (DEBUG) Log.d(TAG, "Request successful: " + request.uri);
                 } catch (IOException e) {
                     if (DEBUG) Log.d(TAG, "IOException", e);
                 } finally {
+                    if (DEBUG) Log.d(TAG, "Request finished: " + request.uri);
                     mActiveRequestsMap.remove(request);
                     notifyObservers(request.uri);
                 }
@@ -107,7 +106,7 @@ class RemoteResourceFetcher extends Observable {
     /**
      * Gets the input stream from a response entity. If the entity is gzipped then this will get a
      * stream over the uncompressed data.
-     * 
+     *
      * @param entity the entity whose content should be read
      * @return the input stream to read from
      * @throws IOException
@@ -134,7 +133,7 @@ class RemoteResourceFetcher extends Observable {
     /**
      * Create a thread-safe client. This client does not do redirecting, to allow us to capture
      * correct "error" codes.
-     * 
+     *
      * @return HttpClient
      */
     public static final DefaultHttpClient createHttpClient() {

@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.concurrent.ExecutionException;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -34,26 +33,6 @@ public class RemoteResourceManager extends Observable {
         mRemoteResourceFetcher.addObserver(mFetcherObserver);
     }
 
-    public void shutdown() {
-        mRemoteResourceFetcher.shutdown();
-    }
-
-    /**
-     * Request a resource be downloaded. Useful to call after a IOException from getInputStream.
-     */
-    public void request(Uri uri) {
-        if (DEBUG) Log.d(TAG, "request(): " + uri);
-        mRemoteResourceFetcher.fetch(uri, Uri.encode(uri.toString()));
-    }
-
-    /**
-     * Request a resource be downloaded. Useful to call after a IOException from getInputStream.
-     */
-    public void requestBlocking(Uri uri) throws InterruptedException, ExecutionException {
-        if (DEBUG) Log.d(TAG, "request(): " + uri);
-        mRemoteResourceFetcher.fetchBlocking(uri, Uri.encode(uri.toString()));
-    }
-
     /**
      * If IOException is thrown, we don't have the resource available.
      */
@@ -70,6 +49,18 @@ public class RemoteResourceManager extends Observable {
         return mDiskCache.getInputStream(Uri.encode(uri.toString()));
     }
 
+    /**
+     * Request a resource be downloaded. Useful to call after a IOException from getInputStream.
+     */
+    public void request(Uri uri) {
+        if (DEBUG) Log.d(TAG, "request(): " + uri);
+        mRemoteResourceFetcher.fetch(uri, Uri.encode(uri.toString()));
+    }
+
+    public void shutdown() {
+        mRemoteResourceFetcher.shutdown();
+    }
+
     public static abstract class ResourceRequestObserver implements Observer {
 
         private Uri mRequestUri;
@@ -82,15 +73,17 @@ public class RemoteResourceManager extends Observable {
 
         @Override
         public void update(Observable observable, Object data) {
+            if (DEBUG) Log.d(TAG, "Recieved update: " + data);
             Uri dataUri = (Uri)data;
             if (dataUri == mRequestUri) {
+                if (DEBUG) Log.d(TAG, "requestReceived: " + dataUri);
                 requestReceived(observable, dataUri);
             }
         }
     }
 
     /**
-     * Relay the observed download to the controlling class.
+     * Relay the observed download to this controlling class.
      */
     private class FetcherObserver implements Observer {
 

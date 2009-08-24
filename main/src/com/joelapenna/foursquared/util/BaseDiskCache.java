@@ -56,7 +56,7 @@ public class BaseDiskCache implements DiskCache {
      * .evernote.edam.type.Resource)
      */
     public void store(String key, InputStream is) {
-        if (DEBUG) Log.d(TAG, "storethumb: " + key);
+        if (DEBUG) Log.d(TAG, "store: " + key);
         is = new BufferedInputStream(is);
         try {
             OutputStream os = new BufferedOutputStream(new FileOutputStream(getFile(key)));
@@ -70,9 +70,9 @@ public class BaseDiskCache implements DiskCache {
                 total += count;
             }
             os.close();
-            if (DEBUG) Log.d(TAG, "storeThumb complete: " + key);
+            if (DEBUG) Log.d(TAG, "store complete: " + key);
         } catch (IOException e) {
-            if (DEBUG) Log.d(TAG, "storeThumb failed to store the thumb", e);
+            if (DEBUG) Log.d(TAG, "store failed to store: " + key, e);
             return;
         }
     }
