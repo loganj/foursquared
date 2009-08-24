@@ -29,6 +29,9 @@ public class Foursquare {
     public static final boolean DEBUG = FoursquaredSettings.API_DEBUG;
     public static final boolean PARSER_DEBUG = FoursquaredSettings.PARSER_DEBUG;
 
+    public static final String MALE = "male";
+    public static final String FEMALE = "female";
+
     private String mPhone;
     private String mPassword;
     private FoursquareHttpApiV1 mFoursquareV1;
