@@ -17,7 +17,7 @@ abstract class BaseGroupAdapter<T> extends BaseAdapter {
     Group group;
 
     public BaseGroupAdapter(Context context, Group g) {
-        group = g;
+        setGroup(g);
     }
 
     @Override
@@ -43,5 +43,15 @@ abstract class BaseGroupAdapter<T> extends BaseAdapter {
     @Override
     public boolean isEmpty() {
         return group.isEmpty();
+    }
+
+    public void clear() {
+        group.clear();
+        notifyDataSetInvalidated();
+    }
+
+    public void setGroup(Group g) {
+        group = g;
+        notifyDataSetInvalidated();
     }
 }

@@ -12,7 +12,6 @@ import com.joelapenna.foursquared.R.drawable;
 import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
-import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 
 import android.app.ListActivity;
 import android.app.SearchManager;
@@ -68,7 +67,7 @@ public class FriendsActivity extends ListActivity {
     private LinearLayout mEmpty;
     private TextView mEmptyText;
     private ProgressBar mEmptyProgress;
-    private SeparatedListAdapter mListAdapter;
+    private CheckinListAdapter mListAdapter;
 
     private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
         @Override
@@ -192,11 +191,7 @@ public class FriendsActivity extends ListActivity {
 
     public void putSearchResultsInAdapter(Group searchResults) {
         mListAdapter.clear();
-
-        CheckinListAdapter groupAdapter = new CheckinListAdapter(this, searchResults,
-                ((Foursquared)getApplication()).getUserPhotosManager(), true);
-        mListAdapter.addSection("Checkins", groupAdapter);
-        mListAdapter.notifyDataSetInvalidated();
+        mListAdapter.setGroup(searchResults);
     }
 
     public void setSearchResults(Group searchResults) {
@@ -243,7 +238,11 @@ public class FriendsActivity extends ListActivity {
         mEmptyProgress = (ProgressBar)findViewById(R.id.emptyProgress);
 
         mListView = getListView();
-        mListAdapter = new SeparatedListAdapter(this);
+
+        Group emptyGroup = new Group();
+        emptyGroup.setType("Checkins");
+        mListAdapter = new CheckinListAdapter(this, emptyGroup, //
+                ((Foursquared)getApplication()).getUserPhotosManager(), true);
 
         mListView.setAdapter(mListAdapter);
         mListView.setOnItemClickListener(new OnItemClickListener() {

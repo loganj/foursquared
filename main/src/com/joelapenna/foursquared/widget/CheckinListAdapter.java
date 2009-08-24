@@ -52,14 +52,6 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
         mDisplayAtVenue = displayAtVenue;
 
         mRrm.addObserver(new RemoteResourceManagerObserver());
-
-        // Immediately start trying to grab the user photos. All of them!
-        for (int i = 0; i < checkins.size(); i++) {
-            Uri photoUri = Uri.parse(((Checkin)checkins.get(i)).getUser().getPhoto());
-            if (!mRrm.getFile(photoUri).exists()) {
-                mRrm.request(photoUri);
-            }
-        }
     }
 
     @Override
@@ -116,6 +108,18 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
         }
 
         return convertView;
+    }
+
+    @Override
+    public void setGroup(Group g) {
+        super.setGroup(g);
+        // Immediately start trying to grab the user photos. All of them!
+        for (int i = 0; i < g.size(); i++) {
+            Uri photoUri = Uri.parse(((Checkin)g.get(i)).getUser().getPhoto());
+            if (!mRrm.getFile(photoUri).exists()) {
+                mRrm.request(photoUri);
+            }
+        }
     }
 
     public static Venue venueFromCheckin(Checkin checkin) {
