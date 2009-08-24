@@ -25,7 +25,7 @@
       <id>9711</id>
       <firstname>testuser</firstname>
       <lastname>lapenna</lastname>
-      <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/blank_boy.png</photo>
+      <photo>http://playfoursquare.s3.amazonaws.com/userpix/9711_1245032443.jpg</photo>
     </user>
     <venue>
       <id>44794</id>
@@ -36,6 +36,24 @@
       <geolong>0</geolong>
     </venue>
     <created>Mon, 07 Aug 09 01:34:54 +0000</created>
+ </checkin>
+  <checkin>
+    <id>337846</id>
+    <user>
+      <id>1818</id>
+      <firstname>Joe</firstname>
+      <lastname>LaPenna</lastname>
+      <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/4a76cfe720e34.jpg</photo>
+    </user>
+    <venue>
+      <id>44795</id>
+      <name>Bobby's Other Place</name>
+      <address>123 Fake St</address>
+      <crossstreet>Imaginary</crossstreet>
+      <geolat>0</geolat>
+      <geolong>0</geolong>
+    </venue>
+    <created>Mon, 17 Aug 09 01:34:54 +0000</created>
  </checkin>
 </checkins>
 

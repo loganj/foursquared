@@ -3,6 +3,7 @@
   <id>9711</id>
   <firstname>Testuser</firstname>
   <lastname>So and so</lastname>
+  <photo>http://playfoursquare.s3.amazonaws.com/userpix/9711_1245032443.jpg</photo>
   <city>
     <id>23</id>
     <shortname>SF</shortname>
@@ -25,22 +26,22 @@
   <badges>
     <badge>
       <name>Newbie</name>
-      <icon>http://playfoursquare.com/images/badges/newbie_on.png</icon>
+      <icon>http://playfoursquare.com/images/badges/crunked_on.png</icon>
       <description>Congrats on your first check-in! </description>
     </badge>
     <badge>
       <name>Newbie</name>
-      <icon>http://playfoursquare.com/images/badges/newbie_on.png</icon>
+      <icon>http://playfoursquare.com/images/badges/bender_on.png</icon>
       <description>Congrats on your first check-in! </description>
     </badge>
     <badge>
       <name>Newbie</name>
-      <icon>http://playfoursquare.com/images/badges/newbie_on.png</icon>
+      <icon>http://playfoursquare.com/images/badges/local_on.png</icon>
       <description>Congrats on your first check-in! </description>
     </badge>
     <badge>
       <name>Newbie</name>
-      <icon>http://playfoursquare.com/images/badges/newbie_on.png</icon>
+      <icon>http://playfoursquare.com/images/badges/superuser_on.png</icon>
       <description>Congrats on your first check-in! </description>
     </badge>
   </badges>
