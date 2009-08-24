@@ -219,15 +219,15 @@ public class UserActivity extends Activity {
             @Override
             public void run() {
                 try {
-                    if (DEBUG) Log.d(TAG, "Loading mayor photo: " + uri);
+                    if (DEBUG) Log.d(TAG, "Loading user photo: " + uri);
                     RemoteResourceManager userPhotosManager = ((Foursquared)getApplication())
                             .getUserPhotosManager();
                     Bitmap bitmap = BitmapFactory.decodeStream(userPhotosManager
                             .getInputStream(uri));
                     photo.setImageBitmap(bitmap);
-                    if (DEBUG) Log.d(TAG, "Loaded mayor photo: " + uri);
+                    if (DEBUG) Log.d(TAG, "Loaded user photo: " + uri);
                 } catch (IOException e) {
-                    if (DEBUG) Log.d(TAG, "Unable to load mayor photo: " + uri);
+                    if (DEBUG) Log.d(TAG, "Unable to load user photo: " + uri);
                     if (Foursquare.MALE.equals(user.getGender())) {
                         photo.setImageResource(R.drawable.blank_boy);
                     } else {

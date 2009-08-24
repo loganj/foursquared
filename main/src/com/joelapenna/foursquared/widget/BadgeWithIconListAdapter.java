@@ -43,11 +43,11 @@ public class BadgeWithIconListAdapter extends BadgeListAdapter {
         mRrm = rrm;
         mRrm.addObserver(new RemoteResourceManagerObserver());
 
+        // Immediately start trying to grab the user photos. All of them!
         for (int i = 0; i < badges.size(); i++) {
-            Uri uri = Uri.parse(((Badge)badges.get(i)).getIcon());
-            if (!rrm.getFile(uri).exists()) {
-                if (DEBUG) Log.d(TAG, "Requesting: " + uri);
-                rrm.request(uri);
+            Uri photoUri = Uri.parse(((Badge)badges.get(i)).getIcon());
+            if (!rrm.getFile(photoUri).exists()) {
+                rrm.request(photoUri);
             }
         }
     }

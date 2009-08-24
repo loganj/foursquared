@@ -4,6 +4,7 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Mayor;
@@ -87,7 +88,7 @@ public class VenueCheckinsActivity extends ListActivity {
         mainAdapter.notifyDataSetInvalidated();
     }
 
-    private void setMayor(final Mayor mayor) {
+    private void ensureMayor(final Mayor mayor) {
         if (DEBUG) Log.d(TAG, "Setting mayor.");
         if (mayor == null) {
             return;
@@ -117,16 +118,13 @@ public class VenueCheckinsActivity extends ListActivity {
             Bitmap bitmap = BitmapFactory.decodeStream(rrm.getInputStream(photoUri));
             photo.setImageBitmap(bitmap);
         } catch (IOException e) {
+            if (DEBUG) Log.d(TAG, "photo not already retrieved, requesting: " + photoUri);
             rrm.addObserver(new RemoteResourceManager.ResourceRequestObserver(photoUri) {
                 @Override
                 public void requestReceived(Observable observable, Uri uri) {
+                    if (DEBUG) Log.d(TAG, "Received mayor photo: " + uri);
                     observable.deleteObserver(this);
-                    try {
-                        Bitmap bitmap = BitmapFactory.decodeStream(rrm.getInputStream(uri));
-                        photo.setImageBitmap(bitmap);
-                    } catch (IOException e) {
-                        // its okay to do nothing if we can't handle loading the image.
-                    }
+                    updateMayorPhoto(photo, uri, mayor);
                 }
             });
             rrm.request(photoUri);
@@ -139,6 +137,31 @@ public class VenueCheckinsActivity extends ListActivity {
         Intent intent = new Intent(VenueCheckinsActivity.this, UserActivity.class);
         intent.putExtra(UserActivity.EXTRA_USER, user.getId());
         startActivity(intent);
+    }
+
+    private void updateMayorPhoto(final ImageView photo, final Uri uri, final Mayor mayor) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (DEBUG) Log.d(TAG, "Loading mayor photo: " + uri);
+                    RemoteResourceManager rrm = ((Foursquared)getApplication())
+                            .getUserPhotosManager();
+                    Bitmap bitmap = BitmapFactory.decodeStream(rrm.getInputStream(uri));
+                    photo.setImageBitmap(bitmap);
+                    if (DEBUG) Log.d(TAG, "Loaded mayor photo: " + uri);
+                } catch (IOException e) {
+                    if (DEBUG) Log.d(TAG, "Unable to load mayor photo: " + uri);
+                    if (Foursquare.MALE.equals(mayor.getUser().getGender())) {
+                        photo.setImageResource(R.drawable.blank_boy);
+                    } else {
+                        photo.setImageResource(R.drawable.blank_girl);
+                    }
+                } catch (Exception e) {
+                    Log.d(TAG, "Ummm............", e);
+                }
+            }
+        });
     }
 
     private final class ParentDataObserver implements Observer {
@@ -155,7 +178,7 @@ public class VenueCheckinsActivity extends ListActivity {
                 observed = true;
 
                 if (venue.getStats() != null) {
-                    setMayor(venue.getStats().getMayor());
+                    ensureMayor(venue.getStats().getMayor());
                 }
 
                 setCheckins(checkins);

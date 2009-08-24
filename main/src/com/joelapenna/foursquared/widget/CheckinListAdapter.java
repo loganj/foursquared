@@ -4,6 +4,7 @@
 
 package com.joelapenna.foursquared.widget;
 
+import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
@@ -17,6 +18,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +28,7 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.Observable;
+import java.util.Observer;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -37,6 +40,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
     private LayoutInflater mInflater;
 
     private RemoteResourceManager mRrm;
+    private Handler mHandler = new Handler();
 
     private boolean mDisplayAtVenue;
 
@@ -46,6 +50,8 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
         mDisplayAtVenue = displayAtVenue;
+
+        mRrm.addObserver(new RemoteResourceManagerObserver());
 
         // Immediately start trying to grab the user photos. All of them!
         for (int i = 0; i < checkins.size(); i++) {
@@ -85,28 +91,18 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
         }
 
         Checkin checkin = (Checkin)getItem(position);
-        User user = checkin.getUser();
+        final User user = checkin.getUser();
         final Uri photoUri = Uri.parse(user.getPhoto());
 
         try {
             Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photoUri));
             holder.photo.setImageBitmap(bitmap);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            if (DEBUG) Log.d(TAG, "IOException", e);
-            mRrm.addObserver(new RemoteResourceManager.ResourceRequestObserver(photoUri) {
-                @Override
-                public void requestReceived(Observable observable, Uri uri) {
-                    observable.deleteObserver(this);
-                    try {
-                        Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(uri));
-                        holder.photo.setImageBitmap(bitmap);
-                    } catch (IOException e) {
-                        // its okay to do nothing if we can't handle loading the image.
-                    }
-                }
-            });
-            mRrm.request(photoUri);
+            if (Foursquare.MALE.equals(user.getGender())) {
+                holder.photo.setImageResource(R.drawable.blank_boy);
+            } else {
+                holder.photo.setImageResource(R.drawable.blank_girl);
+            }
         }
 
         holder.firstLine.setText(StringFormatters.getCheckinMessage(checkin, mDisplayAtVenue));
@@ -132,6 +128,19 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
         venue.setId(checkin.getVenue().getId());
         venue.setName(checkin.getVenue().getName());
         return venue;
+    }
+
+    private class RemoteResourceManagerObserver implements Observer {
+        @Override
+        public void update(Observable observable, Object data) {
+            if (DEBUG) Log.d(TAG, "Fetcher got: " + data);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    notifyDataSetChanged();
+                }
+            });
+        }
     }
 
     private static class ViewHolder {
