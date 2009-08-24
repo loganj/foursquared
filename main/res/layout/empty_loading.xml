@@ -5,17 +5,17 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
-  android:gravity="center_horizontal">
+  android:gravity="center">
   <ProgressBar
     android:id="@+id/emptyProgress"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginRight="3dip"
+    android:layout_marginRight="6dip"
     style="?android:attr/progressBarStyleSmall" />
   <TextView
     android:id="@+id/emptyText"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     android:text="Loading..." />
 </LinearLayout>

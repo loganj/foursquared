@@ -14,7 +14,7 @@ import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 
-import android.app.Activity;
+import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -43,7 +43,7 @@ import java.util.Observable;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class FriendsActivity extends Activity {
+public class FriendsActivity extends ListActivity {
     static final String TAG = "FriendsActivity";
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
@@ -238,11 +238,11 @@ public class FriendsActivity extends Activity {
         if (mListView != null) {
             throw new IllegalStateException("Trying to initialize already initialized ListView");
         }
-        mEmpty = (LinearLayout)findViewById(R.id.empty);
+        mEmpty = (LinearLayout)findViewById(android.R.id.empty);
         mEmptyText = (TextView)findViewById(R.id.emptyText);
         mEmptyProgress = (ProgressBar)findViewById(R.id.emptyProgress);
 
-        mListView = (ListView)findViewById(R.id.list);
+        mListView = getListView();
         mListAdapter = new SeparatedListAdapter(this);
 
         mListView.setAdapter(mListAdapter);

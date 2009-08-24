@@ -21,21 +21,6 @@
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
       android:paddingTop="65px">
-      <LinearLayout
-        android:id="@+id/listviewLayout"
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent">
-        <ListView
-          android:id="@+id/list"
-          android:layout_width="fill_parent"
-          android:layout_height="fill_parent" />
-        <include
-          android:id="@+id/empty"
-          layout="@layout/empty_loading"
-          android:layout_width="fill_parent"
-          android:layout_height="fill_parent" />
-      </LinearLayout>
     </FrameLayout>
   </TabHost>
 </LinearLayout>
