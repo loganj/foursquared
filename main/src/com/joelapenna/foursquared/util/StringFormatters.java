@@ -22,11 +22,7 @@ public class StringFormatters {
 
     public static String getVenueLocationCrossStreetOrCity(Venue venue) {
         if (!TextUtils.isEmpty(venue.getCrossstreet())) {
-            if (venue.getCrossstreet().startsWith("at")) {
-                return "(" + venue.getCrossstreet() + ")";
-            } else {
-                return "(at " + venue.getCrossstreet() + ")";
-            }
+            return "(" + venue.getCrossstreet() + ")";
         } else if (!TextUtils.isEmpty(venue.getCity()) && !TextUtils.isEmpty(venue.getState())
                 && !TextUtils.isEmpty(venue.getZip())) {
             return venue.getCity() + ", " + venue.getState() + " " + venue.getZip();
