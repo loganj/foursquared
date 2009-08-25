@@ -16,7 +16,8 @@
 
     android:maxLines="3"
     android:ellipsize="end"
-    android:gravity="center_vertical" />
+    android:gravity="center_vertical"
+    android:paddingLeft="7dip" />
 
   <TextView
     android:id="@+id/userTextView"
@@ -30,6 +31,7 @@
 
     android:maxLines="1"
     android:scrollHorizontally="true"
-    android:ellipsize="end" />
+    android:ellipsize="end"
+    android:paddingLeft="7dip" />
 
 </LinearLayout>
