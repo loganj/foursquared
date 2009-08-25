@@ -3,10 +3,8 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
   <item
     android:state_selected="true"
-    android:drawable="@drawable/friends_tab_selected" />
+    android:drawable="@drawable/venue_info_tab_selected" />
   <item
     android:state_selected="false"
-    android:drawable="@drawable/friends_tab_unselected" />
-
-
+    android:drawable="@drawable/venue_info_tab_unselected" />
 </selector>
