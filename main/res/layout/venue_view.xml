@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!-- android:layout_height="?android:attr/listPreferredItemHeight" -->
+
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
-  android:layout_height="?android:attr/listPreferredItemHeight"
+  android:layout_height="wrap_content"
+  android:padding="10dip"
   style="@style/venueActivityHeaderStyle">
 
   <TextView
@@ -37,7 +40,7 @@
     style="@style/venueQuickCheckinStyle"
 
     android:layout_alignParentRight="true"
-    android:layout_below="@id/internal_venueName"
+    android:layout_below="@id/internal_venueLocationLine1"
     android:layout_centerVertical="true"
     android:gravity="center_vertical"
 
