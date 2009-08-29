@@ -1,6 +1,63 @@
 <?xml version="1.0" ?>
 <checkins>
   <checkin>
+    <id>33712</id>
+    <user>
+      <id>9923</id>
+      <firstname>Test2</firstname>
+      <lastname>User2</lastname>
+      <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/blank_girl.png</photo>
+    </user>
+    <venue>
+      <id>23035</id>
+      <name>The Page</name>
+      <address>298 Divisadero St</address>
+      <crossstreet>at Page</crossstreet>
+      <geolat>37.7722</geolat>
+      <geolong>-122.437</geolong>
+    </venue>
+    <shout>Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Done. </shout>
+    <created>Mon, 08 Jun 09 01:53:09 +0000</created>
+ </checkin>
+  <checkin>
+    <id>33912</id>
+    <user>
+      <id>9923</id>
+      <firstname>Test2</firstname>
+      <lastname>User2</lastname>
+      <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/blank_girl.png</photo>
+    </user>
+    <venue>
+      <id>23035</id>
+      <name>The Page</name>
+      <address>298 Divisadero St</address>
+      <crossstreet>at Page</crossstreet>
+      <geolat>37.7722</geolat>
+      <geolong>-122.437</geolong>
+    </venue>
+    <shout>Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Done. </shout>
+    <created>Mon, 08 Jun 09 01:53:09 +0000</created>
+ </checkin>
+  <checkin>
+    <id>37912</id>
+    <user>
+      <id>9923</id>
+      <firstname>Test2</firstname>
+      <lastname>User2</lastname>
+      <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/blank_girl.png</photo>
+    </user>
+    <venue>
+      <id>23035</id>
+      <name>The Page</name>
+      <address>298 Divisadero St</address>
+      <crossstreet>at Page</crossstreet>
+      <geolat>37.7722</geolat>
+      <geolong>-122.437</geolong>
+    </venue>
+    <shout>Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Done. </shout>
+    <created>Mon, 08 Jun 09 01:53:09 +0000</created>
+ </checkin>
+  <checkin>
     <id>337912</id>
     <user>
       <id>9923</id>
