@@ -22,6 +22,12 @@
     name="venue_search_activity_label">Foursquare Venues</string>
   <string
     name="venue_tips_activity_label">Foursquare Tips</string>
+  <string
+    name="venue_info_tab">Tips</string>
+  <string
+    name="venue_map_tab">Map</string>
+  <string
+    name="venue_checkins_tab">Checkins</string>
 
   <string
     name="preferences_label">Preferences</string>
@@ -32,7 +38,7 @@
     name="add_venue_label">Add Venue</string>
 
   <string
-     name="add_venue_error_toast_venue_null">Unable to add venue!</string>
+    name="add_venue_error_toast_venue_null">Unable to add venue!</string>
 
   <string
     name="refresh_address_label">Refresh Address</string>
@@ -61,32 +67,32 @@
     name="tip_add_spinner_prompt">Select a List</string>
 
   <string
-     name="friendsactivity_title_finished">Foursquare Friends</string>
+    name="friendsactivity_title_finished">Foursquare Friends</string>
   <string
-     name="friendsactivity_title_searching">Foursquare - Searching for Friends</string>
+    name="friendsactivity_title_searching">Foursquare - Searching for Friends</string>
 
   <string
-     name="login_dialog_title">Logging in</string>
+    name="login_dialog_title">Logging in</string>
   <string
-     name="login_dialog_message">Please wait while logging into Foursquare...</string>
+    name="login_dialog_message">Please wait while logging into Foursquare...</string>
 
   <string
-     name="login_welcome_toast">Welcome to %s!</string>
+    name="login_welcome_toast">Welcome to %s!</string>
   <string
-     name="login_failed_login_toast">Unable to log in. Please check your phone number and password.</string>
+    name="login_failed_login_toast">Unable to log in. Please check your phone number and password.</string>
 
   <string
-     name="search_already_in_progress_toast">A search is already in progress.</string>
+    name="search_already_in_progress_toast">A search is already in progress.</string>
   <string
-     name="no_search_results">No search results.</string>
+    name="no_search_results">No search results.</string>
   <string
-     name="title_search_finished_noquery">Nearby - Foursquare</string>
+    name="title_search_finished_noquery">Nearby - Foursquare</string>
   <string
-     name="title_search_finished">%s - Foursquare</string>
+    name="title_search_finished">%s - Foursquare</string>
   <string
-     name="title_search_inprogress_noquery">Searching Nearby - Foursquare</string>
+    name="title_search_inprogress_noquery">Searching Nearby - Foursquare</string>
   <string
-     name="title_search_inprogress">Searching "%s" - Foursquare</string>
+    name="title_search_inprogress">Searching "%s" - Foursquare</string>
 
 
 </resources>
