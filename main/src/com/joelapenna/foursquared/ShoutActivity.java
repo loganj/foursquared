@@ -6,6 +6,7 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.VenueView;
 
@@ -21,6 +22,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -71,6 +74,9 @@ public class ShoutActivity extends Activity {
     private EditText mShoutEditText;
     private VenueView mVenueView;
 
+    private BestLocationListener mLocationListener;
+    private LocationManager mLocationManager;
+
     private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -84,6 +90,9 @@ public class ShoutActivity extends Activity {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.d(TAG, "onCreate");
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
+
+        mLocationListener = ((Foursquared)getApplication()).getLocationListener();
+        mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
         // Implies there is no UI.
         if (getIntent().hasExtra(EXTRA_IMMEDIATE_CHECKIN)) {
@@ -136,6 +145,23 @@ public class ShoutActivity extends Activity {
         } else {
             initializeUi();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
+                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
+                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mLocationManager.removeUpdates(mLocationListener);
     }
 
     @Override
@@ -318,8 +344,15 @@ public class ShoutActivity extends Activity {
             boolean isPrivate = !mTellFriends;
 
             try {
+                String geolat = null;
+                String geolong = null;
+                Location location = ((Foursquared)getApplication()).getLastKnownLocation();
+                if (location != null) {
+                    geolat = String.valueOf(location.getLatitude());
+                    geolong = String.valueOf(location.getLongitude());
+                }
                 return ((Foursquared)getApplication()).getFoursquare().checkin(venueId, null,
-                        mShout, isPrivate, mTellTwitter);
+                        geolat, geolong, mShout, isPrivate, mTellTwitter);
             } catch (Exception e) {
                 Log.d(TAG, "Storing reason: ", e);
                 mReason = e;

@@ -253,11 +253,14 @@ public class FoursquareHttpApiV1 {
     /*
      * /checkin?vid=1234&venue=Noc%20Noc&shout=Come%20here&private=0&twitter=1
      */
-    CheckinResult checkin(String vid, String venue, String shout, boolean isPrivate, boolean twitter)
-            throws FoursquareException, FoursquareError, IOException {
+    CheckinResult checkin(String vid, String venue, String geolat, String geolong, String shout,
+            boolean isPrivate, boolean twitter) throws FoursquareException, FoursquareError,
+            IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_CHECKIN), //
                 new BasicNameValuePair("vid", vid), //
                 new BasicNameValuePair("venue", venue), //
+                new BasicNameValuePair("geolat", geolat), //
+                new BasicNameValuePair("geolong", geolong), //
                 new BasicNameValuePair("shout", shout), //
                 new BasicNameValuePair("private", (isPrivate) ? "1" : "0"), //
                 new BasicNameValuePair("twitter", (twitter) ? "1" : "0"));

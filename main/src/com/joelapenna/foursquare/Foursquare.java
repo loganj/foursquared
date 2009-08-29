@@ -98,9 +98,10 @@ public class Foursquare {
     }
 
     @V1
-    public CheckinResult checkin(String venueId, String venueName, String shout, boolean isPrivate,
-            boolean twitter) throws FoursquareException, FoursquareError, IOException {
-        return mFoursquareV1.checkin(venueId, venueName, shout, isPrivate, twitter);
+    public CheckinResult checkin(String venueId, String venueName, String geolat, String geolong,
+            String shout, boolean isPrivate, boolean twitter) throws FoursquareException,
+            FoursquareError, IOException {
+        return mFoursquareV1.checkin(venueId, venueName, geolat, geolong, shout, isPrivate, twitter);
     }
 
     @V1
