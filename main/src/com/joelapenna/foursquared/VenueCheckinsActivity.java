@@ -49,7 +49,7 @@ public class VenueCheckinsActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.venue_tab_with_list);
+        setContentView(R.layout.venue_checkins_activity);
 
         initListViewAdapter();
 
@@ -97,7 +97,6 @@ public class VenueCheckinsActivity extends ListActivity {
     }
 
     private void putCheckinsInAdapter(Group checkins) {
-        mListAdapter.clear();
         mListAdapter.setGroup(checkins);
     }
 
@@ -169,8 +168,6 @@ public class VenueCheckinsActivity extends ListActivity {
                     } else {
                         photo.setImageResource(R.drawable.blank_girl);
                     }
-                } catch (Exception e) {
-                    Log.d(TAG, "Ummm............", e);
                 }
             }
         });
@@ -192,7 +189,6 @@ public class VenueCheckinsActivity extends ListActivity {
                 if (venue.getStats() != null) {
                     ensureMayor(venue.getStats().getMayor());
                 }
-
                 putCheckinsInAdapter(checkins);
             }
         }

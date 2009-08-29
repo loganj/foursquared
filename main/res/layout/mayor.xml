@@ -22,13 +22,18 @@
 
   <ImageView
     android:id="@+id/mayorPhoto"
-    android:layout_width="?android:attr/listPreferredItemHeight"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-    android:background="#ffffff"
 
     android:layout_below="@id/mayorHeader"
     android:layout_alignParentLeft="true"
-    android:layout_marginRight="3dip"
+
+    android:layout_height="46px"
+    android:layout_width="46px"
+    android:padding="2px"
+    android:background="#186db5"
+    android:layout_marginLeft="7dip"
+    android:layout_marginTop="5.5dip"
+    android:layout_marginRight="8.5dip"
+    android:layout_marginBottom="15dip"
     android:src="@drawable/blank_boy"
 
     android:gravity="center_vertical"
