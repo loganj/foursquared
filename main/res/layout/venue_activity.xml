@@ -12,7 +12,7 @@
     android:layout_below="@+id/venueHeader"
     style="@style/tabHostStyle">
     <LinearLayout
-      android:id="@+id/address"
+      android:id="@+id/tabhostlayout"
       android:orientation="vertical"
       android:layout_height="fill_parent"
       android:layout_width="fill_parent">
