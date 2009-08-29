@@ -5,16 +5,25 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="?android:attr/listPreferredItemHeight"
+  android:paddingBottom="10dip"
+  android:paddingRight="10dip"
   style="@style/listItemStyle">
 
+<!-- android:layout_width="?android:attr/listPreferredItemHeight" -->
+<!-- android:layout_height="?android:attr/listPreferredItemHeight" -->
   <ImageView
     android:id="@+id/photo"
-    android:layout_width="?android:attr/listPreferredItemHeight"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-    android:background="#ffffff"
+
+	android:layout_height="46px"
+	android:layout_width="46px"
+	android:padding="2px"
+    android:background="#186db5"
     android:layout_alignParentTop="true"
     android:layout_alignParentLeft="true"
-    android:layout_marginRight="3dip"
+    android:layout_marginLeft="7dip"
+    android:layout_marginTop="5.5dip"
+    android:layout_marginRight="8.5dip"
+    android:layout_marginBottom="15dip"
     android:src="@drawable/blank_boy"
 
     android:gravity="center_vertical"
@@ -28,12 +37,13 @@
     android:layout_height="wrap_content"
 
     android:layout_toRightOf="@id/photo"
+    android:layout_alignTop="@id/photo"
     android:layout_alignParentRight="true"
-    android:layout_alignParentTop="true"
     android:layout_alignWithParentIfMissing="true"
 
     android:gravity="center_vertical"
-    android:textAppearance="@android:style/TextAppearance.Medium"
+    android:textAppearance="@android:style/TextAppearance.Small"
+    android:textStyle="bold"
 
     android:maxLines="1"
     android:ellipsize="end" />
@@ -57,6 +67,8 @@
     android:scrollHorizontally="true"
     android:ellipsize="end" />
 
+<!-- android:textStyle="italic" -->
+
   <TextView
     android:id="@+id/shoutTextView"
 
@@ -72,7 +84,7 @@
 
     android:gravity="left"
     android:textAppearance="@android:style/TextAppearance.Small"
-    android:textStyle="italic"
+    
 
     android:maxLines="2"
     android:ellipsize="end" />

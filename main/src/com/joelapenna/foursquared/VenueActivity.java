@@ -241,7 +241,7 @@ public class VenueActivity extends TabActivity {
         tabHost.addTab(tabHost.newTabSpec(tag)
                 // Info Tab
                 .setIndicator("",
-                        getResources().getDrawable(android.R.drawable.ic_menu_info_details))
+                        getResources().getDrawable(R.drawable.venue_info_tab))
                 .setContent(intent) // The contained activity
                 );
 
@@ -249,7 +249,7 @@ public class VenueActivity extends TabActivity {
         intent = new Intent(this, VenueMapActivity.class);
         tabHost.addTab(tabHost.newTabSpec(tag)
                 // Info Tab
-                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_mapmode))
+                .setIndicator("", getResources().getDrawable(R.drawable.map_tab))
                 .setContent(intent) // The contained activity
                 );
 
@@ -257,7 +257,7 @@ public class VenueActivity extends TabActivity {
         intent = new Intent(this, VenueCheckinsActivity.class);
         tabHost.addTab(tabHost.newTabSpec(tag)
                 // Checkin Tab
-                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_agenda))
+                .setIndicator("", getResources().getDrawable(R.drawable.recent_checkins_tab))
                 .setContent(intent) // The contained activity
                 );
 

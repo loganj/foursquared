@@ -75,4 +75,31 @@
   <string 
      name="login_failed_login_toast">Unable to log in. Please check your phone number and password.</string>
   
+  <string 
+     name="nearbyvenues_search_already_in_progress_toast">A search is already in progress.</string>
+  <string
+     name="nearbyvenues_no_search_results">No search results.</string>
+  <string
+     name="nearbyvenues_title_search_finished_noquery">Nearby - Foursquare</string>
+  <string
+     name="nearbyvenues_title_search_finished">%s - Foursquare</string>
+  <string
+     name="nearbyvenues_title_search_inprogress_noquery">Searching Nearby - Foursquare</string>
+  <string 
+     name="nearbyvenues_title_search_inprogress">Searching "%s" - Foursquare</string>
+
+  <string 
+     name="searchvenues_search_already_in_progress_toast">A search is already in progress.</string>
+  <string
+     name="searchvenues_no_search_results">No search results.</string>
+  <string
+     name="searchvenues_title_search_finished_noquery">Nearby - Foursquare</string>
+  <string
+     name="searchvenues_title_search_finished">%s - Foursquare</string>
+  <string
+     name="searchvenues_title_search_inprogress_noquery">Searching Nearby - Foursquare</string>
+  <string 
+     name="searchvenues_title_search_inprogress">Searching "%s" - Foursquare</string>
+
+
 </resources>
