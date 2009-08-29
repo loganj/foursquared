@@ -260,7 +260,7 @@ public class SearchVenuesActivity extends TabActivity {
             if (DEBUG) Log.d(TAG, "Query already running attempting to cancel: " + mSearchTask);
             if (!mSearchTask.cancel(true) && !mSearchTask.isCancelled()) {
                 if (DEBUG) Log.d(TAG, "Unable to cancel search? Notifying the user.");
-                Toast.makeText(this, getResources().getText(R.string.searchvenues_search_already_in_progress_toast), Toast.LENGTH_SHORT);
+                Toast.makeText(this, getResources().getText(R.string.search_already_in_progress_toast), Toast.LENGTH_SHORT);
                 return;
             }
         }
@@ -278,7 +278,7 @@ public class SearchVenuesActivity extends TabActivity {
         if (mListAdapter.getCount() > 0) {
             mEmpty.setVisibility(LinearLayout.GONE);
         } else {
-            mEmptyText.setText(R.string.searchvenues_no_search_results);
+            mEmptyText.setText(R.string.no_search_results);
             mEmptyProgress.setVisibility(LinearLayout.GONE);
             mEmpty.setVisibility(LinearLayout.VISIBLE);
         }
@@ -287,15 +287,15 @@ public class SearchVenuesActivity extends TabActivity {
     private void ensureTitle(boolean finished) {
         if (finished) {
             if (mSearchHolder.query == QUERY_NEARBY) {
-                setTitle(getString(R.string.searchvenues_title_search_finished_noquery));
+                setTitle(getString(R.string.title_search_finished_noquery));
             } else {
-                setTitle(getString(R.string.searchvenues_title_search_finished, mSearchHolder.query));
+                setTitle(getString(R.string.title_search_finished, mSearchHolder.query));
             }
         } else {
             if (mSearchHolder.query == QUERY_NEARBY) {
-                setTitle(getString(R.string.searchvenues_title_search_inprogress_noquery));
+                setTitle(getString(R.string.title_search_inprogress_noquery));
             } else {
-                setTitle(getString(R.string.searchvenues_title_search_inprogress, mSearchHolder.query));
+                setTitle(getString(R.string.title_search_inprogress, mSearchHolder.query));
             }
         }
     }

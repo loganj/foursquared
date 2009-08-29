@@ -231,7 +231,7 @@ public class NearbyVenuesActivity extends ListActivity {
             if (DEBUG) Log.d(TAG, "Query already running attempting to cancel: " + mSearchTask);
             if (!mSearchTask.cancel(true) && !mSearchTask.isCancelled()) {
                 if (DEBUG) Log.d(TAG, "Unable to cancel search? Notifying the user.");
-                Toast.makeText(this, getResources().getText(R.string.nearbyvenues_search_already_in_progress_toast), Toast.LENGTH_SHORT);
+                Toast.makeText(this, getResources().getText(R.string.search_already_in_progress_toast), Toast.LENGTH_SHORT);
                 return;
             }
         }
@@ -249,7 +249,7 @@ public class NearbyVenuesActivity extends ListActivity {
         if (mListAdapter.getCount() > 0) {
             mEmpty.setVisibility(LinearLayout.GONE);
         } else {
-            mEmptyText.setText(R.string.nearbyvenues_no_search_results);
+            mEmptyText.setText(R.string.no_search_results);
             mEmptyProgress.setVisibility(LinearLayout.GONE);
             mEmpty.setVisibility(LinearLayout.VISIBLE);
         }
@@ -258,15 +258,15 @@ public class NearbyVenuesActivity extends ListActivity {
     private void ensureTitle(boolean finished) {
         if (finished) {
             if (mSearchHolder.query == QUERY_NEARBY) {
-                setTitle(getString(R.string.nearbyvenues_title_search_finished_noquery));
+                setTitle(getString(R.string.title_search_finished_noquery));
             } else {
-                setTitle(getString(R.string.nearbyvenues_title_search_finished, mSearchHolder.query));
+                setTitle(getString(R.string.title_search_finished, mSearchHolder.query));
             }
         } else {
             if (mSearchHolder.query == QUERY_NEARBY) {
-                setTitle(getString(R.string.nearbyvenues_title_search_inprogress_noquery));
+                setTitle(getString(R.string.title_search_inprogress_noquery));
             } else {
-                setTitle(getString(R.string.nearbyvenues_title_search_inprogress, mSearchHolder.query));
+                setTitle(getString(R.string.title_search_inprogress, mSearchHolder.query));
             }
         }
     }
