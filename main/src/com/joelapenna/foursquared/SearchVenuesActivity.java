@@ -15,6 +15,7 @@ import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.app.TabActivity;
 import android.content.BroadcastReceiver;
@@ -91,6 +92,7 @@ public class SearchVenuesActivity extends TabActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.search_venues_activity);
+        setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL);
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         mLocationListener = ((Foursquared)getApplication()).getLocationListener();

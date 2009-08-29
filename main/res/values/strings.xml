@@ -61,7 +61,9 @@
     name="checkin_action_label">Check-in!</string>
 
   <string
-    name="search_hint">Search for something...</string>
+    name="venues_search_label">Venue Search</string>
+  <string
+    name="venues_search_hint">Type a venue name or tag</string>
 
   <string
     name="tip_add_spinner_prompt">Select a List</string>

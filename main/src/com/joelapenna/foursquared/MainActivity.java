@@ -26,6 +26,7 @@ public class MainActivity extends TabActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL);
 
         // Don't start the main activity if we don't have credentials
         if (!((Foursquared)getApplication()).getFoursquare().hasCredentials()) {
