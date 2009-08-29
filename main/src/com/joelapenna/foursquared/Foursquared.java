@@ -78,12 +78,17 @@ public class Foursquared extends Application {
             // We're not doing anything because hopefully our related activities
             // will handle the failure. This is simply convenience.
         }
+
+        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                CityLocationListener.LOCATION_UPDATE_MIN_TIME,
+                CityLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mCityLocationListener);
     }
 
     @Override
     public void onTerminate() {
         sUserPhotosManager.shutdown();
         sBadgeIconManager.shutdown();
+        mLocationManager.removeUpdates(mCityLocationListener);
     }
 
     public Foursquare getFoursquare() {

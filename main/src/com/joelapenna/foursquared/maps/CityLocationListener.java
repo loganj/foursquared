@@ -24,7 +24,7 @@ public class CityLocationListener implements LocationListener {
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public static final long LOCATION_UPDATE_MIN_TIME = 1000 * 60 * 60; // Every hour
-    public static final long LOCATION_UPDATE_MIN_DISTANCE = 1000 * 15; // 15 kilometers
+    public static final long LOCATION_UPDATE_MIN_DISTANCE = 1000 * 10; // 10 kilometers
 
     private Foursquare mFoursquare;
     private SharedPreferences mPrefs;
