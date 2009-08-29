@@ -21,7 +21,7 @@
     style="@style/listSeparatorTextViewStyle" />
 
   <ImageView
-    android:id="@+id/photoImageView"
+    android:id="@+id/mayorPhoto"
     android:layout_width="?android:attr/listPreferredItemHeight"
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:background="#ffffff"
@@ -36,13 +36,13 @@
     android:scaleType="fitXY" />
 
   <TextView
-    android:id="@+id/nameTextView"
+    android:id="@+id/mayorName"
 
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
 
     android:layout_below="@id/mayorHeader"
-    android:layout_toRightOf="@id/photoImageView"
+    android:layout_toRightOf="@id/mayorPhoto"
     android:layout_alignParentRight="true"
     android:layout_alignWithParentIfMissing="true"
 
@@ -53,12 +53,12 @@
     android:ellipsize="end" />
 
   <TextView
-    android:id="@+id/countTextView"
+    android:id="@+id/mayorCheckinCount"
 
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
 
-    android:layout_below="@id/nameTextView"
+    android:layout_below="@id/mayorName"
     android:layout_alignParentRight="true"
     android:layout_alignWithParentIfMissing="true"
 

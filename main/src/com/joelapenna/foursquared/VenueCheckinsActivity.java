@@ -13,7 +13,6 @@ import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
-import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 
 import android.app.Activity;
 import android.app.ListActivity;
@@ -25,6 +24,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -43,21 +43,15 @@ public class VenueCheckinsActivity extends ListActivity {
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private Observer mParentDataObserver = new ParentDataObserver();
+    private CheckinListAdapter mListAdapter;
+    private View mMayorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.venue_tab_with_list);
 
-        getListView().setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Checkin checkin = (Checkin)parent.getAdapter().getItem(position);
-                if (checkin != null) {
-                    startItemActivity(checkin.getUser());
-                }
-            }
-        });
+        initListViewAdapter();
 
         VenueActivity parent = (VenueActivity)getParent();
 
@@ -75,28 +69,47 @@ public class VenueCheckinsActivity extends ListActivity {
         }
     }
 
-    private void setCheckins(Group checkins) {
-        if (DEBUG) Log.d(TAG, "Putting checkins in adapter.");
+    private void initListViewAdapter() {
+        LayoutInflater inflater = (LayoutInflater)getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        mMayorLayout = inflater.inflate(R.layout.mayor, null);
+        getListView().addHeaderView(mMayorLayout);
 
-        setListAdapter(new SeparatedListAdapter(this));
+        TextView recentCheckinsHeader = (TextView)inflater.inflate(R.layout.list_header, null);
+        recentCheckinsHeader.setText("Recent Checkins");
+        getListView().addHeaderView(recentCheckinsHeader);
 
-        SeparatedListAdapter mainAdapter = (SeparatedListAdapter)getListAdapter();
-        mainAdapter.clear();
-        CheckinListAdapter groupAdapter = new CheckinListAdapter(//
-                this, checkins, ((Foursquared)getApplication()).getUserPhotosManager(), false);
-        mainAdapter.addSection("Recent Checkins", groupAdapter);
-        mainAdapter.notifyDataSetInvalidated();
+        getListView().setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Checkin checkin = (Checkin)parent.getAdapter().getItem(position);
+                if (checkin != null) {
+                    startItemActivity(checkin.getUser());
+                }
+            }
+        });
+
+        Group emptyGroup = new Group();
+        emptyGroup.setType("Checkins");
+        mListAdapter = new CheckinListAdapter(this, emptyGroup, //
+                ((Foursquared)getApplication()).getUserPhotosManager(), true);
+
+        setListAdapter(mListAdapter);
+    }
+
+    private void putCheckinsInAdapter(Group checkins) {
+        mListAdapter.clear();
+        mListAdapter.setGroup(checkins);
     }
 
     private void ensureMayor(final Mayor mayor) {
         if (DEBUG) Log.d(TAG, "Setting mayor.");
+
         if (mayor == null) {
+            mMayorLayout.setVisibility(ViewGroup.GONE);
             return;
         }
 
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View mayorLayout = inflater.inflate(R.layout.mayor, null);
-        mayorLayout.setOnClickListener(new OnClickListener() {
+        mMayorLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(VenueCheckinsActivity.this, UserActivity.class);
@@ -105,12 +118,12 @@ public class VenueCheckinsActivity extends ListActivity {
             }
         });
 
-        ((TextView)mayorLayout.findViewById(R.id.nameTextView)).setText(StringFormatters
+        ((TextView)findViewById(R.id.mayorName)).setText(StringFormatters
                 .getUserAbbreviatedName(mayor.getUser()));
-        ((TextView)mayorLayout.findViewById(R.id.countTextView)).setText( //
+        ((TextView)findViewById(R.id.mayorCheckinCount)).setText( //
                 mayor.getCount() + " Checkins");
 
-        final ImageView photo = (ImageView)mayorLayout.findViewById(R.id.photoImageView);
+        final ImageView photo = (ImageView)findViewById(R.id.mayorPhoto);
         final RemoteResourceManager rrm = ((Foursquared)getApplication()).getUserPhotosManager();
         final Uri photoUri = Uri.parse(mayor.getUser().getPhoto());
 
@@ -129,7 +142,6 @@ public class VenueCheckinsActivity extends ListActivity {
             });
             rrm.request(photoUri);
         }
-        getListView().addHeaderView(mayorLayout);
     }
 
     private void startItemActivity(User user) {
@@ -181,7 +193,7 @@ public class VenueCheckinsActivity extends ListActivity {
                     ensureMayor(venue.getStats().getMayor());
                 }
 
-                setCheckins(checkins);
+                putCheckinsInAdapter(checkins);
             }
         }
     }

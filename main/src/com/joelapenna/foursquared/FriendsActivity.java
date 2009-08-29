@@ -63,7 +63,6 @@ public class FriendsActivity extends ListActivity {
 
     private SearchHolder mSearchHolder = new SearchHolder();
 
-    private ListView mListView;
     private LinearLayout mEmpty;
     private TextView mEmptyText;
     private ProgressBar mEmptyProgress;
@@ -189,18 +188,54 @@ public class FriendsActivity extends ListActivity {
         return mSearchHolder;
     }
 
-    public void putSearchResultsInAdapter(Group searchResults) {
+    private void initListViewAdapter() {
+        mEmpty = (LinearLayout)findViewById(android.R.id.empty);
+        mEmptyText = (TextView)findViewById(R.id.emptyText);
+        mEmptyProgress = (ProgressBar)findViewById(R.id.emptyProgress);
+
+        Group emptyGroup = new Group();
+        emptyGroup.setType("Checkins");
+        mListAdapter = new CheckinListAdapter(this, emptyGroup, //
+                ((Foursquared)getApplication()).getUserPhotosManager(), true);
+
+        ListView listView = getListView();
+        listView.setAdapter(mListAdapter);
+        listView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Checkin checkin = (Checkin)parent.getAdapter().getItem(position);
+                if (checkin.getUser() != null) {
+                    if (DEBUG) Log.d(TAG, "firing venue activity for venue");
+                    Intent intent = new Intent(FriendsActivity.this, UserActivity.class);
+                    intent.putExtra(UserActivity.EXTRA_USER, checkin.getUser().getId());
+                    startActivity(intent);
+                }
+            }
+        });
+    }
+
+    private void putSearchResultsInAdapter(Group searchResults) {
         mListAdapter.clear();
         mListAdapter.setGroup(searchResults);
     }
 
-    public void setSearchResults(Group searchResults) {
+    private void setSearchResults(Group searchResults) {
         if (DEBUG) Log.d(TAG, "Setting search results.");
         mSearchHolder.results = searchResults;
         searchResultsObservable.notifyObservers();
     }
 
-    void executeSearchTask(String query) {
+    private void ensureSearchResults() {
+        if (mListAdapter.getCount() > 0) {
+            mEmpty.setVisibility(LinearLayout.GONE);
+        } else {
+            mEmptyText.setText("No search results.");
+            mEmptyProgress.setVisibility(LinearLayout.GONE);
+            mEmpty.setVisibility(LinearLayout.VISIBLE);
+        }
+    }
+
+    private void executeSearchTask(String query) {
         if (DEBUG) Log.d(TAG, "sendQuery()");
         mSearchHolder.query = query;
         // not going through set* because we don't want to notify search result
@@ -217,46 +252,6 @@ public class FriendsActivity extends ListActivity {
             }
         }
         mSearchTask = (SearchTask)new SearchTask().execute();
-    }
-
-    private void ensureSearchResults() {
-        if (mListAdapter.getCount() > 0) {
-            mEmpty.setVisibility(LinearLayout.GONE);
-        } else {
-            mEmptyText.setText("No search results.");
-            mEmptyProgress.setVisibility(LinearLayout.GONE);
-            mEmpty.setVisibility(LinearLayout.VISIBLE);
-        }
-    }
-
-    private void initListViewAdapter() {
-        if (mListView != null) {
-            throw new IllegalStateException("Trying to initialize already initialized ListView");
-        }
-        mEmpty = (LinearLayout)findViewById(android.R.id.empty);
-        mEmptyText = (TextView)findViewById(R.id.emptyText);
-        mEmptyProgress = (ProgressBar)findViewById(R.id.emptyProgress);
-
-        mListView = getListView();
-
-        Group emptyGroup = new Group();
-        emptyGroup.setType("Checkins");
-        mListAdapter = new CheckinListAdapter(this, emptyGroup, //
-                ((Foursquared)getApplication()).getUserPhotosManager(), true);
-
-        mListView.setAdapter(mListAdapter);
-        mListView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Checkin checkin = (Checkin)parent.getAdapter().getItem(position);
-                if (checkin.getUser() != null) {
-                    if (DEBUG) Log.d(TAG, "firing venue activity for venue");
-                    Intent intent = new Intent(FriendsActivity.this, UserActivity.class);
-                    intent.putExtra(UserActivity.EXTRA_USER, checkin.getUser().getId());
-                    startActivity(intent);
-                }
-            }
-        });
     }
 
     private void ensureTitle(boolean finished) {
