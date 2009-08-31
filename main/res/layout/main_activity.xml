@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <!-- Copyright 2009 Joe LaPenna -->
 
-<LinearLayout
+<merge
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:layout_width="fill_parent"
@@ -23,4 +23,4 @@
       android:paddingTop="65px">
     </FrameLayout>
   </TabHost>
-</LinearLayout>
+</merge>
