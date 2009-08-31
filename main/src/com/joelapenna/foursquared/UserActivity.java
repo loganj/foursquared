@@ -65,7 +65,6 @@ public class UserActivity extends Activity {
     private UserObserver mUserObserver = new UserObserver();
 
     private GridView mBadgesGrid;
-    private RelativeLayout mVenueLayout;
     private VenueView mVenueView;
     private AsyncTask<Void, Void, User> mUserTask = null;
 
@@ -86,7 +85,6 @@ public class UserActivity extends Activity {
 
         mVenueView = (VenueView)findViewById(R.id.venue);
         mBadgesGrid = (GridView)findViewById(R.id.badgesGrid);
-        mVenueLayout = (RelativeLayout)findViewById(R.id.venue);
 
         if (getIntent().hasExtra(EXTRA_USER)) {
             mUserId = getIntent().getExtras().getString(EXTRA_USER);
@@ -322,7 +320,7 @@ public class UserActivity extends Activity {
                 ((TextView)findViewById(R.id.venueHeader)).setVisibility(TextView.VISIBLE);
 
                 // Hell, I'm not even sure if this is the right place to put this... Whatever.
-                mVenueLayout.setOnClickListener(new OnClickListener() {
+                mVenueView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(UserActivity.this, VenueActivity.class);
@@ -333,9 +331,9 @@ public class UserActivity extends Activity {
             } else {
                 // If we don't have a checkin location, clear it from the UI so it doesn't take up
                 // space.
-                LayoutParams params = mVenueLayout.getLayoutParams();
+                LayoutParams params = mVenueView.getLayoutParams();
                 params.height = 0;
-                mVenueLayout.setLayoutParams(params);
+                mVenueView.setLayoutParams(params);
             }
         }
 
