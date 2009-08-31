@@ -22,6 +22,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -263,7 +264,8 @@ public class SearchVenuesActivity extends TabActivity {
             if (DEBUG) Log.d(TAG, "Query already running attempting to cancel: " + mSearchTask);
             if (!mSearchTask.cancel(true) && !mSearchTask.isCancelled()) {
                 if (DEBUG) Log.d(TAG, "Unable to cancel search? Notifying the user.");
-                Toast.makeText(this, getResources().getText(R.string.search_already_in_progress_toast), Toast.LENGTH_SHORT);
+                Toast.makeText(this, getResources().getText(
+                        R.string.search_already_in_progress_toast), Toast.LENGTH_SHORT);
                 return;
             }
         }
@@ -357,20 +359,21 @@ public class SearchVenuesActivity extends TabActivity {
         if (mTabHost != null) {
             throw new IllegalStateException("Trying to intialize already initializd TabHost");
         }
+
+        Resources resources = getResources();
+
         mTabHost = getTabHost();
 
-        // Results tab
-        mTabHost.addTab(mTabHost.newTabSpec("results")
-        // Checkin Tab
-                .setIndicator("", getResources().getDrawable(R.drawable.places_tab)) //
+        mTabHost.addTab(mTabHost.newTabSpec("results") //
+                .setIndicator(resources.getString(R.string.venues_label),
+                        resources.getDrawable(R.drawable.places_tab)) // the tab icon
                 .setContent(R.id.listviewLayout) //
                 );
 
-        // Maps tab
         Intent intent = new Intent(this, SearchVenuesMapActivity.class);
-        mTabHost.addTab(mTabHost.newTabSpec("map")
-                // Map Tab
-                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_mapmode))
+        mTabHost.addTab(mTabHost.newTabSpec("map") //
+                .setIndicator(resources.getString(R.string.map_label),
+                        resources.getDrawable(R.drawable.map_tab)) // the tab icon
                 .setContent(intent) // The contained activity
                 );
         mTabHost.setCurrentTab(0);

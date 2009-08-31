@@ -240,22 +240,19 @@ public class VenueActivity extends TabActivity {
 
         tag = (String)this.getText(R.string.venue_tips_activity_label);
         intent = new Intent(this, VenueTipsActivity.class);
-        tabHost.addTab(tabHost.newTabSpec(tag)
-        // Info Tab
+        tabHost.addTab(tabHost.newTabSpec(tag) //
                 .setIndicator(resources.getString(R.string.venue_info_tab),
                         resources.getDrawable(R.drawable.venue_info_tab)).setContent(intent));
 
         tag = (String)this.getText(R.string.venue_info_activity_label);
         intent = new Intent(this, VenueMapActivity.class);
-        tabHost.addTab(tabHost.newTabSpec(tag)
-        // Info Tab
-                .setIndicator(resources.getString(R.string.venue_map_tab),
+        tabHost.addTab(tabHost.newTabSpec(tag) //
+                .setIndicator(resources.getString(R.string.venues_label),
                         resources.getDrawable(R.drawable.map_tab)).setContent(intent));
 
         tag = (String)this.getText(R.string.venue_checkin_activity_label);
         intent = new Intent(this, VenueCheckinsActivity.class);
-        tabHost.addTab(tabHost.newTabSpec(tag)
-        // Checkin Tab
+        tabHost.addTab(tabHost.newTabSpec(tag) //
                 .setIndicator(resources.getString(R.string.venue_checkins_tab),
                         resources.getDrawable(R.drawable.recent_checkins_tab)).setContent(intent));
 

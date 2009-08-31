@@ -25,8 +25,6 @@
   <string
     name="venue_info_tab">Tips</string>
   <string
-    name="venue_map_tab">Map</string>
-  <string
     name="venue_checkins_tab">Checkins</string>
 
   <string
@@ -59,6 +57,10 @@
     name="shout_action_label">Shout!</string>
   <string
     name="checkin_action_label">Check-in!</string>
+  <string
+    name="map_label">Map</string>
+  <string
+    name="venues_label">Venues</string>
 
   <string
     name="venues_search_label">Venue Search</string>
