@@ -101,6 +101,11 @@ public class SeparatedListAdapter extends BaseAdapter {
     }
 
     @Override
+    public boolean isEmpty() {
+        return getCount() == 0;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         int sectionnum = 0;
         for (Object section : this.sections.keySet()) {

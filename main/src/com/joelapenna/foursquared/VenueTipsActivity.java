@@ -6,6 +6,7 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.TipListAdapter;
 
@@ -18,18 +19,15 @@ import java.util.Observer;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class VenueTipsActivity extends ListActivity {
+public class VenueTipsActivity extends LoadableListActivity {
     public static final String TAG = "VenueTipsActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
-
-    private Group mGroups;
 
     private Observer mVenueObserver = new VenueObserver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.venue_tab_with_list);
 
         setListAdapter(new SeparatedListAdapter(this));
 
@@ -39,6 +37,11 @@ public class VenueTipsActivity extends ListActivity {
         } else {
             parent.venueObservable.addObserver(mVenueObserver);
         }
+    }
+
+    @Override
+    public int getNoSearchResultsStringId() {
+        return R.string.no_tips_be_the_first;
     }
 
     private Group getVenueTipsAndTodos(Venue venue) {
@@ -55,20 +58,12 @@ public class VenueTipsActivity extends ListActivity {
             tips.setType("Todos");
             tipsAndTodos.add(tips);
         }
-
-        // We want to still show a header in the list view in case of no results (so that the empty
-        // view stops showing) so we'll fill tips and todos with an empty group.
-        if (tipsAndTodos.size() == 0) {
-            Group emptyGroup = new Group();
-            emptyGroup.setType("Tips");
-            tipsAndTodos.add(emptyGroup);
-        }
         return tipsAndTodos;
     }
 
     private void setTipGroups(Group groups) {
-        mGroups = groups;
-        putGroupsInAdapter(mGroups);
+        putGroupsInAdapter(groups);
+        setEmptyView();
     }
 
     private void putGroupsInAdapter(Group groups) {

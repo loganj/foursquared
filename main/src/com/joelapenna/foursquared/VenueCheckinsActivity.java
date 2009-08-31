@@ -10,12 +10,12 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Mayor;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -38,7 +38,7 @@ import java.util.Observer;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class VenueCheckinsActivity extends ListActivity {
+public class VenueCheckinsActivity extends LoadableListActivity {
     public static final String TAG = "VenueCheckinsActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
@@ -49,7 +49,6 @@ public class VenueCheckinsActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.venue_checkins_activity);
 
         initListViewAdapter();
 
@@ -67,6 +66,11 @@ public class VenueCheckinsActivity extends ListActivity {
         } else {
             ((VenueActivity)getParent()).checkinsObservable.addObserver(mParentDataObserver);
         }
+    }
+
+    @Override
+    public int getNoSearchResultsStringId() {
+        return R.string.no_checkins_be_the_first;
     }
 
     private void initListViewAdapter() {
@@ -97,16 +101,21 @@ public class VenueCheckinsActivity extends ListActivity {
     }
 
     private void putCheckinsInAdapter(Group checkins) {
+        setEmptyView();
         mListAdapter.setGroup(checkins);
     }
 
-    private void ensureMayor(final Mayor mayor) {
+    private void ensureMayor(final Venue venue) {
         if (DEBUG) Log.d(TAG, "Setting mayor.");
 
-        if (mayor == null) {
-            mMayorLayout.setVisibility(ViewGroup.GONE);
+        if (venue.getStats() == null || venue.getStats().getMayor() == null) {
+            getListView().removeHeaderView(mMayorLayout);
             return;
+        } else {
+            mMayorLayout.setVisibility(ViewGroup.VISIBLE);
         }
+
+        final Mayor mayor = venue.getStats().getMayor();
 
         mMayorLayout.setOnClickListener(new OnClickListener() {
             @Override
@@ -168,6 +177,8 @@ public class VenueCheckinsActivity extends ListActivity {
                     } else {
                         photo.setImageResource(R.drawable.blank_girl);
                     }
+                } catch (Exception e) {
+                    Log.d(TAG, "Ummm............", e);
                 }
             }
         });
@@ -185,10 +196,7 @@ public class VenueCheckinsActivity extends ListActivity {
 
             if (!observed && venue != null && checkins != null) {
                 observed = true;
-
-                if (venue.getStats() != null) {
-                    ensureMayor(venue.getStats().getMayor());
-                }
+                ensureMayor(venue);
                 putCheckinsInAdapter(checkins);
             }
         }

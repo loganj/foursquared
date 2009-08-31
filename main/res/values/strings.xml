@@ -96,5 +96,13 @@
   <string
     name="title_search_inprogress">Searching "%s" - Foursquare</string>
 
+  <string
+    name="no_checkins_be_the_first">No checkins here yet, be the first!</string>
+  <string
+    name="no_tips_be_the_first">No tips here yet, be the first to add one!</string>
+
+  <string
+    name="loading">Loading...</string>
+
 
 </resources>
