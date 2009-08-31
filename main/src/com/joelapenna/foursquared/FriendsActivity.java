@@ -9,11 +9,11 @@ import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.R.drawable;
+import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
 
-import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,7 +27,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -42,7 +41,7 @@ import java.util.Observable;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class FriendsActivity extends ListActivity {
+public class FriendsActivity extends LoadableListActivity {
     static final String TAG = "FriendsActivity";
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
@@ -79,8 +78,6 @@ public class FriendsActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setContentView(R.layout.search_list_activity);
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         mLocationListener = ((Foursquared)getApplication()).getLocationListener();
@@ -188,6 +185,11 @@ public class FriendsActivity extends ListActivity {
         return mSearchHolder;
     }
 
+    @Override
+    public int getNoSearchResultsStringId() {
+        return R.string.no_friend_checkins;
+    }
+
     private void initListViewAdapter() {
         mEmpty = (LinearLayout)findViewById(android.R.id.empty);
         mEmptyText = (TextView)findViewById(R.id.emptyText);
@@ -215,7 +217,7 @@ public class FriendsActivity extends ListActivity {
     }
 
     private void putSearchResultsInAdapter(Group searchResults) {
-        mListAdapter.clear();
+        setEmptyView();
         mListAdapter.setGroup(searchResults);
     }
 

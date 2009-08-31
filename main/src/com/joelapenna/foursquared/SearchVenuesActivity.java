@@ -32,6 +32,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
@@ -279,10 +280,11 @@ public class SearchVenuesActivity extends TabActivity {
     private void ensureSearchResults() {
         if (mListAdapter.getCount() > 0) {
             mEmpty.setVisibility(LinearLayout.GONE);
+            mListView.setVisibility(ViewGroup.VISIBLE);
         } else {
+            mEmptyProgress.setVisibility(ViewGroup.GONE);
             mEmptyText.setText(R.string.no_search_results);
-            mEmptyProgress.setVisibility(LinearLayout.GONE);
-            mEmpty.setVisibility(LinearLayout.VISIBLE);
+            mListView.setVisibility(ViewGroup.GONE);
         }
     }
 

@@ -9,6 +9,7 @@ import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
 import com.joelapenna.foursquared.util.NotificationsUtil;
@@ -16,7 +17,6 @@ import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,18 +26,13 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.SearchRecentSuggestions;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -47,7 +42,7 @@ import java.util.Observable;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class NearbyVenuesActivity extends ListActivity {
+public class NearbyVenuesActivity extends LoadableListActivity {
     static final String TAG = "NearbyVenuesActivity";
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
@@ -66,9 +61,6 @@ public class NearbyVenuesActivity extends ListActivity {
     private SearchHolder mSearchHolder = new SearchHolder();
 
     private ListView mListView;
-    private LinearLayout mEmpty;
-    private TextView mEmptyText;
-    private ProgressBar mEmptyProgress;
     private SeparatedListAdapter mListAdapter;
 
     private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
@@ -78,13 +70,10 @@ public class NearbyVenuesActivity extends ListActivity {
             finish();
         }
     };
-    private boolean mIsShortcutPicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setContentView(R.layout.search_list_activity);
         setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL);
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
@@ -94,9 +83,6 @@ public class NearbyVenuesActivity extends ListActivity {
         searchResultsObservable = new SearchResultsObservable();
 
         initListViewAdapter();
-
-        // Watch to see if we've been called as a shortcut intent.
-        mIsShortcutPicker = Intent.ACTION_CREATE_SHORTCUT.equals(getIntent().getAction());
 
         if (getLastNonConfigurationInstance() != null) {
             if (DEBUG) Log.d(TAG, "Restoring state.");
@@ -201,7 +187,13 @@ public class NearbyVenuesActivity extends ListActivity {
         return mSearchHolder;
     }
 
+    @Override
+    public int getNoSearchResultsStringId() {
+        return R.string.no_nearby_venues;
+    }
+
     public void putSearchResultsInAdapter(Group searchResults) {
+        setEmptyView();
         mListAdapter.clear();
         int groupCount = searchResults.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
@@ -247,16 +239,6 @@ public class NearbyVenuesActivity extends ListActivity {
         startActivity(intent);
     }
 
-    private void ensureSearchResults() {
-        if (mListAdapter.getCount() > 0) {
-            mEmpty.setVisibility(LinearLayout.GONE);
-        } else {
-            mEmptyText.setText(R.string.no_search_results);
-            mEmptyProgress.setVisibility(LinearLayout.GONE);
-            mEmpty.setVisibility(LinearLayout.VISIBLE);
-        }
-    }
-
     private void ensureTitle(boolean finished) {
         if (finished) {
             if (mSearchHolder.query == QUERY_NEARBY) {
@@ -277,9 +259,6 @@ public class NearbyVenuesActivity extends ListActivity {
         if (mListView != null) {
             throw new IllegalStateException("Trying to initialize already initialized ListView");
         }
-        mEmpty = (LinearLayout)findViewById(android.R.id.empty);
-        mEmptyText = (TextView)findViewById(R.id.emptyText);
-        mEmptyProgress = (ProgressBar)findViewById(R.id.emptyProgress);
 
         mListView = getListView();
         mListAdapter = new SeparatedListAdapter(this);
@@ -289,37 +268,9 @@ public class NearbyVenuesActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Venue venue = (Venue)parent.getAdapter().getItem(position);
-                if (mIsShortcutPicker) {
-                    setupShortcut(venue);
-                    finish();
-                } else {
                     startItemActivity(venue);
-                }
             }
         });
-    }
-
-    protected void setupShortcut(Venue venue) {
-        // First, set up the shortcut intent. For this example, we simply create an intent that
-        // will bring us directly back to this activity. A more typical implementation would use a
-        // data Uri in order to display a more specific result, or a custom action in order to
-        // launch a specific operation.
-
-        Intent shortcutIntent = new Intent(Intent.ACTION_MAIN);
-        shortcutIntent.setClassName(this, VenueActivity.class.getName());
-        shortcutIntent.putExtra(Foursquared.EXTRA_VENUE_ID, venue.getId());
-
-        // Then, set up the container intent (the response to the caller)
-        Intent intent = new Intent();
-        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, venue.getName());
-        Parcelable iconResource = Intent.ShortcutIconResource.fromContext(this,
-                R.drawable.venue_shortcut_icon);
-        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconResource);
-
-        // Now, return the result to the launcher
-
-        setResult(RESULT_OK, intent);
     }
 
     private class SearchTask extends AsyncTask<Void, Void, Group> {
@@ -358,7 +309,6 @@ public class NearbyVenuesActivity extends ListActivity {
             } finally {
                 setProgressBarIndeterminateVisibility(false);
                 ensureTitle(true);
-                ensureSearchResults();
             }
         }
 

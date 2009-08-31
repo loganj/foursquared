@@ -10,7 +10,6 @@ import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.TipListAdapter;
 
-import android.app.ListActivity;
 import android.os.Bundle;
 
 import java.util.Observable;
@@ -61,13 +60,9 @@ public class VenueTipsActivity extends LoadableListActivity {
         return tipsAndTodos;
     }
 
-    private void setTipGroups(Group groups) {
-        putGroupsInAdapter(groups);
-        setEmptyView();
-    }
-
     private void putGroupsInAdapter(Group groups) {
         SeparatedListAdapter mainAdapter = (SeparatedListAdapter)getListAdapter();
+        setEmptyView();
 
         int groupCount = groups.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
@@ -81,7 +76,7 @@ public class VenueTipsActivity extends LoadableListActivity {
     private final class VenueObserver implements Observer {
         @Override
         public void update(Observable observable, Object data) {
-            setTipGroups(getVenueTipsAndTodos((Venue)data));
+            putGroupsInAdapter(getVenueTipsAndTodos((Venue)data));
         }
     }
 }
