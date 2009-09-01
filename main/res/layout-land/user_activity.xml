@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <!-- Copyright 2009 Joe LaPenna -->
+
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:foursquared="http://schemas.android.com/apk/res/com.joelapenna.foursquared"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content">
+
+  <RelativeLayout
+    android:id="@+id/userLayout"
+
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentTop="true">
+
+    <ImageView
+      android:id="@+id/photo"
+
+      android:layout_width="75px"
+      android:layout_height="75px"
+
+      android:layout_alignParentTop="true"
+      android:layout_alignParentLeft="true"
+      android:layout_marginRight="6dip"
+
+      gravity="center_vertical"
+      android:layout_gravity="center_vertical"
+
+      android:scaleType="center" />
+
+    <TextView
+      android:id="@+id/name"
+
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+
+      android:layout_toRightOf="@id/photo"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentTop="true"
+
+      android:textAppearance="@android:style/TextAppearance.Large"
+
+      android:singleLine="true"
+      android:ellipsize="marquee"
+
+      android:gravity="center_vertical" />
+
+    <TextView
+      android:id="@+id/secondLine"
+
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+
+      android:layout_toRightOf="@id/photo"
+      android:layout_below="@id/name"
+      android:layout_alignParentRight="true"
+
+      android:textStyle="italic" />
+  </RelativeLayout>
+
+  <TextView
+    android:id="@+id/venueHeader"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="1dip"
+
+    android:visibility="invisible"
+
+    android:text="Last Seen"
+
+    android:layout_alignParentRight="true"
+    android:layout_alignParentLeft="true"
+    android:layout_below="@id/userLayout"
+    style="@style/listSeparatorTextViewStyle" />
+
+  <com.joelapenna.foursquared.widget.VenueView
+    android:id="@id/venue"
+
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+
+    android:layout_alignParentRight="true"
+    android:layout_alignParentLeft="true"
+    android:layout_below="@id/venueHeader"
+
+    foursquared:checkinButton="false" />
+
+  <TextView
+    android:id="@+id/badgesHeader"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+
+    android:visibility="invisible"
+
+    android:text="Badges"
+
+    android:layout_alignParentRight="true"
+    android:layout_alignParentLeft="true"
+    android:layout_below="@id/venue"
+    android:layout_marginTop="3dip"
+
+    style="@style/listSeparatorTextViewStyle" />
+
+  <GridView
+    android:id="@+id/badgesGrid"
+    android:layout_width="fill_parent"
+    android:layout_height="0dip"
+    android:layout_weight="1"
+
+    android:layout_alignParentRight="true"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentBottom="true"
+    android:layout_below="@id/badgesHeader"
+
+    android:layout_marginTop="3dip"
+
+    android:horizontalSpacing="12dip"
+    android:verticalSpacing="12dip"
+
+    android:columnWidth="80dip"
+    android:numColumns="auto_fit" />
+
+</RelativeLayout>
