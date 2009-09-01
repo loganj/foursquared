@@ -20,8 +20,8 @@
     <ImageView
       android:id="@+id/photo"
 
-      android:layout_width="75px"
-      android:layout_height="75px"
+      android:layout_width="50px"
+      android:layout_height="50px"
 
       android:layout_alignParentTop="true"
       android:layout_alignParentLeft="true"
