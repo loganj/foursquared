@@ -90,7 +90,7 @@
     <item
       name="android:paddingLeft">16px</item>
     <item
-      name="android:background">@drawable/quick_checkin</item>
+      name="android:background">@drawable/quick_checkin_states</item>
     <item
       name="android:text">Quick-Checkin</item>
     <item
