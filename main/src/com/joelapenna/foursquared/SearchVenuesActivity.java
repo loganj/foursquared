@@ -365,7 +365,7 @@ public class SearchVenuesActivity extends TabActivity {
         mTabHost = getTabHost();
 
         mTabHost.addTab(mTabHost.newTabSpec("results") //
-                .setIndicator(resources.getString(R.string.venues_label),
+                .setIndicator(resources.getString(R.string.search_venues_label),
                         resources.getDrawable(R.drawable.places_tab)) // the tab icon
                 .setContent(R.id.listviewLayout) //
                 );
