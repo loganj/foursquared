@@ -60,7 +60,7 @@
   <string
     name="map_label">Map</string>
   <string
-    name="venues_label">Venues</string>
+    name="venues_label">Map</string>
 
   <string
     name="venues_search_label">Venue Search</string>
