@@ -16,6 +16,7 @@ import com.joelapenna.foursquared.util.StringFormatters;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -94,7 +95,7 @@ public class VenueCheckinsActivity extends LoadableListActivity {
 
         Group emptyGroup = new Group();
         emptyGroup.setType("Checkins");
-        mListAdapter = new CheckinListAdapter(this, emptyGroup, //
+        mListAdapter = new HeaderAwareCheckinListAdapter(this, emptyGroup, //
                 ((Foursquared)getApplication()).getUserPhotosManager(), true);
 
         setListAdapter(mListAdapter);
@@ -199,6 +200,21 @@ public class VenueCheckinsActivity extends LoadableListActivity {
                 ensureMayor(venue);
                 putCheckinsInAdapter(checkins);
             }
+        }
+    }
+
+    private class HeaderAwareCheckinListAdapter extends CheckinListAdapter {
+        public HeaderAwareCheckinListAdapter(Context context, Group checkins,
+                RemoteResourceManager rrm, boolean displayAtVenue) {
+            super(context, checkins, rrm, displayAtVenue);
+        }
+
+        @Override
+        public boolean isEmpty() {
+            // XXX This is such a hack.
+            // Only state you're empty if there are no headers, this allows headers to be shown even
+            // if there are no checkins at this venue.
+            return super.isEmpty() && getListView().getHeaderViewsCount() < 2;
         }
     }
 }
