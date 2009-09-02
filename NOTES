@@ -37,3 +37,18 @@ File > Import > Existing project - Browse to $dumpcatcher/clients/java/main
 
 ====Real foursquare projects====
 File > Import > Existing project - Browse to $foursquared/main
+
+
+=== Building a release ===
+
+Update credentials.xml
+  google_maps_api_key
+  dumpcatcher_product_name
+  dumpcatcher_product_key
+  dumpcatcher_secret
+
+Update FoursquaredSettings.java
+  Disable all debugging DEBUG_*
+  Disable using the debug_server USE_DEBUG_SERVER
+  enable using dumpcatcher USE_DUMPCATCHER
+
