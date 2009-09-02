@@ -2,8 +2,26 @@
 <venues>
   <group type="Nearby Favorites">
     <venue>
-      <id>23035</id>
-      <name>Santa Fe Café</name>
+      <id>23030</id>
+      <name>Santa Fe Café 2</name>
+      <distance>0.3</distance>
+      <address>298 Divisadero St</address>
+      <crossstreet>at Page</crossstreet>
+      <phone>8675309</phone>
+      <twitter>stupidtwittername</twitter>
+      <geolat>37.7722</geolat>
+      <geolong>-122.437</geolong>
+      <stats>
+        <checkins>165</checkins>
+        <beenhere>
+          <me>true</me>
+          <friends>true</friends>
+        </beenhere>
+      </stats>
+    </venue>
+    <venue>
+      <id>23031</id>
+      <name>Santa Fe Café 1</name>
       <distance>0.1</distance>
       <address>298 Divisadero St</address>
       <crossstreet>at Page</crossstreet>
@@ -20,9 +38,27 @@
       </stats>
     </venue>
     <venue>
+      <id>23032</id>
+      <name>Santa Fe Café 3</name>
+      <distance>2</distance>
+      <address>298 Divisadero St</address>
+      <crossstreet>at Page</crossstreet>
+      <phone>8675309</phone>
+      <twitter>stupidtwittername</twitter>
+      <geolat>37.7722</geolat>
+      <geolong>-122.437</geolong>
+      <stats>
+        <checkins>165</checkins>
+        <beenhere>
+          <me>true</me>
+          <friends>true</friends>
+        </beenhere>
+      </stats>
+    </venue>
+    <venue>
       <id>44795</id>
-      <name>little chihuahua</name>
-      <distance>0.1</distance>
+      <name>little chihuahua 0</name>
+      <distance>0.01</distance>
       <address>292 Divisadero St</address>
       <crossstreet>Page St</crossstreet>
       <geolat>37.772</geolat>
