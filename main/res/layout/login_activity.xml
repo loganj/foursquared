@@ -31,7 +31,7 @@
       android:inputType="phone"
       android:lines="1"
       android:textAppearance="@android:style/TextAppearance.Large"
-      android:hint="Phone Number" />
+      android:hint="@string/phone_number" />
     <EditText
       android:id="@+id/passwordEditText"
       android:layout_width="fill_parent"
@@ -40,7 +40,7 @@
       android:imeOptions="actionDone"
       android:lines="1"
       android:textAppearance="@android:style/TextAppearance.Large"
-      android:hint="Password" />
+      android:hint="@string/password" />
     <Button
       android:id="@+id/button"
       android:layout_width="fill_parent"

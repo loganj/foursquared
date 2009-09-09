@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:inputType="textCapWords"
         android:imeOptions="actionNext"
-        android:hint="Venue Name" />
+        android:hint="@string/venue_name" />
 
       <TextView
         android:id="@+id/addressLabel"
@@ -37,14 +37,14 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:imeOptions="actionNext"
-        android:hint="Cross Street" />
+        android:hint="@string/cross_street" />
 
       <EditText
         android:id="@+id/cityEditText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:imeOptions="actionNext"
-        android:hint="City" />
+        android:hint="@string/city" />
 
 
       <TableLayout
@@ -58,7 +58,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:imeOptions="actionNext"
-            android:hint="State" />
+            android:hint="@string/state" />
           <EditText
             android:id="@+id/zipEditText"
             android:layout_width="0px"
@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:imeOptions="actionNext"
             android:numeric="integer"
-            android:hint="Zip Code" />
+            android:hint="@string/zip_code" />
         </TableRow>
       </TableLayout>
 
@@ -76,7 +76,7 @@
         android:layout_height="wrap_content"
         style="@style/listSeparatorTextViewStyle"
 
-        android:text="@string/phone" />
+        android:text="@string/phone_number" />
 
       <EditText
         android:id="@+id/phoneEditText"

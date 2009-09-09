@@ -37,7 +37,7 @@
           android:lines="1"
           android:singleLine="true"
           android:textAppearance="@android:style/TextAppearance.Large"
-          android:hint="Phone Number" />
+          android:hint="@string/phone_number" />
         <EditText
           android:id="@+id/passwordEditText"
           android:layout_width="0px"
@@ -47,7 +47,7 @@
           android:singleLine="true"
           android:password="true"
           android:textAppearance="@android:style/TextAppearance.Large"
-          android:hint="Password" />
+          android:hint="@string/password" />
       </TableRow>
     </TableLayout>
     <Button

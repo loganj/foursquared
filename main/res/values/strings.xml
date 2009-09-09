@@ -126,9 +126,17 @@
     name="mayor_header">Mayor</string>
 
   <string
+    name="venue_name">Venue Name</string>
+  <string
     name="address">Address</string>
   <string
-    name="phone">Phone</string>
+    name="cross_street">Cross Street</string>
+  <string
+    name="city">City</string>
+  <string
+    name="state">State</string>
+  <string
+    name="zip_code">Zip Code</string>
 
   <string
     name="need_an_account">Need an account?</string>
@@ -136,5 +144,16 @@
     name="tell_my_friends">Tell my Friends</string>
   <string
     name="tell_twitter">Tell Twitter</string>
+
+  <!--
+    The whitespace is a layout hack to make sure the dialog box doesn't bounce in size so quickly.
+  -->
+  <string
+    name="shout_hint">Shout, shout, let it all out...                              </string>
+
+  <string
+    name="phone_number">Phone Number</string>
+  <string
+    name="password">Password</string>
 
 </resources>

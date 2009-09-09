@@ -34,7 +34,7 @@
     android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
     android:imeOptions="actionDone"
     android:lines="2"
-    android:hint="Shout. Shout. Let it all out!                      " />
+    android:hint="@string/shout_hint" />
 
   <Button
     android:id="@+id/checkinButton"
