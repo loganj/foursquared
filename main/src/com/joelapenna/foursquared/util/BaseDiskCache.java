@@ -85,6 +85,7 @@ public class BaseDiskCache implements DiskCache {
             try {
                 nomediaFile.createNewFile();
             } catch (IOException e) {
+                Log.d(TAG, "Unable to create .nomedia file for some reason.", e);
                 throw new IllegalStateException("Unable to create nomedia file.");
             }
             // After we best-effort try to create the file-structure we need,
