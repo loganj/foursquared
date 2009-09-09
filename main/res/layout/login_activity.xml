@@ -47,7 +47,7 @@
       android:layout_height="wrap_content"
       android:enabled="false"
       android:textAppearance="@android:style/TextAppearance.Large"
-      android:text="Log-in" />
+      android:text="@string/login_label" />
   </LinearLayout>
   <TextView
     android:id="@+id/newAccountTextView"
@@ -58,5 +58,5 @@
     android:paddingBottom="2dip"
     android:textAppearance="@android:style/TextAppearance.Large"
     android:textColor="#0000ee"
-    android:text="Need an account?" />
+    android:text="@string/need_an_account" />
 </RelativeLayout>

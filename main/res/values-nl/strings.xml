@@ -117,4 +117,28 @@
   <string
     name="preferences_unable_to_find_city_toast">Kan je stad niet bijwerkeny.</string>
 
+  <!-- Added 09/09/2009
+
+  <string
+    name="last_seen_header">Last Seen</string>
+  <string
+    name="badges_header">Badges</string>
+
+  <string
+    name="mayor_header">Mayor</string>
+
+  <string
+    name="address">Address</string>
+  <string
+    name="phone">Phone</string>
+
+  <string
+    name="need_an_account">Need an account?</string>
+  <string
+    name="tell_my_friends">Tell my Friends</string>
+  <string
+    name="tell_twitter">Tell Twitter</string>
+
+  -->
+
 </resources>

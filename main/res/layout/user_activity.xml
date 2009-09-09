@@ -70,7 +70,7 @@
 
     android:visibility="invisible"
 
-    android:text="Last Seen"
+    android:text="@string/last_seen_header"
 
     android:layout_alignParentRight="true"
     android:layout_alignParentLeft="true"
@@ -96,7 +96,7 @@
 
     android:visibility="invisible"
 
-    android:text="Badges"
+    android:text="@string/badges_header"
 
     android:layout_alignParentRight="true"
     android:layout_alignParentLeft="true"

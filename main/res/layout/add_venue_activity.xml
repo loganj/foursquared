@@ -22,7 +22,7 @@
         android:id="@+id/addressLabel"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Address"
+        android:text="@string/address"
         style="@style/listSeparatorTextViewStyle" />
 
       <EditText
@@ -30,7 +30,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:imeOptions="actionNext"
-        android:hint="Address" />
+        android:hint="@string/address" />
 
       <EditText
         android:id="@+id/crossstreetEditText"
@@ -76,7 +76,7 @@
         android:layout_height="wrap_content"
         style="@style/listSeparatorTextViewStyle"
 
-        android:text="Phone" />
+        android:text="@string/phone" />
 
       <EditText
         android:id="@+id/phoneEditText"

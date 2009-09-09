@@ -30,7 +30,7 @@
   <string
     name="preferences_label">Preferences</string>
   <string
-    name="login_label">Login</string>
+    name="login_label">Log-in</string>
 
   <string
     name="add_venue_label">Add Venue</string>
@@ -76,7 +76,7 @@
     name="friendsactivity_title_searching">Foursquare - Searching for Friends</string>
 
   <string
-    name="login_dialog_title">Logging in</string>
+    name="login_dialog_title">Logging in...</string>
   <string
     name="login_dialog_message">Please wait while logging into Foursquare...</string>
 
@@ -116,5 +116,25 @@
     name="preferences_welcome_city_toast">Welcome to %s!</string>
   <string
     name="preferences_unable_to_find_city_toast">Unable to update your city.</string>
+
+  <string
+    name="last_seen_header">Last Seen</string>
+  <string
+    name="badges_header">Badges</string>
+
+  <string
+    name="mayor_header">Mayor</string>
+
+  <string
+    name="address">Address</string>
+  <string
+    name="phone">Phone</string>
+
+  <string
+    name="need_an_account">Need an account?</string>
+  <string
+    name="tell_my_friends">Tell my Friends</string>
+  <string
+    name="tell_twitter">Tell Twitter</string>
 
 </resources>

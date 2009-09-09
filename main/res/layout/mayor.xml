@@ -14,7 +14,7 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="3dip"
 
-    android:text="Mayor"
+    android:text="@string/mayor_header"
 
     android:layout_alignParentRight="true"
     android:layout_alignParentLeft="true"

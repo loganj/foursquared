@@ -18,14 +18,14 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
 
-    android:text="Tell my friends" />
+    android:text="@string/tell_my_friends" />
 
   <CheckBox
     android:id="@+id/tellTwitterCheckBox"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
 
-    android:text="Tell Twitter" />
+    android:text="@string/tell_twitter" />
 
   <EditText
     android:id="@+id/shoutEditText"
@@ -41,6 +41,6 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
 
-    android:text="Check-in!" />
+    android:text="@string/checkin_action_label" />
 
 </LinearLayout>
