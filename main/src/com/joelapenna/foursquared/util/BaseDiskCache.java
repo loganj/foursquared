@@ -78,21 +78,45 @@ public class BaseDiskCache implements DiskCache {
     }
 
     private static final void createDirectory(File storageDirectory) {
-        File nomediaFile = new File(storageDirectory, ".nomedia");
+        if (!storageDirectory.exists()) {
+            Log.d(TAG, "Trying to create storageDirectory: "
+                    + String.valueOf(storageDirectory.mkdirs()));
 
-        if (!(storageDirectory.isDirectory() && nomediaFile.exists())) {
-            storageDirectory.mkdirs();
+            Log.d(TAG, "Exists: " + storageDirectory + " "
+                    + String.valueOf(storageDirectory.exists()));
+            Log.d(TAG, "Isdir: " + storageDirectory + " "
+                    + String.valueOf(storageDirectory.isDirectory()));
+            Log.d(TAG, "Readable: " + storageDirectory + " "
+                    + String.valueOf(storageDirectory.canRead()));
+            Log.d(TAG, "Writable: " + storageDirectory + " "
+                    + String.valueOf(storageDirectory.canWrite()));
+            File tmp = storageDirectory.getParentFile();
+            Log.d(TAG, "Exists: " + tmp + " " + String.valueOf(tmp.exists()));
+            Log.d(TAG, "Isdir: " + tmp + " " + String.valueOf(tmp.isDirectory()));
+            Log.d(TAG, "Readable: " + tmp + " " + String.valueOf(tmp.canRead()));
+            Log.d(TAG, "Writable: " + tmp + " " + String.valueOf(tmp.canWrite()));
+            tmp = tmp.getParentFile();
+            Log.d(TAG, "Exists: " + tmp + " " + String.valueOf(tmp.exists()));
+            Log.d(TAG, "Isdir: " + tmp + " " + String.valueOf(tmp.isDirectory()));
+            Log.d(TAG, "Readable: " + tmp + " " + String.valueOf(tmp.canRead()));
+            Log.d(TAG, "Writable: " + tmp + " " + String.valueOf(tmp.canWrite()));
+        }
+
+        File nomediaFile = new File(storageDirectory, ".nomedia");
+        if (!nomediaFile.exists()) {
             try {
-                nomediaFile.createNewFile();
+                Log.d(TAG, "Created file: " + nomediaFile
+                        + String.valueOf(nomediaFile.createNewFile()));
             } catch (IOException e) {
                 Log.d(TAG, "Unable to create .nomedia file for some reason.", e);
                 throw new IllegalStateException("Unable to create nomedia file.");
             }
-            // After we best-effort try to create the file-structure we need,
-            // lets make sure it worked.
-            if (!(storageDirectory.isDirectory() && nomediaFile.exists())) {
-                throw new RuntimeException("Unable to create storage directory and nomedia file.");
-            }
+        }
+
+        // After we best-effort try to create the file-structure we need,
+        // lets make sure it worked.
+        if (!(storageDirectory.isDirectory() && nomediaFile.exists())) {
+            throw new RuntimeException("Unable to create storage directory and nomedia file.");
         }
     }
 }
