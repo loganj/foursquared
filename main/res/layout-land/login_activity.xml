@@ -63,7 +63,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentRight="true"
-    android:layout_above="@+id/controls"
+    android:layout_above="@id/controls"
     android:paddingBottom="2dip"
     android:textAppearance="@android:style/TextAppearance.Large"
     android:textColor="#0000ee"
