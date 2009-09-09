@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string
+    name="app_name">Foursquare</string>
+  <string
+    name="add_venue_activity_label">Voeg nieuwe plaats toe</string>
+  <string
+    name="checkins_activity_label">Foursquare Vrienden</string>
+  <string
+    name="preference_activity_label">Foursquare Voorkeuren</string>
+  <string
+    name="shout_activity_label">Foursquare Checkin</string>
+  <string
+    name="shout_no_venue_activity_label">Foursquare Shout</string>
+  <string
+    name="tips_activity_label">Foursquare Plaats Tips</string>
+  <string
+    name="venue_checkin_activity_label">Foursquare Plaats Check-In</string>
+  <string
+    name="venue_info_activity_label">Foursquare Plaats</string>
+  <string
+    name="venue_search_activity_label">Foursquare Plaatsen</string>
+  <string
+    name="venue_tips_activity_label">Foursquare Tips</string>
+  <string
+    name="venue_info_tab">Tips</string>
+  <string
+    name="venue_checkins_tab">Checkins</string>
+
+  <string
+    name="preferences_label">Voorkeuren</string>
+  <string
+    name="login_label">Login</string>
+
+  <string
+    name="add_venue_label">Voeg Plaats Toe</string>
+
+  <string
+    name="add_venue_error_toast_venue_null">Kan Plaats Niet Toevoegen!</string>
+
+  <string
+    name="refresh_address_label">Ververs Adres</string>
+
+  <string
+    name="checkins_label">Vrienden</string>
+  <string
+    name="myinfo_label">Mijn Informatie</string>
+  <string
+    name="nearby_label">Dichtbij</string>
+  <string
+    name="refresh_label">Ververs</string>
+  <string
+    name="search_label">Zoek</string>
+  <!-- No reasonable translation <string
+    name="stats_label">Leaderboard</string> -->
+  <!-- No reasonable translation <string
+    name="shout_action_label">Shout!</string> -->
+  <!-- No reasonable translation <string
+    name="checkin_action_label">Check-in!</string> -->
+  <string
+    name="map_label">Kaart</string>
+  <string
+    name="search_venues_label">Plaatsen</string>
+
+  <string
+    name="venues_search_label">Zoek Plaats</string>
+  <string
+    name="venues_search_hint">Typ een Plaatsnaam of Tag</string>
+
+  <string
+    name="tip_add_spinner_prompt">Selecteer een Lijst</string>
+
+  <string
+    name="friendsactivity_title_finished">Foursquare Vrienden</string>
+  <string
+    name="friendsactivity_title_searching">Foursquare - Zoek Vrienden</string>
+
+  <string
+    name="login_dialog_title">Inloggen</string>
+  <string
+    name="login_dialog_message">Wacht a.u.b. terwijl we inloggen op Foursquare...</string>
+
+  <string
+    name="login_welcome_toast">Welkom bij %s!</string>
+  <string
+    name="login_failed_login_toast">Kan niet inloggen. Controleer je telefoonnummer en wachtwoord.</string>
+
+  <string
+    name="search_already_in_progress_toast">Een zoekopdracht is al bezig.</string>
+  <string
+    name="no_search_results">Geen zoek resultaten.</string>
+  <string
+    name="title_search_finished_noquery">Dichtbij - Foursquare</string>
+  <string
+    name="title_search_finished">%s - Foursquare</string>
+  <string
+    name="title_search_inprogress_noquery">Zoek dichtbij - Foursquare</string>
+  <string
+    name="title_search_inprogress">Zoeken "%s" - Foursquare</string>
+
+  <string
+    name="no_checkins_be_the_first">No checkins here yet, be the first!</string>
+  <string
+    name="no_tips_be_the_first">Nog geen tips hier, wees de eerste!</string>
+  <string
+    name="no_friend_checkins">Geen recente vrienden ingelogd. Vind coolere vrienden!</string>
+  <string
+    name="no_nearby_venues">Geen plaatsen dichtbij!</string>
+
+  <string
+    name="loading">Laden...</string>
+
+  <string
+    name="preferences_updating_city_toast">Stad bijwerken.</string>
+  <string
+    name="preferences_welcome_city_toast">Welkom bij to %s!</string>
+  <string
+    name="preferences_unable_to_find_city_toast">Kan je stad niet bijwerkeny.</string>
+
+</resources>

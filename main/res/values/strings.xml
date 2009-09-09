@@ -60,8 +60,6 @@
   <string
     name="map_label">Map</string>
   <string
-    name="venues_label">Map</string>
-  <string
     name="search_venues_label">Venues</string>
 
   <string
@@ -113,10 +111,10 @@
     name="loading">Loading...</string>
 
   <string
-     name="preferences_updating_city_toast">Updating your city.</string>
+    name="preferences_updating_city_toast">Updating your city.</string>
   <string
-     name="preferences_welcome_city_toast">Welcome to %s!</string>
-  <string 
-     name="preferences_unable_to_find_city_toast">Unable to update your city.</string>
+    name="preferences_welcome_city_toast">Welcome to %s!</string>
+  <string
+    name="preferences_unable_to_find_city_toast">Unable to update your city.</string>
 
 </resources>
