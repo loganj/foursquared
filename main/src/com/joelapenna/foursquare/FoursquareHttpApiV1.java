@@ -105,7 +105,7 @@ public class FoursquareHttpApiV1 {
     };
 
     public FoursquareHttpApiV1() {
-        this("api.playfoursquare.com");
+        this("api.foursquare.com.");
     }
 
     public FoursquareHttpApiV1(String domain) {

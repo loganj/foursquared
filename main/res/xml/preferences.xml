@@ -35,12 +35,12 @@
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="friend_add"
       android:title="Add Friends"
-      android:summary="Add Friends with playfoursquare.com" />
+      android:summary="Add Friends with foursquare.com." />
 
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="friend_requests"
       android:title="Friend Requests"
-      android:summary="Manage friends with playfoursquare.com" />
+      android:summary="Manage friends with foursquare.com." />
   </PreferenceCategory>
 
   <PreferenceCategory

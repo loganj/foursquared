@@ -31,7 +31,7 @@ class FoursquareHttpApi {
     private static final boolean DEBUG = Foursquare.DEBUG;
 
     private static final String HTTP_SCHEME = "http://";
-    private static final String DOMAIN = "playfoursquare.com";
+    private static final String DOMAIN = "foursquare.com.";
 
     private static final String URL_DOMAIN = HTTP_SCHEME + DOMAIN;
 

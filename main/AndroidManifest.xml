@@ -67,27 +67,27 @@
           android:name="android.intent.category.BROWSABLE" />
         <data
           android:scheme="http"
-          android:host="playfoursquare.com"
+          android:host="foursquare.com."
           android:pathPrefix="/venue/" />
         <data
           android:scheme="http"
-          android:host="m.playfoursquare.com"
+          android:host="m.foursquare.com."
           android:pathPrefix="/venue/" />
         <data
           android:scheme="http"
-          android:host="playfoursquare.com"
+          android:host="foursquare.com."
           android:pathPrefix="/login" />
         <data
           android:scheme="http"
-          android:host="m.playfoursquare.com"
+          android:host="m.foursquare.com."
           android:pathPrefix="/login" />
         <data
           android:scheme="http"
-          android:host="playfoursquare.com"
+          android:host="foursquare.com."
           android:pathPrefix="/checkins" />
         <data
           android:scheme="http"
-          android:host="m.playfoursquare.com"
+          android:host="m.foursquare.com."
           android:pathPrefix="/checkins" />
       </intent-filter>
     </activity>

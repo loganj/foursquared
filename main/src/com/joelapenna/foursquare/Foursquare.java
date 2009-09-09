@@ -146,7 +146,7 @@ public class Foursquare {
     @Classic
     public String checkinResultUrl(String userId, String checkinId) {
         StringBuffer sb = new StringBuffer();
-        sb.append("http://playfoursquare.com/incoming/breakdown");
+        sb.append("http://foursquare.com./incoming/breakdown");
         sb.append("?client=iphone&uid=");
         sb.append(userId);
         sb.append("&cid=");

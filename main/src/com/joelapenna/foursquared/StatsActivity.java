@@ -61,7 +61,7 @@ public class StatsActivity extends Activity {
         String cityId = PreferenceManager.getDefaultSharedPreferences(this).getString(
                 Preferences.PREFERENCE_CITY_ID, "");
 
-        String url = "http://playfoursquare.com/web/iphone/me?view=all&scope=friends&uid=" + userId
+        String url = "http://foursquare.com./web/iphone/me?view=all&scope=friends&uid=" + userId
                 + "&cityid=" + cityId;
         Log.d(TAG, url);
         webView.loadUrl(url);

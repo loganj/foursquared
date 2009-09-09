@@ -25,11 +25,11 @@ public class BrowsableActivity extends Activity {
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
 
-        sUriMatcher.addURI("playfoursquare.com", "venue/#", URI_PATH_VENUE);
-        sUriMatcher.addURI("m.playfoursquare.com", "venue/#", URI_PATH_VENUE);
+        sUriMatcher.addURI("foursquare.com.", "venue/#", URI_PATH_VENUE);
+        sUriMatcher.addURI("m.foursquare.com.", "venue/#", URI_PATH_VENUE);
 
-        sUriMatcher.addURI("playfoursquare.com", "checkins", URI_PATH_CHECKINS);
-        sUriMatcher.addURI("m.playfoursquare.com", "checkins", URI_PATH_CHECKINS);
+        sUriMatcher.addURI("foursquare.com.", "checkins", URI_PATH_CHECKINS);
+        sUriMatcher.addURI("m.foursquare.com.", "checkins", URI_PATH_CHECKINS);
     }
 
     @Override
