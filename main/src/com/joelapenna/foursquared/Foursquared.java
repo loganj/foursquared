@@ -45,8 +45,8 @@ public class Foursquared extends Application {
 
     final private BestLocationListener mBestLocationListener = new BestLocationListener();
 
-    final private RemoteResourceManager sBadgeIconManager = new RemoteResourceManager("badges");
-    final private RemoteResourceManager sUserPhotosManager = new RemoteResourceManager(
+    final private RemoteResourceManager mBadgeIconManager = new RemoteResourceManager("badges");
+    final private RemoteResourceManager mUserPhotosManager = new RemoteResourceManager(
             "user_photos");
 
     final private Foursquare mFoursquare = new Foursquare(FoursquaredSettings.USE_DEBUG_SERVER);
@@ -86,8 +86,8 @@ public class Foursquared extends Application {
 
     @Override
     public void onTerminate() {
-        sUserPhotosManager.shutdown();
-        sBadgeIconManager.shutdown();
+        mUserPhotosManager.shutdown();
+        mBadgeIconManager.shutdown();
         mLocationManager.removeUpdates(mCityLocationListener);
     }
 
@@ -142,10 +142,10 @@ public class Foursquared extends Application {
     }
 
     public RemoteResourceManager getUserPhotosManager() {
-        return sUserPhotosManager;
+        return mUserPhotosManager;
     }
 
     public RemoteResourceManager getBadgeIconManager() {
-        return sBadgeIconManager;
+        return mBadgeIconManager;
     }
 }
