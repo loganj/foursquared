@@ -43,10 +43,10 @@ class FoursquareHttpApi {
     private static final String URL_BREAKDOWN = URL_DOMAIN + "/incoming/breakdown";
 
     // Get the html achievements page.
-    private static final String URL_ACHIEVEMENTS = URL_DOMAIN + "/web/iphone/achievements";
+    private static final String URL_ACHIEVEMENTS = URL_DOMAIN + "/iphone/achievements";
 
     // Get the html me page.
-    private static final String URL_ME = URL_DOMAIN + "/web/iphone/me";
+    private static final String URL_ME = URL_DOMAIN + "/iphone/me";
 
     // Used for stuff.
     private final HttpApi mHttpApi;
@@ -105,7 +105,7 @@ class FoursquareHttpApi {
     }
 
     /**
-     * /web/iphone/achievements?task=unlocked&uid=1818&cityid=23
+     * /iphone/achievements?task=unlocked&uid=1818&cityid=23
      */
     @Deprecated
     String achievements(String cityid, String task, String userId)
@@ -132,7 +132,7 @@ class FoursquareHttpApi {
     }
 
     /**
-     * /web/iphone/me?uid=9232&view=mini&cityid=23
+     * /iphone/me?uid=9232&view=mini&cityid=23
      */
     @Deprecated
     String me(String cityid, String userId) throws FoursquareCredentialsException,
