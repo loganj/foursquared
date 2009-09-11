@@ -84,6 +84,7 @@ public class BaseDiskCache implements DiskCache {
 
             Log.d(TAG, "Exists: " + storageDirectory + " "
                     + String.valueOf(storageDirectory.exists()));
+            Log.d(TAG, "State: " + Environment.getExternalStorageState());
             Log.d(TAG, "Isdir: " + storageDirectory + " "
                     + String.valueOf(storageDirectory.isDirectory()));
             Log.d(TAG, "Readable: " + storageDirectory + " "
