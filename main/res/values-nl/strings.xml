@@ -157,6 +157,11 @@
   <string
     name="password">Password</string>
 
+  <string
+    name="add_a_tip">Add a Tip</string>
+
+  <string
+    name="call">Call</string>
 
   -->
 

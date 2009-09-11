@@ -21,8 +21,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -48,10 +50,9 @@ public class VenueActivity extends TabActivity {
 
     private static final int DIALOG_TIPADD = 1;
 
-    private static final int MENU_GROUP_SHOUT = 1;
-
     private static final int MENU_SHOUT = 1;
     private static final int MENU_TIPADD = 2;
+    private static final int MENU_CALL = 3;
 
     private static final int RESULT_SHOUT = 1;
 
@@ -61,8 +62,6 @@ public class VenueActivity extends TabActivity {
     private final StateHolder mStateHolder = new StateHolder();
 
     private final HashSet<Object> mProgressBarTasks = new HashSet<Object>();
-
-    private MenuItem mShoutMenuItem;
 
     private VenueView mVenueView;
 
@@ -128,10 +127,13 @@ public class VenueActivity extends TabActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        mShoutMenuItem = menu.add(MENU_GROUP_SHOUT, MENU_SHOUT, 1, "Checkin!") //
+        menu.add(Menu.NONE, MENU_SHOUT, 1, R.string.checkin_action_label) //
                 .setIcon(R.drawable.ic_menu_checkin);
 
-        menu.add(Menu.NONE, MENU_TIPADD, 4, "Add Tip").setIcon(android.R.drawable.ic_menu_set_as);
+        menu.add(Menu.NONE, MENU_TIPADD, 2, R.string.add_a_tip).setIcon(
+                android.R.drawable.ic_menu_set_as);
+
+        menu.add(Menu.NONE, MENU_CALL, 3, R.string.call).setIcon(android.R.drawable.ic_menu_call);
 
         Foursquared.addPreferencesToMenu(this, menu);
         return true;
@@ -140,7 +142,11 @@ public class VenueActivity extends TabActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean checkinEnabled = (mStateHolder.venue != null) && !mCheckedInSuccessfully;
-        menu.setGroupEnabled(mShoutMenuItem.getGroupId(), checkinEnabled);
+        menu.findItem(MENU_SHOUT).setEnabled(checkinEnabled);
+
+        boolean callEnabled = mStateHolder.venue != null
+                && !TextUtils.isEmpty(mStateHolder.venue.getPhone());
+        menu.findItem(MENU_CALL).setEnabled(callEnabled);
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -158,6 +164,12 @@ public class VenueActivity extends TabActivity {
                 return true;
             case MENU_TIPADD:
                 showDialog(DIALOG_TIPADD);
+                return true;
+            case MENU_CALL:
+                Uri phoneUri = Uri.fromParts("tel", mStateHolder.venue.getPhone(), null);
+                startActivity(new Intent(Intent.ACTION_CALL, phoneUri));
+                // nothing sucka.
+                return true;
             default:
                 return false;
         }
