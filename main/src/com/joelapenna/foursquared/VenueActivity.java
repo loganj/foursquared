@@ -279,6 +279,7 @@ public class VenueActivity extends TabActivity {
 
     private void setVenue(Venue venue) {
         mStateHolder.venue = venue;
+        mStateHolder.venueId = venue.getId();
         venueObservable.notifyObservers(venue);
         onVenueSet(mStateHolder.venue);
 
