@@ -67,7 +67,8 @@ public class VenueTipsActivity extends LoadableListActivity {
         int groupCount = groups.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
             Group group = (Group)groups.get(groupsIndex);
-            TipListAdapter groupAdapter = new TipListAdapter(this, group);
+            TipListAdapter groupAdapter = new TipListAdapter(this);
+            groupAdapter.setGroup(group);
             mainAdapter.addSection(group.getType(), groupAdapter);
         }
         mainAdapter.notifyDataSetInvalidated();

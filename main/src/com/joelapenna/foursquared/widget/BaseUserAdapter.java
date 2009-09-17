@@ -4,16 +4,16 @@
 
 package com.joelapenna.foursquared.widget;
 
-import com.joelapenna.foursquare.types.Checkin;
+import com.joelapenna.foursquare.types.User;
 
 import android.content.Context;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public abstract class BaseCheckinAdapter extends BaseGroupAdapter<Checkin> {
+public abstract class BaseUserAdapter extends BaseGroupAdapter<User> {
 
-    public BaseCheckinAdapter(Context context) {
+    public BaseUserAdapter(Context context) {
         super(context);
     }
 }

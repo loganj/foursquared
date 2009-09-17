@@ -14,15 +14,14 @@ import android.widget.BaseAdapter;
  */
 abstract class BaseGroupAdapter<T> extends BaseAdapter {
 
-    Group group;
+    Group group = null;
 
-    public BaseGroupAdapter(Context context, Group g) {
-        setGroup(g);
+    public BaseGroupAdapter(Context context) {
     }
 
     @Override
     public int getCount() {
-        return group.size();
+        return (group == null) ? 0 : group.size();
     }
 
     @Override
@@ -42,12 +41,7 @@ abstract class BaseGroupAdapter<T> extends BaseAdapter {
 
     @Override
     public boolean isEmpty() {
-        return group.isEmpty();
-    }
-
-    public void clear() {
-        group.clear();
-        notifyDataSetInvalidated();
+        return (group == null) ? true : group.isEmpty();
     }
 
     public void setGroup(Group g) {

@@ -4,7 +4,6 @@
 
 package com.joelapenna.foursquared.widget;
 
-import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Stats;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.FoursquaredSettings;
@@ -28,8 +27,8 @@ public class VenueListAdapter extends BaseVenueAdapter {
 
     private LayoutInflater mInflater;
 
-    public VenueListAdapter(Context context, Group venues) {
-        super(context, venues);
+    public VenueListAdapter(Context context) {
+        super(context);
         mInflater = LayoutInflater.from(context);
     }
 

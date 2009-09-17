@@ -4,7 +4,6 @@
 
 package com.joelapenna.foursquared.widget;
 
-import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
@@ -27,8 +26,8 @@ public class TipListAdapter extends BaseTipAdapter {
 
     private LayoutInflater mInflater;
 
-    public TipListAdapter(Context context, Group venues) {
-        super(context, venues);
+    public TipListAdapter(Context context) {
+        super(context);
         mInflater = LayoutInflater.from(context);
     }
 

@@ -5,7 +5,6 @@
 package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
@@ -32,8 +31,8 @@ import java.util.Observer;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class CheckinListAdapter extends BaseCheckinAdapter {
-    private static final String TAG = "CheckinListAdapter";
+public class UserListAdapter extends BaseUserAdapter {
+    private static final String TAG = "UserListAdapter";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private LayoutInflater mInflater;
@@ -41,7 +40,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
     private RemoteResourceManager mRrm;
     private Handler mHandler = new Handler();
 
-    public CheckinListAdapter(Context context, RemoteResourceManager rrm) {
+    public UserListAdapter(Context context, RemoteResourceManager rrm) {
         super(context);
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
@@ -77,8 +76,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
             holder = (ViewHolder)convertView.getTag();
         }
 
-        Checkin checkin = (Checkin)getItem(position);
-        final User user = checkin.getUser();
+        User user = (User)getItem(position);
         final Uri photoUri = Uri.parse(user.getPhoto());
 
         try {
@@ -92,15 +90,9 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
             }
         }
 
-        holder.firstLine.setText(StringFormatters.getCheckinMessage(checkin, true));
-        holder.timeTextView.setText(StringFormatters
-                .getRelativeTimeSpanString(checkin.getCreated()));
-
-        if (checkin.getShout() != null) {
-            holder.shoutTextView.setText(checkin.getShout());
-        } else {
-            holder.shoutTextView.setText("");
-        }
+        holder.firstLine.setText(StringFormatters.getUserAbbreviatedName(user));
+        holder.timeTextView.setText(StringFormatters.getRelativeTimeSpanString(user.getCreated()));
+        holder.shoutTextView.setText("");
 
         return convertView;
     }
@@ -109,7 +101,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
     public void setGroup(Group g) {
         super.setGroup(g);
         for (int i = 0; i < g.size(); i++) {
-            Uri photoUri = Uri.parse(((Checkin)g.get(i)).getUser().getPhoto());
+            Uri photoUri = Uri.parse(((User)g.get(i)).getPhoto());
             if (!mRrm.getFile(photoUri).exists()) {
                 mRrm.request(photoUri);
             }

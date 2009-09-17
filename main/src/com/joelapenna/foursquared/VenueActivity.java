@@ -4,8 +4,6 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.types.Checkin;
-import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.NotificationsUtil;
@@ -57,7 +55,6 @@ public class VenueActivity extends TabActivity {
     private static final int RESULT_SHOUT = 1;
 
     final VenueObservable venueObservable = new VenueObservable();
-    final CheckinsObservable checkinsObservable = new CheckinsObservable();
 
     private final StateHolder mStateHolder = new StateHolder();
 
@@ -103,17 +100,9 @@ public class VenueActivity extends TabActivity {
                 if (DEBUG) Log.d(TAG, "Restoring Venue: " + holder.venue);
                 setVenue(holder.venue);
             }
-
-            if (holder.checkins == null) {
-                new CheckinsTask().execute();
-            } else {
-                if (DEBUG) Log.d(TAG, "Restoring checkins: " + holder.checkins);
-                setCheckins(holder.checkins);
-            }
         } else {
             mStateHolder.venueId = getIntent().getExtras().getString(Foursquared.EXTRA_VENUE_ID);
             new VenueTask().execute(mStateHolder.venueId);
-            new CheckinsTask().execute();
         }
     }
 
@@ -285,11 +274,6 @@ public class VenueActivity extends TabActivity {
 
     }
 
-    private void setCheckins(Group checkins) {
-        mStateHolder.checkins = checkins;
-        checkinsObservable.notifyObservers(checkins);
-    }
-
     class VenueObservable extends Observable {
         public void notifyObservers(Object data) {
             setChanged();
@@ -298,17 +282,6 @@ public class VenueActivity extends TabActivity {
 
         public Venue getVenue() {
             return mStateHolder.venue;
-        }
-    }
-
-    class CheckinsObservable extends Observable {
-        public void notifyObservers(Object data) {
-            setChanged();
-            super.notifyObservers(data);
-        }
-
-        public Group getCheckins() {
-            return mStateHolder.checkins;
         }
     }
 
@@ -401,68 +374,8 @@ public class VenueActivity extends TabActivity {
         }
     }
 
-    private class CheckinsTask extends AsyncTask<Void, Void, Group> {
-        private static final String PROGRESS_BAR_TASK_ID = TAG + "CheckinsTask";
-
-        private Exception mReason;
-
-        @Override
-        public void onPreExecute() {
-            if (DEBUG) Log.d(TAG, "CheckinsTask: onPreExecute()");
-            startProgressBar(PROGRESS_BAR_TASK_ID);
-        }
-
-        @Override
-        public Group doInBackground(Void... params) {
-            if (DEBUG) Log.d(TAG, "CheckinsTask: doInBackground()");
-            try {
-                return ((Foursquared)getApplication()).getFoursquare().checkins(null);
-            } catch (Exception e) {
-                mReason = e;
-            }
-            return null;
-        }
-
-        @Override
-        public void onPostExecute(Group checkins) {
-            if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
-            try {
-                setCheckins(filterCheckins(checkins));
-            } catch (Exception e) {
-                NotificationsUtil.ToastReasonForFailure(VenueActivity.this, mReason);
-            } finally {
-                stopProgressBar(PROGRESS_BAR_TASK_ID);
-            }
-        }
-
-        @Override
-        public void onCancelled() {
-            stopProgressBar(PROGRESS_BAR_TASK_ID);
-        }
-
-        private Group filterCheckins(Group checkins) {
-            Group filteredCheckins = new Group();
-            if (checkins == null) {
-                Log.d(TAG, "setCheckins provided null, faking it.");
-                filteredCheckins.setType("Recent Checkins");
-            } else {
-                filteredCheckins.setType(checkins.getType());
-                for (int i = 0; i < checkins.size(); i++) {
-                    Checkin checkin = (Checkin)checkins.get(i);
-                    if (checkin.getVenue() != null
-                            && checkin.getVenue().getId().equals(mStateHolder.venueId)) {
-                        filteredCheckins.add(checkin);
-                    }
-                }
-            }
-            return filteredCheckins;
-        }
-
-    }
-
     private static final class StateHolder {
         Venue venue = null;
         String venueId = null;
-        Group checkins = null;
     }
 }

@@ -4,7 +4,6 @@
 
 package com.joelapenna.foursquared.widget;
 
-import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 
 import android.content.Context;
@@ -14,7 +13,7 @@ import android.content.Context;
  */
 abstract public class BaseVenueAdapter extends BaseGroupAdapter<Venue> {
 
-    public BaseVenueAdapter(Context context, Group group) {
-        super(context, group);
+    public BaseVenueAdapter(Context context) {
+        super(context);
     }
 }

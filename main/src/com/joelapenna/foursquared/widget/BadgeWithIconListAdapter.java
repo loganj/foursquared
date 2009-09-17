@@ -38,18 +38,10 @@ public class BadgeWithIconListAdapter extends BadgeListAdapter {
      * @param context
      * @param venues
      */
-    public BadgeWithIconListAdapter(Context context, Group badges, RemoteResourceManager rrm) {
-        super(context, badges);
+    public BadgeWithIconListAdapter(Context context, RemoteResourceManager rrm) {
+        super(context);
         mRrm = rrm;
         mRrm.addObserver(new RemoteResourceManagerObserver());
-
-        // Immediately start trying to grab the user photos. All of them!
-        for (int i = 0; i < badges.size(); i++) {
-            Uri photoUri = Uri.parse(((Badge)badges.get(i)).getIcon());
-            if (!rrm.getFile(photoUri).exists()) {
-                rrm.request(photoUri);
-            }
-        }
     }
 
     @Override
@@ -68,6 +60,17 @@ public class BadgeWithIconListAdapter extends BadgeListAdapter {
         }
 
         return view;
+    }
+
+    @Override
+    public void setGroup(Group g) {
+        super.setGroup(g);
+        for (int i = 0; i < group.size(); i++) {
+            Uri photoUri = Uri.parse(((Badge)group.get(i)).getIcon());
+            if (!mRrm.getFile(photoUri).exists()) {
+                mRrm.request(photoUri);
+            }
+        }
     }
 
     private class RemoteResourceManagerObserver implements Observer {

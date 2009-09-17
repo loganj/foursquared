@@ -4,7 +4,6 @@
 
 package com.joelapenna.foursquared.widget;
 
-import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
 
 import android.content.Context;
@@ -14,7 +13,7 @@ import android.content.Context;
  */
 abstract public class BaseTipAdapter extends BaseGroupAdapter<Tip> {
 
-    public BaseTipAdapter(Context context, Group group) {
-        super(context, group);
+    public BaseTipAdapter(Context context) {
+        super(context);
     }
 }

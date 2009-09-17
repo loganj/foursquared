@@ -5,7 +5,6 @@
 package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Badge;
-import com.joelapenna.foursquare.types.Group;
 
 import android.content.Context;
 
@@ -14,7 +13,7 @@ import android.content.Context;
  */
 abstract public class BaseBadgeAdapter extends BaseGroupAdapter<Badge> {
 
-    public BaseBadgeAdapter(Context context, Group badges) {
-        super(context, badges);
+    public BaseBadgeAdapter(Context context) {
+        super(context);
     }
 }

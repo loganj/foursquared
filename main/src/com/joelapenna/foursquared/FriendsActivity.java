@@ -195,10 +195,8 @@ public class FriendsActivity extends LoadableListActivity {
         mEmptyText = (TextView)findViewById(R.id.emptyText);
         mEmptyProgress = (ProgressBar)findViewById(R.id.emptyProgress);
 
-        Group emptyGroup = new Group();
-        emptyGroup.setType("Checkins");
-        mListAdapter = new CheckinListAdapter(this, emptyGroup, //
-                ((Foursquared)getApplication()).getUserPhotosManager(), true);
+        mListAdapter = new CheckinListAdapter(this, //
+                ((Foursquared)getApplication()).getUserPhotosManager());
 
         ListView listView = getListView();
         listView.setAdapter(mListAdapter);

@@ -5,7 +5,6 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Mayor;
 import com.joelapenna.foursquare.types.User;
@@ -13,7 +12,7 @@ import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
-import com.joelapenna.foursquared.widget.CheckinListAdapter;
+import com.joelapenna.foursquared.widget.UserListAdapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -44,7 +43,7 @@ public class VenueCheckinsActivity extends LoadableListActivity {
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private Observer mParentDataObserver = new ParentDataObserver();
-    private CheckinListAdapter mListAdapter;
+    private UserListAdapter mListAdapter;
     private View mMayorLayout;
 
     @Override
@@ -59,13 +58,6 @@ public class VenueCheckinsActivity extends LoadableListActivity {
             mParentDataObserver.update(parent.venueObservable, parent.venueObservable.getVenue());
         } else {
             ((VenueActivity)getParent()).venueObservable.addObserver(mParentDataObserver);
-        }
-
-        if (parent.checkinsObservable.getCheckins() != null) {
-            mParentDataObserver.update(parent.checkinsObservable, parent.checkinsObservable
-                    .getCheckins());
-        } else {
-            ((VenueActivity)getParent()).checkinsObservable.addObserver(mParentDataObserver);
         }
     }
 
@@ -86,17 +78,15 @@ public class VenueCheckinsActivity extends LoadableListActivity {
         getListView().setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Checkin checkin = (Checkin)parent.getAdapter().getItem(position);
-                if (checkin != null) {
-                    startItemActivity(checkin.getUser());
+                User user = (User)parent.getAdapter().getItem(position);
+                if (user != null) {
+                    startItemActivity(user);
                 }
             }
         });
 
-        Group emptyGroup = new Group();
-        emptyGroup.setType("Checkins");
-        mListAdapter = new HeaderAwareCheckinListAdapter(this, emptyGroup, //
-                ((Foursquared)getApplication()).getUserPhotosManager(), true);
+        mListAdapter = new HeaderAwareCheckinListAdapter(this, //
+                ((Foursquared)getApplication()).getUserPhotosManager());
 
         setListAdapter(mListAdapter);
     }
@@ -193,7 +183,21 @@ public class VenueCheckinsActivity extends LoadableListActivity {
             if (DEBUG) Log.d(TAG, "Received update from: " + observable.toString());
             VenueActivity parent = (VenueActivity)getParent();
             Venue venue = parent.venueObservable.getVenue();
-            Group checkins = parent.checkinsObservable.getCheckins();
+
+            // The /venue api point returns a people block filled with a whole *1* group. Its
+            // possible that there will be more in the future with descriptive type attributes, then
+            // we'll have to refactor this activity to no longer smush all the groups into one
+            // concise group. Until then though, we're going to some cleaning here to merge the
+            // group that is served to the list adapter is only 1 level deep (the <user>s).
+            Group peopleGroups = venue.getPeople();
+            Group checkins = new Group();
+            checkins.setType("Recent Checkins");
+            for (int i = 0; i < peopleGroups.size(); i++) {
+                Group peopleGroup = (Group)peopleGroups.get(i);
+                for (int j = 0; j < peopleGroup.size(); j++) {
+                    checkins.add(peopleGroup.get(j));
+                }
+            }
 
             if (!observed && venue != null && checkins != null) {
                 observed = true;
@@ -203,10 +207,9 @@ public class VenueCheckinsActivity extends LoadableListActivity {
         }
     }
 
-    private class HeaderAwareCheckinListAdapter extends CheckinListAdapter {
-        public HeaderAwareCheckinListAdapter(Context context, Group checkins,
-                RemoteResourceManager rrm, boolean displayAtVenue) {
-            super(context, checkins, rrm, displayAtVenue);
+    private class HeaderAwareCheckinListAdapter extends UserListAdapter {
+        public HeaderAwareCheckinListAdapter(Context context, RemoteResourceManager rrm) {
+            super(context, rrm);
         }
 
         @Override

@@ -294,8 +294,10 @@ public class UserActivity extends Activity {
 
         private void displayBadges(User user) {
             if (user.getBadges() != null) {
-                mBadgesGrid.setAdapter(new BadgeWithIconListAdapter(UserActivity.this, user
-                        .getBadges(), ((Foursquared)getApplication()).getBadgeIconManager()));
+                BadgeWithIconListAdapter adapter = new BadgeWithIconListAdapter(UserActivity.this,
+                        ((Foursquared)getApplication()).getBadgeIconManager());
+                mBadgesGrid.setAdapter(adapter);
+                adapter.setGroup(user.getBadges());
                 ((TextView)findViewById(R.id.badgesHeader)).setVisibility(TextView.VISIBLE);
                 mBadgesGrid.setOnItemClickListener(new OnItemClickListener() {
                     @Override

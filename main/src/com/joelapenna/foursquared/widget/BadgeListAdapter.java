@@ -5,7 +5,6 @@
 package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Badge;
-import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
 
@@ -26,8 +25,8 @@ public class BadgeListAdapter extends BaseBadgeAdapter {
 
     private LayoutInflater mInflater;
 
-    public BadgeListAdapter(Context context, Group badges) {
-        super(context, badges);
+    public BadgeListAdapter(Context context) {
+        super(context);
         mInflater = LayoutInflater.from(context);
     }
 
