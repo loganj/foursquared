@@ -15,9 +15,9 @@
     <later>
       <user>
         <id>1919</id>
-        <created>Thu, 18 Sep 09 01:14:15 +0000</created>
+        <created>Thu, 14 Sep 09 01:14:15 +0000</created>
         <firstname>Later</firstname>
-        <lastname>LaPenna</lastname>
+        <lastname>LaPenna (sort 3)</lastname>
         <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/4a76cfe720e34.jpg</photo>
       </user>
     </later>
@@ -26,7 +26,21 @@
         <id>1818</id>
         <created>Thu, 17 Sep 09 01:14:15 +0000</created>
         <firstname>Joe</firstname>
-        <lastname>LaPenna</lastname>
+        <lastname>LaPenna (sort 1)</lastname>
+        <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/4a76cfe720e34.jpg</photo>
+      </user>
+      <user>
+        <id>1819</id>
+        <created>Thu, 15 Sep 09 01:14:15 +0000</created>
+        <firstname>Joe</firstname>
+        <lastname>LaPenna (sort 2)</lastname>
+        <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/4a76cfe720e34.jpg</photo>
+      </user>
+      <user>
+        <id>1820</id>
+        <created>Thu, 18 Sep 09 01:14:15 +0000</created>
+        <firstname>Joe</firstname>
+        <lastname>LaPenna (sort 0)</lastname>
         <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/4a76cfe720e34.jpg</photo>
       </user>
     </now>

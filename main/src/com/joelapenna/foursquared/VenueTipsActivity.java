@@ -7,11 +7,13 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.app.LoadableListActivity;
+import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.TipListAdapter;
 
 import android.os.Bundle;
 
+import java.util.Collections;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -48,12 +50,14 @@ public class VenueTipsActivity extends LoadableListActivity {
 
         Group tips = venue.getTips();
         if (tips != null && tips.size() > 0) {
+            Collections.sort(tips, Comparators.getTipRecencyComparator());
             tips.setType("Tips");
             tipsAndTodos.add(tips);
         }
 
         tips = venue.getTodos();
         if (tips != null && tips.size() > 0) {
+            Collections.sort(tips, Comparators.getTipRecencyComparator());
             tips.setType("Todos");
             tipsAndTodos.add(tips);
         }

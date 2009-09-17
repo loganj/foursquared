@@ -10,6 +10,7 @@ import com.joelapenna.foursquare.types.Mayor;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.app.LoadableListActivity;
+import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
 import com.joelapenna.foursquared.widget.UserListAdapter;
@@ -32,6 +33,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -190,19 +192,20 @@ public class VenueCheckinsActivity extends LoadableListActivity {
             // concise group. Until then though, we're going to some cleaning here to merge the
             // group that is served to the list adapter is only 1 level deep (the <user>s).
             Group peopleGroups = venue.getPeople();
-            Group checkins = new Group();
-            checkins.setType("Recent Checkins");
+            Group people = new Group();
+            people.setType("Recent Checkins");
             for (int i = 0; i < peopleGroups.size(); i++) {
                 Group peopleGroup = (Group)peopleGroups.get(i);
                 for (int j = 0; j < peopleGroup.size(); j++) {
-                    checkins.add(peopleGroup.get(j));
+                    people.add(peopleGroup.get(j));
                 }
             }
+            Collections.sort(people, Comparators.getUserRecencyComparator());
 
-            if (!observed && venue != null && checkins != null) {
+            if (!observed && venue != null && people != null) {
                 observed = true;
                 ensureMayor(venue);
-                putCheckinsInAdapter(checkins);
+                putCheckinsInAdapter(people);
             }
         }
     }

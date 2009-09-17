@@ -12,6 +12,7 @@ import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
+import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
@@ -37,6 +38,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Observable;
 
 /**
@@ -226,7 +228,8 @@ public class NearbyVenuesActivity extends LoadableListActivity {
             if (DEBUG) Log.d(TAG, "Query already running attempting to cancel: " + mSearchTask);
             if (!mSearchTask.cancel(true) && !mSearchTask.isCancelled()) {
                 if (DEBUG) Log.d(TAG, "Unable to cancel search? Notifying the user.");
-                Toast.makeText(this, getResources().getText(R.string.search_already_in_progress_toast), Toast.LENGTH_SHORT);
+                Toast.makeText(this, getResources().getText(
+                        R.string.search_already_in_progress_toast), Toast.LENGTH_SHORT);
                 return;
             }
         }
@@ -269,7 +272,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Venue venue = (Venue)parent.getAdapter().getItem(position);
-                    startItemActivity(venue);
+                startItemActivity(venue);
             }
         });
     }
@@ -336,7 +339,12 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                     radius = 1;
                 }
             }
-            return foursquare.venues(geolat, geolong, mSearchHolder.query, radius, 30);
+            Group<Group<Venue>> groups = foursquare.venues(geolat, geolong, mSearchHolder.query,
+                    radius, 30);
+            for (int i = 0; i < groups.size(); i++) {
+                Collections.sort(groups.get(i), Comparators.getVenueDistanceComparator());
+            }
+            return groups;
         }
     }
 

@@ -11,7 +11,6 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.R.drawable;
 import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.maps.BestLocationListener;
-import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
 
@@ -38,6 +37,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Observable;
 
 /**
@@ -287,17 +287,25 @@ public class FriendsActivity extends LoadableListActivity {
         }
 
         @Override
-        public void onPostExecute(Group groups) {
+        public void onPostExecute(Group checkins) {
             try {
-                if (groups == null) {
+                if (checkins == null) {
                     NotificationsUtil.ToastReasonForFailure(FriendsActivity.this, mReason);
                 } else {
-                    setSearchResults(groups);
-                    putSearchResultsInAdapter(groups);
+                    setSearchResults(checkins);
+                    putSearchResultsInAdapter(checkins);
                 }
 
             } finally {
                 setProgressBarIndeterminateVisibility(false);
+                Collections.sort(checkins, new Comparator<Checkin>() {
+
+                    @Override
+                    public int compare(Checkin x, Checkin y) {
+                        x.getCreated().compareTo(y.getCreated());
+                        return 0;
+                    }
+                });
                 ensureTitle(true);
                 ensureSearchResults();
             }
@@ -306,16 +314,13 @@ public class FriendsActivity extends LoadableListActivity {
         Group search() throws FoursquareException, IOException {
             Location location = mLocationListener.getLastKnownLocation();
             Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
-            Group<Checkin> checkins;
             if (location == null) {
                 if (DEBUG) Log.d(TAG, "Searching without location.");
-                checkins = foursquare.checkins(null);
+                return foursquare.checkins(null);
             } else {
                 if (DEBUG) Log.d(TAG, "Searching with location: " + location);
-                checkins = foursquare.checkins(null);
+                return foursquare.checkins(null);
             }
-            Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
-            return checkins;
         }
     }
 

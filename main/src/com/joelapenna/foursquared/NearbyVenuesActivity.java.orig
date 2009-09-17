@@ -7,14 +7,17 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Checkin;
+import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquared.R.drawable;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.maps.BestLocationListener;
-import com.joelapenna.foursquared.util.Comparators;
+import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
 import com.joelapenna.foursquared.util.NotificationsUtil;
-import com.joelapenna.foursquared.widget.CheckinListAdapter;
+import com.joelapenna.foursquared.widget.SeparatedListAdapter;
+import com.joelapenna.foursquared.widget.VenueListAdapter;
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -24,50 +27,44 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Observable;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class FriendsActivity extends LoadableListActivity {
-    static final String TAG = "FriendsActivity";
+public class NearbyVenuesActivity extends LoadableListActivity {
+    static final String TAG = "NearbyVenuesActivity";
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public static final String QUERY_NEARBY = null;
     public static SearchResultsObservable searchResultsObservable;
 
-    private static final int MENU_REFRESH = 1;
-    private static final int MENU_SHOUT = 2;
-    private static final int MENU_STATS = 3;
-    private static final int MENU_MYINFO = 4;
-
-    private static final int MENU_GROUP_SEARCH = 0;
-
-    private SearchTask mSearchTask;
+    private static final int MENU_REFRESH = 0;
+    private static final int MENU_ADD_VENUE = 1;
+    private static final int MENU_SEARCH = 2;
+    private static final int MENU_MYINFO = 3;
 
     private LocationManager mLocationManager;
     private BestLocationListener mLocationListener;
 
+    private SearchTask mSearchTask;
     private SearchHolder mSearchHolder = new SearchHolder();
 
-    private LinearLayout mEmpty;
-    private TextView mEmptyText;
-    private ProgressBar mEmptyProgress;
-    private CheckinListAdapter mListAdapter;
+    private ListView mListView;
+    private SeparatedListAdapter mListAdapter;
 
     private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
         @Override
@@ -80,6 +77,7 @@ public class FriendsActivity extends LoadableListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL);
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         mLocationListener = ((Foursquared)getApplication()).getLocationListener();
@@ -138,14 +136,15 @@ public class FriendsActivity extends LoadableListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(MENU_GROUP_SEARCH, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
+        menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.search_label) //
+                .setIcon(android.R.drawable.ic_search_category_default) //
+                .setAlphabeticShortcut(SearchManager.MENU_KEY);
+        menu.add(Menu.NONE, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
                 .setIcon(R.drawable.ic_menu_refresh);
-        menu.add(Menu.NONE, MENU_SHOUT, Menu.NONE, R.string.shout_action_label) //
-                .setIcon(R.drawable.ic_menu_shout);
-        menu.add(Menu.NONE, MENU_STATS, Menu.NONE, R.string.stats_label) //
-                .setIcon(android.R.drawable.ic_menu_recent_history);
+        menu.add(Menu.NONE, MENU_ADD_VENUE, Menu.NONE, R.string.add_venue_label) //
+                .setIcon(android.R.drawable.ic_menu_add);
         menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
-                .setIcon(drawable.ic_menu_myinfo);
+                .setIcon(R.drawable.ic_menu_myinfo);
         Foursquared.addPreferencesToMenu(this, menu);
         return true;
     }
@@ -153,19 +152,19 @@ public class FriendsActivity extends LoadableListActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case MENU_SEARCH:
+                Intent intent = new Intent(NearbyVenuesActivity.this, SearchVenuesActivity.class);
+                intent.setAction(Intent.ACTION_SEARCH);
+                startActivity(intent);
+                return true;
             case MENU_REFRESH:
                 executeSearchTask(null);
                 return true;
-            case MENU_SHOUT:
-                Intent intent = new Intent(FriendsActivity.this, ShoutActivity.class);
-                intent.putExtra(ShoutActivity.EXTRA_SHOUT, true);
-                startActivity(intent);
-                return true;
-            case MENU_STATS:
-                startActivity(new Intent(FriendsActivity.this, StatsActivity.class));
+            case MENU_ADD_VENUE:
+                startActivity(new Intent(NearbyVenuesActivity.this, AddVenueActivity.class));
                 return true;
             case MENU_MYINFO:
-                startActivity(new Intent(FriendsActivity.this, UserActivity.class));
+                startActivity(new Intent(NearbyVenuesActivity.this, UserActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -178,6 +177,10 @@ public class FriendsActivity extends LoadableListActivity {
             if (DEBUG) Log.d(TAG, "No intent to search, querying default.");
         } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             if (DEBUG) Log.d(TAG, "onNewIntent received search intent and saving.");
+            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+                    VenueQuerySuggestionsProvider.AUTHORITY, VenueQuerySuggestionsProvider.MODE);
+            suggestions.saveRecentQuery(intent.getStringExtra(SearchManager.QUERY), null);
+
         }
         executeSearchTask(intent.getStringExtra(SearchManager.QUERY));
     }
@@ -189,55 +192,40 @@ public class FriendsActivity extends LoadableListActivity {
 
     @Override
     public int getNoSearchResultsStringId() {
-        return R.string.no_friend_checkins;
+        return R.string.no_nearby_venues;
     }
 
-    private void initListViewAdapter() {
-        mEmpty = (LinearLayout)findViewById(android.R.id.empty);
-        mEmptyText = (TextView)findViewById(R.id.emptyText);
-        mEmptyProgress = (ProgressBar)findViewById(R.id.emptyProgress);
-
-        mListAdapter = new CheckinListAdapter(this, //
-                ((Foursquared)getApplication()).getUserPhotosManager());
-
-        ListView listView = getListView();
-        listView.setAdapter(mListAdapter);
-        listView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Checkin checkin = (Checkin)parent.getAdapter().getItem(position);
-                if (checkin.getUser() != null) {
-                    if (DEBUG) Log.d(TAG, "firing venue activity for venue");
-                    Intent intent = new Intent(FriendsActivity.this, UserActivity.class);
-                    intent.putExtra(UserActivity.EXTRA_USER, checkin.getUser().getId());
-                    startActivity(intent);
-                }
-            }
-        });
-    }
-
-    private void putSearchResultsInAdapter(Group searchResults) {
+    public void putSearchResultsInAdapter(Group searchResults) {
         setEmptyView();
-        mListAdapter.setGroup(searchResults);
+        mListAdapter.clear();
+        int groupCount = searchResults.size();
+        for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
+            Group group = (Group)searchResults.get(groupsIndex);
+            if (group.size() > 0) {
+                Collections.sort(group, new Comparator<Venue>() {
+
+                    @Override
+                    public int compare(Venue x, Venue y) {
+                        if (DEBUG) Log.d(TAG, x.getDistance() + " vs " + y.getDistance());
+                        return x.getDistance().compareTo(y.getDistance());
+                    }
+                });
+                VenueListAdapter groupAdapter = new VenueListAdapter(this);
+                groupAdapter.setGroup(group);
+                if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
+                mListAdapter.addSection(group.getType(), groupAdapter);
+            }
+        }
+        mListAdapter.notifyDataSetInvalidated();
     }
 
-    private void setSearchResults(Group searchResults) {
+    public void setSearchResults(Group searchResults) {
         if (DEBUG) Log.d(TAG, "Setting search results.");
         mSearchHolder.results = searchResults;
         searchResultsObservable.notifyObservers();
     }
 
-    private void ensureSearchResults() {
-        if (mListAdapter.getCount() > 0) {
-            mEmpty.setVisibility(LinearLayout.GONE);
-        } else {
-            mEmptyText.setText("No search results.");
-            mEmptyProgress.setVisibility(LinearLayout.GONE);
-            mEmpty.setVisibility(LinearLayout.VISIBLE);
-        }
-    }
-
-    private void executeSearchTask(String query) {
+    void executeSearchTask(String query) {
         if (DEBUG) Log.d(TAG, "sendQuery()");
         mSearchHolder.query = query;
         // not going through set* because we don't want to notify search result
@@ -249,23 +237,57 @@ public class FriendsActivity extends LoadableListActivity {
             if (DEBUG) Log.d(TAG, "Query already running attempting to cancel: " + mSearchTask);
             if (!mSearchTask.cancel(true) && !mSearchTask.isCancelled()) {
                 if (DEBUG) Log.d(TAG, "Unable to cancel search? Notifying the user.");
-                Toast.makeText(this, "A search is already in progress.", Toast.LENGTH_SHORT);
+                Toast.makeText(this, getResources().getText(R.string.search_already_in_progress_toast), Toast.LENGTH_SHORT);
                 return;
             }
         }
         mSearchTask = (SearchTask)new SearchTask().execute();
     }
 
+    void startItemActivity(Venue venue) {
+        Intent intent = new Intent(NearbyVenuesActivity.this, VenueActivity.class);
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.putExtra(Foursquared.EXTRA_VENUE_ID, venue.getId());
+        startActivity(intent);
+    }
+
     private void ensureTitle(boolean finished) {
         if (finished) {
-            setTitle(R.string.friendsactivity_title_finished);
+            if (mSearchHolder.query == QUERY_NEARBY) {
+                setTitle(getString(R.string.title_search_finished_noquery));
+            } else {
+                setTitle(getString(R.string.title_search_finished, mSearchHolder.query));
+            }
         } else {
-            setTitle(R.string.friendsactivity_title_searching);
+            if (mSearchHolder.query == QUERY_NEARBY) {
+                setTitle(getString(R.string.title_search_inprogress_noquery));
+            } else {
+                setTitle(getString(R.string.title_search_inprogress, mSearchHolder.query));
+            }
+        }
+    }
+
+    private void initListViewAdapter() {
+        if (mListView != null) {
+            throw new IllegalStateException("Trying to initialize already initialized ListView");
         }
 
+        mListView = getListView();
+        mListAdapter = new SeparatedListAdapter(this);
+
+        mListView.setAdapter(mListAdapter);
+        mListView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Venue venue = (Venue)parent.getAdapter().getItem(position);
+                    startItemActivity(venue);
+            }
+        });
     }
 
     private class SearchTask extends AsyncTask<Void, Void, Group> {
+
+        private static final int METERS_PER_MILE = 1609;
 
         private Exception mReason = null;
 
@@ -290,7 +312,7 @@ public class FriendsActivity extends LoadableListActivity {
         public void onPostExecute(Group groups) {
             try {
                 if (groups == null) {
-                    NotificationsUtil.ToastReasonForFailure(FriendsActivity.this, mReason);
+                    NotificationsUtil.ToastReasonForFailure(NearbyVenuesActivity.this, mReason);
                 } else {
                     setSearchResults(groups);
                     putSearchResultsInAdapter(groups);
@@ -299,23 +321,33 @@ public class FriendsActivity extends LoadableListActivity {
             } finally {
                 setProgressBarIndeterminateVisibility(false);
                 ensureTitle(true);
-                ensureSearchResults();
             }
         }
 
-        Group search() throws FoursquareException, IOException {
+        public Group search() throws FoursquareException, IOException {
             Location location = mLocationListener.getLastKnownLocation();
             Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
-            Group<Checkin> checkins;
+            String geolat;
+            String geolong;
+            int radius;
             if (location == null) {
-                if (DEBUG) Log.d(TAG, "Searching without location.");
-                checkins = foursquare.checkins(null);
+                // Foursquare requires a lat, lng for a venue search, so we have to pull it from the
+                // server if we cannot determine it locally.
+                City city = foursquare.user(null, false, false).getCity();
+                geolat = String.valueOf(city.getGeolat());
+                geolong = String.valueOf(city.getGeolong());
+                radius = 1;
             } else {
                 if (DEBUG) Log.d(TAG, "Searching with location: " + location);
-                checkins = foursquare.checkins(null);
+                geolat = String.valueOf(location.getLatitude());
+                geolong = String.valueOf(location.getLongitude());
+                if (location.hasAccuracy()) {
+                    radius = (int)Math.round(location.getAccuracy() / (double)METERS_PER_MILE);
+                } else {
+                    radius = 1;
+                }
             }
-            Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
-            return checkins;
+            return foursquare.venues(geolat, geolong, mSearchHolder.query, radius, 30);
         }
     }
 
