@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-08-01 10:38:33.511158
+ * Auto-generated: 2009-09-16 19:23:29.187133
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -51,6 +51,9 @@ public class UserParser extends AbstractParser<User> {
 
             } else if ("city".equals(name)) {
                 user.setCity(new CityParser().parse(parser));
+
+            } else if ("created".equals(name)) {
+                user.setCreated(parser.nextText());
 
             } else if ("firstname".equals(name)) {
                 user.setFirstname(parser.nextText());

@@ -4,11 +4,9 @@
 
 package com.joelapenna.foursquare.types;
 
-;
-
 /**
- * Auto-generated: 2009-08-05 21:30:26.446954
- * 
+ * Auto-generated: 2009-09-16 18:47:34.515635
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Venue implements FoursquareType {
@@ -21,11 +19,13 @@ public class Venue implements FoursquareType {
     private String mGeolong;
     private String mId;
     private String mName;
+    private Group mPeople;
     private String mPhone;
     private String mState;
     private Stats mStats;
     private Group mTips;
     private Group mTodos;
+    private String mTwitter;
     private String mZip;
 
     public Venue() {
@@ -95,6 +95,14 @@ public class Venue implements FoursquareType {
         mName = name;
     }
 
+    public Group getPeople() {
+        return mPeople;
+    }
+
+    public void setPeople(Group people) {
+        mPeople = people;
+    }
+
     public String getPhone() {
         return mPhone;
     }
@@ -133,6 +141,14 @@ public class Venue implements FoursquareType {
 
     public void setTodos(Group todos) {
         mTodos = todos;
+    }
+
+    public String getTwitter() {
+        return mTwitter;
+    }
+
+    public void setTwitter(String twitter) {
+        mTwitter = twitter;
     }
 
     public String getZip() {

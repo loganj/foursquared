@@ -11,4 +11,6 @@
   <badges type="Group">
     <badge type="Badge"></badge>
   </badges>
+  <!-- For /venue -> <venue><people><now><user type=User> -->
+  <created>Thu, 18 Sep 09 01:14:15 +0000</created>
 </user>

@@ -11,6 +11,26 @@
   <twitter>stupdtwittername</twitter>
   <geolat>37.7729</geolat>
   <geolong>-122.437</geolong>
+  <people>
+    <later>
+      <user>
+        <id>1919</id>
+        <created>Thu, 18 Sep 09 01:14:15 +0000</created>
+        <firstname>Later</firstname>
+        <lastname>LaPenna</lastname>
+        <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/4a76cfe720e34.jpg</photo>
+      </user>
+    </later>
+    <now>
+      <user>
+        <id>1818</id>
+        <created>Thu, 17 Sep 09 01:14:15 +0000</created>
+        <firstname>Joe</firstname>
+        <lastname>LaPenna</lastname>
+        <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/4a76cfe720e34.jpg</photo>
+      </user>
+    </now>
+  </people>
   <stats>
     <checkins>77</checkins>
     <beenhere/>

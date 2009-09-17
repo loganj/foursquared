@@ -7,8 +7,8 @@ package com.joelapenna.foursquare.types;
 ;
 
 /**
- * Auto-generated: 2009-08-05 21:30:26.311084
- * 
+ * Auto-generated: 2009-09-16 19:23:20.362910
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class User implements FoursquareType {
@@ -16,6 +16,7 @@ public class User implements FoursquareType {
     private Group mBadges;
     private Checkin mCheckin;
     private City mCity;
+    private String mCreated;
     private String mFirstname;
     private String mGender;
     private String mId;
@@ -48,6 +49,14 @@ public class User implements FoursquareType {
 
     public void setCity(City city) {
         mCity = city;
+    }
+
+    public String getCreated() {
+        return mCreated;
+    }
+
+    public void setCreated(String created) {
+        mCreated = created;
     }
 
     public String getFirstname() {

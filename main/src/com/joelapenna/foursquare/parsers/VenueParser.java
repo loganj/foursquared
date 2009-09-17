@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-08-01 10:38:33.637265
+ * Auto-generated: 2009-09-16 18:46:43.466222
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -67,6 +67,9 @@ public class VenueParser extends AbstractParser<Venue> {
             } else if ("name".equals(name)) {
                 venue.setName(parser.nextText());
 
+            } else if ("people".equals(name)) {
+                venue.setPeople(new GroupParser(new GroupParser(new UserParser())).parse(parser));
+
             } else if ("phone".equals(name)) {
                 venue.setPhone(parser.nextText());
 
@@ -81,6 +84,9 @@ public class VenueParser extends AbstractParser<Venue> {
 
             } else if ("todos".equals(name)) {
                 venue.setTodos(new GroupParser(new TipParser()).parse(parser));
+
+            } else if ("twitter".equals(name)) {
+                venue.setTwitter(parser.nextText());
 
             } else if ("zip".equals(name)) {
                 venue.setZip(parser.nextText());
