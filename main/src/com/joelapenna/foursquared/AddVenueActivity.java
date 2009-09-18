@@ -22,10 +22,14 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 
 /**
@@ -37,21 +41,42 @@ public class AddVenueActivity extends Activity {
 
     private static final double MINIMUM_ACCURACY_FOR_ADDRESS = 100.0;
 
-    private static final int MENU_SUBMIT = 1;
-
     private BestLocationListener mLocationListener;
     private LocationManager mLocationManager;
 
     final private StateHolder mFieldsHolder = new StateHolder();
 
     private EditText mNameEditText;
-    private EditText mCityEditText;
     private EditText mAddressEditText;
     private EditText mCrossstreetEditText;
+    private EditText mCityEditText;
     private EditText mStateEditText;
     private EditText mZipEditText;
     private EditText mPhoneEditText;
-    private MenuItem mMenuSubmit;
+    private Button mAddVenueButton;
+
+    private EditText[] mRequiredFields;
+    private TextWatcher mRequiredFieldsWatcher = new TextWatcher() {
+        @Override
+        public void afterTextChanged(Editable s) {
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            boolean requiredFieldsValid = true;
+            for (int i = 0; i < mRequiredFields.length; i++) {
+                if (TextUtils.isEmpty(mRequiredFields[i].getText())) {
+                    requiredFieldsValid = false;
+                    break;
+                }
+            }
+            mAddVenueButton.setEnabled(requiredFieldsValid);
+        }
+    };
 
     private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
         @Override
@@ -71,13 +96,35 @@ public class AddVenueActivity extends Activity {
         mLocationListener = ((Foursquared)getApplication()).getLocationListener();
         mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
+        mAddVenueButton = (Button)findViewById(R.id.addVenueButton);
         mNameEditText = (EditText)findViewById(R.id.nameEditText);
-        mCityEditText = (EditText)findViewById(R.id.cityEditText);
         mAddressEditText = (EditText)findViewById(R.id.addressEditText);
         mCrossstreetEditText = (EditText)findViewById(R.id.crossstreetEditText);
+        mCityEditText = (EditText)findViewById(R.id.cityEditText);
         mStateEditText = (EditText)findViewById(R.id.stateEditText);
         mZipEditText = (EditText)findViewById(R.id.zipEditText);
         mPhoneEditText = (EditText)findViewById(R.id.phoneEditText);
+
+        mAddVenueButton.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                new AddVenueTask().execute();
+            }
+        });
+
+        mRequiredFields = new EditText[] {
+                mNameEditText, //
+                mAddressEditText, //
+                mCityEditText, //
+                mStateEditText, //
+                mZipEditText,
+        };
+
+
+        for (int i = 0; i < mRequiredFields.length; i++) {
+            mRequiredFields[i].addTextChangedListener(mRequiredFieldsWatcher);
+        }
 
         if (getLastNonConfigurationInstance() != null) {
             setFields((StateHolder)getLastNonConfigurationInstance());
@@ -112,31 +159,6 @@ public class AddVenueActivity extends Activity {
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mLoggedInReceiver);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        mMenuSubmit = menu.add(Menu.NONE, MENU_SUBMIT, Menu.NONE, R.string.add_venue_label) //
-                .setIcon(android.R.drawable.ic_menu_add).setEnabled(false);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case MENU_SUBMIT:
-                new AddVenueTask().execute();
-                return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        mMenuSubmit.setEnabled(mFieldsHolder.foursquareCity != null);
-        return true;
     }
 
     @Override

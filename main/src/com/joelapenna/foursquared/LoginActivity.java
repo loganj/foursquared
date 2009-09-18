@@ -144,7 +144,7 @@ public class LoginActivity extends Activity {
         mPhoneEditText = ((EditText)findViewById(R.id.phoneEditText));
         mPasswordEditText = ((EditText)findViewById(R.id.passwordEditText));
 
-        TextWatcher FieldValidatorTextWatcher = new TextWatcher() {
+        TextWatcher fieldValidatorTextWatcher = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
             }
@@ -170,8 +170,8 @@ public class LoginActivity extends Activity {
             }
         };
 
-        mPhoneEditText.addTextChangedListener(FieldValidatorTextWatcher);
-        mPasswordEditText.addTextChangedListener(FieldValidatorTextWatcher);
+        mPhoneEditText.addTextChangedListener(fieldValidatorTextWatcher);
+        mPasswordEditText.addTextChangedListener(fieldValidatorTextWatcher);
 
         ensurePhoneNumber();
     }
