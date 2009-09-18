@@ -193,7 +193,7 @@ public class VenueCheckinsActivity extends LoadableListActivity {
             // group that is served to the list adapter is only 1 level deep (the <user>s).
             Group peopleGroups = venue.getPeople();
             Group people = new Group();
-            people.setType("Recent Checkins");
+            people.setType("Who's here");
             for (int i = 0; i < peopleGroups.size(); i++) {
                 Group peopleGroup = (Group)peopleGroups.get(i);
                 for (int j = 0; j < peopleGroup.size(); j++) {
