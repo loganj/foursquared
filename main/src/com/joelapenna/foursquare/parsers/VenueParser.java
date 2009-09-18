@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-09-16 18:46:43.466222
+ * Auto-generated: 2009-09-17 19:58:38.083916
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -29,13 +29,7 @@ public class VenueParser extends AbstractParser<Venue> {
     @Override
     public Venue parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        try {
-            parser.require(XmlPullParser.START_TAG, null, "venue");
-        } catch (XmlPullParserException e) {
-            if (parser.getName().equals("error")) {
-                throw new FoursquareError(parser.getText());
-            }
-        }
+        parser.require(XmlPullParser.START_TAG, null, "venue");
 
         Venue venue = new Venue();
 

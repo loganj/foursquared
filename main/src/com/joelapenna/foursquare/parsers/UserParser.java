@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-09-16 19:23:29.187133
+ * Auto-generated: 2009-09-17 19:58:37.888051
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -29,13 +29,7 @@ public class UserParser extends AbstractParser<User> {
     @Override
     public User parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        try {
-            parser.require(XmlPullParser.START_TAG, null, "user");
-        } catch (XmlPullParserException e) {
-            if (parser.getName().equals("error")) {
-                throw new FoursquareError(parser.getText());
-            }
-        }
+        parser.require(XmlPullParser.START_TAG, null, "user");
 
         User user = new User();
 

@@ -29,13 +29,7 @@ public class CheckinResultParser extends AbstractParser<CheckinResult> {
     @Override
     public CheckinResult parseInner(XmlPullParser parser) throws XmlPullParserException,
             IOException, FoursquareError, FoursquareParseException {
-        try {
-            parser.require(XmlPullParser.START_TAG, null, "checkin");
-        } catch (XmlPullParserException e) {
-            if (parser.getName().equals("error")) {
-                throw new FoursquareError(parser.getText());
-            }
-        }
+        parser.require(XmlPullParser.START_TAG, null, "checkin");
 
         CheckinResult checkin_result = new CheckinResult();
 

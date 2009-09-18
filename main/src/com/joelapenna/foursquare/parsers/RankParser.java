@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-08-01 10:38:32.651604
+ * Auto-generated: 2009-09-17 19:58:37.010789
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -29,13 +29,7 @@ public class RankParser extends AbstractParser<Rank> {
     @Override
     public Rank parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        try {
-            parser.require(XmlPullParser.START_TAG, null, "rank");
-        } catch (XmlPullParserException e) {
-            if (parser.getName().equals("error")) {
-                throw new FoursquareError(parser.getText());
-            }
-        }
+        parser.require(XmlPullParser.START_TAG, null, "rank");
 
         Rank rank = new Rank();
 

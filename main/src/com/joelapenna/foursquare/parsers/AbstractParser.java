@@ -46,6 +46,9 @@ public abstract class AbstractParser<T extends FoursquareType> implements Parser
         try {
             if (parser.getEventType() == XmlPullParser.START_DOCUMENT) {
                 parser.nextTag();
+                if (parser.getName().equals("error")) {
+                    throw new FoursquareError(parser.nextText());
+                }
             }
             return parseInner(parser);
         } catch (IOException e) {

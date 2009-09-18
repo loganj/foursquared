@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-08-01 10:38:31.501404
+ * Auto-generated: 2009-09-17 19:58:35.716726
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -29,13 +29,7 @@ public class BadgeParser extends AbstractParser<Badge> {
     @Override
     public Badge parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        try {
-            parser.require(XmlPullParser.START_TAG, null, "badge");
-        } catch (XmlPullParserException e) {
-            if (parser.getName().equals("error")) {
-                throw new FoursquareError(parser.getText());
-            }
-        }
+        parser.require(XmlPullParser.START_TAG, null, "badge");
 
         Badge badge = new Badge();
 
@@ -51,9 +45,6 @@ public class BadgeParser extends AbstractParser<Badge> {
 
             } else if ("id".equals(name)) {
                 badge.setId(parser.nextText());
-
-            } else if ("message".equals(name)) {
-                badge.setMessage(parser.nextText());
 
             } else if ("name".equals(name)) {
                 badge.setName(parser.nextText());
