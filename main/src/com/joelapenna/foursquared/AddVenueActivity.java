@@ -44,7 +44,7 @@ public class AddVenueActivity extends Activity {
     private BestLocationListener mLocationListener;
     private LocationManager mLocationManager;
 
-    final private StateHolder mFieldsHolder = new StateHolder();
+    final private StateHolder mStateHolder = new StateHolder();
 
     private EditText mNameEditText;
     private EditText mAddressEditText;
@@ -74,7 +74,7 @@ public class AddVenueActivity extends Activity {
                     break;
                 }
             }
-            mAddVenueButton.setEnabled(requiredFieldsValid);
+            mAddVenueButton.setEnabled(requiredFieldsValid && mStateHolder.foursquareCity != null);
         }
     };
 
@@ -121,7 +121,6 @@ public class AddVenueActivity extends Activity {
                 mZipEditText,
         };
 
-
         for (int i = 0; i < mRequiredFields.length; i++) {
             mRequiredFields[i].addTextChangedListener(mRequiredFieldsWatcher);
         }
@@ -133,7 +132,7 @@ public class AddVenueActivity extends Activity {
         }
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mFieldsHolder.foursquareCity = Preferences.getUser(prefs).getCity();
+        mStateHolder.foursquareCity = Preferences.getUser(prefs).getCity();
     }
 
     @Override
@@ -163,12 +162,12 @@ public class AddVenueActivity extends Activity {
 
     @Override
     public Object onRetainNonConfigurationInstance() {
-        return mFieldsHolder;
+        return mStateHolder;
     }
 
     private void setFields(StateHolder fields) {
-        mFieldsHolder.geocodedAddress = fields.geocodedAddress;
-        mFieldsHolder.location = fields.location;
+        mStateHolder.geocodedAddress = fields.geocodedAddress;
+        mStateHolder.location = fields.location;
 
         if (fields.geocodedAddress != null) {
 
@@ -222,7 +221,7 @@ public class AddVenueActivity extends Activity {
                         mCityEditText.getText().toString(), //
                         mStateEditText.getText().toString(), //
                         mZipEditText.getText().toString(), //
-                        mFieldsHolder.foursquareCity.getId(), //
+                        mStateHolder.foursquareCity.getId(), //
                         mPhoneEditText.getText().toString());
             } catch (Exception e) {
                 if (DEBUG) Log.d(TAG, "Exception doing add venue", e);

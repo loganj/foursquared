@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared.util;
 
 import com.joelapenna.foursquare.error.FoursquareCredentialsException;
+import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquared.FoursquaredSettings;
 
@@ -36,10 +37,16 @@ public class NotificationsUtil {
         } else if (e instanceof FoursquareCredentialsException) {
             Toast.makeText(context, "Authorization failed.", Toast.LENGTH_SHORT).show();
 
-        } else if (e instanceof FoursquareException) {
-            String message = (e.getMessage() == null) ? "Invalid Query" : "Invalid Query ("
-                    + e.getMessage() + ")";
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        } else if (e instanceof FoursquareException /* FoursquareError is one of these */) {
+            String message;
+            int toastLength = Toast.LENGTH_SHORT;
+            if (e.getMessage() == null) {
+                message = "Invalid Request";
+            } else {
+                message = e.getMessage();
+                toastLength = Toast.LENGTH_LONG;
+            }
+            Toast.makeText(context, message, toastLength).show();
 
         } else {
             Toast.makeText(context, "A surprising new problem has occured. Try again!",
