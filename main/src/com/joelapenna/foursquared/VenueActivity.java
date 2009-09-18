@@ -130,7 +130,7 @@ public class VenueActivity extends TabActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean checkinEnabled = (mStateHolder.venue != null) && !mCheckedInSuccessfully;
+        boolean checkinEnabled = (mStateHolder.venueId != null) && !mCheckedInSuccessfully;
         menu.findItem(MENU_SHOUT).setEnabled(checkinEnabled);
 
         boolean callEnabled = mStateHolder.venue != null
@@ -259,18 +259,19 @@ public class VenueActivity extends TabActivity {
 
     }
 
-    private void onVenueSet(Venue venue) {
+    private void onVenueSet() {
+        Venue venue = mStateHolder.venue;
         if (DEBUG) Log.d(TAG, "onVenueSet:" + venue.getName());
         setTitle(venue.getName() + " - Foursquare");
         mVenueView.setVenue(venue);
-        mVenueView.setCheckinButtonEnabled(true);
+        mVenueView.setCheckinButtonEnabled(mStateHolder.venueId != null);
     }
 
     private void setVenue(Venue venue) {
         mStateHolder.venue = venue;
         mStateHolder.venueId = venue.getId();
         venueObservable.notifyObservers(venue);
-        onVenueSet(mStateHolder.venue);
+        onVenueSet();
 
     }
 
@@ -308,7 +309,7 @@ public class VenueActivity extends TabActivity {
         @Override
         protected void onPostExecute(Venue venue) {
             try {
-                if (venue == null) {
+                if (venue == null || venue.getId() == null) {
                     NotificationsUtil.ToastReasonForFailure(VenueActivity.this, mReason);
                     finish();
                 } else {
