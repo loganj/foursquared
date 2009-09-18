@@ -204,6 +204,17 @@ public class VenueActivity extends TabActivity {
     }
 
     @Override
+    public void onPrepareDialog(int id, Dialog dialog) {
+        // If the tip add was a success we must have set mStateHolder.tip. If that is the case, then
+        // we clear the dialog because clearly they're looking to add a new tip and not post the
+        // same one again.
+        if (id == DIALOG_TIPADD && mStateHolder.tip != null) {
+            ((EditText)dialog.findViewById(R.id.editText)).setText("");
+            mStateHolder.tip = null;
+        }
+    }
+
+    @Override
     public Object onRetainNonConfigurationInstance() {
         return mStateHolder;
     }
@@ -366,6 +377,7 @@ public class VenueActivity extends TabActivity {
                 }
             } finally {
                 stopProgressBar(PROGRESS_BAR_TASK_ID);
+                mStateHolder.tip = null;
             }
         }
 
@@ -378,5 +390,6 @@ public class VenueActivity extends TabActivity {
     private static final class StateHolder {
         Venue venue = null;
         String venueId = null;
+        Tip tip = null;
     }
 }
