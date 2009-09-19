@@ -11,6 +11,7 @@ import com.joelapenna.foursquared.util.StringFormatters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
@@ -63,8 +64,11 @@ public class VenueView extends RelativeLayout {
         mVenueLocationLine1.setText(venue.getAddress());
 
         String line2 = StringFormatters.getVenueLocationCrossStreetOrCity(venue);
-        if (line2 != null) {
+        if (TextUtils.isEmpty(line2)) {
             mVenueLocationLine2.setText(line2);
+            mVenueLocationLine2.setVisibility(View.VISIBLE);
+        } else {
+            mVenueLocationLine2.setVisibility(View.GONE);
         }
         if (mCheckinButtonVisible) {
             mCheckinButton.setVisibility(View.VISIBLE);

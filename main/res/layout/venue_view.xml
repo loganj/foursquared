@@ -30,6 +30,7 @@
     android:layout_alignParentLeft="true"
     android:layout_alignParentRight="true"
     android:layout_below="@id/internal_venueName"
+    android:layout_alignWithParentIfMissing="true"
 
     android:textAppearance="@android:style/TextAppearance.Small" />
 
