@@ -21,7 +21,7 @@
         <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/4a76cfe720e34.jpg</photo>
       </user>
     </later>
-    <now>
+    <now type="Who's here">
       <user>
         <id>1818</id>
         <created>Thu, 17 Sep 09 01:14:15 +0000</created>

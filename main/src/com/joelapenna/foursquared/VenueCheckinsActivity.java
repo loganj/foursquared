@@ -191,16 +191,18 @@ public class VenueCheckinsActivity extends LoadableListActivity {
             // we'll have to refactor this activity to no longer smush all the groups into one
             // concise group. Until then though, we're going to some cleaning here to merge the
             // group that is served to the list adapter is only 1 level deep (the <user>s).
-            Group peopleGroups = venue.getPeople();
-            Group people = new Group();
+            Group<Group<User>> peopleGroups = venue.getPeople();
+            Group<User> people = new Group<User>();
             people.setType("Who's here");
-            for (int i = 0; i < peopleGroups.size(); i++) {
-                Group peopleGroup = (Group)peopleGroups.get(i);
-                for (int j = 0; j < peopleGroup.size(); j++) {
-                    people.add(peopleGroup.get(j));
+            if (peopleGroups != null) {
+                for (int i = 0; i < peopleGroups.size(); i++) {
+                    Group<User> peopleGroup = peopleGroups.get(i);
+                    for (int j = 0; j < peopleGroup.size(); j++) {
+                        people.add(peopleGroup.get(j));
+                    }
                 }
+                Collections.sort(people, Comparators.getUserRecencyComparator());
             }
-            Collections.sort(people, Comparators.getUserRecencyComparator());
 
             if (!observed && venue != null && people != null) {
                 observed = true;
