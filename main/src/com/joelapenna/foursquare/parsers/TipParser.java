@@ -29,7 +29,7 @@ public class TipParser extends AbstractParser<Tip> {
     @Override
     public Tip parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "tip");
+        parser.require(XmlPullParser.START_TAG, null, null);
 
         Tip tip = new Tip();
 

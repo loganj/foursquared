@@ -29,7 +29,7 @@ public class BadgeParser extends AbstractParser<Badge> {
     @Override
     public Badge parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "badge");
+        parser.require(XmlPullParser.START_TAG, null, null);
 
         Badge badge = new Badge();
 

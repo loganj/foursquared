@@ -1,23 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <checkin>
-  <message>OK! We've got you @ 4SQ HQ - Soho. This is your 8th checkin here!</message>
-  <id>413421</id>
-  <created>Mon, 29 Jun 09 14:21:06 +0000</created>
+  <message>OK! We&apos;ve got you @ Original Pancake House - Park Ridge.  This is your 2nd checkin here! (ps: we also pinged twitter!)</message>
+  <id>1146041</id>
+  <created>Sat, 19 Sep 09 11:54:49 +0000</created>
   <venue>
-    <id>45506</id>
-    <name>4SQ HQ - Soho</name>
-    <address>...</address>
-    <crossstreet>btw Grand &amp; Broome</crossstreet>
-    <city>New York</city>
-    <state>NY</state>
-    <zip>10013</zip>
-    <id>22</id>
+    <id>120216</id>
+    <name>Original Pancake House - Park Ridge</name>
+    <address>northwest highway</address>
+    <crossstreet/>
+    <city>Park Ridge</city>
+    <state>Illinois</state>
+    <zip>60068</zip>
+    <cityid>32</cityid>
   </venue>
   <mayor>
     <type>nochange</type>
     <checkins>11</checkins>
     <message>You're still The Mayor of 4SQ HQ - Soho! (11 checkins in the past 2 months)</message>
   </mayor>
+  <scoring>
+    <score>
+      <points>1</points>
+      <icon>http://foursquare.com/images/scoring/2.png</icon>
+      <message>First stop today</message>
+    </score>
+    <total>
+      <points>1</points>
+      <message>1 pts </message>
+    </total>
+  </scoring>
   <badges>
     <badge>
       <id>123</id>

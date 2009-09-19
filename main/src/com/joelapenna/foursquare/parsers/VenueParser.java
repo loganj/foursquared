@@ -29,7 +29,7 @@ public class VenueParser extends AbstractParser<Venue> {
     @Override
     public Venue parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "venue");
+        parser.require(XmlPullParser.START_TAG, null, null);
 
         Venue venue = new Venue();
 

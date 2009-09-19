@@ -29,7 +29,7 @@ public class CityParser extends AbstractParser<City> {
     @Override
     public City parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "city");
+        parser.require(XmlPullParser.START_TAG, null, null);
 
         City city = new City();
 

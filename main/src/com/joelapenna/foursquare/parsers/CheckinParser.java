@@ -29,7 +29,7 @@ public class CheckinParser extends AbstractParser<Checkin> {
     @Override
     public Checkin parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "checkin");
+        parser.require(XmlPullParser.START_TAG, null, null);
 
         Checkin checkin = new Checkin();
 

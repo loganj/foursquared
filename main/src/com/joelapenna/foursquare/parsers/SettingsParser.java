@@ -29,7 +29,7 @@ public class SettingsParser extends AbstractParser<Settings> {
     @Override
     public Settings parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "settings");
+        parser.require(XmlPullParser.START_TAG, null, null);
 
         Settings settings = new Settings();
 

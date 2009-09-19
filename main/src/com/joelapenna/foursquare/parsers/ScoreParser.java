@@ -29,7 +29,7 @@ public class ScoreParser extends AbstractParser<Score> {
     @Override
     public Score parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "score");
+        parser.require(XmlPullParser.START_TAG, null, null);
 
         Score score = new Score();
 

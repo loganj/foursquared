@@ -29,7 +29,7 @@ public class MayorParser extends AbstractParser<Mayor> {
     @Override
     public Mayor parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "mayor");
+        parser.require(XmlPullParser.START_TAG, null, null);
 
         Mayor mayor = new Mayor();
 

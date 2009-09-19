@@ -29,7 +29,7 @@ public class RankParser extends AbstractParser<Rank> {
     @Override
     public Rank parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "rank");
+        parser.require(XmlPullParser.START_TAG, null, null);
 
         Rank rank = new Rank();
 

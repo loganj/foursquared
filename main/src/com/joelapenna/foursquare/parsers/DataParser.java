@@ -29,7 +29,7 @@ public class DataParser extends AbstractParser<Data> {
     @Override
     public Data parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "data");
+        parser.require(XmlPullParser.START_TAG, null, null);
 
         Data data = new Data();
 

@@ -29,7 +29,7 @@ public class BeenhereParser extends AbstractParser<Beenhere> {
     @Override
     public Beenhere parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "beenhere");
+        parser.require(XmlPullParser.START_TAG, null, null);
 
         Beenhere beenhere = new Beenhere();
 

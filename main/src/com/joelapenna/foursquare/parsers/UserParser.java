@@ -29,7 +29,7 @@ public class UserParser extends AbstractParser<User> {
     @Override
     public User parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "user");
+        parser.require(XmlPullParser.START_TAG, null, null);
 
         User user = new User();
 

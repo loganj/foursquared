@@ -29,7 +29,7 @@ public class StatsParser extends AbstractParser<Stats> {
     @Override
     public Stats parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        parser.require(XmlPullParser.START_TAG, null, "stats");
+        parser.require(XmlPullParser.START_TAG, null, null);
 
         Stats stats = new Stats();
 
