@@ -64,6 +64,7 @@ public class UserActivity extends Activity {
     private UserObserver mUserObserver = new UserObserver();
 
     private GridView mBadgesGrid;
+    private BadgeWithIconListAdapter mListAdapter;
     private VenueView mVenueView;
     private AsyncTask<Void, Void, User> mUserTask = null;
 
@@ -83,7 +84,8 @@ public class UserActivity extends Activity {
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         mVenueView = (VenueView)findViewById(R.id.venue);
-        mBadgesGrid = (GridView)findViewById(R.id.badgesGrid);
+
+        initGridViewAdapter();
 
         if (getIntent().hasExtra(EXTRA_USER)) {
             mUserId = getIntent().getExtras().getString(EXTRA_USER);
@@ -124,6 +126,13 @@ public class UserActivity extends Activity {
     @Override
     public Object onRetainNonConfigurationInstance() {
         return mUser;
+    }
+
+    private void initGridViewAdapter() {
+        mBadgesGrid = (GridView)findViewById(R.id.badgesGrid);
+        mListAdapter = new BadgeWithIconListAdapter(UserActivity.this,
+                ((Foursquared)getApplication()).getBadgeIconManager());
+        mBadgesGrid.setAdapter(mListAdapter);
     }
 
     private Dialog showProgressDialog() {
@@ -294,10 +303,7 @@ public class UserActivity extends Activity {
 
         private void displayBadges(User user) {
             if (user.getBadges() != null) {
-                BadgeWithIconListAdapter adapter = new BadgeWithIconListAdapter(UserActivity.this,
-                        ((Foursquared)getApplication()).getBadgeIconManager());
-                mBadgesGrid.setAdapter(adapter);
-                adapter.setGroup(user.getBadges());
+                mListAdapter.setGroup(user.getBadges());
                 ((TextView)findViewById(R.id.badgesHeader)).setVisibility(TextView.VISIBLE);
                 mBadgesGrid.setOnItemClickListener(new OnItemClickListener() {
                     @Override
