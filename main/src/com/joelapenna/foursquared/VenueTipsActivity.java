@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.util.Comparators;
@@ -45,10 +46,10 @@ public class VenueTipsActivity extends LoadableListActivity {
         return R.string.no_tips_be_the_first;
     }
 
-    private Group getVenueTipsAndTodos(Venue venue) {
-        Group tipsAndTodos = new Group();
+    private Group<Group<Tip>> getVenueTipsAndTodos(Venue venue) {
+        Group<Group<Tip>> tipsAndTodos = new Group<Group<Tip>>();
 
-        Group tips = venue.getTips();
+        Group<Tip> tips = venue.getTips();
         if (tips != null && tips.size() > 0) {
             Collections.sort(tips, Comparators.getTipRecencyComparator());
             tips.setType("Tips");
@@ -64,13 +65,14 @@ public class VenueTipsActivity extends LoadableListActivity {
         return tipsAndTodos;
     }
 
-    private void putGroupsInAdapter(Group groups) {
+    private void putGroupsInAdapter(Group<Group<Tip>> groups) {
         SeparatedListAdapter mainAdapter = (SeparatedListAdapter)getListAdapter();
+        mainAdapter.clear();
         setEmptyView();
 
         int groupCount = groups.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
-            Group group = (Group)groups.get(groupsIndex);
+            Group<Tip> group = (Group<Tip>)groups.get(groupsIndex);
             TipListAdapter groupAdapter = new TipListAdapter(this);
             groupAdapter.setGroup(group);
             mainAdapter.addSection(group.getType(), groupAdapter);
