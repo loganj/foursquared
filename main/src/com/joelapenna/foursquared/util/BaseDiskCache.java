@@ -33,6 +33,14 @@ public class BaseDiskCache implements DiskCache {
         mStorageDirectory = storageDirectory;
     }
 
+    /* (non-Javadoc)
+     * @see com.joelapenna.foursquared.util.DiskCache#exists(java.lang.String)
+     */
+    @Override
+    public boolean exists(String key) {
+        return getFile(key).exists();
+    }
+
     /**
      * This is silly, but our content provider *has* to serve content: URIs as File/FileDescriptors
      * using ContentProvider.openAssetFile, this is a limitation of the StreamLoader that is used by

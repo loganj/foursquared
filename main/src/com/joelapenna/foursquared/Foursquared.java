@@ -9,6 +9,7 @@ import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.maps.CityLocationListener;
 import com.joelapenna.foursquared.util.DumpcatcherHelper;
+import com.joelapenna.foursquared.util.NullDiskCache;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 
 import android.app.Application;
@@ -45,9 +46,8 @@ public class Foursquared extends Application {
 
     final private BestLocationListener mBestLocationListener = new BestLocationListener();
 
-    final private RemoteResourceManager mBadgeIconManager = new RemoteResourceManager("badges");
-    final private RemoteResourceManager mUserPhotosManager = new RemoteResourceManager(
-            "user_photos");
+    private RemoteResourceManager mBadgeIconManager;
+    private RemoteResourceManager mUserPhotosManager;
 
     final private Foursquare mFoursquare = new Foursquare(FoursquaredSettings.USE_DEBUG_SERVER);
 
@@ -60,6 +60,17 @@ public class Foursquared extends Application {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mCityLocationListener = new CityLocationListener(mFoursquare, mPrefs);
         mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+
+        // We probably don't have SD card access if we get an IllegalStateException. If it did, lets
+        // at least have some sort of disk cache so that things don't npe when trying to access the
+        // resource managers.
+        try {
+            mBadgeIconManager = new RemoteResourceManager("badges");
+            mUserPhotosManager = new RemoteResourceManager("user_photos");
+        } catch (IllegalStateException e) {
+            mBadgeIconManager = new RemoteResourceManager(new NullDiskCache());
+            mUserPhotosManager = new RemoteResourceManager(new NullDiskCache());
+        }
 
         if (FoursquaredSettings.USE_DUMPCATCHER) {
             Resources resources = getResources();

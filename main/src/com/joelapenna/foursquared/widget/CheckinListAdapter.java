@@ -110,7 +110,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
         super.setGroup(g);
         for (int i = 0; i < g.size(); i++) {
             Uri photoUri = Uri.parse(((Checkin)g.get(i)).getUser().getPhoto());
-            if (!mRrm.getFile(photoUri).exists()) {
+            if (!mRrm.exists(photoUri)) {
                 mRrm.request(photoUri);
             }
         }
