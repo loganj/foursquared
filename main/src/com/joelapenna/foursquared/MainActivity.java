@@ -9,10 +9,8 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.Window;
 import android.widget.TabHost;
-import android.widget.Toast;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -34,15 +32,6 @@ public class MainActivity extends TabActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setAction(Intent.ACTION_MAIN);
             startActivityForResult(intent, LoginActivity.ACTIVITY_REQUEST_LOGIN);
-            return;
-        }
-
-        // Otherwise, resume as normal.
-
-        if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            Toast.makeText(this, "Please insert an SD card before using Foursquared",
-                    Toast.LENGTH_LONG).show();
-            finish();
             return;
         }
 

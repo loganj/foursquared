@@ -88,7 +88,7 @@ public class VenueCheckinsActivity extends LoadableListActivity {
         });
 
         mListAdapter = new HeaderAwareCheckinListAdapter(this, //
-                ((Foursquared)getApplication()).getUserPhotosManager());
+                ((Foursquared)getApplication()).getRemoteResourceManager());
 
         setListAdapter(mListAdapter);
     }
@@ -125,7 +125,7 @@ public class VenueCheckinsActivity extends LoadableListActivity {
                 mayor.getCount() + " Checkins");
 
         final ImageView photo = (ImageView)findViewById(R.id.mayorPhoto);
-        final RemoteResourceManager rrm = ((Foursquared)getApplication()).getUserPhotosManager();
+        final RemoteResourceManager rrm = ((Foursquared)getApplication()).getRemoteResourceManager();
         final Uri photoUri = Uri.parse(mayor.getUser().getPhoto());
 
         try {
@@ -159,7 +159,7 @@ public class VenueCheckinsActivity extends LoadableListActivity {
                 try {
                     if (DEBUG) Log.d(TAG, "Loading mayor photo: " + uri);
                     RemoteResourceManager rrm = ((Foursquared)getApplication())
-                            .getUserPhotosManager();
+                            .getRemoteResourceManager();
                     Bitmap bitmap = BitmapFactory.decodeStream(rrm.getInputStream(uri));
                     photo.setImageBitmap(bitmap);
                     if (DEBUG) Log.d(TAG, "Loaded mayor photo: " + uri);
