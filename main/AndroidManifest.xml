@@ -67,30 +67,36 @@
           android:name="android.intent.category.DEFAULT" />
         <category
           android:name="android.intent.category.BROWSABLE" />
+
         <data
           android:scheme="http"
-          android:host="foursquare.com."
-          android:pathPrefix="/venue/" />
+          android:host="m.foursquare.com"
+          android:pathPattern="/" />
         <data
           android:scheme="http"
-          android:host="m.foursquare.com."
-          android:pathPrefix="/venue/" />
+          android:host="m.foursquare.com"
+          android:pathPattern="/checkin?mvenue=.*" />
         <data
           android:scheme="http"
-          android:host="foursquare.com."
-          android:pathPrefix="/login" />
-        <data
-          android:scheme="http"
-          android:host="m.foursquare.com."
-          android:pathPrefix="/login" />
-        <data
-          android:scheme="http"
-          android:host="foursquare.com."
+          android:host="m.foursquare.com"
           android:pathPrefix="/checkins" />
         <data
           android:scheme="http"
-          android:host="m.foursquare.com."
-          android:pathPrefix="/checkins" />
+          android:host="m.foursquare.com"
+          android:pathPrefix="/search" />
+        <data
+          android:scheme="http"
+          android:host="m.foursquare.com"
+          android:pathPrefix="/shout" />
+        <data
+          android:scheme="http"
+          android:host="m.foursquare.com"
+          android:pathPrefix="/user" />
+        <data
+          android:scheme="http"
+          android:host="m.foursquare.com"
+          android:pathPrefix="/venue/" />
+
       </intent-filter>
     </activity>
 
