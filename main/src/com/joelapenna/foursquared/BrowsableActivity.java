@@ -18,18 +18,22 @@ public class BrowsableActivity extends Activity {
     private static final String TAG = "BrowsableActivity";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    private static final int URI_PATH_LOGIN = 1;
-    private static final int URI_PATH_VENUE = 2;
-    private static final int URI_PATH_CHECKINS = 3;
+    private static final int URI_PATH_CHECKIN = 1;
+    private static final int URI_PATH_CHECKINS = 2;
+    private static final int URI_PATH_SEARCH = 3;
+    private static final int URI_PATH_SHOUT = 4;
+    private static final int URI_PATH_USER = 5;
+    private static final int URI_PATH_VENUE = 6;
 
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
 
-        sUriMatcher.addURI("foursquare.com.", "venue/#", URI_PATH_VENUE);
-        sUriMatcher.addURI("m.foursquare.com.", "venue/#", URI_PATH_VENUE);
-
-        sUriMatcher.addURI("foursquare.com.", "checkins", URI_PATH_CHECKINS);
-        sUriMatcher.addURI("m.foursquare.com.", "checkins", URI_PATH_CHECKINS);
+        sUriMatcher.addURI("m.foursquare.com", "checkin", URI_PATH_CHECKIN);
+        sUriMatcher.addURI("m.foursquare.com", "checkins", URI_PATH_CHECKINS);
+        sUriMatcher.addURI("m.foursquare.com", "search", URI_PATH_SEARCH);
+        sUriMatcher.addURI("m.foursquare.com", "shout", URI_PATH_SHOUT);
+        sUriMatcher.addURI("m.foursquare.com", "user", URI_PATH_USER);
+        sUriMatcher.addURI("m.foursquare.com", "venue/#", URI_PATH_VENUE);
     }
 
     @Override
@@ -43,22 +47,38 @@ public class BrowsableActivity extends Activity {
         Intent intent;
 
         switch (sUriMatcher.match(uri)) {
-            case URI_PATH_LOGIN:
-                if (DEBUG) Log.d(TAG, "Matched: URI_PATH_LOGIN");
+            case URI_PATH_CHECKIN:
+                if (DEBUG) Log.d(TAG, "Matched: URI_PATH_CHECKIN");
                 intent = new Intent(this, MainActivity.class);
-                intent.setAction(Intent.ACTION_MAIN);
+                intent.putExtra(Foursquared.EXTRA_VENUE_ID, uri.getQueryParameter("mvenue"));
+                startActivity(intent);
+                break;
+            case URI_PATH_CHECKINS:
+                if (DEBUG) Log.d(TAG, "Matched: URI_PATH_CHECKINS");
+                intent = new Intent(this, FriendsActivity.class);
+                startActivity(intent);
+                break;
+            case URI_PATH_SEARCH:
+                if (DEBUG) Log.d(TAG, "Matched: URI_PATH_SEARCH");
+                intent = new Intent(this, SearchVenuesActivity.class);
+                startActivity(intent);
+                break;
+            case URI_PATH_SHOUT:
+                if (DEBUG) Log.d(TAG, "Matched: URI_PATH_SHOUT");
+                intent = new Intent(this, ShoutActivity.class);
+                intent.putExtra(ShoutActivity.EXTRA_SHOUT, true);
+                startActivity(intent);
+                break;
+            case URI_PATH_USER:
+                if (DEBUG) Log.d(TAG, "Matched: URI_PATH_USER");
+                intent = new Intent(this, UserActivity.class);
+                intent.putExtra(UserActivity.EXTRA_USER, uri.getQueryParameter("uid"));
                 startActivity(intent);
                 break;
             case URI_PATH_VENUE:
                 if (DEBUG) Log.d(TAG, "Matched: URI_PATH_VENUE");
                 intent = new Intent(this, VenueActivity.class);
                 intent.putExtra(Foursquared.EXTRA_VENUE_ID, uri.getLastPathSegment());
-                startActivity(intent);
-                break;
-            case URI_PATH_CHECKINS:
-                if (DEBUG) Log.d(TAG, "Matched: URI_PATH_CHECKINS");
-                intent = new Intent(this, FriendsActivity.class);
-                intent.setAction(Intent.ACTION_MAIN);
                 startActivity(intent);
                 break;
             default:
