@@ -23,17 +23,21 @@ public class BaseDiskCache implements DiskCache {
     private static final String TAG = "BaseDiskCache";
     private static final boolean DEBUG = true;
 
+    private static final int MIN_FILE_SIZE_IN_BYTES = 100;
+
     private File mStorageDirectory;
 
-    BaseDiskCache(String dirname, String basename) {
+    BaseDiskCache(String dirPath, String name) {
         // Lets make sure we can actually cache things!
-        String dir = Environment.getExternalStorageDirectory() + File.separator + dirname;
-        File storageDirectory = new File(dir, basename);
+        File baseDirectory = new File(Environment.getExternalStorageDirectory(), dirPath);
+        File storageDirectory = new File(baseDirectory, name);
         createDirectory(storageDirectory);
         mStorageDirectory = storageDirectory;
+        cleanup();  // Remove invalid files that may have shown up.
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see com.joelapenna.foursquared.util.DiskCache#exists(java.lang.String)
      */
     @Override
@@ -83,6 +87,32 @@ public class BaseDiskCache implements DiskCache {
             if (DEBUG) Log.d(TAG, "store failed to store: " + key, e);
             return;
         }
+    }
+
+    public void invalidate(String key) {
+        getFile(key).delete();
+    }
+
+    public void cleanup() {
+        // removes files that are too small to be valid. Cheap and cheater way to remove files that
+        // were corrupted during download.
+        String[] children = mStorageDirectory.list();
+        for (int i = 0; i < children.length; i++) {
+            File child = new File(mStorageDirectory, children[i]);
+            if (child.length() <= MIN_FILE_SIZE_IN_BYTES) {
+                child.delete();
+            }
+        }
+    }
+
+    public void clear() {
+        // Clear the whole cache. Coolness.
+        String[] children = mStorageDirectory.list();
+        for (int i = 0; i < children.length; i++) {
+            File child = new File(mStorageDirectory, children[i]);
+            child.delete();
+        }
+        mStorageDirectory.delete();
     }
 
     private static final void createDirectory(File storageDirectory) {

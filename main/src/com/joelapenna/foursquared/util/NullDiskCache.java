@@ -47,7 +47,30 @@ public class NullDiskCache implements DiskCache {
      */
     @Override
     public void store(String key, InputStream is) {
+    }
 
+    /*
+     * (non-Javadoc)
+     * @see com.joelapenna.foursquared.util.DiskCache#cleanup()
+     */
+    @Override
+    public void cleanup() {
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.joelapenna.foursquared.util.DiskCache#invalidate(java.lang.String)
+     */
+    @Override
+    public void invalidate(String key) {
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.joelapenna.foursquared.util.DiskCache#clear()
+     */
+    @Override
+    public void clear() {
     }
 
 }

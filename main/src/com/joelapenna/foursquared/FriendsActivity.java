@@ -198,7 +198,7 @@ public class FriendsActivity extends LoadableListActivity {
         mEmptyProgress = (ProgressBar)findViewById(R.id.emptyProgress);
 
         mListAdapter = new CheckinListAdapter(this, //
-                ((Foursquared)getApplication()).getUserPhotosManager());
+                ((Foursquared)getApplication()).getRemoteResourceManager());
 
         ListView listView = getListView();
         listView.setAdapter(mListAdapter);

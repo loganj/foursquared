@@ -66,6 +66,12 @@ public class RemoteResourceManager extends Observable {
 
     public void shutdown() {
         mRemoteResourceFetcher.shutdown();
+        mDiskCache.cleanup();
+    }
+
+    public void clear() {
+        mRemoteResourceFetcher.shutdown();
+        mDiskCache.clear();
     }
 
     public static abstract class ResourceRequestObserver implements Observer {

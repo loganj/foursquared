@@ -13,17 +13,21 @@ import com.joelapenna.foursquared.util.NullDiskCache;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -46,8 +50,7 @@ public class Foursquared extends Application {
 
     final private BestLocationListener mBestLocationListener = new BestLocationListener();
 
-    private RemoteResourceManager mBadgeIconManager;
-    private RemoteResourceManager mUserPhotosManager;
+    private RemoteResourceManager mRemoteResourceManager;
 
     final private Foursquare mFoursquare = new Foursquare(FoursquaredSettings.USE_DEBUG_SERVER);
 
@@ -61,16 +64,9 @@ public class Foursquared extends Application {
         mCityLocationListener = new CityLocationListener(mFoursquare, mPrefs);
         mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
-        // We probably don't have SD card access if we get an IllegalStateException. If it did, lets
-        // at least have some sort of disk cache so that things don't npe when trying to access the
-        // resource managers.
-        try {
-            mBadgeIconManager = new RemoteResourceManager("badges");
-            mUserPhotosManager = new RemoteResourceManager("user_photos");
-        } catch (IllegalStateException e) {
-            mBadgeIconManager = new RemoteResourceManager(new NullDiskCache());
-            mUserPhotosManager = new RemoteResourceManager(new NullDiskCache());
-        }
+        cleanupOldResourceManagers(); // 9/20/2009 - Changed the cache dir names so we wanna clean
+        // up after ourselves.
+        loadResourceManagers();
 
         if (FoursquaredSettings.USE_DUMPCATCHER) {
             Resources resources = getResources();
@@ -97,8 +93,7 @@ public class Foursquared extends Application {
 
     @Override
     public void onTerminate() {
-        mUserPhotosManager.shutdown();
-        mBadgeIconManager.shutdown();
+        mRemoteResourceManager.shutdown();
         mLocationManager.removeUpdates(mCityLocationListener);
     }
 
@@ -116,6 +111,10 @@ public class Foursquared extends Application {
         return mBestLocationListener;
     }
 
+    public RemoteResourceManager getRemoteResourceManager() {
+        return mRemoteResourceManager;
+    }
+
     private void loadCredentials() throws FoursquareCredentialsException {
         if (FoursquaredSettings.DEBUG) Log.d(TAG, "loadCredentials()");
         String phoneNumber = mPrefs.getString(Preferences.PREFERENCE_PHONE, null);
@@ -131,6 +130,17 @@ public class Foursquared extends Application {
         }
         mFoursquare.setCredentials(phoneNumber, password);
         mFoursquare.setOAuthToken(oauthToken, oauthTokenSecret);
+    }
+
+    private void loadResourceManagers() {
+        // We probably don't have SD card access if we get an IllegalStateException. If it did, lets
+        // at least have some sort of disk cache so that things don't npe when trying to access the
+        // resource managers.
+        try {
+            mRemoteResourceManager = new RemoteResourceManager("cache");
+        } catch (IllegalStateException e) {
+            mRemoteResourceManager = new RemoteResourceManager(new NullDiskCache());
+        }
     }
 
     private void primeLocationListener() {
@@ -152,11 +162,27 @@ public class Foursquared extends Application {
                 .setIcon(android.R.drawable.ic_menu_preferences).setIntent(intent);
     }
 
-    public RemoteResourceManager getUserPhotosManager() {
-        return mUserPhotosManager;
+    public static void cleanupOldResourceManagers() {
+        try {
+            new RemoteResourceManager("badges").clear();
+            new RemoteResourceManager("user_photos").clear();
+        } catch (IllegalStateException e) {
+            // Its okay if we catch this, it just likely means that the RRM can't be constructed
+            // because the sd card isn't mounted.
+        }
     }
 
-    public RemoteResourceManager getBadgeIconManager() {
-        return mBadgeIconManager;
+    /**
+     * Set up resource managers on the application depending on SD card state.
+     *
+     * @author Joe LaPenna (joe@joelapenna.com)
+     */
+    public class MediaCardStateBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (DEBUG) Log.d(TAG, "Media state changed, reloading resource managers.");
+            loadResourceManagers();
+        }
+
     }
 }
