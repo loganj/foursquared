@@ -16,6 +16,7 @@ import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.location.Location;
@@ -45,11 +46,12 @@ public class Foursquared extends Application {
     private static final int MENU_GROUP_SYSTEM = 20;
 
     private SharedPreferences mPrefs;
+
+    private BestLocationListener mBestLocationListener;
     private CityLocationListener mCityLocationListener;
     private LocationManager mLocationManager;
 
-    final private BestLocationListener mBestLocationListener = new BestLocationListener();
-
+    private MediaCardStateBroadcastReceiver mMediaCardStateBroadcastReceiver;
     private RemoteResourceManager mRemoteResourceManager;
 
     final private Foursquare mFoursquare = new Foursquare(FoursquaredSettings.USE_DEBUG_SERVER);
@@ -60,25 +62,26 @@ public class Foursquared extends Application {
         Log.i(TAG, "Using Dumpcatcher:\t" + FoursquaredSettings.USE_DUMPCATCHER);
         Log.i(TAG, "Using Debug Log:\t" + DEBUG);
 
+        // Setup Prefs and dumpcatcher (based on prefs)
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mCityLocationListener = new CityLocationListener(mFoursquare, mPrefs);
-        mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-
-        cleanupOldResourceManagers(); // 9/20/2009 - Changed the cache dir names so we wanna clean
-        // up after ourselves.
-        loadResourceManagers();
-
         if (FoursquaredSettings.USE_DUMPCATCHER) {
             Resources resources = getResources();
             new DumpcatcherHelper(Preferences.createUniqueId(mPrefs), resources);
             DumpcatcherHelper.sendUsage("Started");
         }
 
-        // Set the oauth credentials.
+        // 9/20/2009 - Changed the cache dir names so we wanna clean up after ourselves.
+        cleanupOldResourceManagers();
+
+        // Set up storage cache.
+        mMediaCardStateBroadcastReceiver = new MediaCardStateBroadcastReceiver();
+        mMediaCardStateBroadcastReceiver.register();
+        loadResourceManagers();
+
+        // Try logging in and setting up foursquare oauth, then user credentials.
         mFoursquare.setOAuthConsumerCredentials( //
                 getResources().getString(R.string.oauth_consumer_key), //
                 getResources().getString(R.string.oauth_consumer_secret));
-
         try {
             loadCredentials();
         } catch (FoursquareCredentialsException e) {
@@ -86,6 +89,11 @@ public class Foursquared extends Application {
             // will handle the failure. This is simply convenience.
         }
 
+        // Construct the listener we'll use for tight location updates and start listening for city
+        // location.
+        mBestLocationListener = new BestLocationListener();
+        mCityLocationListener = new CityLocationListener(mFoursquare, mPrefs);
+        mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
                 CityLocationListener.LOCATION_UPDATE_MIN_TIME,
                 CityLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mCityLocationListener);
@@ -95,6 +103,7 @@ public class Foursquared extends Application {
     public void onTerminate() {
         mRemoteResourceManager.shutdown();
         mLocationManager.removeUpdates(mCityLocationListener);
+        mLocationManager.removeUpdates(mBestLocationListener);
     }
 
     public Foursquare getFoursquare() {
@@ -137,8 +146,10 @@ public class Foursquared extends Application {
         // at least have some sort of disk cache so that things don't npe when trying to access the
         // resource managers.
         try {
+            if (DEBUG) Log.d(TAG, "Attempting to load RemoteResourceManager(cache)");
             mRemoteResourceManager = new RemoteResourceManager("cache");
         } catch (IllegalStateException e) {
+            if (DEBUG) Log.d(TAG, "Falling back to NullDiskCache for RemoteResourceManager");
             mRemoteResourceManager = new RemoteResourceManager(new NullDiskCache());
         }
     }
@@ -163,6 +174,7 @@ public class Foursquared extends Application {
     }
 
     public static void cleanupOldResourceManagers() {
+        if (DEBUG) Log.d(TAG, "cleaning up old resource managers.");
         try {
             new RemoteResourceManager("badges").clear();
             new RemoteResourceManager("user_photos").clear();
@@ -180,8 +192,31 @@ public class Foursquared extends Application {
     public class MediaCardStateBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (DEBUG) Log.d(TAG, "Media state changed, reloading resource managers.");
-            loadResourceManagers();
+            if (DEBUG) Log.d(TAG, "Media state changed, reloading resource managers:"
+                    + intent.getAction());
+            if (Intent.ACTION_MEDIA_UNMOUNTED.equals(intent.getAction())) {
+                getRemoteResourceManager().shutdown();
+                loadResourceManagers();
+            } else if (Intent.ACTION_MEDIA_MOUNTED.equals(intent.getAction())) {
+                loadResourceManagers();
+            }
+        }
+
+        public void register() {
+            // Register our media card broadcast receiver so we can enable/disable the cache as
+            // appropriate.
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
+            intentFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
+            // intentFilter.addAction(Intent.ACTION_MEDIA_REMOVED);
+            // intentFilter.addAction(Intent.ACTION_MEDIA_SHARED);
+            // intentFilter.addAction(Intent.ACTION_MEDIA_BAD_REMOVAL);
+            // intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTABLE);
+            // intentFilter.addAction(Intent.ACTION_MEDIA_NOFS);
+            // intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_STARTED);
+            // intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
+            intentFilter.addDataScheme("file");
+            registerReceiver(mMediaCardStateBroadcastReceiver, intentFilter);
         }
 
     }

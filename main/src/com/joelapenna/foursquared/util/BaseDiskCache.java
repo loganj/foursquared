@@ -144,7 +144,7 @@ public class BaseDiskCache implements DiskCache {
         File nomediaFile = new File(storageDirectory, ".nomedia");
         if (!nomediaFile.exists()) {
             try {
-                Log.d(TAG, "Created file: " + nomediaFile
+                Log.d(TAG, "Created file: " + nomediaFile + " "
                         + String.valueOf(nomediaFile.createNewFile()));
             } catch (IOException e) {
                 Log.d(TAG, "Unable to create .nomedia file for some reason.", e);
