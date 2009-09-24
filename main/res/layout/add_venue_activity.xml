@@ -65,7 +65,6 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:imeOptions="actionNext"
-            android:numeric="integer"
             android:hint="@string/zip_code" />
         </TableRow>
       </TableLayout>
