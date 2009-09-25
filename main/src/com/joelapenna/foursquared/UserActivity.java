@@ -131,7 +131,7 @@ public class UserActivity extends Activity {
     private void initGridViewAdapter() {
         mBadgesGrid = (GridView)findViewById(R.id.badgesGrid);
         mListAdapter = new BadgeWithIconListAdapter(UserActivity.this,
-                ((Foursquared)getApplication()).getBadgeIconManager());
+                ((Foursquared)getApplication()).getRemoteResourceManager());
         mBadgesGrid.setAdapter(mListAdapter);
     }
 
@@ -169,7 +169,7 @@ public class UserActivity extends Activity {
             Uri icon = Uri.parse(badge.getIcon());
             if (DEBUG) Log.d(TAG, icon.toString());
             mBadgeDialog.setIcon(new BitmapDrawable(((Foursquared)getApplication())
-                    .getBadgeIconManager().getInputStream(icon)));
+                    .getRemoteResourceManager().getInputStream(icon)));
         } catch (IOException e) {
             if (DEBUG) Log.d(TAG, "IOException", e);
             mBadgeDialog.setIcon(R.drawable.default_on);
@@ -200,7 +200,7 @@ public class UserActivity extends Activity {
         final Uri photoUri = Uri.parse(user.getPhoto());
         if (photoUri != null) {
             RemoteResourceManager userPhotosManager = ((Foursquared)getApplication())
-                    .getUserPhotosManager();
+                    .getRemoteResourceManager();
             try {
                 Bitmap bitmap = BitmapFactory.decodeStream(userPhotosManager
                         .getInputStream(photoUri));
@@ -227,7 +227,7 @@ public class UserActivity extends Activity {
                 try {
                     if (DEBUG) Log.d(TAG, "Loading user photo: " + uri);
                     RemoteResourceManager userPhotosManager = ((Foursquared)getApplication())
-                            .getUserPhotosManager();
+                            .getRemoteResourceManager();
                     Bitmap bitmap = BitmapFactory.decodeStream(userPhotosManager
                             .getInputStream(uri));
                     photo.setImageBitmap(bitmap);

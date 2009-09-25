@@ -102,7 +102,7 @@ public class UserListAdapter extends BaseUserAdapter {
         super.setGroup(g);
         for (int i = 0; i < g.size(); i++) {
             Uri photoUri = Uri.parse(((User)g.get(i)).getPhoto());
-            if (!mRrm.getFile(photoUri).exists()) {
+            if (!mRrm.exists(photoUri)) {
                 mRrm.request(photoUri);
             }
         }

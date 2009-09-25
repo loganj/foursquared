@@ -67,7 +67,7 @@ public class BadgeWithIconListAdapter extends BadgeListAdapter {
         super.setGroup(g);
         for (int i = 0; i < group.size(); i++) {
             Uri photoUri = Uri.parse(((Badge)group.get(i)).getIcon());
-            if (!mRrm.getFile(photoUri).exists()) {
+            if (!mRrm.exists(photoUri)) {
                 mRrm.request(photoUri);
             }
         }
