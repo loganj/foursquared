@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -41,13 +40,15 @@ public class SearchVenuesMapActivity extends MapActivity {
 
     private MapView mMapView;
     private MapController mMapController;
-    private ArrayList<VenueItemizedOverlay> mVenuesGroupOverlays = new ArrayList<VenueItemizedOverlay>();
+    private VenueItemizedOverlay mVenueItemizedOverlay;
     private MyLocationOverlay mMyLocationOverlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_map_activity);
+
+        initMap();
 
         mVenueButton = (Button)findViewById(R.id.venueButton);
         mVenueButton.setOnClickListener(new OnClickListener() {
@@ -60,8 +61,6 @@ public class SearchVenuesMapActivity extends MapActivity {
                 startActivity(intent);
             }
         });
-
-        initMap();
 
         mSearchResultsObserver = new Observer() {
             @Override
@@ -118,93 +117,72 @@ public class SearchVenuesMapActivity extends MapActivity {
         });
     }
 
-    private void loadSearchResults(Group searchResults) {
+    private void loadSearchResults(Group<Group<Venue>> searchResults) {
         if (searchResults == null) {
             if (DEBUG) Log.d(TAG, "no search results. Not loading.");
             return;
         }
         if (DEBUG) Log.d(TAG, "Loading search results");
 
+        // Put our location on the map.
+        mMapView.getOverlays().add(mMyLocationOverlay);
+
+        Group<Venue> mappableVenues = new Group<Venue>();
+        mappableVenues.setType("Mappable Venues");
+
+        // For each group of venues.
         final int groupCount = searchResults.size();
         for (int groupIndex = 0; groupIndex < groupCount; groupIndex++) {
-            Group group = (Group)searchResults.get(groupIndex);
+            Group<Venue> group = (Group<Venue>)searchResults.get(groupIndex);
 
-            // One VenueItemizedOverlay per group!
-            VenueItemizedOverlay mappableVenuesOverlay = createMappableVenuesOverlay(group);
-
-            if (mappableVenuesOverlay != null) {
-                if (DEBUG) Log.d(TAG, "adding a map view venue overlay.");
-                mVenuesGroupOverlays.add(mappableVenuesOverlay);
+            // For each venue group
+            final int venueCount = group.size();
+            for (int venueIndex = 0; venueIndex < venueCount; venueIndex++) {
+                Venue venue = group.get(venueIndex);
+                if (VenueItemizedOverlay.isVenueMappable(venue)) {
+                    mappableVenues.add(venue);
+                }
             }
         }
-        // Only add the list of venue group overlays if it contains any overlays.
-        if (mVenuesGroupOverlays.size() > 0) {
-            mMapView.getOverlays().addAll(mVenuesGroupOverlays);
+
+        // Construct the venues overlay and attach it if we have a mappable set of venues.
+        if (mappableVenues.size() > 0) {
+            mVenueItemizedOverlay = new VenueItemizedOverlayWithButton( //
+                    this.getResources().getDrawable(R.drawable.map_marker_blue), //
+                    this.getResources().getDrawable(R.drawable.map_marker_blue_muted));
+            mVenueItemizedOverlay.setGroup(mappableVenues);
+            mMapView.getOverlays().add(mVenueItemizedOverlay);
         }
     }
 
     private void clearMap() {
         if (DEBUG) Log.d(TAG, "clearMap()");
-        mVenuesGroupOverlays.clear();
         mMapView.getOverlays().clear();
-        mMapView.getOverlays().add(mMyLocationOverlay);
         mMapView.postInvalidate();
     }
 
-    /**
-     * Create an overlay that contains a specific group's list of mappable venues.
-     *
-     * @param group
-     * @return
-     */
-    private VenueItemizedOverlay createMappableVenuesOverlay(Group group) {
-        Group mappableVenues = new Group();
-        mappableVenues.setType(group.getType());
-        if (DEBUG) Log.d(TAG, "Adding items in group: " + group.getType());
-
-        final int venueCount = group.size();
-        for (int venueIndex = 0; venueIndex < venueCount; venueIndex++) {
-            Venue venue = (Venue)group.get(venueIndex);
-            if (VenueItemizedOverlay.isVenueMappable(venue)) {
-                if (DEBUG) Log.d(TAG, "adding venue: " + venue.getName());
-                mappableVenues.add(venue);
-            }
-        }
-        if (mappableVenues.size() > 0) {
-            VenueItemizedOverlay mappableVenuesOverlay = new VenueItemizedOverlayWithButton( //
-                    this.getResources().getDrawable(R.drawable.map_marker_blue), //
-                    this.getResources().getDrawable(R.drawable.map_marker_blue_muted));
-            mappableVenuesOverlay.setGroup(mappableVenues);
-            return mappableVenuesOverlay;
-        } else {
-            return null;
-        }
-    }
-
     private void recenterMap() {
+        if (DEBUG) Log.d(TAG, "Recentering map.");
         GeoPoint center = mMyLocationOverlay.getMyLocation();
-        if (center != null
+
+        // if we have venues in a search result, focus on those.
+        if (mVenueItemizedOverlay != null && mVenueItemizedOverlay.size() > 0) {
+            if (DEBUG) Log.d(TAG, "Centering on venues: "
+                    + String.valueOf(mVenueItemizedOverlay.getLatSpanE6()) + " "
+                    + String.valueOf(mVenueItemizedOverlay.getLonSpanE6()));
+            mMapController.zoomToSpan(mVenueItemizedOverlay.getLatSpanE6(), mVenueItemizedOverlay
+                    .getLonSpanE6());
+        } else if (center != null
                 && SearchVenuesActivity.searchResultsObservable.getQuery() == SearchVenuesActivity.QUERY_NEARBY) {
             if (DEBUG) Log.d(TAG, "recenterMap via MyLocation as we are doing a nearby search");
             mMapController.animateTo(center);
-            mMapController.setZoom(16);
-        } else if (mVenuesGroupOverlays.size() > 0) {
-            if (DEBUG) Log.d(TAG, "recenterMap via venues overlay span.");
-            VenueItemizedOverlay newestOverlay = mVenuesGroupOverlays.get(0);
-            if (DEBUG) {
-                Log.d(TAG, "recenterMap to: " + newestOverlay.getLatSpanE6() + " "
-                        + newestOverlay.getLonSpanE6());
-            }
-            // For some reason, this is zooming us to some weird spot!.
-            mMapController.zoomToSpan(newestOverlay.getLatSpanE6(), newestOverlay.getLonSpanE6());
-            mMapController.animateTo(newestOverlay.getCenter());
+            mMapController.zoomToSpan(center.getLatitudeE6(), center.getLongitudeE6());
         } else if (center != null) {
             if (DEBUG) Log.d(TAG, "Fallback, recenterMap via MyLocation overlay");
             mMapController.animateTo(center);
             mMapController.setZoom(16);
             return;
         }
-        if (DEBUG) Log.d(TAG, "Could not re-center; No known user location.");
     }
 
     private class VenueItemizedOverlayWithButton extends VenueItemizedOverlay {

@@ -21,6 +21,9 @@ public class VenueItemizedOverlay extends BaseGroupItemizedOverlay {
     public static final String TAG = "VenueItemizedOverlay";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
+    private boolean mPopulatedSpans = false;
+    private SpanHolder mSpanHolder = new SpanHolder();
+
     public VenueItemizedOverlay(Drawable defaultMarker) {
         super(defaultMarker);
     }
@@ -40,6 +43,54 @@ public class VenueItemizedOverlay extends BaseGroupItemizedOverlay {
         if (DEBUG) Log.d(TAG, "onTap: " + p);
         mapView.getController().animateTo(p);
         return super.onTap(p, mapView);
+    }
+
+    @Override
+    public int getLatSpanE6() {
+        if (!mPopulatedSpans) {
+            populateSpans();
+        }
+        return mSpanHolder.latSpanE6;
+    }
+
+    @Override
+    public int getLonSpanE6() {
+        if (!mPopulatedSpans) {
+            populateSpans();
+        }
+        return mSpanHolder.lonSpanE6;
+    }
+
+    private void populateSpans() {
+        int maxLat = 0;
+        int minLat = 0;
+        int maxLon = 0;
+        int minLon = 0;
+        for (int i = 0; i < group.size(); i++) {
+            Venue venue = (Venue)group.get(i);
+            if (isVenueMappable(venue)) {
+                int lat = (int)(Double.parseDouble(venue.getGeolat()) * 1E6);
+                int lon = (int)(Double.parseDouble(venue.getGeolong()) * 1E6);
+
+                // LatSpan
+                if (lat > maxLat || maxLat == 0) {
+                    maxLat = lat;
+                }
+                if (lat < minLat || minLat == 0) {
+                    minLat = lat;
+                }
+
+                // LonSpan
+                if (lon  < minLon || minLon == 0) {
+                    minLon = lon;
+                }
+                if (lon > maxLon || maxLon == 0) {
+                    maxLon = lon;
+                }
+            }
+        }
+        mSpanHolder.latSpanE6 = maxLat - minLat;
+        mSpanHolder.lonSpanE6 = maxLon - minLon;
     }
 
     public static boolean isVenueMappable(Venue venue) {
@@ -65,6 +116,11 @@ public class VenueItemizedOverlay extends BaseGroupItemizedOverlay {
         public Venue getVenue() {
             return mVenue;
         }
+    }
+
+    public static final class SpanHolder {
+        int latSpanE6 = 0;
+        int lonSpanE6 = 0;
     }
 
 }
