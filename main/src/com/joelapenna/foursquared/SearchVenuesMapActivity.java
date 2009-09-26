@@ -170,6 +170,7 @@ public class SearchVenuesMapActivity extends MapActivity {
             if (DEBUG) Log.d(TAG, "Centering on venues: "
                     + String.valueOf(mVenueItemizedOverlay.getLatSpanE6()) + " "
                     + String.valueOf(mVenueItemizedOverlay.getLonSpanE6()));
+            mMapController.setCenter(mVenueItemizedOverlay.getCenter());
             mMapController.zoomToSpan(mVenueItemizedOverlay.getLatSpanE6(), mVenueItemizedOverlay
                     .getLonSpanE6());
         } else if (center != null
