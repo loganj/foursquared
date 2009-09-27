@@ -2,8 +2,9 @@
  * Copyright 2009 Joe LaPenna
  */
 
-package com.joelapenna.foursquared;
+package com.joelapenna.foursquared.test;
 
+import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.VenueActivity;
 
 import android.content.Intent;
@@ -23,7 +24,7 @@ public class VenueActivityInstrumentationTestCase extends
     @SmallTest
     public void testOnCreate() {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.putExtra(VenueActivity.EXTRA_VENUE, "40450");
+        intent.putExtra(Foursquared.EXTRA_VENUE_ID, "40450");
         setActivityIntent(intent);
 
         VenueActivity activity = getActivity();

@@ -3,6 +3,7 @@
 	<name>foursquared_tests</name>
 	<comment></comment>
 	<projects>
+		<project>foursquared</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

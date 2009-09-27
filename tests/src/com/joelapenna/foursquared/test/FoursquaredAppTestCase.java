@@ -2,7 +2,7 @@
  * Copyright 2009 Joe LaPenna
  */
 
-package com.joelapenna.foursquared;
+package com.joelapenna.foursquared.test;
 
 import com.joelapenna.foursquared.Foursquared;
 
@@ -29,7 +29,5 @@ public class FoursquaredAppTestCase extends ApplicationTestCase<Foursquared> {
     @SmallTest
     public void testPreferences() {
         createApplication();
-        Foursquared.getFoursquare();
-        // ... to be continued.
     }
 }

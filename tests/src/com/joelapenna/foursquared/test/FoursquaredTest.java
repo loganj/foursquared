@@ -2,7 +2,7 @@
  * Copyright 2009 Joe LaPenna
  */
 
-package com.joelapenna.foursquared;
+package com.joelapenna.foursquared.test;
 
 import com.joelapenna.foursquare.types.Beenhere;
 import com.joelapenna.foursquare.types.Group;
@@ -37,18 +37,6 @@ public class FoursquaredTest {
         checkin.setId(id);
 
         return checkin;
-    }
-
-    public static com.joelapenna.foursquare.types.classic.Checkin createIncomingCheckin() {
-        com.joelapenna.foursquare.types.classic.Checkin checkin = new com.joelapenna.foursquare.types.classic.Checkin();
-        checkin.setCheckinid("67889");
-        checkin.setMessage("OK! We&apos;ve got you @ The Page.");
-        checkin.setStatus(true);
-        checkin
-                .setUrl("http://playfoursquare.com/incoming/breakdown?cid=67889&uid=9232&client=iphone");
-        checkin.setUserid("9232");
-        return checkin;
-
     }
 
     public static Group createRandomCheckinGroup(String id) {
