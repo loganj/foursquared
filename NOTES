@@ -6,7 +6,7 @@ The main foursquared repo is at http://joelapenna.com/git/foursquared.git
 
 Templates are available in examples/
   + Create: main/res/values/credentials.xml
-  + Create: tests/src/com/joelapenna/foursquare/TestConstants.java
+  + Create: tests/src/com/joelapenna/foursquared/test/TestConstants.java
   + Create: main/src/com/joelapenna/foursquard/FoursquaredSettings.java
 Optional if using ant to build instead of Eclipse:
   + Create: main/local.properties
@@ -16,7 +16,8 @@ Optional if using ant to build instead of Eclipse:
 
 Step Zero:
 
-http://developer.android.com/sdk/1.5_r3/installing.html
+Install some eclipse/ant/sdk awesomeness.
+http://developer.android.com/sdk/index.html
 
 Then, you have to make sure some eclipse settings are exactly correct. From preferences:
 
@@ -28,15 +29,9 @@ Java > Installed JREs > Execution Environment - Set compatible JRE for
 
 ===Setting up foursqure projects===
 
-====Get the dumpcatcher sources====
-hg clone https://dumpcatcher.googlecode.com/hg/dumpcatcher
-
-====Setup dumpcatcher project====
-Then, import that existing project into your workspace:
-File > Import > Existing project - Browse to $dumpcatcher/clients/java/main
-
 ====Real foursquare projects====
 File > Import > Existing project - Browse to $foursquared/main
+File > Import > Existing project - Browse to $foursquared/tests
 
 
 === Building a release ===
