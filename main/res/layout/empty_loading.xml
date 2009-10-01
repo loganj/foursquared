@@ -6,7 +6,7 @@
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
   android:gravity="center"
-  android:background="#FFFFFF">
+  android:background="@android:color/white">
   <ProgressBar
     android:id="@+id/emptyProgress"
     android:layout_width="wrap_content"

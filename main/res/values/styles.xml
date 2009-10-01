@@ -35,7 +35,7 @@
     <item
       name="android:textStyle">bold</item>
     <item
-      name="android:textColor">#FFFFFF</item>
+      name="android:textColor">@android:color/white</item>
   </style>
 
   <style
@@ -63,7 +63,7 @@
   <style
     name="tabHostStyle">
     <item
-      name="android:background">#000000</item>
+      name="android:background">@android:color/black</item>
     <item
       name="android:paddingTop">4dip</item>
   </style>
@@ -96,7 +96,7 @@
     <item
       name="android:shadowDy">1</item>
     <item
-      name="android:textColor">#FFFFFF</item>
+      name="android:textColor">@android:color/white</item>
   </style>
 </resources>
 

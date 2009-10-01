@@ -24,13 +24,13 @@
         android:id="@+id/venue"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
+        android:background="@android:color/white"
         foursquared:checkinButton="true" />
       <FrameLayout
         android:id="@android:id/tabcontent"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="#FFFFFF">
+        android:background="@android:color/white">
       </FrameLayout>
     </LinearLayout>
   </TabHost>
