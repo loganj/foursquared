@@ -7,13 +7,6 @@
   style="@style/listItemStyle">
 
   <ImageView
-     android:layout_width="fill_parent"
-     android:layout_height="16px"
-     android:src="@drawable/blue_fade"
-     android:layout_alignParentTop="true"
-     />
-  
-  <ImageView
     android:id="@+id/icon"
     android:layout_width="30dip"
     android:layout_height="fill_parent"
