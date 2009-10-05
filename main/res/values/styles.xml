@@ -39,15 +39,9 @@
   </style>
 
   <style
-    name="listItemStyle"
-    parent="@android:style/Widget.ListView">
+    name="listItemStyle">
     <item
       name="android:paddingBottom">6dip</item>
-    <!--
-      Until we can get this gradient looking nice, disable it. -->
-    <item
-      name="android:background">#f2f2f2</item>
-
   </style>
 
   <style
@@ -66,13 +60,6 @@
       name="android:background">@android:color/black</item>
     <item
       name="android:paddingTop">4dip</item>
-  </style>
-
-  <style
-    name="venueActivityHeaderStyle"
-    parent="@android:style/Widget.ListView">
-    <item
-      name="android:layout_marginBottom">6dip</item>
   </style>
 
   <style

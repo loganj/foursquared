@@ -7,7 +7,7 @@
   android:layout_width="fill_parent"
   android:layout_height="wrap_content"
   android:padding="10dip"
-  style="@style/venueActivityHeaderStyle">
+  android:layout_marginBottom="6dip">
 
   <TextView
     android:id="@+id/internal_venueName"
