@@ -18,6 +18,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
@@ -35,6 +38,8 @@ public class Foursquared extends Application {
     private static final String TAG = "Foursquared";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
+    public static final String PACKAGE_NAME = "com.joelapenna.foursquared";
+
     public static final String INTENT_ACTION_LOGGED_OUT = "com.joelapenna.foursquared.intent.action.LOGGED_OUT";
     public static final String EXTRA_VENUE_ID = "com.joelapenna.foursquared.VENUE_ID";
 
@@ -51,7 +56,7 @@ public class Foursquared extends Application {
     private MediaCardStateBroadcastReceiver mMediaCardStateBroadcastReceiver;
     private RemoteResourceManager mRemoteResourceManager;
 
-    final private Foursquare mFoursquare = new Foursquare(FoursquaredSettings.USE_DEBUG_SERVER);
+    private Foursquare mFoursquare;
 
     @Override
     public void onCreate() {
@@ -61,30 +66,20 @@ public class Foursquared extends Application {
 
         // Setup Prefs and dumpcatcher (based on prefs)
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
         if (FoursquaredSettings.USE_DUMPCATCHER) {
             Resources resources = getResources();
             new DumpcatcherHelper(Preferences.createUniqueId(mPrefs), resources);
             DumpcatcherHelper.sendUsage("Started");
         }
 
-        // 9/20/2009 - Changed the cache dir names so we wanna clean up after ourselves.
-        cleanupOldResourceManagers();
+        // Log into Foursquare, if we can.
+        loadFoursquare();
 
         // Set up storage cache.
+        loadResourceManagers();
         mMediaCardStateBroadcastReceiver = new MediaCardStateBroadcastReceiver();
         mMediaCardStateBroadcastReceiver.register();
-        loadResourceManagers();
-
-        // Try logging in and setting up foursquare oauth, then user credentials.
-        mFoursquare.setOAuthConsumerCredentials( //
-                getResources().getString(R.string.oauth_consumer_key), //
-                getResources().getString(R.string.oauth_consumer_secret));
-        try {
-            loadCredentials();
-        } catch (FoursquareCredentialsException e) {
-            // We're not doing anything because hopefully our related activities
-            // will handle the failure. This is simply convenience.
-        }
 
         // Construct the listener we'll use for tight location updates and start listening for city
         // location.
@@ -121,21 +116,42 @@ public class Foursquared extends Application {
         return mRemoteResourceManager;
     }
 
-    private void loadCredentials() throws FoursquareCredentialsException {
-        if (FoursquaredSettings.DEBUG) Log.d(TAG, "loadCredentials()");
-        String phoneNumber = mPrefs.getString(Preferences.PREFERENCE_PHONE, null);
-        String password = mPrefs.getString(Preferences.PREFERENCE_PASSWORD, null);
-
-        String oauthToken = mPrefs.getString(Preferences.PREFERENCE_OAUTH_TOKEN, null);
-        String oauthTokenSecret = mPrefs.getString(Preferences.PREFERENCE_OAUTH_TOKEN_SECRET, null);
-
-        if (TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(password)
-                || TextUtils.isEmpty(oauthToken) || TextUtils.isEmpty(oauthTokenSecret)) {
-            throw new FoursquareCredentialsException(
-                    "Phone number or password not set in preferences.");
+    private void loadFoursquare() {
+        String version;
+        try {
+            PackageManager pm = getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(PACKAGE_NAME, 0);
+            version = PACKAGE_NAME + " " + String.valueOf(pi.versionCode);
+        } catch (NameNotFoundException e) {
+            if (DEBUG) Log.d(TAG, "NameNotFoundException", e);
+            throw new RuntimeException(e);
         }
-        mFoursquare.setCredentials(phoneNumber, password);
-        mFoursquare.setOAuthToken(oauthToken, oauthTokenSecret);
+
+        // Try logging in and setting up foursquare oauth, then user credentials.
+        mFoursquare = new Foursquare(FoursquaredSettings.USE_DEBUG_SERVER, version);
+        mFoursquare.setOAuthConsumerCredentials( //
+                getResources().getString(R.string.oauth_consumer_key), //
+                getResources().getString(R.string.oauth_consumer_secret));
+        try {
+            if (FoursquaredSettings.DEBUG) Log.d(TAG, "loadCredentials()");
+            String phoneNumber = mPrefs.getString(Preferences.PREFERENCE_PHONE, null);
+            String password = mPrefs.getString(Preferences.PREFERENCE_PASSWORD, null);
+
+            String oauthToken = mPrefs.getString(Preferences.PREFERENCE_OAUTH_TOKEN, null);
+            String oauthTokenSecret = mPrefs.getString(Preferences.PREFERENCE_OAUTH_TOKEN_SECRET,
+                    null);
+
+            if (TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(password)
+                    || TextUtils.isEmpty(oauthToken) || TextUtils.isEmpty(oauthTokenSecret)) {
+                throw new FoursquareCredentialsException(
+                        "Phone number or password not set in preferences.");
+            }
+            mFoursquare.setCredentials(phoneNumber, password);
+            mFoursquare.setOAuthToken(oauthToken, oauthTokenSecret);
+        } catch (FoursquareCredentialsException e) {
+            // We're not doing anything because hopefully our related activities
+            // will handle the failure. This is simply convenience.
+        }
     }
 
     private void loadResourceManagers() {
@@ -168,17 +184,6 @@ public class Foursquared extends Application {
         menu.add(MENU_GROUP_SYSTEM, MENU_PREFERENCES, Menu.CATEGORY_SECONDARY,
                 R.string.preferences_label) //
                 .setIcon(android.R.drawable.ic_menu_preferences).setIntent(intent);
-    }
-
-    public static void cleanupOldResourceManagers() {
-        if (DEBUG) Log.d(TAG, "cleaning up old resource managers.");
-        try {
-            new RemoteResourceManager("badges").clear();
-            new RemoteResourceManager("user_photos").clear();
-        } catch (IllegalStateException e) {
-            // Its okay if we catch this, it just likely means that the RRM can't be constructed
-            // because the sd card isn't mounted.
-        }
     }
 
     /**

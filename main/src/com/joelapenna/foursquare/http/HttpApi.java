@@ -49,14 +49,20 @@ public class HttpApi {
     protected static final String TAG = "HttpApi";
     protected static final boolean DEBUG = Foursquare.DEBUG;
 
-    private static final String CLIENT_VERSION = "iPhone 20090301";
+    private static final String DEFAULT_CLIENT_VERSION = "com.joelapenna.foursquare";
     private static final String CLIENT_VERSION_HEADER = "X_foursquare_client_version";
     private static final int TIMEOUT = 10;
 
-    DefaultHttpClient mHttpClient;
+    private final DefaultHttpClient mHttpClient;
+    private final String mClientVersion;
 
-    public HttpApi(DefaultHttpClient httpClient) {
+    public HttpApi(DefaultHttpClient httpClient, String clientVersion) {
         mHttpClient = httpClient;
+        if (clientVersion != null) {
+            mClientVersion = clientVersion;
+        } else {
+            mClientVersion = DEFAULT_CLIENT_VERSION;
+        }
     }
 
     public FoursquareType doHttpRequest(HttpRequestBase httpRequest,
@@ -145,6 +151,7 @@ public class HttpApi {
         if (DEBUG) Log.d(TAG, "creating HttpGet for: " + url);
         String query = URLEncodedUtils.format(Arrays.asList(nameValuePairs), HTTP.UTF_8);
         HttpGet httpGet = new HttpGet(url + "?" + query);
+        httpGet.addHeader(CLIENT_VERSION_HEADER, mClientVersion);
         if (DEBUG) Log.d(TAG, "Created: " + httpGet.getURI());
         return httpGet;
     }
@@ -153,7 +160,7 @@ public class HttpApi {
         if (DEBUG) Log.d(TAG, "creating HttpPost for: " + url);
         List<NameValuePair> params = Arrays.asList(nameValuePairs);
         HttpPost httpPost = new HttpPost(url);
-        httpPost.addHeader(CLIENT_VERSION_HEADER, CLIENT_VERSION);
+        httpPost.addHeader(CLIENT_VERSION_HEADER, mClientVersion);
         try {
             for (int i = 0; i < params.size(); i++) {
                 if (DEBUG) Log.d(TAG, "Param: " + params.get(i));

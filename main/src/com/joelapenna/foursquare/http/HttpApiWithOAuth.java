@@ -39,8 +39,8 @@ public class HttpApiWithOAuth extends HttpApi {
 
     private OAuthConsumer mConsumer;
 
-    public HttpApiWithOAuth(DefaultHttpClient httpClient) {
-        super(httpClient);
+    public HttpApiWithOAuth(DefaultHttpClient httpClient, String clientVersion) {
+        super(httpClient, clientVersion);
     }
 
     @Override

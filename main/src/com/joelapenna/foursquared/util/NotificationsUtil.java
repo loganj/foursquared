@@ -5,7 +5,6 @@
 package com.joelapenna.foursquared.util;
 
 import com.joelapenna.foursquare.error.FoursquareCredentialsException;
-import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquared.FoursquaredSettings;
 

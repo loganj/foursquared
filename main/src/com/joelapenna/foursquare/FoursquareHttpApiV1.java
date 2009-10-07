@@ -71,7 +71,7 @@ public class FoursquareHttpApiV1 {
     private static final String URL_API_TIPS = "/tips";
 
     private final DefaultHttpClient mHttpClient = HttpApi.createHttpClient();
-    private HttpApiWithOAuth mHttpApi = new HttpApiWithOAuth(mHttpClient);
+    private HttpApiWithOAuth mHttpApi;
 
     private final String mApiBaseUrl;
     private final AuthScope mAuthScope;
@@ -104,14 +104,14 @@ public class FoursquareHttpApiV1 {
 
     };
 
-    public FoursquareHttpApiV1() {
-        this("api.foursquare.com.");
+    public FoursquareHttpApiV1(String clientVersion) {
+        this("api.foursquare.com.", clientVersion);
     }
 
-    public FoursquareHttpApiV1(String domain) {
+    public FoursquareHttpApiV1(String domain, String clientVersion) {
         mApiBaseUrl = "http://" + domain + "/v1";
         mAuthScope = new AuthScope(domain, 80);
-
+        mHttpApi = new HttpApiWithOAuth(mHttpClient, clientVersion);
         mHttpClient.addRequestInterceptor(preemptiveAuth, 0);
     }
 
