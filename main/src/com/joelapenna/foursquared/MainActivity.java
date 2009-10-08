@@ -59,14 +59,14 @@ public class MainActivity extends TabActivity {
 
         // Places tab
         mTabHost.addTab(mTabHost.newTabSpec("places") //
-                .setIndicator(resources.getString(R.string.nearby_label),
+                .setIndicator(getString(R.string.nearby_label),
                         getResources().getDrawable(R.drawable.places_tab)) // the tab icon
                 .setContent(new Intent(this, NearbyVenuesActivity.class)) // The contained activity
                 );
 
         // Friends tab
         mTabHost.addTab(mTabHost.newTabSpec("friends") //
-                .setIndicator(resources.getString(R.string.checkins_label),
+                .setIndicator(getString(R.string.checkins_label),
                         getResources().getDrawable(R.drawable.friends_tab)) // the tab
                 // icon
                 .setContent(new Intent(this, FriendsActivity.class)) // The contained activity

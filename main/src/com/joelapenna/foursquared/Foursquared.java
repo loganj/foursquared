@@ -64,9 +64,10 @@ public class Foursquared extends Application {
         Log.i(TAG, "Using Dumpcatcher:\t" + FoursquaredSettings.USE_DUMPCATCHER);
         Log.i(TAG, "Using Debug Log:\t" + DEBUG);
 
-        // Setup Prefs and dumpcatcher (based on prefs)
+        // Setup Prefs (to load dumpcatcher)
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
+        // Setup Dumpcatcher
         if (FoursquaredSettings.USE_DUMPCATCHER) {
             Resources resources = getResources();
             new DumpcatcherHelper(Preferences.createUniqueId(mPrefs), resources);
@@ -130,8 +131,8 @@ public class Foursquared extends Application {
         // Try logging in and setting up foursquare oauth, then user credentials.
         mFoursquare = new Foursquare(FoursquaredSettings.USE_DEBUG_SERVER, version);
         mFoursquare.setOAuthConsumerCredentials( //
-                getResources().getString(R.string.oauth_consumer_key), //
-                getResources().getString(R.string.oauth_consumer_secret));
+                getString(R.string.oauth_consumer_key), //
+                getString(R.string.oauth_consumer_secret));
         try {
             if (FoursquaredSettings.DEBUG) Log.d(TAG, "loadCredentials()");
             String phoneNumber = mPrefs.getString(Preferences.PREFERENCE_PHONE, null);

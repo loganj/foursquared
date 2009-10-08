@@ -228,8 +228,8 @@ public class NearbyVenuesActivity extends LoadableListActivity {
             if (DEBUG) Log.d(TAG, "Query already running attempting to cancel: " + mSearchTask);
             if (!mSearchTask.cancel(true) && !mSearchTask.isCancelled()) {
                 if (DEBUG) Log.d(TAG, "Unable to cancel search? Notifying the user.");
-                Toast.makeText(this, getResources().getText(
-                        R.string.search_already_in_progress_toast), Toast.LENGTH_SHORT);
+                Toast.makeText(this, getString(R.string.search_already_in_progress_toast),
+                        Toast.LENGTH_SHORT);
                 return;
             }
         }

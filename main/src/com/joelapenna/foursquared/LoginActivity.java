@@ -105,8 +105,8 @@ public class LoginActivity extends Activity {
     private ProgressDialog showProgressDialog() {
         if (mProgressDialog == null) {
             ProgressDialog dialog = new ProgressDialog(this);
-	    dialog.setTitle(R.string.login_dialog_title);
-            dialog.setMessage(getResources().getText(R.string.login_dialog_message));
+        dialog.setTitle(R.string.login_dialog_title);
+            dialog.setMessage(getString(R.string.login_dialog_message));
             dialog.setIndeterminate(true);
             dialog.setCancelable(true);
             mProgressDialog = dialog;
@@ -241,7 +241,7 @@ public class LoginActivity extends Activity {
             if (loggedIn) {
                 String city = mPrefs.getString(Preferences.PREFERENCE_CITY_NAME, null);
                 Toast.makeText( //
-			       LoginActivity.this, getString(R.string.login_welcome_toast, city), Toast.LENGTH_LONG).show();
+                   LoginActivity.this, getString(R.string.login_welcome_toast, city), Toast.LENGTH_LONG).show();
                 setResult(Activity.RESULT_OK);
                 finish();
             } else {

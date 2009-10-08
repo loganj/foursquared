@@ -83,8 +83,8 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         @Override
         protected void onPreExecute() {
             if (DEBUG) Log.d(TAG, "onPreExecute()");
-            Toast.makeText(PreferenceActivity.this, getResources().getText(R.string.preferences_updating_city_toast), Toast.LENGTH_LONG)
-                    .show();
+            Toast.makeText(PreferenceActivity.this,
+                    getString(R.string.preferences_updating_city_toast), Toast.LENGTH_LONG).show();
         }
 
         @Override
@@ -120,7 +120,8 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
             if (city == null) {
                 NotificationsUtil.ToastReasonForFailure(PreferenceActivity.this, mReason);
             } else {
-                Toast.makeText(PreferenceActivity.this, getString(R.string.preferences_welcome_city_toast, city.getName()),
+                Toast.makeText(PreferenceActivity.this,
+                        getString(R.string.preferences_welcome_city_toast, city.getName()),
                         Toast.LENGTH_LONG).show();
                 // Back to the stupid lame-o hack of restarting the activity so it shows the
                 // background-updated preference.
@@ -131,8 +132,9 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
 
         @Override
         protected void onCancelled() {
-            Toast.makeText(PreferenceActivity.this, getString(R.string.preferences_unable_to_find_city_toast),
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(PreferenceActivity.this,
+                    getString(R.string.preferences_unable_to_find_city_toast), Toast.LENGTH_LONG)
+                    .show();
         }
     }
 }

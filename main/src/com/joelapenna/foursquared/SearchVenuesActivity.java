@@ -267,8 +267,8 @@ public class SearchVenuesActivity extends TabActivity {
             if (DEBUG) Log.d(TAG, "Query already running attempting to cancel: " + mSearchTask);
             if (!mSearchTask.cancel(true) && !mSearchTask.isCancelled()) {
                 if (DEBUG) Log.d(TAG, "Unable to cancel search? Notifying the user.");
-                Toast.makeText(this, getResources().getText(
-                        R.string.search_already_in_progress_toast), Toast.LENGTH_SHORT);
+                Toast.makeText(this, getString(R.string.search_already_in_progress_toast),
+                        Toast.LENGTH_SHORT);
                 return;
             }
         }
@@ -368,14 +368,14 @@ public class SearchVenuesActivity extends TabActivity {
         mTabHost = getTabHost();
 
         mTabHost.addTab(mTabHost.newTabSpec("results") //
-                .setIndicator(resources.getString(R.string.search_venues_label),
+                .setIndicator(getString(R.string.search_venues_label),
                         resources.getDrawable(R.drawable.places_tab)) // the tab icon
                 .setContent(R.id.listviewLayout) //
                 );
 
         Intent intent = new Intent(this, SearchVenuesMapActivity.class);
         mTabHost.addTab(mTabHost.newTabSpec("map") //
-                .setIndicator(resources.getString(R.string.map_label),
+                .setIndicator(getString(R.string.map_label),
                         resources.getDrawable(R.drawable.map_tab)) // the tab icon
                 .setContent(intent) // The contained activity
                 );
