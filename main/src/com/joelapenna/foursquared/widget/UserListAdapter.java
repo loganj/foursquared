@@ -50,7 +50,6 @@ public class UserListAdapter extends BaseUserAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (DEBUG) Log.d(TAG, "getView() called for position: " + position);
         // A ViewHolder keeps references to children views to avoid unnecessary
         // calls to findViewById() on each row.
         final ViewHolder holder;
