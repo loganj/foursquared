@@ -14,9 +14,7 @@ HEADER = """\
  */
 
 package com.joelapenna.foursquare.types;
-
 %(imports)s
-
 /**
  * Auto-generated: %(timestamp)s
  *
@@ -54,7 +52,7 @@ def main():
 def GenerateClass(type_name, attributes):
   lines = []
   for attribute_name in sorted(attributes):
-    typ = attributes[attribute_name]
+    typ, children = attributes[attribute_name]
     lines.extend(Field(attribute_name, typ).split('\n'))
 
   lines.append('')
@@ -63,11 +61,16 @@ def GenerateClass(type_name, attributes):
 
   # getters and setters
   for attribute_name in sorted(attributes):
-    attribute_type = attributes[attribute_name]
+    attribute_type, children = attributes[attribute_name]
     lines.extend(Accessors(attribute_name, attribute_type).split('\n'))
 
   print Header(type_name)
-  print '    ' + '\n    '.join(lines)
+  #print '    ' + '\n    '.join(lines)
+  for line in lines:
+    if not line:
+      print line
+    else:
+      print '    ' + line
   print Footer()
 
 
@@ -90,10 +93,15 @@ def AccessorReplacements(attribute_name, attribute_type):
 
 def Header(type_name):
   interfaces = common.INTERFACES.get(type_name, common.DEFAULT_INTERFACES)
-  imports = common.CLASS_IMPORTS.get(type_name, common.DEFAULT_CLASS_IMPORTS)
+  import_names = common.CLASS_IMPORTS.get(type_name,
+      common.DEFAULT_CLASS_IMPORTS)
+  if import_names:
+    imports = ';\n'.join(imports) + ';'
+  else:
+    imports = ''
   return HEADER % {'type_name': type_name,
                    'interfaces': ', '.join(interfaces),
-                   'imports': ';\n'.join(imports) + ';',
+                   'imports': imports,
                    'timestamp': datetime.datetime.now()}
 
 

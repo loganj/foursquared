@@ -97,6 +97,7 @@ def WalkNodesForAttributes(path):
         continue
 
       typ = node.getAttribute('type')
+      child = node.getAttribute('child')
       # We don't want to walk complex types.
       if typ in COMPLEX:
         logging.warn('Found Complex: ' + node.tagName)
@@ -107,6 +108,6 @@ def WalkNodesForAttributes(path):
       else:
         logging.warn('Found Type: ' + typ)
       logging.warn('Adding: ' + str((node, typ)))
-      attributes.setdefault(node.tagName, typ)
+      attributes.setdefault(node.tagName, (typ, [child]))
   logging.warn('Attr: ' + str((type_name, top_node_name, attributes)))
   return type_name, top_node_name, attributes

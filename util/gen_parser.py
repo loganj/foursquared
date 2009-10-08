@@ -40,9 +40,6 @@ public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
     @Override
     public %(type_name)s parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
-        // Disabled, because some parsers need to parse elements with different
-        // names.
-        // parser.require(XmlPullParser.START_TAG, null, "%(top_node_name)s");
         parser.require(XmlPullParser.START_TAG, null, null);
 
         %(type_name)s %(top_node_name)s = new %(type_name)s();
@@ -70,12 +67,12 @@ BOOLEAN_STANZA = """\
 
 GROUP_STANZA = """\
             } else if ("%(name)s".equals(name)) {
-                %(top_node_name)s.set%(camel_name)s(new GroupParser(new %(camel_name_singular)sParser()).parse(parser));
+                %(top_node_name)s.set%(camel_name)s(new GroupParser(new %(camel_name_singular)s()).parse(parser));
 """
 
 COMPLEX_STANZA = """\
             } else if ("%(name)s".equals(name)) {
-                %(top_node_name)s.set%(camel_name)s(new %(camel_name)sParser().parse(parser));
+                %(top_node_name)s.set%(camel_name)s(new %(parser_name)s().parse(parser));
 """
 
 STANZA = """\
@@ -93,17 +90,20 @@ def main():
 def GenerateClass(type_name, top_node_name, attributes):
   stanzas = []
   for name in sorted(attributes):
-    typ = attributes[name]
+    typ, children = attributes[name]
     replacements = Replacements(top_node_name, name, typ)
     if typ == common.BOOLEAN:
       stanzas.append(BOOLEAN_STANZA % replacements)
 
     elif typ == common.GROUP:
-      replacements['camel_name_singular'] = replacements['camel_name'][:-1]
+      if children[0]:
+        replacements['camel_name_singular'] = children[0] + 'Parser'
+      else:
+        replacements['camel_name_singular'] = (
+            replacements['camel_name'][:-1] + 'Parser')
       stanzas.append(GROUP_STANZA % replacements)
 
     elif typ in common.COMPLEX:
-      replacements['camel_name_singular'] = replacements['camel_name'][:-1]
       stanzas.append(COMPLEX_STANZA % replacements)
 
     else:
@@ -123,7 +123,7 @@ def Replacements(top_node_name, name, typ):
   # CamelCaseClassName
   camel_name = ''.join([word.capitalize() for word in name.split('_')])
   # camelCaseLocalName
-  attribute_name = camel_name[0].lower() + camel_name[1:]
+  attribute_name = camel_name.lower().capitalize()
   # mFieldName
   field_name = 'm' + camel_name
 
@@ -132,6 +132,7 @@ def Replacements(top_node_name, name, typ):
       'name': name,
       'top_node_name': top_node_name,
       'camel_name': camel_name,
+      'parser_name': typ + 'Parser',
       'attribute_name': attribute_name,
       'field_name': field_name,
       'typ': typ,

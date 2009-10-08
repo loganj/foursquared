@@ -22,7 +22,7 @@
   <tips type="Group">
     <tip type="Tip"></tip>
   </tips>
-  <todos type="Group">
+  <todos type="Group" child="Tip">
     <tip type="Tip"></tip>
   </todos>
 </venue>
