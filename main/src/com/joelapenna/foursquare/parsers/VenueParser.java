@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-09-17 19:58:38.083916
+ * Auto-generated: 2009-10-07 23:49:58.636317
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -42,6 +42,9 @@ public class VenueParser extends AbstractParser<Venue> {
 
             } else if ("city".equals(name)) {
                 venue.setCity(parser.nextText());
+
+            } else if ("cityid".equals(name)) {
+                venue.setCityid(parser.nextText());
 
             } else if ("crossstreet".equals(name)) {
                 venue.setCrossstreet(parser.nextText());

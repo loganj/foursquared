@@ -5,7 +5,7 @@
 package com.joelapenna.foursquare.types;
 
 /**
- * Auto-generated: 2009-09-16 18:47:34.515635
+ * Auto-generated: 2009-10-07 23:50:04.813386
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
@@ -13,6 +13,7 @@ public class Venue implements FoursquareType {
 
     private String mAddress;
     private String mCity;
+    private String mCityid;
     private String mCrossstreet;
     private String mDistance;
     private String mGeolat;
@@ -45,6 +46,14 @@ public class Venue implements FoursquareType {
 
     public void setCity(String city) {
         mCity = city;
+    }
+
+    public String getCityid() {
+        return mCityid;
+    }
+
+    public void setCityid(String cityid) {
+        mCityid = cityid;
     }
 
     public String getCrossstreet() {
