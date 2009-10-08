@@ -25,4 +25,5 @@
   <todos type="Group" child="Tip">
     <tip type="Tip"></tip>
   </todos>
+  <tags type="Tags"></tags>
 </venue>

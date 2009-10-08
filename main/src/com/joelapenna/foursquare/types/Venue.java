@@ -5,7 +5,7 @@
 package com.joelapenna.foursquare.types;
 
 /**
- * Auto-generated: 2009-10-07 23:50:04.813386
+ * Auto-generated: 2009-10-08 00:43:38.389640
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
@@ -24,6 +24,7 @@ public class Venue implements FoursquareType {
     private String mPhone;
     private String mState;
     private Stats mStats;
+    private Tags mTags;
     private Group mTips;
     private Group mTodos;
     private String mTwitter;
@@ -134,6 +135,14 @@ public class Venue implements FoursquareType {
 
     public void setStats(Stats stats) {
         mStats = stats;
+    }
+
+    public Tags getTags() {
+        return mTags;
+    }
+
+    public void setTags(Tags tags) {
+        mTags = tags;
     }
 
     public Group getTips() {

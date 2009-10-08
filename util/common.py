@@ -48,6 +48,7 @@ COMPLEX = [
     'Scoring',
     'Settings',
     'Stats',
+    'Tags',
     'Tip',
     'User',
     'Venue',
