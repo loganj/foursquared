@@ -23,6 +23,7 @@ public class BaseDiskCache implements DiskCache {
     private static final String TAG = "BaseDiskCache";
     private static final boolean DEBUG = true;
 
+    private static final String NOMEDIA = ".nomedia";
     private static final int MIN_FILE_SIZE_IN_BYTES = 100;
 
     private File mStorageDirectory;
@@ -33,7 +34,7 @@ public class BaseDiskCache implements DiskCache {
         File storageDirectory = new File(baseDirectory, name);
         createDirectory(storageDirectory);
         mStorageDirectory = storageDirectory;
-        cleanup();  // Remove invalid files that may have shown up.
+        cleanup(); // Remove invalid files that may have shown up.
     }
 
     /*
@@ -98,9 +99,11 @@ public class BaseDiskCache implements DiskCache {
         // were corrupted during download.
         String[] children = mStorageDirectory.list();
         for (int i = 0; i < children.length; i++) {
-            File child = new File(mStorageDirectory, children[i]);
-            if (child.length() <= MIN_FILE_SIZE_IN_BYTES) {
-                child.delete();
+            if (children[i] != NOMEDIA) {
+                File child = new File(mStorageDirectory, children[i]);
+                if (child.length() <= MIN_FILE_SIZE_IN_BYTES) {
+                    child.delete();
+                }
             }
         }
     }
@@ -109,8 +112,10 @@ public class BaseDiskCache implements DiskCache {
         // Clear the whole cache. Coolness.
         String[] children = mStorageDirectory.list();
         for (int i = 0; i < children.length; i++) {
-            File child = new File(mStorageDirectory, children[i]);
-            child.delete();
+            if (children[i] != NOMEDIA) {
+                File child = new File(mStorageDirectory, children[i]);
+                child.delete();
+            }
         }
         mStorageDirectory.delete();
     }
@@ -141,7 +146,7 @@ public class BaseDiskCache implements DiskCache {
             Log.d(TAG, "Writable: " + tmp + " " + String.valueOf(tmp.canWrite()));
         }
 
-        File nomediaFile = new File(storageDirectory, ".nomedia");
+        File nomediaFile = new File(storageDirectory, NOMEDIA);
         if (!nomediaFile.exists()) {
             try {
                 Log.d(TAG, "Created file: " + nomediaFile + " "
