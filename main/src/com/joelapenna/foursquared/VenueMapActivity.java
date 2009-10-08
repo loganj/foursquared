@@ -124,7 +124,7 @@ public class VenueMapActivity extends MapActivity {
     }
 
     private void setVenue(Venue venue) {
-        Group venueGroup = new Group();
+        Group<Venue> venueGroup = new Group<Venue>();
         venueGroup.setType("Current Venue");
         venueGroup.add(venue);
         mVenue = venue;

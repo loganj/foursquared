@@ -216,12 +216,12 @@ public class FriendsActivity extends LoadableListActivity {
         });
     }
 
-    private void putSearchResultsInAdapter(Group searchResults) {
+    private void putSearchResultsInAdapter(Group<Checkin> searchResults) {
         setEmptyView();
         mListAdapter.setGroup(searchResults);
     }
 
-    private void setSearchResults(Group searchResults) {
+    private void setSearchResults(Group<Checkin> searchResults) {
         if (DEBUG) Log.d(TAG, "Setting search results.");
         mSearchHolder.results = searchResults;
         searchResultsObservable.notifyObservers();
@@ -265,7 +265,7 @@ public class FriendsActivity extends LoadableListActivity {
 
     }
 
-    private class SearchTask extends AsyncTask<Void, Void, Group> {
+    private class SearchTask extends AsyncTask<Void, Void, Group<Checkin>> {
 
         private Exception mReason = null;
 
@@ -277,7 +277,7 @@ public class FriendsActivity extends LoadableListActivity {
         }
 
         @Override
-        public Group doInBackground(Void... params) {
+        public Group<Checkin> doInBackground(Void... params) {
             try {
                 return search();
             } catch (Exception e) {
@@ -287,13 +287,13 @@ public class FriendsActivity extends LoadableListActivity {
         }
 
         @Override
-        public void onPostExecute(Group groups) {
+        public void onPostExecute(Group<Checkin> checkins) {
             try {
-                if (groups == null) {
+                if (checkins == null) {
                     NotificationsUtil.ToastReasonForFailure(FriendsActivity.this, mReason);
                 } else {
-                    setSearchResults(groups);
-                    putSearchResultsInAdapter(groups);
+                    setSearchResults(checkins);
+                    putSearchResultsInAdapter(checkins);
                 }
 
             } finally {
@@ -303,7 +303,7 @@ public class FriendsActivity extends LoadableListActivity {
             }
         }
 
-        Group search() throws FoursquareException, IOException {
+        Group<Checkin> search() throws FoursquareException, IOException {
             Location location = mLocationListener.getLastKnownLocation();
             Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
             Group<Checkin> checkins;
@@ -320,7 +320,7 @@ public class FriendsActivity extends LoadableListActivity {
     }
 
     private static class SearchHolder {
-        Group results;
+        Group<Checkin> results;
         String query;
     }
 
@@ -331,7 +331,7 @@ public class FriendsActivity extends LoadableListActivity {
             super.notifyObservers(data);
         }
 
-        public Group getSearchResults() {
+        public Group<Checkin> getSearchResults() {
             return mSearchHolder.results;
         }
 

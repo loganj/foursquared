@@ -194,12 +194,12 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         return R.string.no_nearby_venues;
     }
 
-    public void putSearchResultsInAdapter(Group searchResults) {
+    public void putSearchResultsInAdapter(Group<Group<Venue>> searchResults) {
         setEmptyView();
         mListAdapter.clear();
         int groupCount = searchResults.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
-            Group group = (Group)searchResults.get(groupsIndex);
+            Group<Venue> group = searchResults.get(groupsIndex);
             if (group.size() > 0) {
                 VenueListAdapter groupAdapter = new VenueListAdapter(this);
                 groupAdapter.setGroup(group);
@@ -210,7 +210,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         mListAdapter.notifyDataSetInvalidated();
     }
 
-    public void setSearchResults(Group searchResults) {
+    public void setSearchResults(Group<Group<Venue>> searchResults) {
         if (DEBUG) Log.d(TAG, "Setting search results.");
         mSearchHolder.results = searchResults;
         searchResultsObservable.notifyObservers();
@@ -277,7 +277,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         });
     }
 
-    private class SearchTask extends AsyncTask<Void, Void, Group> {
+    private class SearchTask extends AsyncTask<Void, Void, Group<Group<Venue>>> {
 
         private static final int METERS_PER_MILE = 1609;
 
@@ -291,7 +291,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         }
 
         @Override
-        public Group doInBackground(Void... params) {
+        public Group<Group<Venue>> doInBackground(Void... params) {
             try {
                 return search();
             } catch (Exception e) {
@@ -301,7 +301,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         }
 
         @Override
-        public void onPostExecute(Group groups) {
+        public void onPostExecute(Group<Group<Venue>> groups) {
             try {
                 if (groups == null) {
                     NotificationsUtil.ToastReasonForFailure(NearbyVenuesActivity.this, mReason);
@@ -316,7 +316,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
             }
         }
 
-        public Group search() throws FoursquareException, IOException {
+        public Group<Group<Venue>> search() throws FoursquareException, IOException {
             Location location = mLocationListener.getLastKnownLocation();
             Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
             String geolat;
@@ -349,7 +349,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     }
 
     private static class SearchHolder {
-        Group results;
+        Group<Group<Venue>> results;
         String query;
     }
 
@@ -360,7 +360,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
             super.notifyObservers(data);
         }
 
-        public Group getSearchResults() {
+        public Group<Group<Venue>> getSearchResults() {
             return mSearchHolder.results;
         }
 

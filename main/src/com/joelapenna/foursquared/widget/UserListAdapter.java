@@ -98,10 +98,10 @@ public class UserListAdapter extends BaseUserAdapter {
     }
 
     @Override
-    public void setGroup(Group g) {
+    public void setGroup(Group<User> g) {
         super.setGroup(g);
         for (int i = 0; i < g.size(); i++) {
-            Uri photoUri = Uri.parse(((User)g.get(i)).getPhoto());
+            Uri photoUri = Uri.parse((g.get(i)).getPhoto());
             if (!mRrm.exists(photoUri)) {
                 mRrm.request(photoUri);
             }

@@ -18,7 +18,7 @@ import android.util.Log;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class CheckinItemizedOverlay extends BaseGroupItemizedOverlay {
+public class CheckinItemizedOverlay extends BaseGroupItemizedOverlay<Checkin> {
     public static final String TAG = "CheckinItemizedOverlay";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 

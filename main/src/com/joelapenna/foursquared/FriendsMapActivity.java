@@ -111,7 +111,7 @@ public class FriendsMapActivity extends MapActivity {
         mMapView.getOverlays().add(mMyLocationOverlay);
     }
 
-    private void loadSearchResults(Group checkins) {
+    private void loadSearchResults(Group<Checkin> checkins) {
         if (checkins == null) {
             if (DEBUG) Log.d(TAG, "no search results. Not loading.");
             return;
@@ -145,8 +145,8 @@ public class FriendsMapActivity extends MapActivity {
      * @param group
      * @return
      */
-    private CheckinItemizedOverlay createMappableCheckinsOverlay(Group group) {
-        Group mappableCheckins = new Group();
+    private CheckinItemizedOverlay createMappableCheckinsOverlay(Group<Checkin> group) {
+        Group<Checkin> mappableCheckins = new Group<Checkin>();
         mappableCheckins.setType(group.getType());
         if (DEBUG) Log.d(TAG, "Adding items in group: " + group.getType());
 

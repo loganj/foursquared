@@ -106,10 +106,10 @@ public class CheckinListAdapter extends BaseCheckinAdapter {
     }
 
     @Override
-    public void setGroup(Group g) {
+    public void setGroup(Group<Checkin> g) {
         super.setGroup(g);
         for (int i = 0; i < g.size(); i++) {
-            Uri photoUri = Uri.parse(((Checkin)g.get(i)).getUser().getPhoto());
+            Uri photoUri = Uri.parse((g.get(i)).getUser().getPhoto());
             if (!mRrm.exists(photoUri)) {
                 mRrm.request(photoUri);
             }

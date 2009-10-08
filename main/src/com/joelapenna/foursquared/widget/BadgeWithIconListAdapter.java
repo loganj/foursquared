@@ -63,10 +63,10 @@ public class BadgeWithIconListAdapter extends BadgeListAdapter {
     }
 
     @Override
-    public void setGroup(Group g) {
+    public void setGroup(Group<Badge> g) {
         super.setGroup(g);
         for (int i = 0; i < group.size(); i++) {
-            Uri photoUri = Uri.parse(((Badge)group.get(i)).getIcon());
+            Uri photoUri = Uri.parse((group.get(i)).getIcon());
             if (!mRrm.exists(photoUri)) {
                 mRrm.request(photoUri);
             }

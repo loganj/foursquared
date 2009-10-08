@@ -133,7 +133,7 @@ public class SearchVenuesMapActivity extends MapActivity {
         // For each group of venues.
         final int groupCount = searchResults.size();
         for (int groupIndex = 0; groupIndex < groupCount; groupIndex++) {
-            Group<Venue> group = (Group<Venue>)searchResults.get(groupIndex);
+            Group<Venue> group = searchResults.get(groupIndex);
 
             // For each venue group
             final int venueCount = group.size();

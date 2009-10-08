@@ -8,6 +8,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
+import com.joelapenna.foursquare.types.FoursquareType;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.FoursquaredSettings;
 
@@ -17,11 +18,11 @@ import android.util.Log;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-abstract class BaseGroupItemizedOverlay extends ItemizedOverlay<OverlayItem> {
+abstract class BaseGroupItemizedOverlay<T extends FoursquareType> extends ItemizedOverlay<OverlayItem> {
     public static final String TAG = "BaseGroupItemizedOverlay";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    Group group = null;
+    Group<T> group = null;
 
     public BaseGroupItemizedOverlay(Drawable defaultMarker) {
         super(boundCenterBottom(defaultMarker));
@@ -48,7 +49,7 @@ abstract class BaseGroupItemizedOverlay extends ItemizedOverlay<OverlayItem> {
         return super.onTap(i);
     }
 
-    public void setGroup(Group g) {
+    public void setGroup(Group<T> g) {
         assert g.getType() != null;
         group = g;
         super.populate();

@@ -4,6 +4,7 @@
 
 package com.joelapenna.foursquared.widget;
 
+import com.joelapenna.foursquare.types.FoursquareType;
 import com.joelapenna.foursquare.types.Group;
 
 import android.content.Context;
@@ -12,9 +13,9 @@ import android.widget.BaseAdapter;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-abstract class BaseGroupAdapter<T> extends BaseAdapter {
+abstract class BaseGroupAdapter<T extends FoursquareType> extends BaseAdapter {
 
-    Group group = null;
+    Group<T> group = null;
 
     public BaseGroupAdapter(Context context) {
     }
@@ -44,7 +45,7 @@ abstract class BaseGroupAdapter<T> extends BaseAdapter {
         return (group == null) ? true : group.isEmpty();
     }
 
-    public void setGroup(Group g) {
+    public void setGroup(Group<T> g) {
         group = g;
         notifyDataSetInvalidated();
     }

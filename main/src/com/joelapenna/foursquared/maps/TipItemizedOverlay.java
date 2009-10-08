@@ -18,7 +18,7 @@ import android.util.Log;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class TipItemizedOverlay extends BaseGroupItemizedOverlay {
+public class TipItemizedOverlay extends BaseGroupItemizedOverlay<Tip> {
     public static final String TAG = "TipItemizedOverlay";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 

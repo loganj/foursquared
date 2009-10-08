@@ -389,15 +389,12 @@ public class ShoutActivity extends Activity {
                 return;
 
             } else {
-                // Store that we completed this action.
-                mStateHolder.checkinResult = checkinResult;
-
-                // Make sure the caller knows things worked out alright.
-                setResult(Activity.RESULT_OK);
-
                 // Show the dialog that will dismiss this activity.
                 mDialogStateHolder = new DialogStateHolder(checkinResult, mIsShouting);
                 showDialog(DIALOG_CHECKIN_RESULT);
+
+                // Make sure the caller knows things worked out alright.
+                setResult(Activity.RESULT_OK);
             }
         }
 
@@ -416,7 +413,6 @@ public class ShoutActivity extends Activity {
         // These are all enumerated because we currently cannot handle parceling venues! How sad!
         Venue venue = null;
         AsyncTask<Void, Void, CheckinResult> checkinTask = null;
-        CheckinResult checkinResult = null;
     }
 
     private static class DialogStateHolder implements Parcelable {
@@ -449,7 +445,9 @@ public class ShoutActivity extends Activity {
             out.writeInt((shouting) ? 1 : 0);
         }
 
-        public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        // Used by the android system.
+        @SuppressWarnings("unused")
+        public static final Parcelable.Creator<DialogStateHolder> CREATOR = new Parcelable.Creator<DialogStateHolder>() {
             public DialogStateHolder createFromParcel(Parcel in) {
                 return new DialogStateHolder(in);
             }

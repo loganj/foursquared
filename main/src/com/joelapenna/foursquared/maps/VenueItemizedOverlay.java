@@ -17,7 +17,7 @@ import android.util.Log;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class VenueItemizedOverlay extends BaseGroupItemizedOverlay {
+public class VenueItemizedOverlay extends BaseGroupItemizedOverlay<Venue> {
     public static final String TAG = "VenueItemizedOverlay";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 

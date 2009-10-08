@@ -18,6 +18,7 @@ import com.joelapenna.foursquare.parsers.GroupParser;
 import com.joelapenna.foursquare.parsers.TipParser;
 import com.joelapenna.foursquare.parsers.UserParser;
 import com.joelapenna.foursquare.parsers.VenueParser;
+import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Credentials;
@@ -214,10 +215,11 @@ public class FoursquareHttpApiV1 {
     /*
      * /cities
      */
-    Group cities() throws FoursquareException, FoursquareCredentialsException, FoursquareError,
+    @SuppressWarnings("unchecked")
+    Group<City> cities() throws FoursquareException, FoursquareCredentialsException, FoursquareError,
             IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_CITIES));
-        return (Group)mHttpApi.doHttpRequest(httpGet, new GroupParser(new CityParser()));
+        return (Group<City>)mHttpApi.doHttpRequest(httpGet, new GroupParser(new CityParser()));
     }
 
     /*
@@ -244,10 +246,12 @@ public class FoursquareHttpApiV1 {
     /*
      * /checkins?cityid=23
      */
-    Group checkins(String cityid) throws FoursquareException, FoursquareError, IOException {
+    @SuppressWarnings("unchecked")
+    Group<Checkin> checkins(String cityid) throws FoursquareException, FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_CHECKINS), //
                 new BasicNameValuePair("cityid", cityid));
-        return (Group)mHttpApi.doHttpRequest(httpGet, new GroupParser(new CheckinParser()));
+        return (Group<Checkin>)mHttpApi
+                .doHttpRequest(httpGet, new GroupParser(new CheckinParser()));
     }
 
     /*
@@ -282,7 +286,8 @@ public class FoursquareHttpApiV1 {
     /**
      * /venues?geolat=37.770900&geolong=-122.43698
      */
-    Group venues(String geolat, String geolong, String query, int radius, int limit)
+    @SuppressWarnings("unchecked")
+    Group<Group<Venue>> venues(String geolat, String geolong, String query, int radius, int limit)
             throws FoursquareException, FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_VENUES), //
                 new BasicNameValuePair("geolat", geolat), //
@@ -290,7 +295,7 @@ public class FoursquareHttpApiV1 {
                 new BasicNameValuePair("q", query), //
                 new BasicNameValuePair("r", String.valueOf(radius)), //
                 new BasicNameValuePair("l", String.valueOf(limit)));
-        return (Group)mHttpApi.doHttpRequest(httpGet, new GroupParser(new GroupParser(
+        return (Group<Group<Venue>>)mHttpApi.doHttpRequest(httpGet, new GroupParser(new GroupParser(
                 new VenueParser())));
     }
 
@@ -307,13 +312,14 @@ public class FoursquareHttpApiV1 {
     /**
      * /tips?geolat=37.770900&geolong=-122.436987&l=1
      */
-    Group tips(String geolat, String geolong, int limit) throws FoursquareException,
+    @SuppressWarnings("unchecked")
+    Group<Group<Tip>> tips(String geolat, String geolong, int limit) throws FoursquareException,
             FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_TIPS), //
                 new BasicNameValuePair("geolat", geolat), //
                 new BasicNameValuePair("geolong", geolong), //
                 new BasicNameValuePair("l", String.valueOf(limit)));
-        return (Group)mHttpApi.doHttpRequest(httpGet, new GroupParser(new GroupParser(
+        return (Group<Group<Tip>>)mHttpApi.doHttpRequest(httpGet, new GroupParser(new GroupParser(
                 new TipParser())));
     }
 

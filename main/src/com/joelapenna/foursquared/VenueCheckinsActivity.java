@@ -93,7 +93,7 @@ public class VenueCheckinsActivity extends LoadableListActivity {
         setListAdapter(mListAdapter);
     }
 
-    private void putCheckinsInAdapter(Group checkins) {
+    private void putCheckinsInAdapter(Group<User> checkins) {
         setEmptyView();
         mListAdapter.setGroup(checkins);
     }
