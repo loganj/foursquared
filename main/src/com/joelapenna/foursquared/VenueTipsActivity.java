@@ -9,10 +9,18 @@ import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.util.Comparators;
+import com.joelapenna.foursquared.util.StringFormatters;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.TipListAdapter;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.os.Bundle;
+import android.text.Html;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 
 import java.util.Collections;
 import java.util.Observable;
@@ -25,19 +33,63 @@ public class VenueTipsActivity extends LoadableListActivity {
     public static final String TAG = "VenueTipsActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
+    private static final int DIALOG_TIP = 0;
+    private static final String STATE_CLICKED_TIP = "com.joelapenna.foursquared.VenueTipsActivity.CLICKED_TIP";
+
     private Observer mVenueObserver = new VenueObserver();
+    private String mClickedTip = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (savedInstanceState != null) {
+            mClickedTip = savedInstanceState.getString(STATE_CLICKED_TIP);
+        }
+
         setListAdapter(new SeparatedListAdapter(this));
+        getListView().setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Tip tip = (Tip)parent.getAdapter().getItem(position);
+                mClickedTip = Html.fromHtml(tip.getText()).toString();
+                showDialog(DIALOG_TIP);
+            }
+        });
 
         VenueActivity parent = (VenueActivity)getParent();
         if (parent.venueObservable.getVenue() != null) {
             mVenueObserver.update(parent.venueObservable, parent.venueObservable.getVenue());
         } else {
             parent.venueObservable.addObserver(mVenueObserver);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(STATE_CLICKED_TIP, mClickedTip);
+    }
+
+    @Override
+    public Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DIALOG_TIP:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Tip") //
+                        .setIcon(android.R.drawable.ic_dialog_info) //
+                        .setMessage("") // If not called, the textview isn't even rendered.
+                        .setCancelable(true);
+                return builder.create();
+        }
+        return null;
+    }
+
+    @Override
+    public void onPrepareDialog(int id, Dialog dialog) {
+        switch (id) {
+            case DIALOG_TIP:
+                ((AlertDialog)dialog).setMessage(mClickedTip);
         }
     }
 
