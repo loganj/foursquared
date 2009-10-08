@@ -35,9 +35,11 @@ public class VenueTipsActivity extends LoadableListActivity {
 
     private static final int DIALOG_TIP = 0;
     private static final String STATE_CLICKED_TIP = "com.joelapenna.foursquared.VenueTipsActivity.CLICKED_TIP";
+    private static final String STATE_CLICKED_TIP_AUTHOR = "com.joelapenna.foursquared.VenueTipsActivity.CLICKED_TIP_AUTHOR";
 
     private Observer mVenueObserver = new VenueObserver();
     private String mClickedTip = null;
+    private String mClickedTipAuthor = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,7 @@ public class VenueTipsActivity extends LoadableListActivity {
 
         if (savedInstanceState != null) {
             mClickedTip = savedInstanceState.getString(STATE_CLICKED_TIP);
+            mClickedTipAuthor = savedInstanceState.getString(STATE_CLICKED_TIP_AUTHOR);
         }
 
         setListAdapter(new SeparatedListAdapter(this));
@@ -53,6 +56,7 @@ public class VenueTipsActivity extends LoadableListActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Tip tip = (Tip)parent.getAdapter().getItem(position);
                 mClickedTip = Html.fromHtml(tip.getText()).toString();
+                mClickedTipAuthor = StringFormatters.getUserAbbreviatedName(tip.getUser());
                 showDialog(DIALOG_TIP);
             }
         });
@@ -69,6 +73,7 @@ public class VenueTipsActivity extends LoadableListActivity {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(STATE_CLICKED_TIP, mClickedTip);
+        outState.putString(STATE_CLICKED_TIP_AUTHOR, mClickedTipAuthor);
     }
 
     @Override
@@ -76,9 +81,9 @@ public class VenueTipsActivity extends LoadableListActivity {
         switch (id) {
             case DIALOG_TIP:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Tip") //
+                builder.setTitle("Tip") // If not called with a value, the title isn't rendered.
                         .setIcon(android.R.drawable.ic_dialog_info) //
-                        .setMessage("") // If not called, the textview isn't even rendered.
+                        .setMessage("") // If not called, the textview isn't rendered.
                         .setCancelable(true);
                 return builder.create();
         }
@@ -90,6 +95,7 @@ public class VenueTipsActivity extends LoadableListActivity {
         switch (id) {
             case DIALOG_TIP:
                 ((AlertDialog)dialog).setMessage(mClickedTip);
+                dialog.setTitle(getString(R.string.tip_says, mClickedTipAuthor));
         }
     }
 

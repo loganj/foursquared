@@ -69,6 +69,8 @@
 
   <string
     name="tip_add_spinner_prompt">Select a List</string>
+  <string
+    name="tip_says">%s says</string>
 
   <string
     name="friendsactivity_title_finished">Foursquare Friends</string>
