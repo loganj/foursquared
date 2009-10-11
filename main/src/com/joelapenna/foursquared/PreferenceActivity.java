@@ -9,7 +9,10 @@ import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.location.Location;
@@ -31,13 +34,27 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
 
     private SharedPreferences mPrefs;
 
+    private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (DEBUG) Log.d(TAG, "onReceive: " + intent);
+            finish();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (DEBUG) Log.d(TAG, "onCreate");
+        registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         this.addPreferencesFromResource(R.xml.preferences);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mLoggedInReceiver);
     }
 
     @Override
@@ -48,8 +65,10 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
             mPrefs.edit().clear().commit();
             ((Foursquared)getApplication()).getFoursquare().clearAllCredentials();
 
-            startActivityForResult(new Intent(PreferenceActivity.this, LoginActivity.class),
-                    LoginActivity.ACTIVITY_REQUEST_LOGIN);
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setAction(Intent.ACTION_MAIN);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY
+                    | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             sendBroadcast(new Intent(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         } else if (Preferences.PREFERENCE_FRIEND_ADD.equals(key)) {

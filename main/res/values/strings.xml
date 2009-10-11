@@ -156,6 +156,8 @@
   <string
     name="phone_number">Phone Number</string>
   <string
+    name="phone_number_or_username">Phone or Username</string>
+  <string
     name="password">Password</string>
 
   <string

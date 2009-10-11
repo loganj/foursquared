@@ -88,8 +88,9 @@ public class AddVenueActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
+        if (DEBUG) Log.d(TAG, "onCreate()");
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.add_venue_activity);
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 

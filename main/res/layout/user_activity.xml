@@ -44,7 +44,7 @@
 
       android:textAppearance="@android:style/TextAppearance.Large"
 
-      android:singleLine="true"
+      android:inputType="text"
       android:ellipsize="marquee"
 
       android:gravity="center_vertical" />

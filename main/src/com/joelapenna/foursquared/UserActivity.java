@@ -113,12 +113,6 @@ public class UserActivity extends Activity {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(mLoggedInReceiver);
-    }
-
-    @Override
     public void onNewIntent(Intent intent) {
         if (DEBUG) Log.d(TAG, "onNewIntent: " + intent);
     }

@@ -34,17 +34,14 @@
           android:layout_width="0px"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:lines="1"
-          android:singleLine="true"
+          android:inputType="text"
           android:textAppearance="@android:style/TextAppearance.Large"
-          android:hint="@string/phone_number" />
+          android:hint="@string/phone_number_or_username" />
         <EditText
           android:id="@+id/passwordEditText"
           android:layout_width="0px"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:lines="1"
-          android:singleLine="true"
           android:password="true"
           android:textAppearance="@android:style/TextAppearance.Large"
           android:hint="@string/password" />

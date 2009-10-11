@@ -38,10 +38,6 @@ public class LoginActivity extends Activity {
     public static final String TAG = "LoginActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    public static final String EXTRA_FIRST_LOGIN = "com.joelapenna.foursquare.LoginActivity.FirstLogin";
-
-    public static final int ACTIVITY_REQUEST_LOGIN = 1;
-
     private SharedPreferences mPrefs;
     private AsyncTask<Void, Void, Boolean> mLoginTask;
 
@@ -105,7 +101,7 @@ public class LoginActivity extends Activity {
     private ProgressDialog showProgressDialog() {
         if (mProgressDialog == null) {
             ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setTitle(R.string.login_dialog_title);
+            dialog.setTitle(R.string.login_dialog_title);
             dialog.setMessage(getString(R.string.login_dialog_message));
             dialog.setIndeterminate(true);
             dialog.setCancelable(true);
@@ -160,13 +156,13 @@ public class LoginActivity extends Activity {
             }
 
             private boolean phoneNumberEditTextFieldIsValid() {
-                CharSequence phone = mPhoneEditText.getText();
-                return !TextUtils.isEmpty(phone) && TextUtils.isDigitsOnly(phone);
+                // This can be either a phone number or username so we don't care too much about the
+                // format.
+                return !TextUtils.isEmpty(mPhoneEditText.getText());
             }
 
             private boolean passwordEditTextFieldIsValid() {
-                CharSequence password = mPasswordEditText.getText();
-                return !TextUtils.isEmpty(password);
+                return !TextUtils.isEmpty(mPasswordEditText.getText());
             }
         };
 
@@ -221,8 +217,8 @@ public class LoginActivity extends Activity {
                     return false;
                 }
 
-                City city = Preferences.switchCity(((Foursquared)getApplication())
-                        .getFoursquare(), user, mLocationListener.getLastKnownLocation());
+                City city = Preferences.switchCity(((Foursquared)getApplication()).getFoursquare(),
+                        user, mLocationListener.getLastKnownLocation());
                 Preferences.storeCity(editor, city);
 
                 editor.commit();
@@ -240,13 +236,16 @@ public class LoginActivity extends Activity {
 
             if (loggedIn) {
                 String city = mPrefs.getString(Preferences.PREFERENCE_CITY_NAME, null);
-                Toast.makeText( //
-                   LoginActivity.this, getString(R.string.login_welcome_toast, city), Toast.LENGTH_LONG).show();
-                setResult(Activity.RESULT_OK);
+                Toast.makeText(
+                        //
+                        LoginActivity.this, getString(R.string.login_welcome_toast, city),
+                        Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 finish();
             } else {
-                Toast.makeText(LoginActivity.this,
-                        R.string.login_failed_login_toast,
+                Toast.makeText(LoginActivity.this, R.string.login_failed_login_toast,
                         Toast.LENGTH_LONG).show();
                 if (DEBUG) Log.d(TAG, "Reason for login failure: ", mReason);
 
