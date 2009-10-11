@@ -4,6 +4,7 @@
   <firstname>Testuser</firstname>
   <lastname>So and so</lastname>
   <photo>http://playfoursquare.s3.amazonaws.com/userpix/9711_1245032443.jpg</photo>
+  <twitter_name>jlapenna_testuser</twitter_name>
   <city>
     <id>23</id>
     <shortname>SF</shortname>

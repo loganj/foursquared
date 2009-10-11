@@ -4,10 +4,8 @@
 
 package com.joelapenna.foursquare.types;
 
-;
-
 /**
- * Auto-generated: 2009-09-16 19:23:20.362910
+ * Auto-generated: 2009-10-11 15:16:53.605497
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
@@ -23,6 +21,7 @@ public class User implements FoursquareType {
     private String mLastname;
     private String mPhoto;
     private Settings mSettings;
+    private String mTwitterName;
 
     public User() {
     }
@@ -105,6 +104,14 @@ public class User implements FoursquareType {
 
     public void setSettings(Settings settings) {
         mSettings = settings;
+    }
+
+    public String getTwitterName() {
+        return mTwitterName;
+    }
+
+    public void setTwitterName(String twitterName) {
+        mTwitterName = twitterName;
     }
 
 }

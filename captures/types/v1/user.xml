@@ -5,6 +5,7 @@
   <lastname>Lapenna</lastname>
   <photo></photo>
   <gender></gender>
+  <twitter_name>jlapenna_testuser</twitter_name>
   <city type="City"></city>
   <checkin type="Checkin"></checkin>
   <settings type="Settings"></settings>

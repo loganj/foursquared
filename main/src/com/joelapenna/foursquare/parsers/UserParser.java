@@ -17,7 +17,7 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Auto-generated: 2009-09-17 19:58:37.888051
+ * Auto-generated: 2009-10-11 15:17:01.982140
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -66,6 +66,9 @@ public class UserParser extends AbstractParser<User> {
 
             } else if ("settings".equals(name)) {
                 user.setSettings(new SettingsParser().parse(parser));
+
+            } else if ("twitter_name".equals(name)) {
+                user.setTwitterName(parser.nextText());
 
             } else {
                 // Consume something we don't understand.
