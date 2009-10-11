@@ -10,7 +10,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
@@ -46,7 +45,7 @@ public class MainActivity extends TabActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setAction(Intent.ACTION_MAIN);
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY
-                    | intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
         }
@@ -74,8 +73,6 @@ public class MainActivity extends TabActivity {
         if (mTabHost != null) {
             throw new IllegalStateException("Trying to intialize already initializd TabHost");
         }
-
-        Resources resources = getResources();
 
         mTabHost = getTabHost();
 

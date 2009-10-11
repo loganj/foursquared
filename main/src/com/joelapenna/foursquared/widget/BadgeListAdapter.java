@@ -9,7 +9,6 @@ import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

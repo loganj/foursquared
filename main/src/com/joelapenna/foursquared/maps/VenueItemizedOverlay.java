@@ -12,7 +12,6 @@ import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.FoursquaredSettings;
 
 import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
 import android.util.Log;
 
 /**
