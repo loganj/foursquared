@@ -7,6 +7,7 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.maps.BestLocationListener;
+import com.joelapenna.foursquared.preferences.Preferences;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -42,7 +43,7 @@ public class LoginActivity extends Activity {
     private AsyncTask<Void, Void, Boolean> mLoginTask;
 
     private TextView mNewAccountTextView;
-    private EditText mPhoneEditText;
+    private EditText mPhoneUsernameEditText;
     private EditText mPasswordEditText;
 
     private ProgressDialog mProgressDialog;
@@ -137,7 +138,7 @@ public class LoginActivity extends Activity {
             }
         });
 
-        mPhoneEditText = ((EditText)findViewById(R.id.phoneEditText));
+        mPhoneUsernameEditText = ((EditText)findViewById(R.id.phoneEditText));
         mPasswordEditText = ((EditText)findViewById(R.id.passwordEditText));
 
         TextWatcher fieldValidatorTextWatcher = new TextWatcher() {
@@ -158,7 +159,7 @@ public class LoginActivity extends Activity {
             private boolean phoneNumberEditTextFieldIsValid() {
                 // This can be either a phone number or username so we don't care too much about the
                 // format.
-                return !TextUtils.isEmpty(mPhoneEditText.getText());
+                return !TextUtils.isEmpty(mPhoneUsernameEditText.getText());
             }
 
             private boolean passwordEditTextFieldIsValid() {
@@ -166,24 +167,24 @@ public class LoginActivity extends Activity {
             }
         };
 
-        mPhoneEditText.addTextChangedListener(fieldValidatorTextWatcher);
+        mPhoneUsernameEditText.addTextChangedListener(fieldValidatorTextWatcher);
         mPasswordEditText.addTextChangedListener(fieldValidatorTextWatcher);
 
         ensurePhoneNumber();
     }
 
     private void ensurePhoneNumber() {
-        if (TextUtils.isEmpty(mPhoneEditText.getText().toString())) {
-            if (PreferenceActivity.DEBUG) Log.d(TAG, "Looking up phone number.");
+        if (TextUtils.isEmpty(mPhoneUsernameEditText.getText().toString())) {
+            if (LoginActivity.DEBUG) Log.d(TAG, "Looking up phone number.");
 
             TelephonyManager telephony = (TelephonyManager)getSystemService(Activity.TELEPHONY_SERVICE);
             String lookup = telephony.getLine1Number();
 
             if (!TextUtils.isEmpty(lookup) && lookup.startsWith("1")) {
                 lookup = lookup.substring(1);
-                if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG,
+                if (LoginActivity.DEBUG) Log.d(LoginActivity.TAG,
                         "Phone number not found. Setting it: " + lookup);
-                mPhoneEditText.setText(lookup);
+                mPhoneUsernameEditText.setText(lookup);
             }
         }
     }
@@ -204,15 +205,13 @@ public class LoginActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
             if (DEBUG) Log.d(TAG, "doInBackground()");
             try {
-                String phoneNumber = mPhoneEditText.getText().toString();
+                String phoneNumber = mPhoneUsernameEditText.getText().toString();
                 String password = mPasswordEditText.getText().toString();
 
                 Editor editor = mPrefs.edit();
 
-                User user = Preferences.loginUser(
-                        //
-                        ((Foursquared)getApplication()).getFoursquare(), phoneNumber, password,
-                        editor);
+                User user = Preferences.loginUser(((Foursquared)getApplication()).getFoursquare(),
+                        phoneNumber, password, editor);
                 if (user == null) {
                     return false;
                 }

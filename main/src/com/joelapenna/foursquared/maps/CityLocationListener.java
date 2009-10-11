@@ -7,7 +7,7 @@ package com.joelapenna.foursquared.maps;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquared.FoursquaredSettings;
-import com.joelapenna.foursquared.Preferences;
+import com.joelapenna.foursquared.preferences.Preferences;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;

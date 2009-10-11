@@ -2,7 +2,7 @@
  * Copyright 2009 Joe LaPenna
  */
 
-package com.joelapenna.foursquared;
+package com.joelapenna.foursquared.preferences;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsException;
@@ -12,6 +12,8 @@ import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.Settings;
 import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquared.FoursquaredSettings;
+import com.joelapenna.foursquared.PreferenceActivity;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -82,7 +84,7 @@ public class Preferences {
      */
     public static User loginUser(Foursquare foursquare, String phoneNumber, String password,
             Editor editor) throws FoursquareCredentialsException, FoursquareException, IOException {
-        if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Trying to log in.");
+        if (Preferences.DEBUG) Log.d(Preferences.TAG, "Trying to log in.");
 
         foursquare.setCredentials(phoneNumber, password);
         foursquare.setOAuthToken(null, null);
@@ -178,7 +180,7 @@ public class Preferences {
             editor.putBoolean(PREFERENCE_TWITTER_CHECKIN, user.getSettings().sendtotwitter());
             if (DEBUG) Log.d(TAG, "Setting user info");
         } else {
-            if (PreferenceActivity.DEBUG) Log.d(PreferenceActivity.TAG, "Unable to lookup user.");
+            if (Preferences.DEBUG) Log.d(Preferences.TAG, "Unable to lookup user.");
         }
     }
 

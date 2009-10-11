@@ -6,6 +6,7 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.City;
+import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
 import android.app.Activity;
@@ -29,8 +30,8 @@ import android.widget.Toast;
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class PreferenceActivity extends android.preference.PreferenceActivity {
-    static final String TAG = "PreferenceActivity";
-    static final boolean DEBUG = FoursquaredSettings.DEBUG;
+    private static final String TAG = "PreferenceActivity";
+    private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private SharedPreferences mPrefs;
 
