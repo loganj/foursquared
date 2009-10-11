@@ -30,7 +30,7 @@ public class Preferences {
     private static final String TAG = "Preferences";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    public static final String PREFERENCE_PHONE = "phone";
+    public static final String PREFERENCE_LOGIN = "phone";
     public static final String PREFERENCE_PASSWORD = "password";
     public static final String PREFERENCE_TWITTER_CHECKIN = "twitter_checkin";
     public static final String PREFERENCE_SHARE_CHECKIN = "share_checkin";
@@ -75,18 +75,18 @@ public class Preferences {
      * Log in a user and put credential information into the preferences edit queue.
      *
      * @param foursquare
-     * @param phoneNumber
+     * @param login
      * @param password
      * @param editor
      * @throws FoursquareCredentialsException
      * @throws FoursquareException
      * @throws IOException
      */
-    public static User loginUser(Foursquare foursquare, String phoneNumber, String password,
+    public static User loginUser(Foursquare foursquare, String login, String password,
             Editor editor) throws FoursquareCredentialsException, FoursquareException, IOException {
         if (Preferences.DEBUG) Log.d(Preferences.TAG, "Trying to log in.");
 
-        foursquare.setCredentials(phoneNumber, password);
+        foursquare.setCredentials(login, password);
         foursquare.setOAuthToken(null, null);
 
         Credentials credentials = foursquare.authExchange();
@@ -96,7 +96,7 @@ public class Preferences {
         foursquare.setOAuthToken(credentials.getOauthToken(), credentials.getOauthTokenSecret());
         User user = foursquare.user(null, false, false);
 
-        storePhoneAndPassword(editor, phoneNumber, password);
+        storeLoginAndPassword(editor, login, password);
         storeAuthExchangeCredentials(editor, credentials);
         storeUser(editor, user);
         return user;
@@ -168,9 +168,9 @@ public class Preferences {
         }
     }
 
-    public static void storePhoneAndPassword(final Editor editor, String phoneNumber,
+    public static void storeLoginAndPassword(final Editor editor, String login,
             String password) {
-        editor.putString(PREFERENCE_PHONE, phoneNumber);
+        editor.putString(PREFERENCE_LOGIN, login);
         editor.putString(PREFERENCE_PASSWORD, password);
     }
 

@@ -136,7 +136,7 @@ public class Foursquared extends Application {
                 getString(R.string.oauth_consumer_secret));
         try {
             if (FoursquaredSettings.DEBUG) Log.d(TAG, "loadCredentials()");
-            String phoneNumber = mPrefs.getString(Preferences.PREFERENCE_PHONE, null);
+            String phoneNumber = mPrefs.getString(Preferences.PREFERENCE_LOGIN, null);
             String password = mPrefs.getString(Preferences.PREFERENCE_PASSWORD, null);
 
             String oauthToken = mPrefs.getString(Preferences.PREFERENCE_OAUTH_TOKEN, null);
