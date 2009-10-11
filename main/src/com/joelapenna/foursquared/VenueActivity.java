@@ -94,16 +94,11 @@ public class VenueActivity extends TabActivity {
             }
         });
 
-        if (holder != null) {
-            if (VenueUtils.isValid(holder.venue)) {
-                if (DEBUG) Log.d(TAG, "Restoring Venue: " + holder.venue);
-                setVenue(holder.venue);
-            } else {
-                new VenueTask().execute(mStateHolder.venueId);
-            }
+        if (holder != null && VenueUtils.isValid(holder.venue)) {
+            if (DEBUG) Log.d(TAG, "Restoring Venue: " + holder.venue);
+            setVenue(holder.venue);
         } else {
-            mStateHolder.venueId = getIntent().getExtras().getString(Foursquared.EXTRA_VENUE_ID);
-            new VenueTask().execute(mStateHolder.venueId);
+            new VenueTask().execute(getIntent().getExtras().getString(Foursquared.EXTRA_VENUE_ID));
         }
     }
 

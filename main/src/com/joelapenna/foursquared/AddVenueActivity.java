@@ -6,6 +6,7 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
@@ -235,12 +236,14 @@ public class AddVenueActivity extends Activity {
         protected void onPostExecute(Venue venue) {
             if (DEBUG) Log.d(TAG, "onPostExecute()");
             try {
-                Intent intent = new Intent(AddVenueActivity.this, VenueActivity.class);
-                intent.putExtra(Foursquared.EXTRA_VENUE_ID, venue.getId());
-                startActivity(intent);
-                finish();
-            } catch (Exception e) {
-                NotificationsUtil.ToastReasonForFailure(AddVenueActivity.this, mReason);
+                if (VenueUtils.isValid(venue)) {
+                    Intent intent = new Intent(AddVenueActivity.this, VenueActivity.class);
+                    intent.putExtra(Foursquared.EXTRA_VENUE_ID, venue.getId());
+                    startActivity(intent);
+                    finish();
+                } else {
+                    NotificationsUtil.ToastReasonForFailure(AddVenueActivity.this, mReason);
+                }
             } finally {
                 setProgressBarIndeterminateVisibility(false);
             }
