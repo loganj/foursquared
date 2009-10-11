@@ -8,6 +8,7 @@ import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.maps.BestLocationListener;
+import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
 import android.app.Activity;
@@ -118,9 +119,9 @@ public class AddVenueActivity extends Activity {
         mRequiredFields = new EditText[] {
                 mNameEditText, //
                 mAddressEditText, //
+                mCrossstreetEditText, //
                 mCityEditText, //
                 mStateEditText, //
-                mZipEditText,
         };
 
         for (int i = 0; i < mRequiredFields.length; i++) {
