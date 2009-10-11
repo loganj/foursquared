@@ -14,6 +14,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Stats;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
+import com.joelapenna.foursquared.util.VenueUtils;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -139,7 +140,7 @@ public class SearchVenuesMapActivity extends MapActivity {
             final int venueCount = group.size();
             for (int venueIndex = 0; venueIndex < venueCount; venueIndex++) {
                 Venue venue = group.get(venueIndex);
-                if (VenueItemizedOverlay.isVenueMappable(venue)) {
+                if (VenueUtils.hasValidLocation(venue)) {
                     mappableVenues.add(venue);
                 }
             }

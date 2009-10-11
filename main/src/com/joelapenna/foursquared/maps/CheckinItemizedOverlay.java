@@ -43,18 +43,6 @@ public class CheckinItemizedOverlay extends BaseGroupItemizedOverlay<Checkin> {
         return super.onTap(p, mapView);
     }
 
-    public static boolean isCheckinMappable(Checkin checkin) {
-        Venue venue = checkin.getVenue();
-        if (venue == null //
-                || TextUtils.isEmpty(venue.getGeolat()) //
-                || TextUtils.isEmpty(venue.getGeolong()) //
-                || venue.getGeolat().equals("0") //
-                || venue.getGeolong().equals("0")) {
-            return false;
-        }
-        return true;
-    }
-
     public static class CheckinOverlayItem extends OverlayItem {
 
         private Checkin mCheckin;

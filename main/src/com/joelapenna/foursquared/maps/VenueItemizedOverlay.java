@@ -9,6 +9,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.FoursquaredSettings;
+import com.joelapenna.foursquared.util.VenueUtils;
 
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
@@ -68,7 +69,7 @@ public class VenueItemizedOverlay extends BaseGroupItemizedOverlay<Venue> {
         int minLon = 0;
         for (int i = 0; i < group.size(); i++) {
             Venue venue = (Venue)group.get(i);
-            if (isVenueMappable(venue)) {
+            if (VenueUtils.hasValidLocation(venue)) {
                 int lat = (int)(Double.parseDouble(venue.getGeolat()) * 1E6);
                 int lon = (int)(Double.parseDouble(venue.getGeolong()) * 1E6);
 
@@ -91,17 +92,6 @@ public class VenueItemizedOverlay extends BaseGroupItemizedOverlay<Venue> {
         }
         mSpanHolder.latSpanE6 = maxLat - minLat;
         mSpanHolder.lonSpanE6 = maxLon - minLon;
-    }
-
-    public static boolean isVenueMappable(Venue venue) {
-        if (venue == null //
-                || TextUtils.isEmpty(venue.getGeolat()) //
-                || TextUtils.isEmpty(venue.getGeolong()) //
-                || venue.getGeolat().equals("0") //
-                || venue.getGeolong().equals("0")) {
-            return false;
-        }
-        return true;
     }
 
     public static class VenueOverlayItem extends OverlayItem {

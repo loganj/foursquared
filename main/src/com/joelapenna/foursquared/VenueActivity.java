@@ -7,6 +7,7 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.NotificationsUtil;
+import com.joelapenna.foursquared.util.VenueUtils;
 import com.joelapenna.foursquared.widget.VenueView;
 
 import android.app.Activity;
@@ -94,11 +95,11 @@ public class VenueActivity extends TabActivity {
         });
 
         if (holder != null) {
-            if (holder.venue == null) {
-                new VenueTask().execute(mStateHolder.venueId);
-            } else {
+            if (VenueUtils.isValid(holder.venue)) {
                 if (DEBUG) Log.d(TAG, "Restoring Venue: " + holder.venue);
                 setVenue(holder.venue);
+            } else {
+                new VenueTask().execute(mStateHolder.venueId);
             }
         } else {
             mStateHolder.venueId = getIntent().getExtras().getString(Foursquared.EXTRA_VENUE_ID);
@@ -320,11 +321,11 @@ public class VenueActivity extends TabActivity {
         @Override
         protected void onPostExecute(Venue venue) {
             try {
-                if (venue == null || venue.getId() == null) {
+                if (VenueUtils.isValid(venue)) {
+                    setVenue(venue);
+                } else {
                     NotificationsUtil.ToastReasonForFailure(VenueActivity.this, mReason);
                     finish();
-                } else {
-                    setVenue(venue);
                 }
             } finally {
                 stopProgressBar(PROGRESS_BAR_TASK_ID);

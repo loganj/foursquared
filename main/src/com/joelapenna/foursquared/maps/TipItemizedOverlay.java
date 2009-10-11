@@ -43,18 +43,6 @@ public class TipItemizedOverlay extends BaseGroupItemizedOverlay<Tip> {
         return super.onTap(p, mapView);
     }
 
-    public static boolean isTipMappable(Tip tip) {
-        Venue venue = tip.getVenue();
-        if (venue == null //
-                || TextUtils.isEmpty(venue.getGeolat()) //
-                || TextUtils.isEmpty(venue.getGeolong()) //
-                || venue.getGeolat().equals("0") //
-                || venue.getGeolong().equals("0")) {
-            return false;
-        }
-        return true;
-    }
-
     public static class TipOverlayItem extends OverlayItem {
 
         private Tip mTip;

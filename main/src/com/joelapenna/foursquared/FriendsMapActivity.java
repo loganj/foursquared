@@ -14,6 +14,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.CheckinItemizedOverlay;
 import com.joelapenna.foursquared.util.StringFormatters;
+import com.joelapenna.foursquared.util.VenueUtils;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -153,7 +154,7 @@ public class FriendsMapActivity extends MapActivity {
         final int checkinCount = group.size();
         for (int checkinIndex = 0; checkinIndex < checkinCount; checkinIndex++) {
             Checkin checkin = (Checkin)group.get(checkinIndex);
-            if (CheckinItemizedOverlay.isCheckinMappable(checkin)) {
+            if (VenueUtils.hasValidLocation(checkin.getVenue())) {
                 if (DEBUG) Log.d(TAG, "adding checkin: " + checkin.getVenue().getName());
                 mappableCheckins.add(checkin);
             }

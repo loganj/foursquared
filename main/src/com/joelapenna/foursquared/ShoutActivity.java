@@ -8,6 +8,7 @@ import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.util.NotificationsUtil;
+import com.joelapenna.foursquared.util.VenueUtils;
 import com.joelapenna.foursquared.widget.VenueView;
 
 import android.app.Activity;
@@ -347,10 +348,8 @@ public class ShoutActivity extends Activity {
 
         @Override
         public CheckinResult doInBackground(Void... params) {
-            String venueId;
-            if (mStateHolder.venue == null) {
-                venueId = null;
-            } else {
+            String venueId = null;
+            if (VenueUtils.isValid(mStateHolder.venue)) {
                 venueId = mStateHolder.venue.getId();
             }
 

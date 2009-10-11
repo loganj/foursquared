@@ -12,6 +12,7 @@ import com.google.android.maps.MyLocationOverlay;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
+import com.joelapenna.foursquared.util.VenueUtils;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -113,22 +114,12 @@ public class VenueMapActivity extends MapActivity {
                 R.drawable.map_marker_blue));
     }
 
-    private boolean isVenueMappable(Venue venue) {
-        if ((venue.getGeolat() == null || venue.getGeolong() == null) //
-                || venue.getGeolat().equals("0") || venue.getGeolong().equals("0")) {
-            if (DEBUG) Log.d(TAG, "Venue is not mappable");
-            return false;
-        }
-        if (DEBUG) Log.d(TAG, "Venue is mappable");
-        return true;
-    }
-
     private void setVenue(Venue venue) {
         Group<Venue> venueGroup = new Group<Venue>();
         venueGroup.setType("Current Venue");
         venueGroup.add(venue);
         mVenue = venue;
-        if (isVenueMappable(venue)) {
+        if (VenueUtils.hasValidLocation(venue)) {
             mOverlay.setGroup(venueGroup);
             mMapView.getOverlays().add(mOverlay);
         }
