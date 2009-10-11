@@ -30,7 +30,7 @@
       android:layout_height="wrap_content"
       android:inputType="text"
       android:textAppearance="@android:style/TextAppearance.Large"
-      android:hint="@string/phone_number_or_username" />
+      android:hint="@string/phone_number_or_email" />
     <EditText
       android:id="@+id/passwordEditText"
       android:layout_width="fill_parent"
