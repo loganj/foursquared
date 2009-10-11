@@ -8,8 +8,8 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.FoursquaredSettings;
-import com.joelapenna.foursquared.util.VenueUtils;
 
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;

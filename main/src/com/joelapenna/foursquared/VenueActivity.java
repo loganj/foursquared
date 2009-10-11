@@ -6,8 +6,8 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
-import com.joelapenna.foursquared.util.VenueUtils;
 import com.joelapenna.foursquared.widget.VenueView;
 
 import android.app.Activity;

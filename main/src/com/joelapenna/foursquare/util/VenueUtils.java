@@ -2,7 +2,7 @@
  * Copyright 2009 Joe LaPenna
  */
 
-package com.joelapenna.foursquared.util;
+package com.joelapenna.foursquare.util;
 
 import com.joelapenna.foursquare.types.Venue;
 

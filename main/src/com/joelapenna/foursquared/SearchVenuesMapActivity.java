@@ -13,8 +13,8 @@ import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Stats;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
-import com.joelapenna.foursquared.util.VenueUtils;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;

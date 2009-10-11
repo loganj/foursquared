@@ -12,9 +12,9 @@ import com.google.android.maps.MyLocationOverlay;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.maps.CheckinItemizedOverlay;
 import com.joelapenna.foursquared.util.StringFormatters;
-import com.joelapenna.foursquared.util.VenueUtils;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
