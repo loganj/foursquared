@@ -119,7 +119,6 @@ public class AddVenueActivity extends Activity {
         mRequiredFields = new EditText[] {
                 mNameEditText, //
                 mAddressEditText, //
-                mCrossstreetEditText, //
                 mCityEditText, //
                 mStateEditText, //
         };
