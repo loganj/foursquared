@@ -8,9 +8,8 @@
   <ListView
     android:id="@android:id/list"
     android:layout_height="fill_parent"
-    android:layout_width="fill_parent" 
-    android:divider="@drawable/divider"
-     />
+    android:layout_width="fill_parent"
+    android:divider="@drawable/divider" />
 
   <include
     android:id="@android:id/empty"
