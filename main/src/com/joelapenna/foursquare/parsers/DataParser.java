@@ -44,7 +44,9 @@ public class DataParser extends AbstractParser<Data> {
                 data.setMessage(parser.nextText());
 
             } else if ("status".equals(name)) {
-                data.setStatus(Boolean.valueOf(parser.nextText()));
+                // Hand-edited 20091014 because the stanza here returns a 1,0 but boolean.valueOf()
+                // only understands the literal, "true" to convert to a real Boolean.TRUE value.
+                data.setStatus("1".equals(parser.nextText()));
 
             } else {
                 // Consume something we don't understand.
