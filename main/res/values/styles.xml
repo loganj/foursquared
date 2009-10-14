@@ -49,6 +49,8 @@
     parent="@android:attr/listViewStyle">
     <item
       name="android:background">@android:color/white</item>
+    <item
+      name="android:divider">@drawable/divider</item>
   </style>
 
   <style
