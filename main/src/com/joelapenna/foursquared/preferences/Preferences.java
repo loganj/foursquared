@@ -10,10 +10,10 @@ import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Credentials;
+import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Settings;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
-import com.joelapenna.foursquared.PreferenceActivity;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -82,8 +82,8 @@ public class Preferences {
      * @throws FoursquareException
      * @throws IOException
      */
-    public static User loginUser(Foursquare foursquare, String login, String password,
-            Editor editor) throws FoursquareCredentialsException, FoursquareException, IOException {
+    public static User loginUser(Foursquare foursquare, String login, String password, Editor editor)
+            throws FoursquareCredentialsException, FoursquareException, IOException {
         if (Preferences.DEBUG) Log.d(Preferences.TAG, "Trying to log in.");
 
         foursquare.setCredentials(login, password);
@@ -102,32 +102,22 @@ public class Preferences {
         return user;
     }
 
-    public static City switchCity(Foursquare foursquare, User user, Location location)
+    public static City switchCity(Foursquare foursquare, Location location)
             throws FoursquareException, FoursquareError, IOException {
         City finalCity = null;
-        City currentCity = user.getCity();
+
         if (location != null) {
             City newCity = foursquare.checkCity(//
                     String.valueOf(location.getLatitude()), //
                     String.valueOf(location.getLongitude()));
 
-            if (currentCity != null && newCity != null) {
-                if (!currentCity.getId().equals(newCity.getId())) {
-                    foursquare.switchCity(newCity.getId());
+            if (newCity != null) {
+                Data response = foursquare.switchCity(newCity.getId());
+                if ("1".equals(response.status())) {
                     finalCity = newCity;
-                } else {
-                    finalCity = currentCity;
                 }
-            } else if (newCity != null) {
-                foursquare.switchCity(newCity.getId());
-                finalCity = newCity;
-
-            } else if (currentCity != null) {
-                finalCity = currentCity;
             }
 
-        } else {
-            finalCity = currentCity;
         }
         return finalCity;
     }
@@ -168,8 +158,7 @@ public class Preferences {
         }
     }
 
-    public static void storeLoginAndPassword(final Editor editor, String login,
-            String password) {
+    public static void storeLoginAndPassword(final Editor editor, String login, String password) {
         editor.putString(PREFERENCE_LOGIN, login);
         editor.putString(PREFERENCE_PASSWORD, password);
     }
