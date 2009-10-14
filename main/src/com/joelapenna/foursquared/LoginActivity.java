@@ -39,7 +39,6 @@ public class LoginActivity extends Activity {
     public static final String TAG = "LoginActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    private SharedPreferences mPrefs;
     private AsyncTask<Void, Void, Boolean> mLoginTask;
 
     private TextView mNewAccountTextView;
@@ -59,8 +58,8 @@ public class LoginActivity extends Activity {
         mLocationListener = ((Foursquared)getApplication()).getLocationListener();
         mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mPrefs.edit().clear().commit();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.edit().clear().commit();
 
         // Set up the UI.
         ensureUi();
@@ -208,7 +207,9 @@ public class LoginActivity extends Activity {
                 String phoneNumber = mPhoneUsernameEditText.getText().toString();
                 String password = mPasswordEditText.getText().toString();
 
-                Editor editor = mPrefs.edit();
+                SharedPreferences prefs = PreferenceManager
+                        .getDefaultSharedPreferences(LoginActivity.this);
+                Editor editor = prefs.edit();
 
                 User user = Preferences.loginUser(((Foursquared)getApplication()).getFoursquare(),
                         phoneNumber, password, editor);
@@ -216,8 +217,14 @@ public class LoginActivity extends Activity {
                     return false;
                 }
 
+                // Use a location to switch the user's foursquare location.
                 City city = Preferences.switchCity(((Foursquared)getApplication()).getFoursquare(),
-                        user, mLocationListener.getLastKnownLocation());
+                        mLocationListener.getLastKnownLocation());
+
+                // Fallback to the foursquare server's understanding of the user's city.
+                if (city == null) {
+                    city = user.getCity();
+                }
                 Preferences.storeCity(editor, city);
 
                 editor.commit();
@@ -233,8 +240,11 @@ public class LoginActivity extends Activity {
         protected void onPostExecute(Boolean loggedIn) {
             if (DEBUG) Log.d(TAG, "onPostExecute(): " + loggedIn);
 
+            SharedPreferences prefs = PreferenceManager
+                    .getDefaultSharedPreferences(LoginActivity.this);
+
             if (loggedIn) {
-                String city = mPrefs.getString(Preferences.PREFERENCE_CITY_NAME, null);
+                String city = prefs.getString(Preferences.PREFERENCE_CITY_NAME, null);
                 Toast.makeText(
                         //
                         LoginActivity.this, getString(R.string.login_welcome_toast, city),
@@ -248,7 +258,7 @@ public class LoginActivity extends Activity {
                         Toast.LENGTH_LONG).show();
                 if (DEBUG) Log.d(TAG, "Reason for login failure: ", mReason);
 
-                mPrefs.edit().clear().commit();
+                prefs.edit().clear().commit();
                 ((Foursquared)getApplication()).getFoursquare().clearAllCredentials();
                 // XXX I don't know if you can call setResult multiple times. If you can't and the
                 // first login result fails, then even a subsequent result OK will end up firing a

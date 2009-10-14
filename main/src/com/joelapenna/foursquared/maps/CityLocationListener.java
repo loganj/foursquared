@@ -38,7 +38,7 @@ public class CityLocationListener implements LocationListener {
     public void onLocationChanged(Location location) {
         if (DEBUG) Log.d(TAG, "onLocationChanged: " + location);
         try {
-            City city = Preferences.switchCity(mFoursquare, Preferences.getUser(mPrefs), location);
+            City city = Preferences.switchCity(mFoursquare, location);
             Editor editor = mPrefs.edit();
             Preferences.storeCity(editor, city);
             editor.commit();

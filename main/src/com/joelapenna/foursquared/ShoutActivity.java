@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.CheckinResult;
+import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.maps.BestLocationListener;
@@ -24,6 +25,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -364,6 +366,16 @@ public class ShoutActivity extends Activity {
                     geolat = String.valueOf(location.getLatitude());
                     geolong = String.valueOf(location.getLongitude());
                 }
+
+                // Its a couple more lookups, but make sure the server knows what city we're in
+                // before we check-in
+                City city = Preferences.switchCity(((Foursquared)getApplication()).getFoursquare(),
+                        mLocationListener.getLastKnownLocation());
+                Editor editor = PreferenceManager.getDefaultSharedPreferences(ShoutActivity.this)
+                        .edit();
+                Preferences.storeCity(editor, city);
+                editor.commit();
+
                 return ((Foursquared)getApplication()).getFoursquare().checkin(venueId, null,
                         geolat, geolong, mShout, isPrivate, mTellTwitter);
             } catch (Exception e) {
