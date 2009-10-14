@@ -6,6 +6,7 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.City;
+import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
@@ -17,6 +18,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,6 +36,8 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private SharedPreferences mPrefs;
+
+    private BestLocationListener mLocationListener = new BestLocationListener();
 
     private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
         @Override
@@ -56,6 +60,18 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mLoggedInReceiver);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mLocationListener.register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mLocationListener.unregister();
     }
 
     @Override
@@ -111,7 +127,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         protected City doInBackground(Void... params) {
             if (DEBUG) Log.d(TAG, "doInBackground()");
             try {
-                Location location = ((Foursquared)getApplication()).getLastKnownLocation();
+                Location location = mLocationListener.getLastKnownLocation();
                 if (location == null) {
                     if (DEBUG) Log.d(TAG, "unable to determine location");
                     return null;

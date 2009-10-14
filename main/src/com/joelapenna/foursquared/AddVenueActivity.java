@@ -43,10 +43,9 @@ public class AddVenueActivity extends Activity {
 
     private static final double MINIMUM_ACCURACY_FOR_ADDRESS = 100.0;
 
-    private BestLocationListener mLocationListener;
-    private LocationManager mLocationManager;
-
     final private StateHolder mStateHolder = new StateHolder();
+
+    private BestLocationListener mLocationListener = new BestLocationListener();
 
     private EditText mNameEditText;
     private EditText mAddressEditText;
@@ -96,9 +95,6 @@ public class AddVenueActivity extends Activity {
         setContentView(R.layout.add_venue_activity);
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
-        mLocationListener = ((Foursquared)getApplication()).getLocationListener();
-        mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-
         mAddVenueButton = (Button)findViewById(R.id.addVenueButton);
         mNameEditText = (EditText)findViewById(R.id.nameEditText);
         mAddressEditText = (EditText)findViewById(R.id.addressEditText);
@@ -142,18 +138,13 @@ public class AddVenueActivity extends Activity {
         super.onResume();
         // We should probably dynamically connect to any location provider we can find and not just
         // the gps/network providers.
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
-                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
-                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+        mLocationListener.register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mLocationManager.removeUpdates(mLocationListener);
+        mLocationListener.unregister();
     }
 
     @Override

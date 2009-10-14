@@ -56,8 +56,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     private static final int MENU_SEARCH = 2;
     private static final int MENU_MYINFO = 3;
 
-    private LocationManager mLocationManager;
-    private BestLocationListener mLocationListener;
+    private BestLocationListener mLocationListener = new BestLocationListener();
 
     private SearchTask mSearchTask;
     private SearchHolder mSearchHolder = new SearchHolder();
@@ -79,9 +78,6 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL);
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
-        mLocationListener = ((Foursquared)getApplication()).getLocationListener();
-        mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-
         searchResultsObservable = new SearchResultsObservable();
 
         initListViewAdapter();
@@ -89,15 +85,11 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         if (getLastNonConfigurationInstance() != null) {
             if (DEBUG) Log.d(TAG, "Restoring state.");
             SearchHolder holder = (SearchHolder)getLastNonConfigurationInstance();
-            if (holder.results == null) {
-                executeSearchTask(holder.query);
-            } else {
+            if (holder.results != null) {
                 mSearchHolder.query = holder.query;
                 setSearchResults(holder.results);
                 putSearchResultsInAdapter(holder.results);
             }
-        } else {
-            onNewIntent(getIntent());
         }
     }
 
@@ -110,18 +102,16 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     @Override
     public void onResume() {
         super.onResume();
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
-                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
-                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+        mLocationListener.register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+        if (mSearchHolder.results == null && mSearchTask == null) {
+            mSearchTask = (SearchTask)new SearchTask().execute();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mLocationManager.removeUpdates(mLocationListener);
+        mLocationListener.unregister();
     }
 
     @Override
@@ -129,6 +119,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         super.onStop();
         if (mSearchTask != null) {
             mSearchTask.cancel(true);
+            mSearchTask = null;
         }
     }
 

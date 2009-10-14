@@ -46,17 +46,14 @@ public class LoginActivity extends Activity {
     private EditText mPasswordEditText;
 
     private ProgressDialog mProgressDialog;
-    private BestLocationListener mLocationListener;
-    private LocationManager mLocationManager;
+
+    private BestLocationListener mLocationListener = new BestLocationListener();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.d(TAG, "onCreate()");
         setContentView(R.layout.login_activity);
-
-        mLocationListener = ((Foursquared)getApplication()).getLocationListener();
-        mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.edit().clear().commit();
@@ -75,18 +72,13 @@ public class LoginActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
-                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
-                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+        mLocationListener.register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mLocationManager.removeUpdates(mLocationListener);
+        mLocationListener.unregister();
     }
 
     @Override

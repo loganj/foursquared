@@ -5,19 +5,24 @@ import com.joelapenna.foursquared.FoursquaredSettings;
 
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.lang.ref.WeakReference;
 import java.util.Date;
+import java.util.List;
 
 public class BestLocationListener implements LocationListener {
-    public static final String TAG = "BestLocationListener";
-    public static final boolean DEBUG = FoursquaredSettings.DEBUG;
+    private static final String TAG = "BestLocationListener";
+    private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public static final long LOCATION_UPDATE_MIN_TIME = 1000;
     public static final long LOCATION_UPDATE_MIN_DISTANCE = 100;
 
     private static final long LOCATION_UPDATE_MAX_DELTA_THRESHOLD = 1000 * 60 * 5;
+
+    private WeakReference<LocationManager> mLocationManagerWeakReference;
 
     private Location mLastLocation;
 
@@ -111,6 +116,28 @@ public class BestLocationListener implements LocationListener {
         } else {
             if (DEBUG) Log.d(TAG, "Poor comparitive data. Using old: " + mLastLocation);
             return null;
+        }
+    }
+
+    public void register(LocationManager locationManager) {
+        if (DEBUG) Log.d(TAG, "Registering this location listener: " + this.toString());
+        List<String> providers = locationManager.getProviders(true);
+        int providersCount = providers.size();
+        for (int i = 0; i < providersCount; i++) {
+            String providerName = providers.get(i);
+            getBetterLocation(locationManager.getLastKnownLocation(providerName));
+            locationManager.requestLocationUpdates(providerName,
+                    BestLocationListener.LOCATION_UPDATE_MIN_TIME,
+                    BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, this);
+        }
+        mLocationManagerWeakReference = new WeakReference<LocationManager>(locationManager);
+    }
+
+    public void unregister() {
+        LocationManager locationManager = mLocationManagerWeakReference.get();
+        if (locationManager != null) {
+            if (DEBUG) Log.d(TAG, "Unregistering this location listener: " + this.toString());
+            locationManager.removeUpdates(this);
         }
     }
 }

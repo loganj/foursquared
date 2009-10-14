@@ -59,9 +59,6 @@ public class FriendsActivity extends LoadableListActivity {
 
     private SearchTask mSearchTask;
 
-    private LocationManager mLocationManager;
-    private BestLocationListener mLocationListener;
-
     private SearchHolder mSearchHolder = new SearchHolder();
 
     private LinearLayout mEmpty;
@@ -81,9 +78,6 @@ public class FriendsActivity extends LoadableListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
-
-        mLocationListener = ((Foursquared)getApplication()).getLocationListener();
-        mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
         searchResultsObservable = new SearchResultsObservable();
 
@@ -108,23 +102,6 @@ public class FriendsActivity extends LoadableListActivity {
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mLoggedInReceiver);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
-                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
-                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mLocationManager.removeUpdates(mLocationListener);
     }
 
     @Override
@@ -304,16 +281,9 @@ public class FriendsActivity extends LoadableListActivity {
         }
 
         Group<Checkin> search() throws FoursquareException, IOException {
-            Location location = mLocationListener.getLastKnownLocation();
             Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
             Group<Checkin> checkins;
-            if (location == null) {
-                if (DEBUG) Log.d(TAG, "Searching without location.");
-                checkins = foursquare.checkins(null);
-            } else {
-                if (DEBUG) Log.d(TAG, "Searching with location: " + location);
-                checkins = foursquare.checkins(null);
-            }
+            checkins = foursquare.checkins(null);
             Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
             return checkins;
         }

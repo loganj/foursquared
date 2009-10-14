@@ -6,7 +6,6 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsException;
-import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.maps.CityLocationListener;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.DumpcatcherHelper;
@@ -50,7 +49,6 @@ public class Foursquared extends Application {
 
     private SharedPreferences mPrefs;
 
-    private BestLocationListener mBestLocationListener;
     private CityLocationListener mCityLocationListener;
     private LocationManager mLocationManager;
 
@@ -83,9 +81,6 @@ public class Foursquared extends Application {
         mMediaCardStateBroadcastReceiver = new MediaCardStateBroadcastReceiver();
         mMediaCardStateBroadcastReceiver.register();
 
-        // Construct the listener we'll use for tight location updates and start listening for city
-        // location.
-        mBestLocationListener = new BestLocationListener();
         mCityLocationListener = new CityLocationListener(mFoursquare, mPrefs);
         mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
@@ -97,21 +92,10 @@ public class Foursquared extends Application {
     public void onTerminate() {
         mRemoteResourceManager.shutdown();
         mLocationManager.removeUpdates(mCityLocationListener);
-        mLocationManager.removeUpdates(mBestLocationListener);
     }
 
     public Foursquare getFoursquare() {
         return mFoursquare;
-    }
-
-    public Location getLastKnownLocation() {
-        primeLocationListener();
-        return mBestLocationListener.getLastKnownLocation();
-    }
-
-    public BestLocationListener getLocationListener() {
-        primeLocationListener();
-        return mBestLocationListener;
     }
 
     public RemoteResourceManager getRemoteResourceManager() {
@@ -166,18 +150,6 @@ public class Foursquared extends Application {
         } catch (IllegalStateException e) {
             if (DEBUG) Log.d(TAG, "Falling back to NullDiskCache for RemoteResourceManager");
             mRemoteResourceManager = new RemoteResourceManager(new NullDiskCache());
-        }
-    }
-
-    private void primeLocationListener() {
-        LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-
-        Location location = null;
-        List<String> providers = manager.getProviders(true);
-        int providersCount = providers.size();
-        for (int i = 0; i < providersCount; i++) {
-            location = manager.getLastKnownLocation(providers.get(i));
-            mBestLocationListener.getBetterLocation(location);
         }
     }
 

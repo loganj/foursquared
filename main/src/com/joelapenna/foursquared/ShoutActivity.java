@@ -84,7 +84,7 @@ public class ShoutActivity extends Activity {
     private EditText mShoutEditText;
     private VenueView mVenueView;
 
-    private BestLocationListener mLocationListener;
+    private BestLocationListener mLocationListener = new BestLocationListener();
     private LocationManager mLocationManager;
 
     private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
@@ -101,7 +101,6 @@ public class ShoutActivity extends Activity {
         if (DEBUG) Log.d(TAG, "onCreate");
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
-        mLocationListener = ((Foursquared)getApplication()).getLocationListener();
         mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
         SharedPreferences settings = PreferenceManager
@@ -361,7 +360,7 @@ public class ShoutActivity extends Activity {
             try {
                 String geolat = null;
                 String geolong = null;
-                Location location = ((Foursquared)getApplication()).getLastKnownLocation();
+                Location location = mLocationListener.getLastKnownLocation();
                 if (location != null) {
                     geolat = String.valueOf(location.getLatitude());
                     geolong = String.valueOf(location.getLongitude());
