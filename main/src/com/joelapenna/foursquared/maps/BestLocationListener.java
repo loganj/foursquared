@@ -17,8 +17,8 @@ public class BestLocationListener implements LocationListener {
     private static final String TAG = "BestLocationListener";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    public static final long LOCATION_UPDATE_MIN_TIME = 1000;
-    public static final long LOCATION_UPDATE_MIN_DISTANCE = 100;
+    public static final long LOCATION_UPDATE_MIN_TIME = 0;
+    public static final long LOCATION_UPDATE_MIN_DISTANCE = 0;
 
     private static final long LOCATION_UPDATE_MAX_DELTA_THRESHOLD = 1000 * 60 * 5;
 
@@ -55,7 +55,7 @@ public class BestLocationListener implements LocationListener {
         return mLastLocation;
     }
 
-    public Location getBetterLocation(Location location) {
+    synchronized public Location getBetterLocation(Location location) {
         if (DEBUG) {
             Log.d(TAG, "getBetterLocation: Old: " + mLastLocation);
             Log.d(TAG, "getBetterLocation: New: " + location);
@@ -120,15 +120,19 @@ public class BestLocationListener implements LocationListener {
     }
 
     public void register(LocationManager locationManager) {
+        this.register(locationManager, BestLocationListener.LOCATION_UPDATE_MIN_TIME,
+                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE);
+    }
+
+    public void register(LocationManager locationManager, long updateMinTime, long updateMinDistance) {
         if (DEBUG) Log.d(TAG, "Registering this location listener: " + this.toString());
         List<String> providers = locationManager.getProviders(true);
         int providersCount = providers.size();
         for (int i = 0; i < providersCount; i++) {
             String providerName = providers.get(i);
             getBetterLocation(locationManager.getLastKnownLocation(providerName));
-            locationManager.requestLocationUpdates(providerName,
-                    BestLocationListener.LOCATION_UPDATE_MIN_TIME,
-                    BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, this);
+            locationManager.requestLocationUpdates(providerName, updateMinTime, updateMinDistance,
+                    this);
         }
         mLocationManagerWeakReference = new WeakReference<LocationManager>(locationManager);
     }

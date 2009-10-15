@@ -22,14 +22,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
-import android.location.Location;
 import android.location.LocationManager;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
-
-import java.util.List;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
