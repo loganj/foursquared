@@ -45,8 +45,6 @@ public class AddVenueActivity extends Activity {
 
     final private StateHolder mStateHolder = new StateHolder();
 
-    private BestLocationListener mLocationListener = new BestLocationListener();
-
     private EditText mNameEditText;
     private EditText mAddressEditText;
     private EditText mCrossstreetEditText;
@@ -136,15 +134,13 @@ public class AddVenueActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        // We should probably dynamically connect to any location provider we can find and not just
-        // the gps/network providers.
-        mLocationListener.register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+        ((Foursquared)getApplication()).requestLocationUpdates();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mLocationListener.unregister();
+        ((Foursquared)getApplication()).removeLocationUpdates();
     }
 
     @Override
@@ -259,7 +255,8 @@ public class AddVenueActivity extends Activity {
         protected StateHolder doInBackground(Void... params) {
             StateHolder stateHolder = new StateHolder();
 
-            stateHolder.location = mLocationListener.getLastKnownLocation();
+            stateHolder.location =
+                ((Foursquared)getApplication()).getLastKnownLocation();
             try {
                 if (DEBUG) Log.d(TAG, stateHolder.location.toString());
 

@@ -6,6 +6,7 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsException;
+import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.maps.CityLocationListener;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.DumpcatcherHelper;
@@ -22,6 +23,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
+import android.location.Location;
 import android.location.LocationManager;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -47,6 +49,7 @@ public class Foursquared extends Application {
     private SharedPreferences mPrefs;
 
     private CityLocationListener mCityLocationListener;
+    private BestLocationListener mBestLocationListener = new BestLocationListener();
 
     private MediaCardStateBroadcastReceiver mMediaCardStateBroadcastReceiver;
     private RemoteResourceManager mRemoteResourceManager;
@@ -93,6 +96,19 @@ public class Foursquared extends Application {
 
     public RemoteResourceManager getRemoteResourceManager() {
         return mRemoteResourceManager;
+    }
+
+    public BestLocationListener requestLocationUpdates() {
+        mBestLocationListener.register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+        return mBestLocationListener;
+    }
+
+    public void removeLocationUpdates() {
+        mBestLocationListener.unregister();
+    }
+
+    public Location getLastKnownLocation() {
+        return mBestLocationListener.getLastKnownLocation();
     }
 
     private void loadFoursquare() {

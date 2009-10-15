@@ -47,8 +47,6 @@ public class LoginActivity extends Activity {
 
     private ProgressDialog mProgressDialog;
 
-    private BestLocationListener mLocationListener = new BestLocationListener();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,13 +70,13 @@ public class LoginActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        mLocationListener.register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+        ((Foursquared)getApplication()).requestLocationUpdates();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mLocationListener.unregister();
+        ((Foursquared)getApplication()).removeLocationUpdates();
     }
 
     @Override
@@ -210,8 +208,9 @@ public class LoginActivity extends Activity {
                 }
 
                 // Use a location to switch the user's foursquare location.
-                City city = Preferences.switchCity(((Foursquared)getApplication()).getFoursquare(),
-                        mLocationListener.getLastKnownLocation());
+                Foursquared foursquared = (Foursquared)getApplication();
+                City city = Preferences.switchCity(foursquared.getFoursquare(), //
+                        foursquared.getLastKnownLocation());
 
                 // Fallback to the foursquare server's understanding of the user's city.
                 if (city == null) {

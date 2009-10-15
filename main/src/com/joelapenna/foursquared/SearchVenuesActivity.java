@@ -66,8 +66,6 @@ public class SearchVenuesActivity extends TabActivity {
 
     private static final int MENU_GROUP_SEARCH = 0;
 
-    private BestLocationListener mLocationListener = new BestLocationListener();
-
     private SearchTask mSearchTask;
     private SearchHolder mSearchHolder = new SearchHolder();
 
@@ -106,9 +104,7 @@ public class SearchVenuesActivity extends TabActivity {
         if (getLastNonConfigurationInstance() != null) {
             if (DEBUG) Log.d(TAG, "Restoring state.");
             SearchHolder holder = (SearchHolder)getLastNonConfigurationInstance();
-            if (holder.results == null) {
-                executeSearchTask(holder.query);
-            } else {
+            if (holder.results != null) {
                 mSearchHolder.query = holder.query;
                 setSearchResults(holder.results);
                 putSearchResultsInAdapter(holder.results);
@@ -127,13 +123,16 @@ public class SearchVenuesActivity extends TabActivity {
     @Override
     public void onResume() {
         super.onResume();
-        mLocationListener.register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+        ((Foursquared)getApplication()).requestLocationUpdates();
+        if (mSearchHolder.results == null && mSearchTask == null) {
+            mSearchTask = (SearchTask)new SearchTask().execute();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mLocationListener.unregister();
+        ((Foursquared)getApplication()).removeLocationUpdates();
     }
 
     @Override
@@ -396,7 +395,7 @@ public class SearchVenuesActivity extends TabActivity {
         }
 
         public Group<Group<Venue>> search() throws FoursquareException, IOException {
-            Location location = mLocationListener.getLastKnownLocation();
+            Location location = ((Foursquared)getApplication()).getLastKnownLocation();
             Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
             String geolat;
             String geolong;

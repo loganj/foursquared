@@ -84,9 +84,6 @@ public class ShoutActivity extends Activity {
     private EditText mShoutEditText;
     private VenueView mVenueView;
 
-    private BestLocationListener mLocationListener = new BestLocationListener();
-    private LocationManager mLocationManager;
-
     private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -100,8 +97,6 @@ public class ShoutActivity extends Activity {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.d(TAG, "onCreate");
         registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
-
-        mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
         SharedPreferences settings = PreferenceManager
                 .getDefaultSharedPreferences(ShoutActivity.this);
@@ -163,18 +158,13 @@ public class ShoutActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
-                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                BestLocationListener.LOCATION_UPDATE_MIN_TIME,
-                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
+        ((Foursquared)getApplication()).requestLocationUpdates();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mLocationManager.removeUpdates(mLocationListener);
+        ((Foursquared)getApplication()).removeLocationUpdates();
     }
 
     @Override
@@ -360,7 +350,7 @@ public class ShoutActivity extends Activity {
             try {
                 String geolat = null;
                 String geolong = null;
-                Location location = mLocationListener.getLastKnownLocation();
+                Location location = ((Foursquared)getApplication()).getLastKnownLocation();
                 if (location != null) {
                     geolat = String.valueOf(location.getLatitude());
                     geolong = String.valueOf(location.getLongitude());
@@ -369,7 +359,7 @@ public class ShoutActivity extends Activity {
                 // Its a couple more lookups, but make sure the server knows what city we're in
                 // before we check-in
                 City city = Preferences.switchCity(((Foursquared)getApplication()).getFoursquare(),
-                        mLocationListener.getLastKnownLocation());
+                        location);
                 Editor editor = PreferenceManager.getDefaultSharedPreferences(ShoutActivity.this)
                         .edit();
                 Preferences.storeCity(editor, city);

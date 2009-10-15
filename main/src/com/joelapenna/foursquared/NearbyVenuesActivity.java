@@ -56,8 +56,6 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     private static final int MENU_SEARCH = 2;
     private static final int MENU_MYINFO = 3;
 
-    private BestLocationListener mLocationListener = new BestLocationListener();
-
     private SearchTask mSearchTask;
     private SearchHolder mSearchHolder = new SearchHolder();
 
@@ -102,7 +100,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     @Override
     public void onResume() {
         super.onResume();
-        mLocationListener.register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+        ((Foursquared)getApplication()).requestLocationUpdates();
         if (mSearchHolder.results == null && mSearchTask == null) {
             mSearchTask = (SearchTask)new SearchTask().execute();
         }
@@ -111,7 +109,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     @Override
     public void onPause() {
         super.onPause();
-        mLocationListener.unregister();
+        ((Foursquared)getApplication()).removeLocationUpdates();
     }
 
     @Override
@@ -308,7 +306,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         }
 
         public Group<Group<Venue>> search() throws FoursquareException, IOException {
-            Location location = mLocationListener.getLastKnownLocation();
+            Location location = ((Foursquared)getApplication()).getLastKnownLocation();
             Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
             String geolat;
             String geolong;
