@@ -6,7 +6,6 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.City;
-import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
@@ -17,6 +16,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -36,8 +36,6 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private SharedPreferences mPrefs;
-
-    private BestLocationListener mLocationListener = new BestLocationListener();
 
     private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
         @Override
@@ -65,13 +63,11 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     @Override
     public void onResume() {
         super.onResume();
-        mLocationListener.register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mLocationListener.unregister();
     }
 
     @Override
@@ -127,7 +123,11 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         protected City doInBackground(Void... params) {
             if (DEBUG) Log.d(TAG, "doInBackground()");
             try {
-                Location location = mLocationListener.getLastKnownLocation();
+                LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+                Criteria criteria = new Criteria();
+                criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+                String provider = locationManager.getBestProvider(criteria, true);
+                Location location = locationManager.getLastKnownLocation(provider);
                 if (location == null) {
                     if (DEBUG) Log.d(TAG, "unable to determine location");
                     return null;

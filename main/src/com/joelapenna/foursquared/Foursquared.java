@@ -47,7 +47,6 @@ public class Foursquared extends Application {
     private SharedPreferences mPrefs;
 
     private CityLocationListener mCityLocationListener;
-    private LocationManager mLocationManager;
 
     private MediaCardStateBroadcastReceiver mMediaCardStateBroadcastReceiver;
     private RemoteResourceManager mRemoteResourceManager;
@@ -79,16 +78,13 @@ public class Foursquared extends Application {
         mMediaCardStateBroadcastReceiver.register();
 
         mCityLocationListener = new CityLocationListener(mFoursquare, mPrefs);
-        mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                CityLocationListener.LOCATION_UPDATE_MIN_TIME,
-                CityLocationListener.LOCATION_UPDATE_MIN_DISTANCE, mCityLocationListener);
+        mCityLocationListener.register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
     }
 
     @Override
     public void onTerminate() {
         mRemoteResourceManager.shutdown();
-        mLocationManager.removeUpdates(mCityLocationListener);
+        mCityLocationListener.unregister();
     }
 
     public Foursquare getFoursquare() {
