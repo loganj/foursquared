@@ -6,16 +6,13 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.User;
-import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.preferences.Preferences;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;

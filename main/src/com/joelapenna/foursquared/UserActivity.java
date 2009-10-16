@@ -295,6 +295,7 @@ public class UserActivity extends Activity {
             displayCheckin(user);
         }
 
+        @SuppressWarnings("unchecked")
         private void displayBadges(User user) {
             if (user.getBadges() != null) {
                 mListAdapter.setGroup(user.getBadges());

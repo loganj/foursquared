@@ -103,6 +103,7 @@ public class VenueTipsActivity extends LoadableListActivity {
         return R.string.no_tips_be_the_first;
     }
 
+    @SuppressWarnings("unchecked")
     private Group<Group<Tip>> getVenueTipsAndTodos(Venue venue) {
         Group<Group<Tip>> tipsAndTodos = new Group<Group<Tip>>();
 
@@ -129,7 +130,7 @@ public class VenueTipsActivity extends LoadableListActivity {
 
         int groupCount = groups.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
-            Group<Tip> group = (Group<Tip>)groups.get(groupsIndex);
+            Group<Tip> group = groups.get(groupsIndex);
             TipListAdapter groupAdapter = new TipListAdapter(this);
             groupAdapter.setGroup(group);
             mainAdapter.addSection(group.getType(), groupAdapter);

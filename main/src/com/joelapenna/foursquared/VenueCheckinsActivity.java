@@ -180,6 +180,7 @@ public class VenueCheckinsActivity extends LoadableListActivity {
     private final class ParentDataObserver implements Observer {
         private boolean observed = false;
 
+        @SuppressWarnings("unchecked")
         @Override
         public void update(Observable observable, Object data) {
             if (DEBUG) Log.d(TAG, "Received update from: " + observable.toString());
