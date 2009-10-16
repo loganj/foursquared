@@ -67,7 +67,7 @@ BOOLEAN_STANZA = """\
 
 GROUP_STANZA = """\
             } else if ("%(name)s".equals(name)) {
-                %(top_node_name)s.set%(camel_name)s(new GroupParser(new %(camel_name_singular)s()).parse(parser));
+                %(top_node_name)s.set%(camel_name)s(new GroupParser(new %(sub_parser_camel_case)s()).parse(parser));
 """
 
 COMPLEX_STANZA = """\
@@ -88,19 +88,19 @@ def main():
 
 
 def GenerateClass(type_name, top_node_name, attributes):
+  """generate it.
+  type_name: the type of object the parser returns
+  top_node_name: the name of the object the parser returns.
+  per common.WalkNodsForAttributes
+  """
   stanzas = []
   for name in sorted(attributes):
     typ, children = attributes[name]
-    replacements = Replacements(top_node_name, name, typ)
+    replacements = Replacements(top_node_name, name, typ, children)
     if typ == common.BOOLEAN:
       stanzas.append(BOOLEAN_STANZA % replacements)
 
     elif typ == common.GROUP:
-      if children[0]:
-        replacements['camel_name_singular'] = children[0] + 'Parser'
-      else:
-        replacements['camel_name_singular'] = (
-            replacements['camel_name'][:-1] + 'Parser')
       stanzas.append(GROUP_STANZA % replacements)
 
     elif typ in common.COMPLEX:
@@ -112,12 +112,12 @@ def GenerateClass(type_name, top_node_name, attributes):
     # pop off the extranious } else for the first conditional stanza.
     stanzas[0] = stanzas[0].replace('} else ', '', 1)
 
-  replacements = Replacements(top_node_name, name, typ)
+  replacements = Replacements(top_node_name, name, typ, [None])
   replacements['stanzas'] = '\n'.join(stanzas).strip()
   print PARSER % replacements
 
 
-def Replacements(top_node_name, name, typ):
+def Replacements(top_node_name, name, typ, children):
   # CameCaseClassName
   type_name = ''.join([word.capitalize() for word in top_node_name.split('_')])
   # CamelCaseClassName
@@ -126,6 +126,11 @@ def Replacements(top_node_name, name, typ):
   attribute_name = camel_name.lower().capitalize()
   # mFieldName
   field_name = 'm' + camel_name
+
+  if children[0]:
+    sub_parser_camel_case = children[0] + 'Parser'
+  else:
+    sub_parser_camel_case = (camel_name[:-1] + 'Parser')
 
   return {
       'type_name': type_name,
@@ -136,7 +141,9 @@ def Replacements(top_node_name, name, typ):
       'attribute_name': attribute_name,
       'field_name': field_name,
       'typ': typ,
-      'timestamp': datetime.datetime.now()
+      'timestamp': datetime.datetime.now(),
+      'sub_parser_camel_case': sub_parser_camel_case,
+      'sub_type': children[0]
   }
 
 
