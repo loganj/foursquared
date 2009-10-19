@@ -73,7 +73,7 @@ public class BestLocationListener implements LocationListener {
             if (DEBUG) Log.d(TAG, "null last location, firing onBestLocationChanged");
             onBestLocationChanged(location);
             return;
-        } else if (location == null && mLastLocation != null) {
+        } else if (location == null) {
             if (DEBUG) Log.d(TAG, "updated location is null, doing nothing");
             return;
         }
