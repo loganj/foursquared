@@ -23,7 +23,8 @@ import android.widget.TextView;
  */
 public class VenueView extends RelativeLayout {
 
-    private boolean mCheckinButtonVisible;
+    private boolean mCheckinButtonVisible = false;
+    private boolean mCollapsible = false;
 
     private Button mCheckinButton;
     private TextView mVenueName;
@@ -38,6 +39,7 @@ public class VenueView extends RelativeLayout {
         super(context, attrs);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.VenueView, 0, 0);
         mCheckinButtonVisible = a.getBoolean(R.styleable.VenueView_checkinButton, false);
+        mCollapsible = a.getBoolean(R.styleable.VenueView_collapsible, false);
         a.recycle();
     }
 
@@ -67,9 +69,10 @@ public class VenueView extends RelativeLayout {
         if (TextUtils.isEmpty(line2)) {
             mVenueLocationLine2.setText(line2);
             mVenueLocationLine2.setVisibility(View.VISIBLE);
-        } else {
+        } else if (mCollapsible) {
             mVenueLocationLine2.setVisibility(View.GONE);
         }
+
         if (mCheckinButtonVisible) {
             mCheckinButton.setVisibility(View.VISIBLE);
         }

@@ -11,7 +11,8 @@
     android:id="@+id/venue"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    foursquared:checkinButton="false" />
+    foursquared:checkinButton="false"
+    foursquared:collapsible="true" />
 
   <CheckBox
     android:id="@+id/tellFriendsCheckBox"

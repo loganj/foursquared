@@ -38,6 +38,22 @@ public class Comparators {
         return sVenueDistanceComparator;
     }
 
+    public static Comparator<Venue> getVenueNameComparator() {
+        if (sVenueDistanceComparator == null) {
+            sVenueDistanceComparator = new Comparator<Venue>() {
+                /*
+                 * (non-Javadoc)
+                 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+                 */
+                @Override
+                public int compare(Venue object1, Venue object2) {
+                    return object1.getName().compareTo(object2.getName());
+                }
+            };
+        }
+        return sVenueDistanceComparator;
+    }
+
     public static Comparator<User> getUserRecencyComparator() {
         if (sUserRecencyComparator == null) {
             sUserRecencyComparator = new Comparator<User>() {

@@ -78,9 +78,7 @@ public class VenueListAdapter extends BaseVenueAdapter {
         holder.locationLine1.setText(venue.getAddress());
 
         String line2 = StringFormatters.getVenueLocationCrossStreetOrCity(venue);
-        if (line2 == null) {
-            holder.locationLine2.setVisibility(View.GONE);
-        } else {
+        if (line2 != null) {
             holder.locationLine2.setText(line2);
         }
         if (DEBUG) Log.d(TAG, "Returning: " + convertView);

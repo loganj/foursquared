@@ -6,7 +6,6 @@
       <name>Santa Fe Café 2</name>
       <distance>0.3</distance>
       <address>298 Divisadero St</address>
-      <crossstreet>at Page</crossstreet>
       <phone>8675309</phone>
       <twitter>stupidtwittername</twitter>
       <geolat>37.7722</geolat>
@@ -42,7 +41,6 @@
       <name>Santa Fe Café 3</name>
       <distance>2</distance>
       <address>298 Divisadero St</address>
-      <crossstreet>at Page</crossstreet>
       <phone>8675309</phone>
       <twitter>stupidtwittername</twitter>
       <geolat>37.7722</geolat>

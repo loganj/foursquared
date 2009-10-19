@@ -301,7 +301,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
             Group<Group<Venue>> groups = foursquare.venues(geolat, geolong, mSearchHolder.query,
                     radius, 30);
             for (int i = 0; i < groups.size(); i++) {
-                Collections.sort(groups.get(i), Comparators.getVenueDistanceComparator());
+                Collections.sort(groups.get(i), Comparators.getVenueNameComparator());
             }
             return groups;
         }

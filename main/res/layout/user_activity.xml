@@ -87,7 +87,8 @@
     android:layout_alignParentLeft="true"
     android:layout_below="@id/venueHeader"
 
-    foursquared:checkinButton="false" />
+    foursquared:checkinButton="false"
+    foursquared:collapsible="true" />
 
   <TextView
     android:id="@+id/badgesHeader"
