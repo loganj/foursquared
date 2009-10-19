@@ -99,11 +99,11 @@ public class BaseDiskCache implements DiskCache {
         // were corrupted during download.
         String[] children = mStorageDirectory.list();
         for (int i = 0; i < children.length; i++) {
-            if (children[i] != NOMEDIA) {
-                File child = new File(mStorageDirectory, children[i]);
-                if (child.length() <= MIN_FILE_SIZE_IN_BYTES) {
-                    child.delete();
-                }
+            File child = new File(mStorageDirectory, children[i]);
+            if (!child.equals(new File(mStorageDirectory, NOMEDIA))
+                    && child.length() <= MIN_FILE_SIZE_IN_BYTES) {
+                if (DEBUG) Log.d(TAG, "Deleting: " + child);
+                child.delete();
             }
         }
     }
@@ -112,8 +112,9 @@ public class BaseDiskCache implements DiskCache {
         // Clear the whole cache. Coolness.
         String[] children = mStorageDirectory.list();
         for (int i = 0; i < children.length; i++) {
-            if (children[i] != NOMEDIA) {
-                File child = new File(mStorageDirectory, children[i]);
+            File child = new File(mStorageDirectory, children[i]);
+            if (!child.equals(new File(mStorageDirectory, NOMEDIA))) {
+                if (DEBUG) Log.d(TAG, "Deleting: " + child);
                 child.delete();
             }
         }
