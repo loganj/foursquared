@@ -104,7 +104,7 @@ public class Foursquared extends Application {
     }
 
     public void removeLocationUpdates() {
-        mBestLocationListener.unregister();
+        mBestLocationListener.unregister((LocationManager)getSystemService(Context.LOCATION_SERVICE));
     }
 
     public Location getLastKnownLocation() {

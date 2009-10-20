@@ -9,20 +9,23 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.List;
 
 public class BestLocationListener implements LocationListener {
     private static final String TAG = "BestLocationListener";
-    private static final boolean DEBUG = FoursquaredSettings.DEBUG;
+    private static final boolean DEBUG = FoursquaredSettings.LOCATION_DEBUG;
 
     public static final long LOCATION_UPDATE_MIN_TIME = 0;
     public static final long LOCATION_UPDATE_MIN_DISTANCE = 0;
 
-    private static final long LOCATION_UPDATE_MAX_DELTA_THRESHOLD = 1000 * 60 * 5;
+    public static final long SLOW_LOCATION_UPDATE_MIN_TIME = 1000 * 60 * 5;
+    public static final long SLOW_LOCATION_UPDATE_MIN_DISTANCE = 50;
 
-    private WeakReference<LocationManager> mLocationManagerWeakReference;
+    public static final float REQUESTED_FIRST_SEARCH_ACCURACY_IN_METERS = 100.0f;
+    public static final int REQUESTED_FIRST_SEARCH_ACCURACY_IN_MS = 1000 * 60 * 5;
+
+    private static final long LOCATION_UPDATE_MAX_DELTA_THRESHOLD = 1000 * 60 * 5;
 
     private Location mLastLocation;
 
@@ -43,10 +46,7 @@ public class BestLocationListener implements LocationListener {
 
     @Override
     public void onProviderEnabled(String provider) {
-        LocationManager locationManager = mLocationManagerWeakReference.get();
-        if (locationManager != null) {
-            getBetterLocation(locationManager.getLastKnownLocation(provider));
-        }
+        // do nothing.
     }
 
     @Override
@@ -132,6 +132,19 @@ public class BestLocationListener implements LocationListener {
         }
     }
 
+    public boolean isAccurateEnough(Location location) {
+        if (location != null && location.hasAccuracy()
+                && location.getAccuracy() <= REQUESTED_FIRST_SEARCH_ACCURACY_IN_METERS) {
+            long locationUpdateDelta = new Date().getTime() - location.getTime();
+            if (locationUpdateDelta < REQUESTED_FIRST_SEARCH_ACCURACY_IN_MS) {
+                if (DEBUG) Log.d(TAG, "Location is accurate: " + location.toString());
+                return true;
+            }
+        }
+        if (DEBUG) Log.d(TAG, "Location is not accurate: " + String.valueOf(location));
+        return false;
+    }
+
     public void register(LocationManager locationManager) {
         this.register(locationManager, BestLocationListener.LOCATION_UPDATE_MIN_TIME,
                 BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE);
@@ -149,14 +162,10 @@ public class BestLocationListener implements LocationListener {
             locationManager.requestLocationUpdates(providerName, updateMinTime, updateMinDistance,
                     this);
         }
-        mLocationManagerWeakReference = new WeakReference<LocationManager>(locationManager);
     }
 
-    public void unregister() {
-        LocationManager locationManager = mLocationManagerWeakReference.get();
-        if (locationManager != null) {
-            if (DEBUG) Log.d(TAG, "Unregistering this location listener: " + this.toString());
-            locationManager.removeUpdates(this);
-        }
+    public void unregister(LocationManager locationManager) {
+        if (DEBUG) Log.d(TAG, "Unregistering this location listener: " + this.toString());
+        locationManager.removeUpdates(this);
     }
 }

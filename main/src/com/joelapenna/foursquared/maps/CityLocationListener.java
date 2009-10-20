@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class CityLocationListener implements LocationListener {
     public static final String TAG = "CityLocationListener";
-    public static final boolean DEBUG = FoursquaredSettings.DEBUG;
+    private static final boolean DEBUG = FoursquaredSettings.LOCATION_DEBUG;
 
     private static final long LOCATION_UPDATE_MIN_TIME = 1000 * 60 * 60; // Every hour
     private static final long LOCATION_UPDATE_MIN_DISTANCE = 1000 * 10; // 10 kilometers
