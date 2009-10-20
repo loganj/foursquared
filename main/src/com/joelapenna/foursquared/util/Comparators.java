@@ -47,7 +47,8 @@ public class Comparators {
                  */
                 @Override
                 public int compare(Venue object1, Venue object2) {
-                    return object1.getName().compareTo(object2.getName());
+                    return object1.getName().toLowerCase().compareTo(
+                            object2.getName().toLowerCase());
                 }
             };
         }
