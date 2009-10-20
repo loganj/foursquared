@@ -63,7 +63,7 @@ public class FriendsActivity extends LoadableListActivity {
     private ProgressBar mEmptyProgress;
     private CheckinListAdapter mListAdapter;
 
-    private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (DEBUG) Log.d(TAG, "onReceive: " + intent);
@@ -74,7 +74,7 @@ public class FriendsActivity extends LoadableListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
+        registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         searchResultsObservable = new SearchResultsObservable();
 
@@ -98,7 +98,7 @@ public class FriendsActivity extends LoadableListActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mLoggedInReceiver);
+        unregisterReceiver(mLoggedOutReceiver);
     }
 
     @Override

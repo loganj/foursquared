@@ -37,7 +37,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
 
     private SharedPreferences mPrefs;
 
-    private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (DEBUG) Log.d(TAG, "onReceive: " + intent);
@@ -48,7 +48,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
+        registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         this.addPreferencesFromResource(R.xml.preferences);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -57,7 +57,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mLoggedInReceiver);
+        unregisterReceiver(mLoggedOutReceiver);
     }
 
     @Override

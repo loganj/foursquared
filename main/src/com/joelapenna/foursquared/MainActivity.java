@@ -24,7 +24,7 @@ public class MainActivity extends TabActivity {
 
     private TabHost mTabHost;
 
-    private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (DEBUG) Log.d(TAG, "onReceive: " + intent);
@@ -37,7 +37,7 @@ public class MainActivity extends TabActivity {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.d(TAG, "onCreate()");
         setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL);
-        registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
+        registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         // Don't start the main activity if we don't have credentials
         if (!((Foursquared)getApplication()).getFoursquare().hasCredentials()) {
@@ -58,7 +58,7 @@ public class MainActivity extends TabActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mLoggedInReceiver);
+        unregisterReceiver(mLoggedOutReceiver);
     }
 
     @Override

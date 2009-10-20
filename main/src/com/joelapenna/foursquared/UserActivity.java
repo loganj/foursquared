@@ -68,7 +68,7 @@ public class UserActivity extends Activity {
     private VenueView mVenueView;
     private AsyncTask<Void, Void, User> mUserTask = null;
 
-    private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (DEBUG) Log.d(TAG, "onReceive: " + intent);
@@ -81,7 +81,7 @@ public class UserActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.user_activity);
-        registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
+        registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         mVenueView = (VenueView)findViewById(R.id.venue);
 
@@ -100,6 +100,12 @@ public class UserActivity extends Activity {
             User user = (User)getLastNonConfigurationInstance();
             setUser(user);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mLoggedOutReceiver);
     }
 
     @Override

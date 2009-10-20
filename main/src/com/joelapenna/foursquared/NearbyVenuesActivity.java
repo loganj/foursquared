@@ -64,7 +64,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     private ListView mListView;
     private SeparatedListAdapter mListAdapter;
 
-    private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (DEBUG) Log.d(TAG, "onReceive: " + intent);
@@ -76,7 +76,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL);
-        registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
+        registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         mListView = getListView();
         mListAdapter = new SeparatedListAdapter(this);
@@ -109,7 +109,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mLoggedInReceiver);
+        unregisterReceiver(mLoggedOutReceiver);
     }
 
     @Override

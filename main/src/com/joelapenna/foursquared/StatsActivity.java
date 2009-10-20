@@ -27,7 +27,7 @@ public class StatsActivity extends Activity {
     public static final String TAG = "StatsActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (DEBUG) Log.d(TAG, "onReceive: " + intent);
@@ -40,7 +40,7 @@ public class StatsActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_PROGRESS);
         setContentView(R.layout.stats_activity);
-        registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
+        registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         setTitle("Foursquare Scoreboard");
 
@@ -54,7 +54,7 @@ public class StatsActivity extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mLoggedInReceiver);
+        unregisterReceiver(mLoggedOutReceiver);
     }
 
     private void loadScoreboardUrl(WebView webView) {

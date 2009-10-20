@@ -75,7 +75,7 @@ public class AddVenueActivity extends Activity {
         }
     };
 
-    private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (DEBUG) Log.d(TAG, "onReceive: " + intent);
@@ -89,7 +89,7 @@ public class AddVenueActivity extends Activity {
         if (DEBUG) Log.d(TAG, "onCreate()");
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.add_venue_activity);
-        registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
+        registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         mAddVenueButton = (Button)findViewById(R.id.addVenueButton);
         mNameEditText = (EditText)findViewById(R.id.nameEditText);
@@ -144,7 +144,7 @@ public class AddVenueActivity extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mLoggedInReceiver);
+        unregisterReceiver(mLoggedOutReceiver);
     }
 
     @Override

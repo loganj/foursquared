@@ -74,7 +74,7 @@ public class SearchVenuesActivity extends TabActivity {
     private TabHost mTabHost;
     private SeparatedListAdapter mListAdapter;
 
-    private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (DEBUG) Log.d(TAG, "onReceive: " + intent);
@@ -89,7 +89,7 @@ public class SearchVenuesActivity extends TabActivity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.search_venues_activity);
         setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL);
-        registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
+        registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         searchResultsObservable = new SearchResultsObservable();
 
@@ -115,7 +115,7 @@ public class SearchVenuesActivity extends TabActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mLoggedInReceiver);
+        unregisterReceiver(mLoggedOutReceiver);
     }
 
     @Override

@@ -39,7 +39,7 @@ public class BrowsableActivity extends Activity {
         sUriMatcher.addURI("m.foursquare.com", "venue/#", URI_PATH_VENUE);
     }
 
-    private BroadcastReceiver mLoggedInReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (DEBUG) Log.d(TAG, "onReceive: " + intent);
@@ -51,7 +51,7 @@ public class BrowsableActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.d(TAG, "onCreate()");
-        registerReceiver(mLoggedInReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
+        registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         Uri uri = getIntent().getData();
         if (DEBUG) Log.d(TAG, "Intent Data: " + uri);
