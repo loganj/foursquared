@@ -232,7 +232,7 @@ public class LoginActivity extends Activity {
                     .getDefaultSharedPreferences(LoginActivity.this);
 
             if (loggedIn) {
-                String city = prefs.getString(Preferences.PREFERENCE_CITY_NAME, null);
+                String city = ((Foursquared)getApplication()).getUser().getCity().getName();
                 Toast.makeText(
                         //
                         LoginActivity.this, getString(R.string.login_welcome_toast, city),
