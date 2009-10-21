@@ -59,7 +59,7 @@ public class Foursquared extends Application {
 
     private String mVersion = "";
 
-    private AsyncTaskHandler mTaskHandler;
+    private TaskHandler mTaskHandler;
     private HandlerThread mTaskThread;
 
     private SharedPreferences mPrefs;
@@ -107,7 +107,7 @@ public class Foursquared extends Application {
         // asynchronously.
         mTaskThread = new HandlerThread(TAG + "-AsyncThread");
         mTaskThread.start();
-        mTaskHandler = new AsyncTaskHandler(mTaskThread.getLooper());
+        mTaskHandler = new TaskHandler(mTaskThread.getLooper());
 
         // Set up storage cache.
         loadResourceManagers();
@@ -116,10 +116,12 @@ public class Foursquared extends Application {
 
         // Log into Foursquare, if we can.
         if (loadFoursquare()) {
-
             // Watch for city changes.
             mCityLocationListener
                     .register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+
+            // Pull latest user info.
+            mTaskHandler.sendEmptyMessage(TaskHandler.MESSAGE_UPDATE_USER);
         }
     }
 
@@ -154,7 +156,7 @@ public class Foursquared extends Application {
 
     public void switchCity(Location location) {
         mTaskHandler.sendMessage( //
-                mTaskHandler.obtainMessage(AsyncTaskHandler.MESSAGE_SWITCH_CITY, location));
+                mTaskHandler.obtainMessage(TaskHandler.MESSAGE_SWITCH_CITY, location));
     }
 
     public Location getLastKnownLocation() {
@@ -247,11 +249,12 @@ public class Foursquared extends Application {
         }
     }
 
-    private class AsyncTaskHandler extends Handler {
+    private class TaskHandler extends Handler {
 
         private static final int MESSAGE_SWITCH_CITY = 0;
+        private static final int MESSAGE_UPDATE_USER = 1;
 
-        public AsyncTaskHandler(Looper looper) {
+        public TaskHandler(Looper looper) {
             super(looper);
         }
 
@@ -279,7 +282,23 @@ public class Foursquared extends Application {
                     }
                     return;
 
-                default:
+                case MESSAGE_UPDATE_USER:
+                    try {
+                        User user = getFoursquare().user(null, false, false);
+                        Editor editor = mPrefs.edit();
+                        Preferences.storeUser(editor, user);
+                        editor.commit();
+                    } catch (FoursquareError e) {
+                        if (DEBUG) Log.d(TAG, "FoursquareError", e);
+                        // TODO Auto-generated catch block
+                    } catch (FoursquareException e) {
+                        if (DEBUG) Log.d(TAG, "FoursquareException", e);
+                        // TODO Auto-generated catch block
+                    } catch (IOException e) {
+                        if (DEBUG) Log.d(TAG, "IOException", e);
+                        // TODO Auto-generated catch block
+                    }
+                    return;
             }
         }
     }
