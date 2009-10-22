@@ -6,6 +6,7 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.City;
+import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
@@ -27,6 +28,9 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.widget.Toast;
+
+import java.sql.Date;
+import java.util.List;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -123,11 +127,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         protected City doInBackground(Void... params) {
             if (DEBUG) Log.d(TAG, "doInBackground()");
             try {
-                LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-                Criteria criteria = new Criteria();
-                criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-                String provider = locationManager.getBestProvider(criteria, true);
-                Location location = locationManager.getLastKnownLocation(provider);
+                Location location = getMostRecentLocation();
                 if (location == null) {
                     if (DEBUG) Log.d(TAG, "unable to determine location");
                     return null;
@@ -149,6 +149,22 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                 mReason = e;
             }
             return null;
+        }
+
+        private Location getMostRecentLocation() {
+            LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+
+            Location bestLocation = null;
+            List<String> providers = locationManager.getProviders(false);
+            for (int i = 0; i < providers.size(); i++) {
+                Location location = locationManager.getLastKnownLocation(providers.get(i));
+                if (bestLocation == null
+                        || (location != null && bestLocation.getTime() <= location.getTime())) {
+                    bestLocation = location;
+                    continue;
+                }
+            }
+            return bestLocation;
         }
 
         @Override
