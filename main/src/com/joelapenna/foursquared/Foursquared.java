@@ -116,12 +116,7 @@ public class Foursquared extends Application {
 
         // Log into Foursquare, if we can.
         if (loadFoursquare()) {
-            // Watch for city changes.
-            mCityLocationListener
-                    .register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
-
-            // Pull latest user info.
-            mTaskHandler.sendEmptyMessage(TaskHandler.MESSAGE_UPDATE_USER);
+            onLoggedIn();
         }
     }
 
@@ -130,6 +125,14 @@ public class Foursquared extends Application {
         mRemoteResourceManager.shutdown();
         mCityLocationListener
                 .unregister((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+    }
+
+    public void onLoggedIn() {
+        // Watch for city changes.
+        mCityLocationListener.register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+
+        // Pull latest user info.
+        mTaskHandler.sendEmptyMessage(TaskHandler.MESSAGE_UPDATE_USER);
     }
 
     public Foursquare getFoursquare() {
