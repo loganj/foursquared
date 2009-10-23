@@ -7,7 +7,6 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
-import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
 import android.app.Activity;
@@ -15,13 +14,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -124,9 +121,7 @@ public class AddVenueActivity extends Activity {
         } else {
             new AddressLookupTask().execute();
         }
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mStateHolder.foursquareCity = Preferences.getUser(prefs).getCity();
+        mStateHolder.foursquareCity = ((Foursquared)getApplication()).getUser().getCity();
     }
 
     @Override
@@ -253,8 +248,7 @@ public class AddVenueActivity extends Activity {
         protected StateHolder doInBackground(Void... params) {
             StateHolder stateHolder = new StateHolder();
 
-            stateHolder.location =
-                ((Foursquared)getApplication()).getLastKnownLocation();
+            stateHolder.location = ((Foursquared)getApplication()).getLastKnownLocation();
             try {
                 if (DEBUG) Log.d(TAG, stateHolder.location.toString());
 

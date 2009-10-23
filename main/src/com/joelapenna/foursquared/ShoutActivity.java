@@ -6,6 +6,7 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.City;
+import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
@@ -235,10 +236,9 @@ public class ShoutActivity extends Activity {
                     }
                     WebView webView = (WebView)layout.findViewById(R.id.webView);
 
-                    String userId = PreferenceManager.getDefaultSharedPreferences(this).getString(
-                            Preferences.PREFERENCE_ID, "");
+                    User user = ((Foursquared)getApplication()).getUser();
                     webView.loadUrl(((Foursquared)getApplication()).getFoursquare()
-                            .checkinResultUrl(userId, mDialogStateHolder.checkinId));
+                            .checkinResultUrl(user.getId(), mDialogStateHolder.checkinId));
 
                 }
                 return dialogBuilder.create();
@@ -353,16 +353,7 @@ public class ShoutActivity extends Activity {
                     geolat = String.valueOf(location.getLatitude());
                     geolong = String.valueOf(location.getLongitude());
                 }
-
-                // Its a couple more lookups, but make sure the server knows what city we're in
-                // before we check-in
-                City city = Preferences.switchCity(((Foursquared)getApplication()).getFoursquare(),
-                        location);
-                Editor editor = PreferenceManager.getDefaultSharedPreferences(ShoutActivity.this)
-                        .edit();
-                Preferences.storeCity(editor, city);
-                editor.commit();
-
+                ((Foursquared)getApplication()).switchCity(location);
                 return ((Foursquared)getApplication()).getFoursquare().checkin(venueId, null,
                         geolat, geolong, mShout, isPrivate, mTellTwitter);
             } catch (Exception e) {

@@ -6,6 +6,10 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsException;
+import com.joelapenna.foursquare.error.FoursquareError;
+import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.types.City;
+import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.maps.CityLocationListener;
 import com.joelapenna.foursquared.preferences.Preferences;
@@ -19,16 +23,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
+
+import java.io.IOException;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -46,21 +57,41 @@ public class Foursquared extends Application {
     private static final int MENU_PREFERENCES = -1;
     private static final int MENU_GROUP_SYSTEM = 20;
 
-    private SharedPreferences mPrefs;
+    private String mVersion = "";
 
-    private CityLocationListener mCityLocationListener;
-    private BestLocationListener mBestLocationListener = new BestLocationListener();
+    private TaskHandler mTaskHandler;
+    private HandlerThread mTaskThread;
+
+    private SharedPreferences mPrefs;
 
     private MediaCardStateBroadcastReceiver mMediaCardStateBroadcastReceiver;
     private RemoteResourceManager mRemoteResourceManager;
 
     private Foursquare mFoursquare;
 
+    private BestLocationListener mBestLocationListener = new BestLocationListener();
+    private CityLocationListener mCityLocationListener = new CityLocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            switchCity(location);
+        }
+    };
+
     @Override
     public void onCreate() {
         Log.i(TAG, "Using Debug Server:\t" + FoursquaredSettings.USE_DEBUG_SERVER);
         Log.i(TAG, "Using Dumpcatcher:\t" + FoursquaredSettings.USE_DUMPCATCHER);
         Log.i(TAG, "Using Debug Log:\t" + DEBUG);
+
+        // Get a version number for the app.
+        try {
+            PackageManager pm = getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(PACKAGE_NAME, 0);
+            mVersion = PACKAGE_NAME + " " + String.valueOf(pi.versionCode);
+        } catch (NameNotFoundException e) {
+            if (DEBUG) Log.d(TAG, "NameNotFoundException", e);
+            throw new RuntimeException(e);
+        }
 
         // Setup Prefs (to load dumpcatcher)
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -72,26 +103,44 @@ public class Foursquared extends Application {
             DumpcatcherHelper.sendUsage("Started");
         }
 
-        // Log into Foursquare, if we can.
-        loadFoursquare();
+        // Sometimes we want the application to do some work on behalf of the Activity. Lets do that
+        // asynchronously.
+        mTaskThread = new HandlerThread(TAG + "-AsyncThread");
+        mTaskThread.start();
+        mTaskHandler = new TaskHandler(mTaskThread.getLooper());
 
         // Set up storage cache.
         loadResourceManagers();
         mMediaCardStateBroadcastReceiver = new MediaCardStateBroadcastReceiver();
         mMediaCardStateBroadcastReceiver.register();
 
-        mCityLocationListener = new CityLocationListener(mFoursquare, mPrefs);
-        mCityLocationListener.register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+        // Log into Foursquare, if we can.
+        if (loadFoursquare()) {
+            onLoggedIn();
+        }
     }
 
     @Override
     public void onTerminate() {
         mRemoteResourceManager.shutdown();
-        mCityLocationListener.unregister();
+        mCityLocationListener
+                .unregister((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+    }
+
+    public void onLoggedIn() {
+        // Watch for city changes.
+        mCityLocationListener.register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+
+        // Pull latest user info.
+        mTaskHandler.sendEmptyMessage(TaskHandler.MESSAGE_UPDATE_USER);
     }
 
     public Foursquare getFoursquare() {
         return mFoursquare;
+    }
+
+    public User getUser() {
+        return Preferences.getUser(mPrefs);
     }
 
     public RemoteResourceManager getRemoteResourceManager() {
@@ -104,26 +153,22 @@ public class Foursquared extends Application {
     }
 
     public void removeLocationUpdates() {
-        mBestLocationListener.unregister((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+        mBestLocationListener
+                .unregister((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+    }
+
+    public void switchCity(Location location) {
+        mTaskHandler.sendMessage( //
+                mTaskHandler.obtainMessage(TaskHandler.MESSAGE_SWITCH_CITY, location));
     }
 
     public Location getLastKnownLocation() {
         return mBestLocationListener.getLastKnownLocation();
     }
 
-    private void loadFoursquare() {
-        String version;
-        try {
-            PackageManager pm = getPackageManager();
-            PackageInfo pi = pm.getPackageInfo(PACKAGE_NAME, 0);
-            version = PACKAGE_NAME + " " + String.valueOf(pi.versionCode);
-        } catch (NameNotFoundException e) {
-            if (DEBUG) Log.d(TAG, "NameNotFoundException", e);
-            throw new RuntimeException(e);
-        }
-
+    private boolean loadFoursquare() {
         // Try logging in and setting up foursquare oauth, then user credentials.
-        mFoursquare = new Foursquare(FoursquaredSettings.USE_DEBUG_SERVER, version);
+        mFoursquare = new Foursquare(FoursquaredSettings.USE_DEBUG_SERVER, mVersion);
         mFoursquare.setOAuthConsumerCredentials( //
                 getString(R.string.oauth_consumer_key), //
                 getString(R.string.oauth_consumer_secret));
@@ -143,10 +188,12 @@ public class Foursquared extends Application {
             }
             mFoursquare.setCredentials(phoneNumber, password);
             mFoursquare.setOAuthToken(oauthToken, oauthTokenSecret);
+            return true;
         } catch (FoursquareCredentialsException e) {
             // We're not doing anything because hopefully our related activities
             // will handle the failure. This is simply convenience.
         }
+        return false;
     }
 
     private void loadResourceManagers() {
@@ -174,7 +221,7 @@ public class Foursquared extends Application {
      *
      * @author Joe LaPenna (joe@joelapenna.com)
      */
-    public class MediaCardStateBroadcastReceiver extends BroadcastReceiver {
+    private class MediaCardStateBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (DEBUG) Log.d(TAG, "Media state changed, reloading resource managers:"
@@ -203,6 +250,59 @@ public class Foursquared extends Application {
             intentFilter.addDataScheme("file");
             registerReceiver(mMediaCardStateBroadcastReceiver, intentFilter);
         }
+    }
 
+    private class TaskHandler extends Handler {
+
+        private static final int MESSAGE_SWITCH_CITY = 0;
+        private static final int MESSAGE_UPDATE_USER = 1;
+
+        public TaskHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (DEBUG) Log.d(TAG, "handleMessage: " + msg.what);
+
+            switch (msg.what) {
+                case MESSAGE_SWITCH_CITY:
+                    try {
+                        City city = Preferences.switchCity(mFoursquare, (Location)msg.obj);
+                        Editor editor = mPrefs.edit();
+                        Preferences.storeCity(editor, city);
+                        editor.commit();
+                    } catch (FoursquareError e) {
+                        if (DEBUG) Log.d(TAG, "FoursquareError", e);
+                        // TODO Auto-generated catch block
+                    } catch (FoursquareException e) {
+                        if (DEBUG) Log.d(TAG, "FoursquareException", e);
+                        // TODO Auto-generated catch block
+                    } catch (IOException e) {
+                        if (DEBUG) Log.d(TAG, "IOException", e);
+                        // TODO Auto-generated catch block
+                    }
+                    return;
+
+                case MESSAGE_UPDATE_USER:
+                    try {
+                        User user = getFoursquare().user(null, false, false);
+                        Editor editor = mPrefs.edit();
+                        Preferences.storeUser(editor, user);
+                        editor.commit();
+                    } catch (FoursquareError e) {
+                        if (DEBUG) Log.d(TAG, "FoursquareError", e);
+                        // TODO Auto-generated catch block
+                    } catch (FoursquareException e) {
+                        if (DEBUG) Log.d(TAG, "FoursquareException", e);
+                        // TODO Auto-generated catch block
+                    } catch (IOException e) {
+                        if (DEBUG) Log.d(TAG, "IOException", e);
+                        // TODO Auto-generated catch block
+                    }
+                    return;
+            }
+        }
     }
 }

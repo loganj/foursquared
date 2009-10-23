@@ -30,8 +30,7 @@ public class Preferences {
     private static final String TAG = "Preferences";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    public static final String PREFERENCE_LOGIN = "phone";
-    public static final String PREFERENCE_PASSWORD = "password";
+    // Visible Preferences (sync with preferences.xml)
     public static final String PREFERENCE_TWITTER_CHECKIN = "twitter_checkin";
     public static final String PREFERENCE_SHARE_CHECKIN = "share_checkin";
     public static final String PREFERENCE_IMMEDIATE_CHECKIN = "immediate_checkin";
@@ -39,23 +38,24 @@ public class Preferences {
     // Hacks for preference activity extra UI elements.
     public static final String PREFERENCE_FRIEND_REQUESTS = "friend_requests";
     public static final String PREFERENCE_FRIEND_ADD = "friend_add";
+    public static final String PREFERENCE_CITY_NAME = "city_name";
     public static final String PREFERENCE_LOGOUT = "logout";
 
-    // Not-in-XML preferences
-    public static final String PREFERENCE_CITY_ID = "city_id";
-    public static final String PREFERENCE_CITY_GEOLAT = "city_geolat";
-    public static final String PREFERENCE_CITY_GEOLONG = "city_geolong";
-    public static final String PREFERENCE_CITY_NAME = "city_name";
-    public static final String PREFERENCE_EMAIL = "email";
-    public static final String PREFERENCE_FIRST = "first_name";
-    public static final String PREFERENCE_GENDER = "gender";
-    public static final String PREFERENCE_ID = "id";
-    public static final String PREFERENCE_LAST = "last_name";
-    public static final String PREFERENCE_PHOTO = "photo";
-
-    // Not-in-XML preferences for oAuth
+    // Credentials related preferences
+    public static final String PREFERENCE_LOGIN = "phone";
+    public static final String PREFERENCE_PASSWORD = "password";
     public static final String PREFERENCE_OAUTH_TOKEN = "oauth_token";
     public static final String PREFERENCE_OAUTH_TOKEN_SECRET = "oauth_token_secret";
+
+    // Extra info for getUser
+    private static final String PREFERENCE_CITY_ID = "city_id";
+    private static final String PREFERENCE_CITY_GEOLAT = "city_geolat";
+    private static final String PREFERENCE_CITY_GEOLONG = "city_geolong";
+    private static final String PREFERENCE_FIRST = "first_name";
+    private static final String PREFERENCE_GENDER = "gender";
+    private static final String PREFERENCE_ID = "id";
+    private static final String PREFERENCE_LAST = "last_name";
+    private static final String PREFERENCE_PHOTO = "photo";
 
     // Not-in-XML preferences for dumpcatcher
     public static final String PREFERENCE_DUMPCATCHER_CLIENT = "dumpcatcher_client";
@@ -134,10 +134,10 @@ public class Preferences {
 
         User user = new User();
         user.setId(prefs.getString(PREFERENCE_ID, null));
-        user.setFirstname(prefs.getString(PREFERENCE_ID, null));
-        user.setLastname(prefs.getString(PREFERENCE_ID, null));
-        user.setGender(prefs.getString(PREFERENCE_ID, null));
-        user.setPhoto(prefs.getString(PREFERENCE_ID, null));
+        user.setFirstname(prefs.getString(PREFERENCE_FIRST, null));
+        user.setLastname(prefs.getString(PREFERENCE_LAST, null));
+        user.setGender(prefs.getString(PREFERENCE_GENDER, null));
+        user.setPhoto(prefs.getString(PREFERENCE_PHOTO, null));
         user.setCity(city);
         user.setSettings(settings);
 

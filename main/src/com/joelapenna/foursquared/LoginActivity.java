@@ -227,12 +227,14 @@ public class LoginActivity extends Activity {
         @Override
         protected void onPostExecute(Boolean loggedIn) {
             if (DEBUG) Log.d(TAG, "onPostExecute(): " + loggedIn);
+            Foursquared foursquared = (Foursquared)getApplication();
 
             SharedPreferences prefs = PreferenceManager
                     .getDefaultSharedPreferences(LoginActivity.this);
 
             if (loggedIn) {
-                String city = prefs.getString(Preferences.PREFERENCE_CITY_NAME, null);
+                foursquared.onLoggedIn();
+                String city = foursquared.getUser().getCity().getName();
                 Toast.makeText(
                         //
                         LoginActivity.this, getString(R.string.login_welcome_toast, city),
@@ -247,7 +249,7 @@ public class LoginActivity extends Activity {
                 if (DEBUG) Log.d(TAG, "Reason for login failure: ", mReason);
 
                 prefs.edit().clear().commit();
-                ((Foursquared)getApplication()).getFoursquare().clearAllCredentials();
+                foursquared.getFoursquare().clearAllCredentials();
                 // XXX I don't know if you can call setResult multiple times. If you can't and the
                 // first login result fails, then even a subsequent result OK will end up firing a
                 // CANCELED result
