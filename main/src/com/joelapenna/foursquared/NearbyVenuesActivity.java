@@ -123,7 +123,9 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         mSearchLocationListener
                 .register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
 
-        mSearchHandler.sendEmptyMessageDelayed(SearchHandler.MESSAGE_SEARCH, DELAY_TIME_IN_MS);
+        if (mSearchHolder.results == null) {
+            mSearchHandler.sendEmptyMessageDelayed(SearchHandler.MESSAGE_SEARCH, DELAY_TIME_IN_MS);
+        }
     }
 
     @Override
@@ -303,6 +305,8 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         public static final int MESSAGE_STOP_SEARCH = 1;
         public static final int MESSAGE_SEARCH = 2;
 
+        private boolean mFirstSearchCompleted = false;
+
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -321,7 +325,10 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                     return;
 
                 case MESSAGE_SEARCH:
-                    if (mSearchTask == null || AsyncTask.Status.FINISHED == mSearchTask.getStatus()) {
+                    if (mSearchTask == null
+                            || AsyncTask.Status.FINISHED.equals(mSearchTask.getStatus())
+                            && !mFirstSearchCompleted) {
+                        mFirstSearchCompleted = true;
                         mSearchTask = (SearchTask)new SearchTask().execute();
                     }
                     return;
