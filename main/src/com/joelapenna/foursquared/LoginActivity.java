@@ -4,7 +4,7 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.types.City;
+import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.preferences.Preferences;
 
@@ -13,6 +13,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -190,37 +191,27 @@ public class LoginActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
             if (DEBUG) Log.d(TAG, "doInBackground()");
+            Editor editor = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this)
+                    .edit();
+            Foursquared foursquared = (Foursquared)getApplication();
+            Location location = foursquared.getLastKnownLocation();
+            Foursquare foursquare = foursquared.getFoursquare();
             try {
                 String phoneNumber = mPhoneUsernameEditText.getText().toString();
                 String password = mPasswordEditText.getText().toString();
 
-                SharedPreferences prefs = PreferenceManager
-                        .getDefaultSharedPreferences(LoginActivity.this);
-                Editor editor = prefs.edit();
+                User user = Preferences.loginUser(foursquare, phoneNumber, password, location,
+                        editor);
 
-                User user = Preferences.loginUser(((Foursquared)getApplication()).getFoursquare(),
-                        phoneNumber, password, editor);
-                if (user == null) {
-                    return false;
+                if (user != null && !TextUtils.isEmpty(user.getId())) {
+                    return true;
                 }
-
-                // Use a location to switch the user's foursquare location.
-                Foursquared foursquared = (Foursquared)getApplication();
-                City city = Preferences.switchCity(foursquared.getFoursquare(), //
-                        foursquared.getLastKnownLocation());
-
-                // Fallback to the foursquare server's understanding of the user's city.
-                if (city == null) {
-                    city = user.getCity();
-                }
-                Preferences.storeCity(editor, city);
-
-                editor.commit();
-                return true;
 
             } catch (Exception e) {
                 mReason = e;
             }
+
+            Preferences.logoutUser(foursquare, editor);
             return false;
         }
 
@@ -229,11 +220,8 @@ public class LoginActivity extends Activity {
             if (DEBUG) Log.d(TAG, "onPostExecute(): " + loggedIn);
             Foursquared foursquared = (Foursquared)getApplication();
 
-            SharedPreferences prefs = PreferenceManager
-                    .getDefaultSharedPreferences(LoginActivity.this);
-
             if (loggedIn) {
-                foursquared.onLoggedIn();
+                sendBroadcast(new Intent(Foursquared.INTENT_ACTION_LOGGED_IN));
                 String city = foursquared.getUser().getCity().getName();
                 Toast.makeText(
                         //
@@ -243,17 +231,11 @@ public class LoginActivity extends Activity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
+
             } else {
+                sendBroadcast(new Intent(Foursquared.INTENT_ACTION_LOGGED_OUT));
                 Toast.makeText(LoginActivity.this, R.string.login_failed_login_toast,
                         Toast.LENGTH_LONG).show();
-                if (DEBUG) Log.d(TAG, "Reason for login failure: ", mReason);
-
-                prefs.edit().clear().commit();
-                foursquared.getFoursquare().clearAllCredentials();
-                // XXX I don't know if you can call setResult multiple times. If you can't and the
-                // first login result fails, then even a subsequent result OK will end up firing a
-                // CANCELED result
-                setResult(Activity.RESULT_CANCELED);
             }
             dismissProgressDialog();
         }

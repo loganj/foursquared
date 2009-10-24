@@ -151,22 +151,13 @@ public class FoursquareHttpApiV1 {
      */
     public Credentials authExchange(String phone, String password) throws FoursquareException,
             FoursquareCredentialsException, FoursquareError, IOException {
-        // XXX Don't do a real lookup.
-        if (false) {
-            if (mHttpApi.hasOAuthTokenWithSecret()) {
-                throw new IllegalStateException(
-                        "Cannot do authExchange with OAuthToken already set");
-            }
-            HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_AUTHEXCHANGE), //
-                    new BasicNameValuePair("fs_username", phone), //
-                    new BasicNameValuePair("fs_password", password));
-            return (Credentials)mHttpApi.doHttpRequest(httpPost, new CredentialsParser());
+        if (mHttpApi.hasOAuthTokenWithSecret()) {
+            throw new IllegalStateException("Cannot do authExchange with OAuthToken already set");
         }
-        // Instead return a hack.
-        Credentials credentials = new Credentials();
-        credentials.setOauthToken("XXX");
-        credentials.setOauthTokenSecret("XXX");
-        return credentials;
+        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_AUTHEXCHANGE), //
+                new BasicNameValuePair("fs_username", phone), //
+                new BasicNameValuePair("fs_password", password));
+        return (Credentials)mHttpApi.doHttpRequest(httpPost, new CredentialsParser());
     }
 
     /*
@@ -216,8 +207,8 @@ public class FoursquareHttpApiV1 {
      * /cities
      */
     @SuppressWarnings("unchecked")
-    Group<City> cities() throws FoursquareException, FoursquareCredentialsException, FoursquareError,
-            IOException {
+    Group<City> cities() throws FoursquareException, FoursquareCredentialsException,
+            FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_CITIES));
         return (Group<City>)mHttpApi.doHttpRequest(httpGet, new GroupParser(new CityParser()));
     }
@@ -295,8 +286,8 @@ public class FoursquareHttpApiV1 {
                 new BasicNameValuePair("q", query), //
                 new BasicNameValuePair("r", String.valueOf(radius)), //
                 new BasicNameValuePair("l", String.valueOf(limit)));
-        return (Group<Group<Venue>>)mHttpApi.doHttpRequest(httpGet, new GroupParser(new GroupParser(
-                new VenueParser())));
+        return (Group<Group<Venue>>)mHttpApi.doHttpRequest(httpGet, new GroupParser(
+                new GroupParser(new VenueParser())));
     }
 
     /**

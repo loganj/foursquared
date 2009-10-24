@@ -51,20 +51,19 @@ public class Foursquared extends Application {
     public static final String PACKAGE_NAME = "com.joelapenna.foursquared";
 
     public static final String INTENT_ACTION_LOGGED_OUT = "com.joelapenna.foursquared.intent.action.LOGGED_OUT";
+    public static final String INTENT_ACTION_LOGGED_IN = "com.joelapenna.foursquared.intent.action.LOGGED_IN";
     public static final String EXTRA_VENUE_ID = "com.joelapenna.foursquared.VENUE_ID";
 
     // Common menu items
     private static final int MENU_PREFERENCES = -1;
     private static final int MENU_GROUP_SYSTEM = 20;
 
-    private String mVersion = "";
+    private String mVersion = null;
 
     private TaskHandler mTaskHandler;
     private HandlerThread mTaskThread;
 
     private SharedPreferences mPrefs;
-
-    private MediaCardStateBroadcastReceiver mMediaCardStateBroadcastReceiver;
     private RemoteResourceManager mRemoteResourceManager;
 
     private Foursquare mFoursquare;
@@ -111,28 +110,15 @@ public class Foursquared extends Application {
 
         // Set up storage cache.
         loadResourceManagers();
-        mMediaCardStateBroadcastReceiver = new MediaCardStateBroadcastReceiver();
-        mMediaCardStateBroadcastReceiver.register();
+
+        // Catch sdcard state changes
+        new MediaCardStateBroadcastReceiver().register();
+
+        // Catch logins or logouts.
+        new LoggedInOutBroadcastReceiver().register();
 
         // Log into Foursquare, if we can.
-        if (loadFoursquare()) {
-            onLoggedIn();
-        }
-    }
-
-    @Override
-    public void onTerminate() {
-        mRemoteResourceManager.shutdown();
-        mCityLocationListener
-                .unregister((LocationManager)getSystemService(Context.LOCATION_SERVICE));
-    }
-
-    public void onLoggedIn() {
-        // Watch for city changes.
-        mCityLocationListener.register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
-
-        // Pull latest user info.
-        mTaskHandler.sendEmptyMessage(TaskHandler.MESSAGE_UPDATE_USER);
+        loadFoursquare();
     }
 
     public Foursquare getFoursquare() {
@@ -166,34 +152,19 @@ public class Foursquared extends Application {
         return mBestLocationListener.getLastKnownLocation();
     }
 
-    private boolean loadFoursquare() {
+    private void loadFoursquare() {
         // Try logging in and setting up foursquare oauth, then user credentials.
         mFoursquare = new Foursquare(FoursquaredSettings.USE_DEBUG_SERVER, mVersion);
-        mFoursquare.setOAuthConsumerCredentials( //
-                getString(R.string.oauth_consumer_key), //
-                getString(R.string.oauth_consumer_secret));
-        try {
-            if (FoursquaredSettings.DEBUG) Log.d(TAG, "loadCredentials()");
-            String phoneNumber = mPrefs.getString(Preferences.PREFERENCE_LOGIN, null);
-            String password = mPrefs.getString(Preferences.PREFERENCE_PASSWORD, null);
 
-            String oauthToken = mPrefs.getString(Preferences.PREFERENCE_OAUTH_TOKEN, null);
-            String oauthTokenSecret = mPrefs.getString(Preferences.PREFERENCE_OAUTH_TOKEN_SECRET,
-                    null);
-
-            if (TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(password)
-                    || TextUtils.isEmpty(oauthToken) || TextUtils.isEmpty(oauthTokenSecret)) {
-                throw new FoursquareCredentialsException(
-                        "Phone number or password not set in preferences.");
-            }
-            mFoursquare.setCredentials(phoneNumber, password);
-            mFoursquare.setOAuthToken(oauthToken, oauthTokenSecret);
-            return true;
-        } catch (FoursquareCredentialsException e) {
-            // We're not doing anything because hopefully our related activities
-            // will handle the failure. This is simply convenience.
+        if (FoursquaredSettings.DEBUG) Log.d(TAG, "loadCredentials()");
+        String phoneNumber = mPrefs.getString(Preferences.PREFERENCE_LOGIN, null);
+        String password = mPrefs.getString(Preferences.PREFERENCE_PASSWORD, null);
+        mFoursquare.setCredentials(phoneNumber, password);
+        if (mFoursquare.hasLoginAndPassword()) {
+            sendBroadcast(new Intent(INTENT_ACTION_LOGGED_IN));
+        } else {
+            sendBroadcast(new Intent(INTENT_ACTION_LOGGED_OUT));
         }
-        return false;
     }
 
     private void loadResourceManagers() {
@@ -248,8 +219,38 @@ public class Foursquared extends Application {
             // intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_STARTED);
             // intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
             intentFilter.addDataScheme("file");
-            registerReceiver(mMediaCardStateBroadcastReceiver, intentFilter);
+            registerReceiver(this, intentFilter);
         }
+    }
+
+    private class LoggedInOutBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (INTENT_ACTION_LOGGED_IN.equals(intent.getAction())) {
+                // Watch for city changes.
+                mCityLocationListener
+                        .register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+
+                // Pull latest user info.
+                mTaskHandler.sendEmptyMessage(TaskHandler.MESSAGE_UPDATE_USER);
+
+            } else if (INTENT_ACTION_LOGGED_OUT.equals(intent.getAction())) {
+                mCityLocationListener
+                        .unregister((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+            }
+
+        }
+
+        public void register() {
+            // Register our media card broadcast receiver so we can enable/disable the cache as
+            // appropriate.
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(INTENT_ACTION_LOGGED_IN);
+            intentFilter.addAction(INTENT_ACTION_LOGGED_OUT);
+            registerReceiver(this, intentFilter);
+        }
+
     }
 
     private class TaskHandler extends Handler {

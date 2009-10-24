@@ -5,7 +5,6 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.CheckinResult;
-import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
@@ -25,7 +24,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
-import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;

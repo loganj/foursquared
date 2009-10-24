@@ -9,7 +9,6 @@ import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
-import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Settings;
 import com.joelapenna.foursquare.types.User;
@@ -82,44 +81,30 @@ public class Preferences {
      * @throws FoursquareException
      * @throws IOException
      */
-    public static User loginUser(Foursquare foursquare, String login, String password, Editor editor)
-            throws FoursquareCredentialsException, FoursquareException, IOException {
-        if (Preferences.DEBUG) Log.d(Preferences.TAG, "Trying to log in.");
+    public static User loginUser(Foursquare foursquare, String login, String password,
+            Location location, Editor editor) throws FoursquareCredentialsException,
+            FoursquareException, IOException {
+        if (DEBUG) Log.d(Preferences.TAG, "Trying to log in.");
 
         foursquare.setCredentials(login, password);
-        foursquare.setOAuthToken(null, null);
-
-        Credentials credentials = foursquare.authExchange();
-        if (credentials == null) {
-            return null;
-        }
-        foursquare.setOAuthToken(credentials.getOauthToken(), credentials.getOauthTokenSecret());
-        User user = foursquare.user(null, false, false);
-
         storeLoginAndPassword(editor, login, password);
-        storeAuthExchangeCredentials(editor, credentials);
+        editor.commit();
+
+        City city = switchCity(foursquare, location);
+        storeCity(editor, city);
+        editor.commit();
+
+        User user = foursquare.user(null, false, false);
         storeUser(editor, user);
+        editor.commit();
+
         return user;
     }
 
-    public static City switchCity(Foursquare foursquare, Location location)
-            throws FoursquareException, FoursquareError, IOException {
-        City finalCity = null;
-
-        if (location != null) {
-            City newCity = foursquare.checkCity(//
-                    String.valueOf(location.getLatitude()), //
-                    String.valueOf(location.getLongitude()));
-
-            if (newCity != null) {
-                Data response = foursquare.switchCity(newCity.getId());
-                if (response.status()) {
-                    finalCity = newCity;
-                }
-            }
-
-        }
-        return finalCity;
+    public static boolean logoutUser(Foursquare foursquare, Editor editor) {
+        if (DEBUG) Log.d(Preferences.TAG, "Trying to log out.");
+        foursquare.clearAllCredentials();
+        return editor.clear().commit();
     }
 
     public static User getUser(SharedPreferences prefs) {
@@ -144,18 +129,24 @@ public class Preferences {
         return user;
     }
 
-    public static void storeAuthExchangeCredentials(final Editor editor, Credentials credentials)
-            throws FoursquareCredentialsException {
-        if (credentials != null && credentials.getOauthToken() != null
-                && credentials.getOauthTokenSecret() != null) {
-            if (DEBUG) Log.d(TAG, "Storing oauth token");
-            editor.putString(PREFERENCE_OAUTH_TOKEN, credentials.getOauthToken());
-            editor.putString(PREFERENCE_OAUTH_TOKEN_SECRET, credentials.getOauthTokenSecret());
-            if (DEBUG) Log.d(TAG, "Commiting authexchange token: "
-                    + String.valueOf(editor.commit()));
-        } else {
-            throw new FoursquareCredentialsException("Unable to auth exchange.");
+    public static City switchCity(Foursquare foursquare, Location location)
+            throws FoursquareException, FoursquareError, IOException {
+        City finalCity = null;
+
+        if (location != null) {
+            City newCity = foursquare.checkCity(//
+                    String.valueOf(location.getLatitude()), //
+                    String.valueOf(location.getLongitude()));
+
+            if (newCity != null) {
+                Data response = foursquare.switchCity(newCity.getId());
+                if (response.status()) {
+                    finalCity = newCity;
+                }
+            }
+
         }
+        return finalCity;
     }
 
     public static void storeLoginAndPassword(final Editor editor, String login, String password) {

@@ -40,7 +40,7 @@ public class MainActivity extends TabActivity {
         registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         // Don't start the main activity if we don't have credentials
-        if (!((Foursquared)getApplication()).getFoursquare().hasCredentials()) {
+        if (!((Foursquared)getApplication()).getFoursquare().hasLoginAndPassword()) {
             setVisible(false);
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setAction(Intent.ACTION_MAIN);
@@ -59,14 +59,6 @@ public class MainActivity extends TabActivity {
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mLoggedOutReceiver);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            startActivity(new Intent(this, MainActivity.class));
-        }
-        finish();
     }
 
     private void initTabHost() {

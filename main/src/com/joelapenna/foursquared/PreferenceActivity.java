@@ -6,7 +6,6 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.City;
-import com.joelapenna.foursquared.maps.BestLocationListener;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
@@ -17,7 +16,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -29,7 +27,6 @@ import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.sql.Date;
 import java.util.List;
 
 /**
