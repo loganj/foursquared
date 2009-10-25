@@ -11,6 +11,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
 import com.joelapenna.foursquared.util.Comparators;
+import com.joelapenna.foursquared.util.DumpcatcherHelper;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
@@ -419,6 +420,7 @@ public class SearchVenuesActivity extends TabActivity {
             }
             Group<Group<Venue>> groups = foursquare.venues(geolat, geolong, mSearchHolder.query,
                     radius, 30);
+            DumpcatcherHelper.sendLocation("/venues#SearchVenuesActivity", location);
             for (int i = 0; i < groups.size(); i++) {
                 Collections.sort(groups.get(i), Comparators.getVenueDistanceComparator());
             }

@@ -13,6 +13,7 @@ import com.joelapenna.foursquared.R;
 import org.apache.http.HttpResponse;
 
 import android.content.res.Resources;
+import android.location.Location;
 import android.util.Log;
 
 import java.lang.Thread.UncaughtExceptionHandler;
@@ -84,6 +85,10 @@ public class DumpcatcherHelper {
 
     public static void sendUsage(final String usage) {
         sendCrash(usage, null, null, "usage");
+    }
+
+    public static void sendLocation(String purpose, final Location location) {
+        sendCrash(purpose, location.toString(), null, "location");
     }
 
     private static final class DefaultUnhandledExceptionHandler extends
