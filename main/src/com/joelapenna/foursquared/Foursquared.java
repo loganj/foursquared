@@ -5,7 +5,6 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
@@ -35,7 +34,6 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 

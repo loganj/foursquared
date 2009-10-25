@@ -163,6 +163,9 @@
   <string
     name="call">Call</string>
 
+  <string
+    name="specialdeals_appwidget_label">Foursquare Special Deal</string>
+
   -->
 
 </resources>
