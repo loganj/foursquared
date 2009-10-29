@@ -48,8 +48,7 @@ public class HttpApiWithOAuth extends HttpApi {
             Parser<? extends FoursquareType> parser) throws FoursquareCredentialsException,
             FoursquareParseException, FoursquareException, IOException {
         if (DEBUG) Log.d(TAG, "doHttpRequest: " + httpRequest.getURI());
-        // XXX
-        if (false) {
+        if (mConsumer != null) {
             try {
                 if (DEBUG) Log.d(TAG, "Signing request: " + httpRequest.getURI());
                 if (DEBUG) Log.d(TAG, "Consumer: " + mConsumer.getConsumerKey() + ", "

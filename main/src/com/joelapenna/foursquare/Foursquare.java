@@ -70,9 +70,13 @@ public class Foursquare {
     }
 
     @V1
-    @Classic
     public boolean hasCredentials() {
         return mFoursquareV1.hasCredentials() && mFoursquareV1.hasOAuthTokenWithSecret();
+    }
+
+    @V1
+    public boolean hasLoginAndPassword() {
+        return mFoursquareV1.hasCredentials();
     }
 
     @V1
