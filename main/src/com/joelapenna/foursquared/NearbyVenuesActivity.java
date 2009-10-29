@@ -116,10 +116,6 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     public void onResume() {
         super.onResume();
         if (DEBUG) Log.d(TAG, "onResume");
-        // Prime location with master listener's info.
-        mSearchLocationListener.getBetterLocation(((Foursquared)getApplication())
-                .getLastKnownLocation());
-        // Register listener
         mSearchLocationListener
                 .register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
 

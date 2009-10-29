@@ -23,7 +23,7 @@ public class BestLocationListener implements LocationListener {
     public static final long SLOW_LOCATION_UPDATE_MIN_DISTANCE = 50;
 
     public static final float REQUESTED_FIRST_SEARCH_ACCURACY_IN_METERS = 100.0f;
-    public static final int REQUESTED_FIRST_SEARCH_ACCURACY_IN_MS = 1000 * 60 * 5;
+    public static final int REQUESTED_FIRST_SEARCH_MAX_DELTA_THRESHOLD = 1000 * 60 * 5;
 
     private static final long LOCATION_UPDATE_MAX_DELTA_THRESHOLD = 1000 * 60 * 5;
 
@@ -36,7 +36,7 @@ public class BestLocationListener implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         if (DEBUG) Log.d(TAG, "onLocationChanged: " + location);
-        getBetterLocation(location);
+        updateLocation(location);
     }
 
     @Override
@@ -54,25 +54,27 @@ public class BestLocationListener implements LocationListener {
         // do nothing.
     }
 
-    public void onBestLocationChanged(Location location) {
+    synchronized public void onBestLocationChanged(Location location) {
+        if (DEBUG) Log.d(TAG, "onBestLocationChanged: " + location);
         mLastLocation = location;
     }
 
-    public Location getLastKnownLocation() {
+    synchronized public Location getLastKnownLocation() {
         return mLastLocation;
     }
 
-    synchronized public void getBetterLocation(Location location) {
+    private void updateLocation(Location location) {
         if (DEBUG) {
-            Log.d(TAG, "getBetterLocation: Old: " + mLastLocation);
-            Log.d(TAG, "getBetterLocation: New: " + location);
+            Log.d(TAG, "updateLocation: Old: " + mLastLocation);
+            Log.d(TAG, "updateLocation: New: " + location);
         }
 
         // Cases where we only have one or the other.
         if (location != null && mLastLocation == null) {
-            if (DEBUG) Log.d(TAG, "null last location, firing onBestLocationChanged");
+            if (DEBUG) Log.d(TAG, "updateLocation: Null last location");
             onBestLocationChanged(location);
             return;
+
         } else if (location == null) {
             if (DEBUG) Log.d(TAG, "updated location is null, doing nothing");
             return;
@@ -84,8 +86,15 @@ public class BestLocationListener implements LocationListener {
         boolean locationIsInTimeThreshold = locationUpdateDelta <= LOCATION_UPDATE_MAX_DELTA_THRESHOLD;
         boolean lastLocationIsInTimeThreshold = lastLocationUpdateDelta <= LOCATION_UPDATE_MAX_DELTA_THRESHOLD;
 
-        boolean timeComparable = locationIsInTimeThreshold && lastLocationIsInTimeThreshold;
-        boolean locationIsMostRecent = (locationUpdateDelta < lastLocationUpdateDelta);
+        boolean locationIsMostRecent = false;
+        // If we have only one threshold-able time, that one is more recent.
+        if (locationIsInTimeThreshold && !lastLocationIsInTimeThreshold) {
+            locationIsMostRecent = true;
+        } else if (!locationIsInTimeThreshold && lastLocationIsInTimeThreshold) {
+            locationIsMostRecent = false;
+        } else {
+            locationIsMostRecent = locationUpdateDelta < lastLocationUpdateDelta;
+        }
 
         boolean accuracyComparable = location.hasAccuracy() || mLastLocation.hasAccuracy();
         boolean locationIsMostAccurate = false;
@@ -97,38 +106,27 @@ public class BestLocationListener implements LocationListener {
                 locationIsMostAccurate = false;
             } else {
                 // If we have both accuracies, do a real comparison.
-                locationIsMostAccurate = location.getAccuracy() < mLastLocation.getAccuracy();
+                locationIsMostAccurate = location.getAccuracy() <= mLastLocation.getAccuracy();
             }
         }
 
         if (DEBUG) {
-            Log.d(TAG, "timeComparable:\t\t\t" + timeComparable);
+            Log.d(TAG, "locationIsMostRecent:\t\t\t" + locationIsMostRecent);
             Log.d(TAG, "locationUpdateDelta:\t\t\t" + locationUpdateDelta);
             Log.d(TAG, "lastLocationUpdateDelta:\t\t" + lastLocationUpdateDelta);
-            Log.d(TAG, "locationIsMostRecent:\t\t\t" + locationIsMostRecent);
-            Log.d(TAG, "accuracyComparable:\t\t\t" + accuracyComparable);
-            Log.d(TAG, "locationIsMoreAccurate:\t\t" + locationIsMostAccurate);
             Log.d(TAG, "locationIsInTimeThreshold:\t\t" + locationIsInTimeThreshold);
             Log.d(TAG, "lastLocationIsInTimeThreshold:\t" + lastLocationIsInTimeThreshold);
+
+            Log.d(TAG, "accuracyComparable:\t\t\t" + accuracyComparable);
+            Log.d(TAG, "locationIsMostAccurate:\t\t" + locationIsMostAccurate);
         }
 
-        // Favor accuracy over time, unless times are too old.
-
-        if (accuracyComparable && timeComparable) {
-            if (locationIsMostAccurate && locationIsMostRecent) {
-                if (DEBUG) Log.d(TAG, "+Accuracy, +Time, using new: " + location);
-                onBestLocationChanged(location);
-
-            } else if (locationIsMostAccurate && !locationIsMostRecent) {
-                if (DEBUG) Log.d(TAG, "+Accuracy, -Time, using new: " + location);
-                onBestLocationChanged(location);
-            }
-
-        } else if (accuracyComparable) {
-            if (locationIsMostAccurate) {
-                if (DEBUG) Log.d(TAG, "+Accuracy, +Time, using new: " + location);
-                onBestLocationChanged(location);
-            }
+        // Update location if its more accurate and w/in time threshold or if the old location is
+        // too old and this update is newer.
+        if (accuracyComparable && locationIsMostAccurate && locationIsInTimeThreshold) {
+            onBestLocationChanged(location);
+        } else if (locationIsInTimeThreshold && !lastLocationIsInTimeThreshold) {
+            onBestLocationChanged(location);
         }
     }
 
@@ -136,7 +134,7 @@ public class BestLocationListener implements LocationListener {
         if (location != null && location.hasAccuracy()
                 && location.getAccuracy() <= REQUESTED_FIRST_SEARCH_ACCURACY_IN_METERS) {
             long locationUpdateDelta = new Date().getTime() - location.getTime();
-            if (locationUpdateDelta < REQUESTED_FIRST_SEARCH_ACCURACY_IN_MS) {
+            if (locationUpdateDelta < REQUESTED_FIRST_SEARCH_MAX_DELTA_THRESHOLD) {
                 if (DEBUG) Log.d(TAG, "Location is accurate: " + location.toString());
                 return true;
             }
@@ -157,7 +155,7 @@ public class BestLocationListener implements LocationListener {
         for (int i = 0; i < providersCount; i++) {
             String providerName = providers.get(i);
             if (locationManager.isProviderEnabled(providerName)) {
-                getBetterLocation(locationManager.getLastKnownLocation(providerName));
+                updateLocation(locationManager.getLastKnownLocation(providerName));
             }
             locationManager.requestLocationUpdates(providerName, updateMinTime, updateMinDistance,
                     this);
