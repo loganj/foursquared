@@ -359,8 +359,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         public void onBestLocationChanged(Location location) {
             super.onBestLocationChanged(location);
             // Fire a search if we haven't done so yet.
-            boolean accurateEnough = isAccurateEnough(getLastKnownLocation());
-            if (!mRequestedFirstSearch && accurateEnough) {
+            if (!mRequestedFirstSearch && isAccurateEnough(location)) {
                 mRequestedFirstSearch = true;
                 mSearchHandler.removeMessages(SearchHandler.MESSAGE_SEARCH);
                 mSearchHandler.sendEmptyMessage(SearchHandler.MESSAGE_SEARCH);

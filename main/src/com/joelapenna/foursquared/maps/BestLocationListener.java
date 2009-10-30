@@ -60,6 +60,7 @@ public class BestLocationListener implements LocationListener {
     }
 
     synchronized public Location getLastKnownLocation() {
+        if (DEBUG) Log.d(TAG, "getLastKnownLocation; " + mLastLocation);
         return mLastLocation;
     }
 
@@ -85,16 +86,7 @@ public class BestLocationListener implements LocationListener {
         long lastLocationUpdateDelta = now - mLastLocation.getTime();
         boolean locationIsInTimeThreshold = locationUpdateDelta <= LOCATION_UPDATE_MAX_DELTA_THRESHOLD;
         boolean lastLocationIsInTimeThreshold = lastLocationUpdateDelta <= LOCATION_UPDATE_MAX_DELTA_THRESHOLD;
-
-        boolean locationIsMostRecent = false;
-        // If we have only one threshold-able time, that one is more recent.
-        if (locationIsInTimeThreshold && !lastLocationIsInTimeThreshold) {
-            locationIsMostRecent = true;
-        } else if (!locationIsInTimeThreshold && lastLocationIsInTimeThreshold) {
-            locationIsMostRecent = false;
-        } else {
-            locationIsMostRecent = locationUpdateDelta < lastLocationUpdateDelta;
-        }
+        boolean locationIsMostRecent = locationUpdateDelta <= lastLocationUpdateDelta;
 
         boolean accuracyComparable = location.hasAccuracy() || mLastLocation.hasAccuracy();
         boolean locationIsMostAccurate = false;
@@ -111,13 +103,13 @@ public class BestLocationListener implements LocationListener {
         }
 
         if (DEBUG) {
-            Log.d(TAG, "locationIsMostRecent:\t\t\t" + locationIsMostRecent);
-            Log.d(TAG, "locationUpdateDelta:\t\t\t" + locationUpdateDelta);
+            Log.d(TAG, "locationIsMostRecent:\t\t" + locationIsMostRecent);
+            Log.d(TAG, "locationUpdateDelta:\t\t" + locationUpdateDelta);
             Log.d(TAG, "lastLocationUpdateDelta:\t\t" + lastLocationUpdateDelta);
-            Log.d(TAG, "locationIsInTimeThreshold:\t\t" + locationIsInTimeThreshold);
+            Log.d(TAG, "locationIsInTimeThreshold:\t" + locationIsInTimeThreshold);
             Log.d(TAG, "lastLocationIsInTimeThreshold:\t" + lastLocationIsInTimeThreshold);
 
-            Log.d(TAG, "accuracyComparable:\t\t\t" + accuracyComparable);
+            Log.d(TAG, "accuracyComparable:\t\t" + accuracyComparable);
             Log.d(TAG, "locationIsMostAccurate:\t\t" + locationIsMostAccurate);
         }
 
