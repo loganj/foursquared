@@ -280,7 +280,7 @@ public class FriendsActivity extends LoadableListActivity {
         Group<Checkin> search() throws FoursquareException, IOException {
             Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
             Group<Checkin> checkins;
-            checkins = foursquare.checkins(null);
+            checkins = foursquare.checkins(null, null);
             Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
             return checkins;
         }

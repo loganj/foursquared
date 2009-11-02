@@ -125,17 +125,16 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         protected City doInBackground(Void... params) {
             if (DEBUG) Log.d(TAG, "doInBackground()");
             try {
-                Location location = getMostRecentLocation();
+                Foursquared foursquared = (Foursquared)getApplication();
+                Location location = foursquared.getLastKnownLocation();
                 if (location == null) {
                     if (DEBUG) Log.d(TAG, "unable to determine location");
                     return null;
                 }
 
-                Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
-
+                Foursquare foursquare = foursquared.getFoursquare();
                 City newCity = foursquare.checkCity(//
-                        String.valueOf(location.getLatitude()), //
-                        String.valueOf(location.getLongitude()));
+                        Foursquare.Location.fromAndroidLocation(location));
                 foursquare.switchCity(newCity.getId());
 
                 Editor editor = mPrefs.edit();
@@ -147,22 +146,6 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                 mReason = e;
             }
             return null;
-        }
-
-        private Location getMostRecentLocation() {
-            LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-
-            Location bestLocation = null;
-            List<String> providers = locationManager.getProviders(false);
-            for (int i = 0; i < providers.size(); i++) {
-                Location location = locationManager.getLastKnownLocation(providers.get(i));
-                if (bestLocation == null
-                        || (location != null && bestLocation.getTime() <= location.getTime())) {
-                    bestLocation = location;
-                    continue;
-                }
-            }
-            return bestLocation;
         }
 
         @Override

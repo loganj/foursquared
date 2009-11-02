@@ -97,27 +97,29 @@ public class Foursquare {
 
     @V1
     public Venue addVenue(String name, String address, String crossstreet, String city,
-            String state, String zip, String cityid, String phone) throws FoursquareException,
-            FoursquareError, IOException {
+            String state, String zip, String cityid, String phone, Location location)
+            throws FoursquareException, FoursquareError, IOException {
         return mFoursquareV1.addvenue(name, address, crossstreet, city, state, zip, cityid, phone);
     }
 
     @V1
-    public CheckinResult checkin(String venueId, String venueName, String geolat, String geolong,
-            String shout, boolean isPrivate, boolean twitter) throws FoursquareException,
-            FoursquareError, IOException {
-        return mFoursquareV1.checkin(venueId, venueName, geolat, geolong, shout, isPrivate, twitter);
+    public CheckinResult checkin(String venueId, String venueName, Location location, String shout,
+            boolean isPrivate, boolean twitter) throws FoursquareException, FoursquareError,
+            IOException {
+        return mFoursquareV1.checkin(venueId, venueName, location.mGeolat, location.mGeolong,
+                shout, isPrivate, twitter);
     }
 
     @V1
-    public Group<Checkin> checkins(String cityId) throws FoursquareException, FoursquareError, IOException {
+    public Group<Checkin> checkins(String cityId, Location location) throws FoursquareException,
+            FoursquareError, IOException {
         return mFoursquareV1.checkins(cityId);
     }
 
     @V1
-    public City checkCity(String geolat, String geolong) throws FoursquareException,
-            FoursquareError, IOException {
-        return mFoursquareV1.checkcity(geolat, geolong);
+    public City checkCity(Location location) throws FoursquareException, FoursquareError,
+            IOException {
+        return mFoursquareV1.checkcity(location.mGeolat, location.mGeolong);
     }
 
     @V1
@@ -126,9 +128,9 @@ public class Foursquare {
     }
 
     @V1
-    public Group<Group<Tip>> tips(String geolat, String geolong, int limit) throws FoursquareException,
+    public Group<Group<Tip>> tips(Location location, int limit) throws FoursquareException,
             FoursquareError, IOException {
-        return mFoursquareV1.tips(geolat, geolong, limit);
+        return mFoursquareV1.tips(location.mGeolat, location.mGeolong, limit);
     }
 
     @V1
@@ -143,9 +145,9 @@ public class Foursquare {
     }
 
     @V1
-    public Group<Group<Venue>> venues(String geolat, String geolong, String query, int radius, int limit)
+    public Group<Group<Venue>> venues(Location location, String query, int radius, int limit)
             throws FoursquareException, FoursquareError, IOException {
-        return mFoursquareV1.venues(geolat, geolong, query, radius, limit);
+        return mFoursquareV1.venues(location.mGeolat, location.mGeolong, query, radius, limit);
     }
 
     @Classic
@@ -170,6 +172,50 @@ public class Foursquare {
      * This api was reverse engineered from the iPhone app.
      */
     @interface Classic {
+    }
+
+    public static class Location {
+        String mGeolat = null;
+        String mGeolong = null;
+        String mGeohacc = null;
+        String mGeovacc = null;
+        String mGeoalt = null;
+
+        public Location(String geolat, String geolong, String geohacc, String geovacc, String geoalt) {
+            mGeolat = geolat;
+            mGeolong = geolong;
+            mGeohacc = geohacc;
+            mGeovacc = geovacc;
+            mGeoalt = geovacc;
+        }
+
+        public Location(String geolat, String geolong) {
+            this(geolat, geolong, null, null, null);
+        }
+
+        public static final Location fromAndroidLocation(android.location.Location location) {
+            String geolat = null;
+            if (location.getLatitude() != 0.0) {
+                geolat = String.valueOf(location.getLatitude());
+            }
+
+            String geolong = null;
+            if (location.getLongitude() != 0.0) {
+                geolong = String.valueOf(location.getLongitude());
+            }
+
+            String geohacc = null;
+            if (location.hasAccuracy()) {
+                geohacc = String.valueOf(location.getAccuracy());
+            }
+
+            String geoalt = null;
+            if (location.hasAccuracy()) {
+                geoalt = String.valueOf(location.hasAltitude());
+            }
+
+            return new Location(geolat, geolong, geohacc, null, geoalt);
+        }
     }
 
 }

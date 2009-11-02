@@ -72,6 +72,7 @@ public class Foursquared extends Application {
         @Override
         public void onLocationChanged(Location location) {
             switchCity(location);
+            mBestLocationListener.onLocationChanged(location);
         }
     };
 

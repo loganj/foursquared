@@ -4,6 +4,7 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
@@ -204,7 +205,7 @@ public class AddVenueActivity extends Activity {
                         mStateEditText.getText().toString(), //
                         mZipEditText.getText().toString(), //
                         mStateHolder.foursquareCity.getId(), //
-                        mPhoneEditText.getText().toString());
+                        mPhoneEditText.getText().toString(), null);
             } catch (Exception e) {
                 if (DEBUG) Log.d(TAG, "Exception doing add venue", e);
                 mReason = e;
@@ -253,8 +254,7 @@ public class AddVenueActivity extends Activity {
                 if (DEBUG) Log.d(TAG, stateHolder.location.toString());
 
                 stateHolder.foursquareCity = ((Foursquared)getApplication()).getFoursquare()
-                        .checkCity(String.valueOf(stateHolder.location.getLatitude()),
-                                String.valueOf(stateHolder.location.getLongitude()));
+                        .checkCity(Foursquare.Location.fromAndroidLocation(stateHolder.location));
 
                 Geocoder geocoder = new Geocoder(AddVenueActivity.this);
                 stateHolder.geocodedAddress = geocoder.getFromLocation(

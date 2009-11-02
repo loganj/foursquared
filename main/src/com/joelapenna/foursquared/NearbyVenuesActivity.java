@@ -277,6 +277,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 radius = 1;
             } else {
                 if (DEBUG) Log.d(TAG, "SearchTask.search(): searching with location: " + location);
+                DumpcatcherHelper.sendLocation("/venues#NearbyVenuesActivity", location);
                 geolat = String.valueOf(location.getLatitude());
                 geolong = String.valueOf(location.getLongitude());
 
@@ -287,9 +288,8 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 }
             }
             if (DEBUG) Log.d(TAG, "SearchTask.search(): executing: " + geolat + ", " + geolong);
-            Group<Group<Venue>> groups = foursquare.venues(geolat, geolong, mSearchHolder.query,
-                    radius, 30);
-            DumpcatcherHelper.sendLocation("/venues#NearbyVenuesActivity", location);
+            Group<Group<Venue>> groups = foursquare.venues(
+                    new Foursquare.Location(geolat, geolong), mSearchHolder.query, radius, 30);
             for (int i = 0; i < groups.size(); i++) {
                 Collections.sort(groups.get(i), Comparators.getVenueNameComparator());
             }

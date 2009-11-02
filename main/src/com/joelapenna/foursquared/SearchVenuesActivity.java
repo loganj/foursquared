@@ -410,6 +410,7 @@ public class SearchVenuesActivity extends TabActivity {
                 radius = 1;
             } else {
                 if (DEBUG) Log.d(TAG, "Searching with location: " + location);
+                DumpcatcherHelper.sendLocation("/venues#SearchVenuesActivity", location);
                 geolat = String.valueOf(location.getLatitude());
                 geolong = String.valueOf(location.getLongitude());
                 if (location.hasAccuracy()) {
@@ -418,9 +419,9 @@ public class SearchVenuesActivity extends TabActivity {
                     radius = 1;
                 }
             }
-            Group<Group<Venue>> groups = foursquare.venues(geolat, geolong, mSearchHolder.query,
-                    radius, 30);
-            DumpcatcherHelper.sendLocation("/venues#SearchVenuesActivity", location);
+            Group<Group<Venue>> groups = foursquare.venues(
+                    new Foursquare.Location(geolat, geolong),
+                    mSearchHolder.query, radius, 30);
             for (int i = 0; i < groups.size(); i++) {
                 Collections.sort(groups.get(i), Comparators.getVenueDistanceComparator());
             }

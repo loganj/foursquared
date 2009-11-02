@@ -135,9 +135,7 @@ public class Preferences {
         City finalCity = null;
 
         if (location != null) {
-            City newCity = foursquare.checkCity(//
-                    String.valueOf(location.getLatitude()), //
-                    String.valueOf(location.getLongitude()));
+            City newCity = foursquare.checkCity(Foursquare.Location.fromAndroidLocation(location));
 
             if (newCity != null) {
                 Data response = foursquare.switchCity(newCity.getId());
