@@ -41,6 +41,7 @@ public class MainActivity extends TabActivity {
 
         // Don't start the main activity if we don't have credentials
         if (!((Foursquared)getApplication()).getFoursquare().hasLoginAndPassword()) {
+            if (DEBUG) Log.d(TAG, "No login and password.");
             setVisible(false);
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setAction(Intent.ACTION_MAIN);
@@ -50,6 +51,7 @@ public class MainActivity extends TabActivity {
             finish();
         }
 
+        if (DEBUG) Log.d(TAG, "Setting up main activity layout.");
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.main_activity);
         initTabHost();

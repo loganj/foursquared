@@ -77,7 +77,8 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         String key = preference.getKey();
         if (Preferences.PREFERENCE_LOGOUT.equals(key)) {
             mPrefs.edit().clear().commit();
-            ((Foursquared)getApplication()).getFoursquare().clearAllCredentials();
+            // TODO: If we re-implement oAuth, we'll have to call clearAllCrendentials here.
+            ((Foursquared)getApplication()).getFoursquare().setCredentials(null, null);
 
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setAction(Intent.ACTION_MAIN);

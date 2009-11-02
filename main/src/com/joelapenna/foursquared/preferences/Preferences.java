@@ -103,7 +103,8 @@ public class Preferences {
 
     public static boolean logoutUser(Foursquare foursquare, Editor editor) {
         if (DEBUG) Log.d(Preferences.TAG, "Trying to log out.");
-        foursquare.clearAllCredentials();
+        // TODO: If we re-implement oAuth, we'll have to call clearAllCrendentials here.
+        foursquare.setCredentials(null, null);
         return editor.clear().commit();
     }
 
