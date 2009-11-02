@@ -38,6 +38,7 @@ import android.util.Log;
 import android.view.Menu;
 
 import java.io.IOException;
+import java.util.Observer;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -136,9 +137,19 @@ public class Foursquared extends Application {
         return mBestLocationListener;
     }
 
+    public BestLocationListener requestLocationUpdates(Observer observer) {
+        mBestLocationListener.addObserver(observer);
+        return this.requestLocationUpdates();
+    }
+
     public void removeLocationUpdates() {
         mBestLocationListener
                 .unregister((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+    }
+
+    public void removeLocationUpdates(Observer observer) {
+        mBestLocationListener.deleteObserver(observer);
+        this.removeLocationUpdates();
     }
 
     public void switchCity(Location location) {

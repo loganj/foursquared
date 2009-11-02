@@ -59,7 +59,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     private SearchTask mSearchTask;
     private SearchHolder mSearchHolder = new SearchHolder();
     private SearchHandler mSearchHandler = new SearchHandler();
-    private SearchLocationListener mSearchLocationListener = new SearchLocationListener();
+    private SearchLocationObserver mSearchLocationObserver = new SearchLocationObserver();
     private SearchResultsObservable mSearchResultsObservable = new SearchResultsObservable();
 
     private ListView mListView;
@@ -117,8 +117,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     public void onResume() {
         super.onResume();
         if (DEBUG) Log.d(TAG, "onResume");
-        mSearchLocationListener
-                .register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+        ((Foursquared)getApplication()).requestLocationUpdates(mSearchLocationObserver);
 
         if (mSearchHolder.results == null) {
             mSearchHandler.sendEmptyMessageDelayed(SearchHandler.MESSAGE_SEARCH, DELAY_TIME_IN_MS);
@@ -128,8 +127,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     @Override
     public void onPause() {
         super.onPause();
-        mSearchLocationListener
-                .unregister((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+        ((Foursquared)getApplication()).removeLocationUpdates(mSearchLocationObserver);
     }
 
     @Override
@@ -262,8 +260,10 @@ public class NearbyVenuesActivity extends LoadableListActivity {
 
         public Group<Group<Venue>> search() throws FoursquareException, IOException {
             if (DEBUG) Log.d(TAG, "SearchTask.search()");
-            Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
-            Location location = mSearchLocationListener.getLastKnownLocation();
+            Foursquared foursquared = (Foursquared)getApplication();
+            Foursquare foursquare = foursquared.getFoursquare();
+            Location location = foursquared.getLastKnownLocation();
+
             String geolat;
             String geolong;
             int radius;
@@ -353,15 +353,16 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         }
     }
 
-    private class SearchLocationListener extends BestLocationListener {
+    private class SearchLocationObserver implements Observer {
 
         private boolean mRequestedFirstSearch = false;
 
         @Override
-        public void onBestLocationChanged(Location location) {
-            super.onBestLocationChanged(location);
+        public void update(Observable observable, Object data) {
+            Location location = (Location)data;
             // Fire a search if we haven't done so yet.
-            if (!mRequestedFirstSearch && isAccurateEnough(location)) {
+            if (!mRequestedFirstSearch
+                    && ((BestLocationListener)observable).isAccurateEnough(location)) {
                 mRequestedFirstSearch = true;
                 mSearchHandler.removeMessages(SearchHandler.MESSAGE_SEARCH);
                 mSearchHandler.sendEmptyMessage(SearchHandler.MESSAGE_SEARCH);

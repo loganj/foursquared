@@ -11,8 +11,9 @@ import android.util.Log;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Observable;
 
-public class BestLocationListener implements LocationListener {
+public class BestLocationListener extends Observable implements LocationListener {
     private static final String TAG = "BestLocationListener";
     private static final boolean DEBUG = FoursquaredSettings.LOCATION_DEBUG;
 
@@ -57,6 +58,8 @@ public class BestLocationListener implements LocationListener {
     synchronized public void onBestLocationChanged(Location location) {
         if (DEBUG) Log.d(TAG, "onBestLocationChanged: " + location);
         mLastLocation = location;
+        setChanged();
+        notifyObservers(location);
     }
 
     synchronized public Location getLastKnownLocation() {
