@@ -10,7 +10,7 @@ import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.app.LoadableListActivity;
-import com.joelapenna.foursquared.maps.BestLocationListener;
+import com.joelapenna.foursquared.location.BestLocationListener;
 import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.util.DumpcatcherHelper;
 import com.joelapenna.foursquared.util.NotificationsUtil;

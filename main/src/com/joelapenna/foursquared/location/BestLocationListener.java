@@ -1,5 +1,5 @@
 
-package com.joelapenna.foursquared.maps;
+package com.joelapenna.foursquared.location;
 
 import com.joelapenna.foursquared.FoursquaredSettings;
 
