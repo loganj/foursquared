@@ -89,8 +89,10 @@ public class UserActivity extends Activity {
 
         if (getIntent().hasExtra(EXTRA_USER)) {
             mUserId = getIntent().getExtras().getString(EXTRA_USER);
+            if (DEBUG) Log.d(TAG, "Found User Extra: " + mUserId);
         } else {
             mUserId = null;
+            if (DEBUG) Log.d(TAG, "No User Extra, defaulting to self");
         }
 
         mUserObservable.addObserver(mUserObserver);
