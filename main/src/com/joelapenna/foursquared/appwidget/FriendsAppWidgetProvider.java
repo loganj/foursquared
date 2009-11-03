@@ -33,7 +33,7 @@ import java.io.IOException;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class SpecialDealsAppWidgetProvider extends AppWidgetProvider {
+public class FriendsAppWidgetProvider extends AppWidgetProvider {
     private static final String TAG = "SpecialDealsAppWidgetProvider";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
@@ -60,7 +60,7 @@ public class SpecialDealsAppWidgetProvider extends AppWidgetProvider {
 
         // Get the layout for the App Widget and attach an on-click listener to the button
         RemoteViews views = new RemoteViews(context.getPackageName(),
-                R.layout.specialdeals_appwidget);
+                R.layout.friends_appwidget);
 
         if (DEBUG) Log.d(TAG, "adding header intent: " + String.valueOf(appWidgetId));
         Intent baseIntent = new Intent(context, MainActivity.class);

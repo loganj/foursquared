@@ -247,15 +247,15 @@
     </activity>
 
     <receiver
-      android:name=".appwidget.SpecialDealsAppWidgetProvider"
-      android:label="@string/specialdeals_appwidget_3x3_label">
+      android:name=".appwidget.FriendsAppWidgetProvider"
+      android:label="@string/friends_appwidget_3x3_label">
       <intent-filter>
         <action
           android:name="android.appwidget.action.APPWIDGET_UPDATE" />
       </intent-filter>
       <meta-data
         android:name="android.appwidget.provider"
-        android:resource="@xml/specialdeals_appwidget_3x3" />
+        android:resource="@xml/friends_appwidget_3x3" />
     </receiver>
 
     <service

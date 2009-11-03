@@ -167,6 +167,6 @@
     name="call">Call</string>
 
   <string
-    name="specialdeals_appwidget_3x3_label">Foursquare Friends (3x3)</string>
+    name="friends_appwidget_3x3_label">Foursquare Friends (3x3)</string>
 
 </resources>

@@ -10,7 +10,7 @@ import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.FoursquaredSettings;
-import com.joelapenna.foursquared.appwidget.SpecialDealsAppWidgetProvider;
+import com.joelapenna.foursquared.appwidget.FriendsAppWidgetProvider;
 import com.joelapenna.foursquared.util.Comparators;
 
 import android.app.Service;
@@ -63,10 +63,10 @@ public class FoursquaredService extends Service {
 
             AppWidgetManager am = AppWidgetManager.getInstance(this);
             int[] appWidgetIds = am.getAppWidgetIds(new ComponentName(this,
-                    SpecialDealsAppWidgetProvider.class));
+                    FriendsAppWidgetProvider.class));
 
             for (int i = 0; i < appWidgetIds.length; i++) {
-                SpecialDealsAppWidgetProvider.updateAppWidget((Context)this, foursquared
+                FriendsAppWidgetProvider.updateAppWidget((Context)this, foursquared
                         .getRemoteResourceManager(), am, appWidgetIds[i], checkins);
             }
 

@@ -3,5 +3,5 @@
   android:minWidth="220px"
   android:minHeight="146px"
   android:updatePeriodMillis="900000"
-  android:initialLayout="@layout/specialdeals_appwidget">
+  android:initialLayout="@layout/friends_appwidget">
 </appwidget-provider>

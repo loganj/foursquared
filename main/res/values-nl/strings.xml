@@ -166,6 +166,9 @@
   <string
     name="specialdeals_appwidget_label">Foursquare Special Deal</string>
 
+  <string
+    name="friends_appwidget_3x3_label">Foursquare Friends (3x3)</string>
+
   -->
 
 </resources>
