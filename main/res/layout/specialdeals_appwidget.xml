@@ -4,14 +4,214 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
-  android:layout_height="wrap_content"
+  android:layout_height="fill_parent"
   android:orientation="vertical"
-  android:gravity="center">
+  android:background="@android:color/transparent">
 
-  <include
-    android:id="@+id/checkinListItemLayout"
-    layout="@layout/checkin_list_item"
+  <ImageButton
+    android:id="@+id/widgetHeader"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" />
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:src="@drawable/widget_header" />
 
+  <RelativeLayout
+    android:id="@+id/widgetItem0"
+    android:layout_width="fill_parent"
+    android:layout_height="50px"
+    style="@style/listItemStyle"
+    android:paddingTop="1px"
+    android:background="@drawable/blue_fade">
+
+    <ImageView
+      android:id="@+id/photo0"
+
+      android:layout_height="46px"
+      android:layout_width="46px"
+      android:padding="2px"
+      android:background="#186db5"
+      android:layout_alignParentTop="true"
+      android:layout_alignParentLeft="true"
+      android:layout_marginLeft="7dip"
+      android:layout_marginRight="8dip"
+      android:src="@drawable/blank_boy"
+
+      android:gravity="center_vertical"
+
+      android:scaleType="fitXY" />
+
+    <TextView
+      android:id="@+id/checkinMessage0"
+
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+
+      android:layout_toRightOf="@id/photo0"
+      android:layout_alignTop="@id/photo0"
+      android:layout_alignParentRight="true"
+      android:layout_alignWithParentIfMissing="true"
+
+      android:gravity="center_vertical"
+      android:textAppearance="@android:style/TextAppearance.Small"
+      android:textStyle="bold"
+
+      android:maxLines="1"
+      android:ellipsize="end" />
+
+    <TextView
+      android:id="@+id/time0"
+
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+
+      android:layout_below="@id/checkinMessage0"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentBottom="true"
+      android:layout_alignWithParentIfMissing="true"
+
+      android:gravity="right"
+
+      style="@style/secondaryTextStyle"
+
+      android:maxLines="1"
+      android:scrollHorizontally="true"
+      android:ellipsize="end" />
+
+  </RelativeLayout>
+
+  <RelativeLayout
+    android:id="@+id/widgetItem1"
+    android:layout_width="fill_parent"
+    android:layout_height="50px"
+    android:layout_below="@id/widgetItem0"
+    style="@style/listItemStyle"
+    android:background="@drawable/blue_fade">
+
+    <ImageView
+      android:id="@+id/photo1"
+
+      android:layout_height="46px"
+      android:layout_width="46px"
+      android:padding="2px"
+      android:background="#186db5"
+      android:layout_alignParentTop="true"
+      android:layout_alignParentLeft="true"
+      android:layout_marginLeft="7dip"
+      android:layout_marginRight="8dip"
+      android:src="@drawable/blank_boy"
+
+      android:gravity="center_vertical"
+
+      android:scaleType="fitXY" />
+
+    <TextView
+      android:id="@+id/checkinMessage1"
+
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+
+      android:layout_toRightOf="@id/photo1"
+      android:layout_alignTop="@id/photo1"
+      android:layout_alignParentRight="true"
+      android:layout_alignWithParentIfMissing="true"
+
+      android:gravity="center_vertical"
+      android:textAppearance="@android:style/TextAppearance.Small"
+      android:textStyle="bold"
+
+      android:maxLines="1"
+      android:ellipsize="end" />
+
+    <TextView
+      android:id="@+id/time1"
+
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+
+      android:layout_below="@id/checkinMessage1"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentBottom="true"
+      android:layout_alignWithParentIfMissing="true"
+
+      android:gravity="right"
+
+      style="@style/secondaryTextStyle"
+
+      android:maxLines="1"
+      android:scrollHorizontally="true"
+      android:ellipsize="end" />
+
+  </RelativeLayout>
+
+  <RelativeLayout
+    android:id="@+id/widgetItem2"
+    android:layout_width="fill_parent"
+    android:layout_height="50px"
+    android:layout_below="@id/widgetItem1"
+    style="@style/listItemStyle"
+    android:paddingTop="1px"
+    android:background="@drawable/blue_fade">
+
+    <ImageView
+      android:id="@+id/photo2"
+
+      android:layout_height="46px"
+      android:layout_width="46px"
+      android:padding="2px"
+      android:background="#186db5"
+      android:layout_alignParentTop="true"
+      android:layout_alignParentLeft="true"
+      android:layout_marginLeft="7dip"
+      android:layout_marginRight="8dip"
+      android:src="@drawable/blank_boy"
+
+      android:gravity="center_vertical"
+
+      android:scaleType="fitXY" />
+
+    <TextView
+      android:id="@+id/checkinMessage2"
+
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+
+      android:layout_toRightOf="@id/photo2"
+      android:layout_alignTop="@id/photo2"
+      android:layout_alignParentRight="true"
+      android:layout_alignWithParentIfMissing="true"
+
+      android:gravity="center_vertical"
+      android:textAppearance="@android:style/TextAppearance.Small"
+      android:textStyle="bold"
+
+      android:maxLines="1"
+      android:ellipsize="end" />
+
+    <TextView
+      android:id="@+id/time2"
+
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+
+      android:layout_below="@id/checkinMessage2"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentBottom="true"
+      android:layout_alignWithParentIfMissing="true"
+
+      android:gravity="right"
+
+      style="@style/secondaryTextStyle"
+
+      android:maxLines="1"
+      android:scrollHorizontally="true"
+      android:ellipsize="end" />
+
+  </RelativeLayout>
+
+  <ImageButton
+    android:id="@+id/widgetFooter"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:src="@drawable/widget_footer" />
 </LinearLayout>
