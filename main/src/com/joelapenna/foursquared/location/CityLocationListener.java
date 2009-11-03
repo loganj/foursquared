@@ -3,6 +3,7 @@ package com.joelapenna.foursquared.location;
 
 import com.joelapenna.foursquared.FoursquaredSettings;
 
+import android.location.Criteria;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -42,7 +43,13 @@ abstract public class CityLocationListener implements LocationListener {
 
     public void register(LocationManager locationManager, long updateMinTime, long updateMinDistance) {
         if (DEBUG) Log.d(TAG, "Registering this location listener: " + this.toString());
-        List<String> providers = locationManager.getProviders(true);
+
+        // Lets only listen on coarse, cheap location providers.
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        criteria.setPowerRequirement(Criteria.POWER_LOW);
+
+        List<String> providers = locationManager.getProviders(criteria, true);
         int providersCount = providers.size();
         for (int i = 0; i < providersCount; i++) {
             String providerName = providers.get(i);
