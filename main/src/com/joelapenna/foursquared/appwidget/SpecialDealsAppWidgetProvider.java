@@ -8,7 +8,6 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
-import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.MainActivity;
 import com.joelapenna.foursquared.R;
@@ -45,7 +44,7 @@ public class SpecialDealsAppWidgetProvider extends AppWidgetProvider {
                     R.id.widgetItem1, R.id.photo1, R.id.checkinMessage1, R.id.time1
             }, {
                     R.id.widgetItem2, R.id.photo2, R.id.checkinMessage2, R.id.time2
-            },
+            }
     };
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -75,7 +74,7 @@ public class SpecialDealsAppWidgetProvider extends AppWidgetProvider {
                 baseIntent, 0));
 
         int numCheckins = checkins.size();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < WIDGET_VIEW_IDS.length; i++) {
             if (i < numCheckins) {
                 updateCheckinView(context, rrm, views, checkins.get(i), WIDGET_VIEW_IDS[i]);
             } else {
