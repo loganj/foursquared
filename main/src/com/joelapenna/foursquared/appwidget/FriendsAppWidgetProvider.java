@@ -39,11 +39,11 @@ public class FriendsAppWidgetProvider extends AppWidgetProvider {
 
     private static final int[][] WIDGET_VIEW_IDS = {
             {
-                    R.id.widgetItem0, R.id.photo0, R.id.checkinMessage0, R.id.time0
+                    R.id.widgetItem0, R.id.photo0, R.id.user0, R.id.time0, R.id.location0
             }, {
-                    R.id.widgetItem1, R.id.photo1, R.id.checkinMessage1, R.id.time1
+                    R.id.widgetItem1, R.id.photo1, R.id.user1, R.id.time1, R.id.location1
             }, {
-                    R.id.widgetItem2, R.id.photo2, R.id.checkinMessage2, R.id.time2
+                    R.id.widgetItem2, R.id.photo2, R.id.user2, R.id.time2, R.id.location2
             }
     };
 
@@ -59,8 +59,7 @@ public class FriendsAppWidgetProvider extends AppWidgetProvider {
         if (DEBUG) Log.d(TAG, "updateAppWidget: " + String.valueOf(appWidgetId));
 
         // Get the layout for the App Widget and attach an on-click listener to the button
-        RemoteViews views = new RemoteViews(context.getPackageName(),
-                R.layout.friends_appwidget);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.friends_appwidget);
 
         if (DEBUG) Log.d(TAG, "adding header intent: " + String.valueOf(appWidgetId));
         Intent baseIntent = new Intent(context, MainActivity.class);
@@ -90,8 +89,9 @@ public class FriendsAppWidgetProvider extends AppWidgetProvider {
             RemoteViews views, Checkin checkin, int[] viewIds) {
         int viewId = viewIds[0];
         int photoViewId = viewIds[1];
-        int checkinMessageViewId = viewIds[2];
+        int userViewId = viewIds[2];
         int timeViewId = viewIds[3];
+        int locationViewId = viewIds[4];
 
         final User user = checkin.getUser();
         final Uri photoUri = Uri.parse(user.getPhoto());
@@ -113,10 +113,10 @@ public class FriendsAppWidgetProvider extends AppWidgetProvider {
             }
         }
 
-        views.setTextViewText(checkinMessageViewId, StringFormatters.getCheckinMessage(checkin,
-                true));
+        views.setTextViewText(userViewId, StringFormatters.getUserAbbreviatedName(user));
         views.setTextViewText(timeViewId, StringFormatters.getRelativeTimeSpanString(checkin
                 .getCreated()));
+        views.setTextViewText(locationViewId, checkin.getVenue().getName());
     }
 
     private static void hideCheckinView(RemoteViews views, int[] viewIds) {
