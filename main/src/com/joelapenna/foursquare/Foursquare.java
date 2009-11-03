@@ -107,13 +107,18 @@ public class Foursquare {
             boolean isPrivate, boolean twitter) throws FoursquareException, FoursquareError,
             IOException {
         return mFoursquareV1.checkin(venueId, venueName, location.mGeolat, location.mGeolong,
-                shout, isPrivate, twitter);
+                location.mGeohacc, location.mGeovacc, location.mGeoalt, shout, isPrivate, twitter);
     }
 
     @V1
     public Group<Checkin> checkins(String cityId, Location location) throws FoursquareException,
             FoursquareError, IOException {
-        return mFoursquareV1.checkins(cityId);
+        if (location != null) {
+            return mFoursquareV1.checkins(cityId, location.mGeolat, location.mGeolong,
+                    location.mGeohacc, location.mGeovacc, location.mGeoalt);
+        } else {
+            return mFoursquareV1.checkins(cityId, null, null, null, null, null);
+        }
     }
 
     @V1
@@ -130,7 +135,8 @@ public class Foursquare {
     @V1
     public Group<Group<Tip>> tips(Location location, int limit) throws FoursquareException,
             FoursquareError, IOException {
-        return mFoursquareV1.tips(location.mGeolat, location.mGeolong, limit);
+        return mFoursquareV1.tips(location.mGeolat, location.mGeolong, location.mGeohacc,
+                location.mGeovacc, location.mGeoalt, limit);
     }
 
     @V1
@@ -147,7 +153,8 @@ public class Foursquare {
     @V1
     public Group<Group<Venue>> venues(Location location, String query, int radius, int limit)
             throws FoursquareException, FoursquareError, IOException {
-        return mFoursquareV1.venues(location.mGeolat, location.mGeolong, query, radius, limit);
+        return mFoursquareV1.venues(location.mGeolat, location.mGeolong, location.mGeohacc,
+                location.mGeovacc, location.mGeoalt, query, radius, limit);
     }
 
     @Classic

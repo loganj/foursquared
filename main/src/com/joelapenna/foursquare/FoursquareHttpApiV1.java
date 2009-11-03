@@ -238,9 +238,15 @@ public class FoursquareHttpApiV1 {
      * /checkins?cityid=23
      */
     @SuppressWarnings("unchecked")
-    Group<Checkin> checkins(String cityid) throws FoursquareException, FoursquareError, IOException {
+    Group<Checkin> checkins(String cityid, String geolat, String geolong, String geohacc,
+            String geovacc, String geoalt) throws FoursquareException, FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_CHECKINS), //
-                new BasicNameValuePair("cityid", cityid));
+                new BasicNameValuePair("cityid", cityid), //
+                new BasicNameValuePair("geolat", geolat), //
+                new BasicNameValuePair("geolong", geolong), //
+                new BasicNameValuePair("geohacc", geohacc), //
+                new BasicNameValuePair("geovacc", geovacc), //
+                new BasicNameValuePair("geoalt", geoalt));
         return (Group<Checkin>)mHttpApi
                 .doHttpRequest(httpGet, new GroupParser(new CheckinParser()));
     }
@@ -248,14 +254,17 @@ public class FoursquareHttpApiV1 {
     /*
      * /checkin?vid=1234&venue=Noc%20Noc&shout=Come%20here&private=0&twitter=1
      */
-    CheckinResult checkin(String vid, String venue, String geolat, String geolong, String shout,
-            boolean isPrivate, boolean twitter) throws FoursquareException, FoursquareError,
-            IOException {
+    CheckinResult checkin(String vid, String venue, String geolat, String geolong, String geohacc,
+            String geovacc, String geoalt, String shout, boolean isPrivate, boolean twitter)
+            throws FoursquareException, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_CHECKIN), //
                 new BasicNameValuePair("vid", vid), //
                 new BasicNameValuePair("venue", venue), //
                 new BasicNameValuePair("geolat", geolat), //
                 new BasicNameValuePair("geolong", geolong), //
+                new BasicNameValuePair("geohacc", geohacc), //
+                new BasicNameValuePair("geovacc", geovacc), //
+                new BasicNameValuePair("geoalt", geoalt), //
                 new BasicNameValuePair("shout", shout), //
                 new BasicNameValuePair("private", (isPrivate) ? "1" : "0"), //
                 new BasicNameValuePair("twitter", (twitter) ? "1" : "0"));
@@ -278,11 +287,15 @@ public class FoursquareHttpApiV1 {
      * /venues?geolat=37.770900&geolong=-122.43698
      */
     @SuppressWarnings("unchecked")
-    Group<Group<Venue>> venues(String geolat, String geolong, String query, int radius, int limit)
-            throws FoursquareException, FoursquareError, IOException {
+    Group<Group<Venue>> venues(String geolat, String geolong, String geohacc, String geovacc,
+            String geoalt, String query, int radius, int limit) throws FoursquareException,
+            FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_VENUES), //
                 new BasicNameValuePair("geolat", geolat), //
                 new BasicNameValuePair("geolong", geolong), //
+                new BasicNameValuePair("geohacc", geohacc), //
+                new BasicNameValuePair("geovacc", geovacc), //
+                new BasicNameValuePair("geoalt", geoalt), //
                 new BasicNameValuePair("q", query), //
                 new BasicNameValuePair("r", String.valueOf(radius)), //
                 new BasicNameValuePair("l", String.valueOf(limit)));
@@ -304,11 +317,14 @@ public class FoursquareHttpApiV1 {
      * /tips?geolat=37.770900&geolong=-122.436987&l=1
      */
     @SuppressWarnings("unchecked")
-    Group<Group<Tip>> tips(String geolat, String geolong, int limit) throws FoursquareException,
-            FoursquareError, IOException {
+    Group<Group<Tip>> tips(String geolat, String geolong, String geohacc, String geovacc,
+            String geoalt, int limit) throws FoursquareException, FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_TIPS), //
                 new BasicNameValuePair("geolat", geolat), //
                 new BasicNameValuePair("geolong", geolong), //
+                new BasicNameValuePair("geohacc", geohacc), //
+                new BasicNameValuePair("geovacc", geovacc), //
+                new BasicNameValuePair("geoalt", geoalt), //
                 new BasicNameValuePair("l", String.valueOf(limit)));
         return (Group<Group<Tip>>)mHttpApi.doHttpRequest(httpGet, new GroupParser(new GroupParser(
                 new TipParser())));
