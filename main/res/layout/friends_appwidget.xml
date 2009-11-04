@@ -10,8 +10,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:paddingTop="38dip"
-    android:orientation="vertical"
-    android:gravity=">
+    android:orientation="vertical">
 
     <RelativeLayout
       android:id="@+id/widgetItem0"
@@ -522,9 +521,8 @@
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
       android:drawableLeft="@drawable/widget_refresh_icon"
-      android:drawablePadding="3dip"
-      android:background="@drawable/widget_footer"
-      android:text="ASDF ASDF ASDF" />
+      android:drawablePadding="6dip"
+      android:background="@drawable/widget_footer" />
 
   </RelativeLayout>
 

@@ -24,11 +24,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -84,6 +86,11 @@ public class FriendsAppWidgetProvider extends AppWidgetProvider {
                 hideCheckinView(views, WIDGET_VIEW_IDS[i]);
             }
         }
+
+        // Lastly, update the refresh timestamp
+        CharSequence timestamp = DateUtils.formatDateTime(context, new Date().getTime(), DateUtils.FORMAT_SHOW_TIME);
+        views.setTextViewText(R.id.widgetFooter, context.getResources().getString(
+                R.string.friends_appwidget_footer_text, timestamp));
 
         // Tell the AppWidgetManager to perform an update on the current App Widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
