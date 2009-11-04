@@ -8,6 +8,7 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.MainActivity;
 import com.joelapenna.foursquared.R;
@@ -47,12 +48,11 @@ public class FriendsAppWidgetProvider extends AppWidgetProvider {
             }, {
                     R.id.widgetItem2, R.id.photo2, R.id.user2, R.id.time2, R.id.location2
             },
-            /* For now, because we don't handle the footer correctly.
-              {
-                    R.id.widgetItem3, R.id.photo3, R.id.user3, R.id.time3, R.id.location3
-            }, {
-                    R.id.widgetItem4, R.id.photo4, R.id.user4, R.id.time4, R.id.location4
-            }*/
+    /*
+     * For now, because we don't handle the footer correctly. { R.id.widgetItem3, R.id.photo3,
+     * R.id.user3, R.id.time3, R.id.location3 }, { R.id.widgetItem4, R.id.photo4, R.id.user4,
+     * R.id.time4, R.id.location4 }
+     */
     };
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -90,7 +90,8 @@ public class FriendsAppWidgetProvider extends AppWidgetProvider {
         }
 
         // Lastly, update the refresh timestamp
-        CharSequence timestamp = DateUtils.formatDateTime(context, new Date().getTime(), DateUtils.FORMAT_SHOW_TIME);
+        CharSequence timestamp = DateUtils.formatDateTime(context, new Date().getTime(),
+                DateUtils.FORMAT_SHOW_TIME);
         views.setTextViewText(R.id.widgetFooter, context.getResources().getString(
                 R.string.friends_appwidget_footer_text, timestamp));
 
@@ -130,7 +131,11 @@ public class FriendsAppWidgetProvider extends AppWidgetProvider {
         views.setTextViewText(userViewId, StringFormatters.getUserAbbreviatedName(user));
         views.setTextViewText(timeViewId, StringFormatters.getRelativeTimeSpanString(checkin
                 .getCreated()));
-        views.setTextViewText(locationViewId, checkin.getVenue().getName());
+        if (VenueUtils.isValid(checkin.getVenue())) {
+            views.setTextViewText(locationViewId, checkin.getVenue().getName());
+        } else {
+            views.setTextViewText(locationViewId, "");
+        }
     }
 
     private static void hideCheckinView(RemoteViews views, int[] viewIds) {
