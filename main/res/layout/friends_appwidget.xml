@@ -6,16 +6,18 @@
   android:layout_width="fill_parent"
   android:layout_height="wrap_content">
 
-  <LinearLayout
+  <RelativeLayout
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="wrap_content"
     android:paddingTop="38dip"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:gravity=">
 
     <RelativeLayout
       android:id="@+id/widgetItem0"
       android:layout_width="fill_parent"
       android:layout_height="50dip"
+      android:layout_alignParentTop="true"
       android:visibility="gone"
       style="@style/listItemStyle"
       android:paddingTop="1dip"
@@ -99,6 +101,7 @@
       android:id="@+id/widgetItem1"
       android:layout_width="fill_parent"
       android:layout_height="50dip"
+      android:layout_below="@id/widgetItem0"
       android:visibility="gone"
       style="@style/listItemStyle"
       android:paddingTop="1dip"
@@ -182,6 +185,7 @@
       android:id="@+id/widgetItem2"
       android:layout_width="fill_parent"
       android:layout_height="50dip"
+      android:layout_below="@id/widgetItem1"
       android:visibility="gone"
       style="@style/listItemStyle"
       android:paddingTop="1dip"
@@ -264,6 +268,7 @@
       android:id="@+id/widgetItem3"
       android:layout_width="fill_parent"
       android:layout_height="50dip"
+      android:layout_below="@id/widgetItem2"
       android:visibility="gone"
       style="@style/listItemStyle"
       android:paddingTop="1dip"
@@ -347,6 +352,7 @@
       android:id="@+id/widgetItem4"
       android:layout_width="fill_parent"
       android:layout_height="50dip"
+      android:layout_below="@id/widgetItem3"
       android:visibility="gone"
       style="@style/listItemStyle"
       android:paddingTop="1dip"
@@ -430,6 +436,7 @@
       android:id="@+id/widgetItem5"
       android:layout_width="fill_parent"
       android:layout_height="50dip"
+      android:layout_below="@id/widgetItem4"
       android:visibility="gone"
       style="@style/listItemStyle"
       android:paddingTop="1dip"
@@ -509,26 +516,28 @@
     </RelativeLayout>
 
 
-    <ImageButton
+    <TextView
       android:id="@+id/widgetFooter"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
-      android:background="@android:color/transparent"
-      android:src="@drawable/widget_footer" />
-  </LinearLayout>
+      android:drawableLeft="@drawable/widget_refresh_icon"
+      android:drawablePadding="3dip"
+      android:background="@drawable/widget_footer"
+      android:text="ASDF ASDF ASDF" />
+
+  </RelativeLayout>
 
   <RelativeLayout
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <ImageButton
+    <ImageView
       android:id="@+id/widgetHeader"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
-      android:background="@android:color/transparent"
-      android:src="@drawable/widget_header" />
+      android:background="@drawable/widget_header" />
   </RelativeLayout>
 
 </FrameLayout>
