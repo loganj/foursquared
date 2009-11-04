@@ -4,9 +4,10 @@
 <FrameLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
-  android:layout_height="wrap_content">
+  android:layout_height="wrap_content"
+  android:padding="4dip">
 
-  <RelativeLayout
+  <LinearLayout
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:paddingTop="38dip"
@@ -100,7 +101,6 @@
       android:id="@+id/widgetItem1"
       android:layout_width="fill_parent"
       android:layout_height="50dip"
-      android:layout_below="@id/widgetItem0"
       android:visibility="gone"
       style="@style/listItemStyle"
       android:paddingTop="1dip"
@@ -184,7 +184,6 @@
       android:id="@+id/widgetItem2"
       android:layout_width="fill_parent"
       android:layout_height="50dip"
-      android:layout_below="@id/widgetItem1"
       android:visibility="gone"
       style="@style/listItemStyle"
       android:paddingTop="1dip"
@@ -267,7 +266,6 @@
       android:id="@+id/widgetItem3"
       android:layout_width="fill_parent"
       android:layout_height="50dip"
-      android:layout_below="@id/widgetItem2"
       android:visibility="gone"
       style="@style/listItemStyle"
       android:paddingTop="1dip"
@@ -351,7 +349,6 @@
       android:id="@+id/widgetItem4"
       android:layout_width="fill_parent"
       android:layout_height="50dip"
-      android:layout_below="@id/widgetItem3"
       android:visibility="gone"
       style="@style/listItemStyle"
       android:paddingTop="1dip"
@@ -435,7 +432,6 @@
       android:id="@+id/widgetItem5"
       android:layout_width="fill_parent"
       android:layout_height="50dip"
-      android:layout_below="@id/widgetItem4"
       android:visibility="gone"
       style="@style/listItemStyle"
       android:paddingTop="1dip"
@@ -524,7 +520,7 @@
       android:drawablePadding="6dip"
       android:background="@drawable/widget_footer" />
 
-  </RelativeLayout>
+  </LinearLayout>
 
   <RelativeLayout
     android:layout_width="fill_parent"
