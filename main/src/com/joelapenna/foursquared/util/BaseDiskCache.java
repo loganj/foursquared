@@ -98,12 +98,14 @@ public class BaseDiskCache implements DiskCache {
         // removes files that are too small to be valid. Cheap and cheater way to remove files that
         // were corrupted during download.
         String[] children = mStorageDirectory.list();
-        for (int i = 0; i < children.length; i++) {
-            File child = new File(mStorageDirectory, children[i]);
-            if (!child.equals(new File(mStorageDirectory, NOMEDIA))
-                    && child.length() <= MIN_FILE_SIZE_IN_BYTES) {
-                if (DEBUG) Log.d(TAG, "Deleting: " + child);
-                child.delete();
+        if (children != null) { // children will be null if hte directyr does not exist.
+            for (int i = 0; i < children.length; i++) {
+                File child = new File(mStorageDirectory, children[i]);
+                if (!child.equals(new File(mStorageDirectory, NOMEDIA))
+                        && child.length() <= MIN_FILE_SIZE_IN_BYTES) {
+                    if (DEBUG) Log.d(TAG, "Deleting: " + child);
+                    child.delete();
+                }
             }
         }
     }
@@ -111,11 +113,13 @@ public class BaseDiskCache implements DiskCache {
     public void clear() {
         // Clear the whole cache. Coolness.
         String[] children = mStorageDirectory.list();
-        for (int i = 0; i < children.length; i++) {
-            File child = new File(mStorageDirectory, children[i]);
-            if (!child.equals(new File(mStorageDirectory, NOMEDIA))) {
-                if (DEBUG) Log.d(TAG, "Deleting: " + child);
-                child.delete();
+        if (children != null) { // children will be null if hte directyr does not exist.
+            for (int i = 0; i < children.length; i++) {
+                File child = new File(mStorageDirectory, children[i]);
+                if (!child.equals(new File(mStorageDirectory, NOMEDIA))) {
+                    if (DEBUG) Log.d(TAG, "Deleting: " + child);
+                    child.delete();
+                }
             }
         }
         mStorageDirectory.delete();
