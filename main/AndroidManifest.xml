@@ -3,7 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.joelapenna.foursquared"
   android:versionName="2009-11-05"
-  android:versionCode="2009110500">
+  android:versionCode="2009110501">
 
   <uses-permission
     android:name="android.permission.ACCESS_COARSE_LOCATION" />

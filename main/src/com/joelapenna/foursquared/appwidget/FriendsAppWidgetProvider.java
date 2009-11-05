@@ -14,6 +14,7 @@ import com.joelapenna.foursquared.MainActivity;
 import com.joelapenna.foursquared.R;
 import com.joelapenna.foursquared.UserActivity;
 import com.joelapenna.foursquared.app.FoursquaredService;
+import com.joelapenna.foursquared.util.DumpcatcherHelper;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
 
@@ -96,7 +97,12 @@ public class FriendsAppWidgetProvider extends AppWidgetProvider {
                 R.string.friends_appwidget_footer_text, timestamp));
 
         // Tell the AppWidgetManager to perform an update on the current App Widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
+        try {
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+        } catch (Exception e) {
+            if (DEBUG) Log.d(TAG, "updateAppWidget crashed: ", e);
+            DumpcatcherHelper.sendException(e);
+        }
     }
 
     private static void updateCheckinView(Context context, RemoteResourceManager rrm,
