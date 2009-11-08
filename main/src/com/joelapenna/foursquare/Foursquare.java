@@ -39,12 +39,12 @@ public class Foursquare {
 
     @V1
     @Classic
-    public Foursquare(boolean debug, String clientVersion) {
+    public Foursquare(boolean debug, String clientVersion, boolean useOAuth) {
         if (debug) {
             if (DEBUG) Log.d(TAG, "Using DEBUG domain.");
-            mFoursquareV1 = new FoursquareHttpApiV1("10.0.2.2:8080", clientVersion, false);
+            mFoursquareV1 = new FoursquareHttpApiV1("10.0.2.2:8080", clientVersion, useOAuth);
         } else {
-            mFoursquareV1 = new FoursquareHttpApiV1(clientVersion, false);
+            mFoursquareV1 = new FoursquareHttpApiV1(clientVersion, useOAuth);
         }
     }
 
