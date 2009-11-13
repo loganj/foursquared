@@ -16,7 +16,6 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.FoursquaredSettings;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -27,8 +26,8 @@ import java.util.logging.Logger;
  */
 public class Foursquare {
     private static final Logger LOG = Logger.getLogger("Foursquare");
-    public static final boolean DEBUG = FoursquaredSettings.API_DEBUG;
-    public static final boolean PARSER_DEBUG = FoursquaredSettings.PARSER_DEBUG;
+    public static final boolean DEBUG = false;
+    public static final boolean PARSER_DEBUG = false;
 
     public static final String MALE = "male";
     public static final String FEMALE = "female";
