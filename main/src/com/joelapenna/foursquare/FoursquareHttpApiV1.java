@@ -37,7 +37,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.IOException;
@@ -85,7 +84,7 @@ public class FoursquareHttpApiV1 {
     }
 
     void setCredentials(String phone, String password) {
-        if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(password)) {
+        if (phone == null || phone.length() == 0 || password == null || password.length() == 0) {
             if (DEBUG) Log.d(TAG, "Clearing Credentials");
             mHttpClient.getCredentialsProvider().clear();
         } else {
@@ -102,7 +101,8 @@ public class FoursquareHttpApiV1 {
     public void setOAuthConsumerCredentials(String oAuthConsumerKey, String oAuthConsumerSecret) {
         if (DEBUG) Log.d(TAG, "Setting consumer key/secret: " + oAuthConsumerKey + " "
                 + oAuthConsumerSecret);
-        ((HttpApiWithOAuth)mHttpApi).setOAuthConsumerCredentials(oAuthConsumerKey, oAuthConsumerSecret);
+        ((HttpApiWithOAuth)mHttpApi).setOAuthConsumerCredentials(oAuthConsumerKey,
+                oAuthConsumerSecret);
     }
 
     public void setOAuthTokenWithSecret(String token, String secret) {
