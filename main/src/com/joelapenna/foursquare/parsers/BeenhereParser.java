@@ -12,18 +12,18 @@ import com.joelapenna.foursquare.types.Beenhere;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import android.util.Log;
-
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Auto-generated: 2009-09-17 19:58:35.986493
+ * Auto-generated: 2009-11-12 21:45:35.867940
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
 public class BeenhereParser extends AbstractParser<Beenhere> {
-    private static final String TAG = "BeenhereParser";
+    private static final Logger LOG = Logger.getLogger("BeenhereParser");
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
@@ -34,7 +34,7 @@ public class BeenhereParser extends AbstractParser<Beenhere> {
         Beenhere beenhere = new Beenhere();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
+            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
 
             String name = parser.getName();
             if ("friends".equals(name)) {
@@ -45,7 +45,7 @@ public class BeenhereParser extends AbstractParser<Beenhere> {
 
             } else {
                 // Consume something we don't understand.
-                if (DEBUG) Log.d(TAG, "Found tag that we don't recognize: " + name);
+                if (DEBUG) LOG.log(Level.FINE, "Found tag that we don't recognize: " + name);
                 skipSubTree(parser);
             }
         }

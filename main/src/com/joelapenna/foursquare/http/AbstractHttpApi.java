@@ -34,19 +34,19 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
-import android.util.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 abstract public class AbstractHttpApi implements HttpApi{
-    protected static final String TAG = "HttpApi";
+    protected static final Logger LOG = Logger.getLogger("AbstractHttpApi");
     protected static final boolean DEBUG = Foursquare.DEBUG;
 
     private static final String DEFAULT_CLIENT_VERSION = "com.joelapenna.foursquare";
@@ -68,10 +68,10 @@ abstract public class AbstractHttpApi implements HttpApi{
     public FoursquareType executeHttpRequest(HttpRequestBase httpRequest,
             Parser<? extends FoursquareType> parser) throws FoursquareCredentialsException,
             FoursquareParseException, FoursquareException, IOException {
-        if (DEBUG) Log.d(TAG, "doHttpRequest: " + httpRequest.getURI());
+        if (DEBUG) LOG.log(Level.FINE, "doHttpRequest: " + httpRequest.getURI());
 
         HttpResponse response = executeHttpRequest(httpRequest);
-        if (DEBUG) Log.d(TAG, "executed HttpRequest for: " + httpRequest.getURI().toString());
+        if (DEBUG) LOG.log(Level.FINE, "executed HttpRequest for: " + httpRequest.getURI().toString());
 
         switch (response.getStatusLine().getStatusCode()) {
             case 200:
@@ -84,7 +84,7 @@ abstract public class AbstractHttpApi implements HttpApi{
 
             case 401:
                 response.getEntity().consumeContent();
-                if (DEBUG) Log.d(TAG, EntityUtils.toString(response.getEntity()));
+                if (DEBUG) LOG.log(Level.FINE, EntityUtils.toString(response.getEntity()));
                 throw new FoursquareCredentialsException(response.getStatusLine().toString());
 
             case 404:
@@ -92,7 +92,7 @@ abstract public class AbstractHttpApi implements HttpApi{
                 throw new FoursquareException(response.getStatusLine().toString());
 
             default:
-                if (DEBUG) Log.d(TAG, "Default case for status code reached: "
+                if (DEBUG) LOG.log(Level.FINE, "Default case for status code reached: "
                         + response.getStatusLine().toString());
                 response.getEntity().consumeContent();
                 throw new IOException("Unknown HTTP status: " + response.getStatusLine());
@@ -102,11 +102,11 @@ abstract public class AbstractHttpApi implements HttpApi{
     public String doHttpPost(String url, NameValuePair... nameValuePairs)
             throws FoursquareCredentialsException, FoursquareParseException, FoursquareException,
             IOException {
-        if (DEBUG) Log.d(TAG, "doHttpPost: " + url);
+        if (DEBUG) LOG.log(Level.FINE, "doHttpPost: " + url);
         HttpPost httpPost = createHttpPost(url, nameValuePairs);
 
         HttpResponse response = executeHttpRequest(httpPost);
-        if (DEBUG) Log.d(TAG, "executed HttpRequest for: " + httpPost.getURI().toString());
+        if (DEBUG) LOG.log(Level.FINE, "executed HttpRequest for: " + httpPost.getURI().toString());
 
         switch (response.getStatusLine().getStatusCode()) {
             case 200:
@@ -138,7 +138,7 @@ abstract public class AbstractHttpApi implements HttpApi{
      * @throws IOException
      */
     public HttpResponse executeHttpRequest(HttpRequestBase httpRequest) throws IOException {
-        if (DEBUG) Log.d(TAG, "executing HttpRequest for: " + httpRequest.getURI().toString());
+        if (DEBUG) LOG.log(Level.FINE, "executing HttpRequest for: " + httpRequest.getURI().toString());
         try {
             mHttpClient.getConnectionManager().closeExpiredConnections();
             return mHttpClient.execute(httpRequest);
@@ -149,28 +149,28 @@ abstract public class AbstractHttpApi implements HttpApi{
     }
 
     public HttpGet createHttpGet(String url, NameValuePair... nameValuePairs) {
-        if (DEBUG) Log.d(TAG, "creating HttpGet for: " + url);
+        if (DEBUG) LOG.log(Level.FINE, "creating HttpGet for: " + url);
         String query = URLEncodedUtils.format(Arrays.asList(nameValuePairs), HTTP.UTF_8);
         HttpGet httpGet = new HttpGet(url + "?" + query);
         httpGet.addHeader(CLIENT_VERSION_HEADER, mClientVersion);
-        if (DEBUG) Log.d(TAG, "Created: " + httpGet.getURI());
+        if (DEBUG) LOG.log(Level.FINE, "Created: " + httpGet.getURI());
         return httpGet;
     }
 
     public HttpPost createHttpPost(String url, NameValuePair... nameValuePairs) {
-        if (DEBUG) Log.d(TAG, "creating HttpPost for: " + url);
+        if (DEBUG) LOG.log(Level.FINE, "creating HttpPost for: " + url);
         List<NameValuePair> params = Arrays.asList(nameValuePairs);
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader(CLIENT_VERSION_HEADER, mClientVersion);
         try {
             for (int i = 0; i < params.size(); i++) {
-                if (DEBUG) Log.d(TAG, "Param: " + params.get(i));
+                if (DEBUG) LOG.log(Level.FINE, "Param: " + params.get(i));
             }
             httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
         } catch (UnsupportedEncodingException e1) {
             throw new IllegalArgumentException("Unable to encode http parameters.");
         }
-        if (DEBUG) Log.d(TAG, "Created: " + httpPost);
+        if (DEBUG) LOG.log(Level.FINE, "Created: " + httpPost);
         return httpPost;
     }
 

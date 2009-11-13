@@ -12,18 +12,18 @@ import com.joelapenna.foursquare.types.Mayor;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import android.util.Log;
-
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Auto-generated: 2009-09-17 19:58:36.881009
+ * Auto-generated: 2009-11-12 21:45:35.202790
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
 public class MayorParser extends AbstractParser<Mayor> {
-    private static final String TAG = "MayorParser";
+    private static final Logger LOG = Logger.getLogger("MayorParser");
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
@@ -34,7 +34,7 @@ public class MayorParser extends AbstractParser<Mayor> {
         Mayor mayor = new Mayor();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
+            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
 
             String name = parser.getName();
             if ("checkins".equals(name)) {
@@ -54,7 +54,7 @@ public class MayorParser extends AbstractParser<Mayor> {
 
             } else {
                 // Consume something we don't understand.
-                if (DEBUG) Log.d(TAG, "Found tag that we don't recognize: " + name);
+                if (DEBUG) LOG.log(Level.FINE, "Found tag that we don't recognize: " + name);
                 skipSubTree(parser);
             }
         }

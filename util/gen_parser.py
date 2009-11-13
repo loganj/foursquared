@@ -23,9 +23,9 @@ import com.joelapenna.foursquare.types.%(type_name)s;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import android.util.Log;
-
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Auto-generated: %(timestamp)s
@@ -34,7 +34,7 @@ import java.io.IOException;
  * @param <T>
  */
 public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
-    private static final String TAG = "%(type_name)sParser";
+    private static final Logger LOG = Logger.getLogger("%(type_name)sParser");
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
@@ -45,14 +45,14 @@ public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
         %(type_name)s %(top_node_name)s = new %(type_name)s();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
+            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
 
             String name = parser.getName();
             %(stanzas)s
 
             } else {
                 // Consume something we don't understand.
-                if (DEBUG) Log.d(TAG, "Found tag that we don't recognize: " + name);
+                if (DEBUG) LOG.log(Level.FINE, "Found tag that we don't recognize: " + name);
                 skipSubTree(parser);
             }
         }

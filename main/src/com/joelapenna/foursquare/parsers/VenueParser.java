@@ -12,18 +12,18 @@ import com.joelapenna.foursquare.types.Venue;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import android.util.Log;
-
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Auto-generated: 2009-10-08 00:43:44.778913
+ * Auto-generated: 2009-11-12 21:45:35.321141
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
 public class VenueParser extends AbstractParser<Venue> {
-    private static final String TAG = "VenueParser";
+    private static final Logger LOG = Logger.getLogger("VenueParser");
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
@@ -34,7 +34,7 @@ public class VenueParser extends AbstractParser<Venue> {
         Venue venue = new Venue();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
+            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
 
             String name = parser.getName();
             if ("address".equals(name)) {
@@ -93,7 +93,7 @@ public class VenueParser extends AbstractParser<Venue> {
 
             } else {
                 // Consume something we don't understand.
-                if (DEBUG) Log.d(TAG, "Found tag that we don't recognize: " + name);
+                if (DEBUG) LOG.log(Level.FINE, "Found tag that we don't recognize: " + name);
                 skipSubTree(parser);
             }
         }

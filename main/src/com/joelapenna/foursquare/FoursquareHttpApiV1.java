@@ -37,15 +37,15 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import android.util.Log;
-
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class FoursquareHttpApiV1 {
-    private static final String TAG = "FoursquareHttpApiV1";
+    private static final Logger LOG = Logger.getLogger("FoursquareHttpApiV1");
     private static final boolean DEBUG = Foursquare.DEBUG;
 
     private static final String URL_API_AUTHEXCHANGE = "/authexchange";
@@ -85,10 +85,10 @@ public class FoursquareHttpApiV1 {
 
     void setCredentials(String phone, String password) {
         if (phone == null || phone.length() == 0 || password == null || password.length() == 0) {
-            if (DEBUG) Log.d(TAG, "Clearing Credentials");
+            if (DEBUG) LOG.log(Level.FINE, "Clearing Credentials");
             mHttpClient.getCredentialsProvider().clear();
         } else {
-            if (DEBUG) Log.d(TAG, "Setting Phone/Password: " + phone + " " + password);
+            if (DEBUG) LOG.log(Level.FINE, "Setting Phone/Password: " + phone + " " + password);
             mHttpClient.getCredentialsProvider().setCredentials(mAuthScope,
                     new UsernamePasswordCredentials(phone, password));
         }
@@ -99,14 +99,16 @@ public class FoursquareHttpApiV1 {
     }
 
     public void setOAuthConsumerCredentials(String oAuthConsumerKey, String oAuthConsumerSecret) {
-        if (DEBUG) Log.d(TAG, "Setting consumer key/secret: " + oAuthConsumerKey + " "
-                + oAuthConsumerSecret);
+        if (DEBUG) {
+            LOG.log(Level.FINE, "Setting consumer key/secret: " + oAuthConsumerKey + " "
+                    + oAuthConsumerSecret);
+        }
         ((HttpApiWithOAuth)mHttpApi).setOAuthConsumerCredentials(oAuthConsumerKey,
                 oAuthConsumerSecret);
     }
 
     public void setOAuthTokenWithSecret(String token, String secret) {
-        if (DEBUG) Log.d(TAG, "Setting oauth token/secret: " + token + " " + secret);
+        if (DEBUG) LOG.log(Level.FINE, "Setting oauth token/secret: " + token + " " + secret);
         ((HttpApiWithOAuth)mHttpApi).setOAuthTokenWithSecret(token, secret);
     }
 

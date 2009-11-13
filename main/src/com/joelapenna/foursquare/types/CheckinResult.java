@@ -5,8 +5,8 @@
 package com.joelapenna.foursquare.types;
 
 /**
- * Auto-generated: 2009-08-01 10:39:25.277407
- * 
+ * Auto-generated: 2009-11-12 21:45:35.708780
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class CheckinResult implements FoursquareType {
@@ -77,4 +77,5 @@ public class CheckinResult implements FoursquareType {
     public void setVenue(Venue venue) {
         mVenue = venue;
     }
+
 }

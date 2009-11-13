@@ -12,18 +12,18 @@ import com.joelapenna.foursquare.types.CheckinResult;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import android.util.Log;
-
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Auto-generated: 2009-08-01 10:39:23.426578
+ * Auto-generated: 2009-11-12 21:45:35.763508
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
 public class CheckinResultParser extends AbstractParser<CheckinResult> {
-    private static final String TAG = "CheckinResultParser";
+    private static final Logger LOG = Logger.getLogger("CheckinResultParser");
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
@@ -34,7 +34,7 @@ public class CheckinResultParser extends AbstractParser<CheckinResult> {
         CheckinResult checkin_result = new CheckinResult();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
+            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
 
             String name = parser.getName();
             if ("badges".equals(name)) {
@@ -60,7 +60,7 @@ public class CheckinResultParser extends AbstractParser<CheckinResult> {
 
             } else {
                 // Consume something we don't understand.
-                if (DEBUG) Log.d(TAG, "Found tag that we don't recognize: " + name);
+                if (DEBUG) LOG.log(Level.FINE, "Found tag that we don't recognize: " + name);
                 skipSubTree(parser);
             }
         }

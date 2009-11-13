@@ -18,15 +18,15 @@ import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.FoursquaredSettings;
 
-import android.util.Log;
-
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Foursquare {
-    private static final String TAG = "Foursquare";
+    private static final Logger LOG = Logger.getLogger("Foursquare");
     public static final boolean DEBUG = FoursquaredSettings.API_DEBUG;
     public static final boolean PARSER_DEBUG = FoursquaredSettings.PARSER_DEBUG;
 
@@ -41,7 +41,7 @@ public class Foursquare {
     @Classic
     public Foursquare(boolean debug, String clientVersion, boolean useOAuth) {
         if (debug) {
-            if (DEBUG) Log.d(TAG, "Using DEBUG domain.");
+            if (DEBUG) LOG.log(Level.FINE, "Using DEBUG domain.");
             mFoursquareV1 = new FoursquareHttpApiV1("10.0.2.2:8080", clientVersion, useOAuth);
         } else {
             mFoursquareV1 = new FoursquareHttpApiV1(clientVersion, useOAuth);

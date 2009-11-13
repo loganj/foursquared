@@ -5,7 +5,7 @@
 package com.joelapenna.foursquare.types;
 
 /**
- * Auto-generated: 2009-10-08 00:43:38.389640
+ * Auto-generated: 2009-11-12 21:45:35.261773
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */

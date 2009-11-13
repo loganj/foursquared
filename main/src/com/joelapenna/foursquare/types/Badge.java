@@ -4,11 +4,9 @@
 
 package com.joelapenna.foursquare.types;
 
-;
-
 /**
- * Auto-generated: 2009-08-05 21:30:24.415065
- * 
+ * Auto-generated: 2009-11-12 21:45:35.596207
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Badge implements FoursquareType {
@@ -16,7 +14,6 @@ public class Badge implements FoursquareType {
     private String mDescription;
     private String mIcon;
     private String mId;
-    private String mMessage;
     private String mName;
 
     public Badge() {
@@ -44,14 +41,6 @@ public class Badge implements FoursquareType {
 
     public void setId(String id) {
         mId = id;
-    }
-
-    public String getMessage() {
-        return mMessage;
-    }
-
-    public void setMessage(String message) {
-        mMessage = message;
     }
 
     public String getName() {

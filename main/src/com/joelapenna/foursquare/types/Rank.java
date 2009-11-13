@@ -4,11 +4,9 @@
 
 package com.joelapenna.foursquare.types;
 
-;
-
 /**
- * Auto-generated: 2009-08-05 21:30:25.507747
- * 
+ * Auto-generated: 2009-11-12 21:45:34.487112
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Rank implements FoursquareType {

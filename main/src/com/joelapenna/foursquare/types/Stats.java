@@ -4,11 +4,9 @@
 
 package com.joelapenna.foursquare.types;
 
-;
-
 /**
- * Auto-generated: 2009-08-05 21:30:26.033089
- * 
+ * Auto-generated: 2009-11-12 21:45:34.803921
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Stats implements FoursquareType {

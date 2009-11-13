@@ -12,18 +12,18 @@ import com.joelapenna.foursquare.types.User;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import android.util.Log;
-
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Auto-generated: 2009-10-11 15:17:01.982140
+ * Auto-generated: 2009-11-12 21:45:35.087332
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
 public class UserParser extends AbstractParser<User> {
-    private static final String TAG = "UserParser";
+    private static final Logger LOG = Logger.getLogger("UserParser");
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
@@ -34,7 +34,7 @@ public class UserParser extends AbstractParser<User> {
         User user = new User();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
+            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
 
             String name = parser.getName();
             if ("badges".equals(name)) {
@@ -72,7 +72,7 @@ public class UserParser extends AbstractParser<User> {
 
             } else {
                 // Consume something we don't understand.
-                if (DEBUG) Log.d(TAG, "Found tag that we don't recognize: " + name);
+                if (DEBUG) LOG.log(Level.FINE, "Found tag that we don't recognize: " + name);
                 skipSubTree(parser);
             }
         }

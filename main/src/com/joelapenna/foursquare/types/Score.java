@@ -4,11 +4,9 @@
 
 package com.joelapenna.foursquare.types;
 
-;
-
 /**
- * Auto-generated: 2009-08-05 21:30:25.663121
- * 
+ * Auto-generated: 2009-11-12 21:45:34.267218
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Score implements FoursquareType {

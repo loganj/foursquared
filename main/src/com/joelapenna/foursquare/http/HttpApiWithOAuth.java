@@ -22,15 +22,15 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import android.util.Log;
-
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class HttpApiWithOAuth extends AbstractHttpApi {
-    protected static final String TAG = "HttpApiWithOAuth";
+    protected static final Logger LOG = Logger.getLogger("HttpApiWithOAuth");
     protected static final boolean DEBUG = Foursquare.DEBUG;
 
     private OAuthConsumer mConsumer;
@@ -42,19 +42,19 @@ public class HttpApiWithOAuth extends AbstractHttpApi {
     public FoursquareType doHttpRequest(HttpRequestBase httpRequest,
             Parser<? extends FoursquareType> parser) throws FoursquareCredentialsException,
             FoursquareParseException, FoursquareException, IOException {
-        if (DEBUG) Log.d(TAG, "doHttpRequest: " + httpRequest.getURI());
+        if (DEBUG) LOG.log(Level.FINE, "doHttpRequest: " + httpRequest.getURI());
             try {
-                if (DEBUG) Log.d(TAG, "Signing request: " + httpRequest.getURI());
-                if (DEBUG) Log.d(TAG, "Consumer: " + mConsumer.getConsumerKey() + ", "
+                if (DEBUG) LOG.log(Level.FINE, "Signing request: " + httpRequest.getURI());
+                if (DEBUG) LOG.log(Level.FINE, "Consumer: " + mConsumer.getConsumerKey() + ", "
                         + mConsumer.getConsumerSecret());
-                if (DEBUG) Log.d(TAG, "Token: " + mConsumer.getToken() + ", "
+                if (DEBUG) LOG.log(Level.FINE, "Token: " + mConsumer.getToken() + ", "
                         + mConsumer.getTokenSecret());
                 mConsumer.sign(httpRequest);
             } catch (OAuthMessageSignerException e) {
-                if (DEBUG) Log.d(TAG, "OAuthMessageSignerException", e);
+                if (DEBUG) LOG.log(Level.FINE, "OAuthMessageSignerException", e);
                 throw new RuntimeException(e);
             } catch (OAuthExpectationFailedException e) {
-                if (DEBUG) Log.d(TAG, "OAuthExpectationFailedException", e);
+                if (DEBUG) LOG.log(Level.FINE, "OAuthExpectationFailedException", e);
                 throw new RuntimeException(e);
             }
         return executeHttpRequest(httpRequest, parser);
@@ -72,7 +72,7 @@ public class HttpApiWithOAuth extends AbstractHttpApi {
     public void setOAuthTokenWithSecret(String token, String tokenSecret) {
         verifyConsumer();
         if (token == null && tokenSecret == null) {
-            if (DEBUG) Log.d(TAG, "Resetting consumer due to null token/secret.");
+            if (DEBUG) LOG.log(Level.FINE, "Resetting consumer due to null token/secret.");
             String consumerKey = mConsumer.getConsumerKey();
             String consumerSecret = mConsumer.getConsumerSecret();
             mConsumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret,

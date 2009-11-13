@@ -4,11 +4,9 @@
 
 package com.joelapenna.foursquare.types;
 
-;
-
 /**
- * Auto-generated: 2009-08-05 21:30:24.564289
- * 
+ * Auto-generated: 2009-11-12 21:45:35.815975
+ *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Beenhere implements FoursquareType {
