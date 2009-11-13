@@ -13,6 +13,7 @@ import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Settings;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
+import com.joelapenna.foursquared.location.LocationUtils;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -135,7 +136,7 @@ public class Preferences {
         City finalCity = null;
 
         if (location != null) {
-            City newCity = foursquare.checkCity(Foursquare.Location.fromAndroidLocation(location));
+            City newCity = foursquare.checkCity(LocationUtils.createFoursquareLocation(location));
 
             if (newCity != null) {
                 Data response = foursquare.switchCity(newCity.getId());

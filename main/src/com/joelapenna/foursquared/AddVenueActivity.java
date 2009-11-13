@@ -4,10 +4,10 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
+import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
 import android.app.Activity;
@@ -254,7 +254,7 @@ public class AddVenueActivity extends Activity {
                 if (DEBUG) Log.d(TAG, stateHolder.location.toString());
 
                 stateHolder.foursquareCity = ((Foursquared)getApplication()).getFoursquare()
-                        .checkCity(Foursquare.Location.fromAndroidLocation(stateHolder.location));
+                        .checkCity(LocationUtils.createFoursquareLocation(stateHolder.location));
 
                 Geocoder geocoder = new Geocoder(AddVenueActivity.this);
                 stateHolder.geocodedAddress = geocoder.getFromLocation(

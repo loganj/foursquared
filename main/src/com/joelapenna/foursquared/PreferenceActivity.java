@@ -6,6 +6,7 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.City;
+import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
@@ -134,7 +135,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
 
                 Foursquare foursquare = foursquared.getFoursquare();
                 City newCity = foursquare.checkCity(//
-                        Foursquare.Location.fromAndroidLocation(location));
+                        LocationUtils.createFoursquareLocation(location));
                 foursquare.switchCity(newCity.getId());
 
                 Editor editor = mPrefs.edit();

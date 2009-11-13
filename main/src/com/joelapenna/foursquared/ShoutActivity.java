@@ -4,11 +4,11 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
+import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.VenueView;
@@ -348,7 +348,7 @@ public class ShoutActivity extends Activity {
                 Location location = ((Foursquared)getApplication()).getLastKnownLocation();
                 ((Foursquared)getApplication()).switchCity(location);
                 return ((Foursquared)getApplication()).getFoursquare().checkin(venueId, null,
-                        Foursquare.Location.fromAndroidLocation(location), mShout, isPrivate,
+                        LocationUtils.createFoursquareLocation(location), mShout, isPrivate,
                         mTellTwitter);
             } catch (Exception e) {
                 Log.d(TAG, "Storing reason: ", e);

@@ -199,30 +199,6 @@ public class Foursquare {
         public Location(String geolat, String geolong) {
             this(geolat, geolong, null, null, null);
         }
-
-        public static final Location fromAndroidLocation(android.location.Location location) {
-            String geolat = null;
-            if (location.getLatitude() != 0.0) {
-                geolat = String.valueOf(location.getLatitude());
-            }
-
-            String geolong = null;
-            if (location.getLongitude() != 0.0) {
-                geolong = String.valueOf(location.getLongitude());
-            }
-
-            String geohacc = null;
-            if (location.hasAccuracy()) {
-                geohacc = String.valueOf(location.getAccuracy());
-            }
-
-            String geoalt = null;
-            if (location.hasAccuracy()) {
-                geoalt = String.valueOf(location.hasAltitude());
-            }
-
-            return new Location(geolat, geolong, geohacc, null, geoalt);
-        }
     }
 
 }
