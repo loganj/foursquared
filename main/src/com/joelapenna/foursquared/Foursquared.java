@@ -164,7 +164,7 @@ public class Foursquared extends Application {
 
     private void loadFoursquare() {
         // Try logging in and setting up foursquare oauth, then user credentials.
-        mFoursquare = new Foursquare(FoursquaredSettings.USE_DEBUG_SERVER, mVersion);
+        mFoursquare = new Foursquare(FoursquaredSettings.USE_DEBUG_SERVER, mVersion, false);
 
         if (FoursquaredSettings.DEBUG) Log.d(TAG, "loadCredentials()");
         String phoneNumber = mPrefs.getString(Preferences.PREFERENCE_LOGIN, null);
