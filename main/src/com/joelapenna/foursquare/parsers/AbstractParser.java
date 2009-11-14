@@ -13,17 +13,17 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import android.util.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public abstract class AbstractParser<T extends FoursquareType> implements Parser<T> {
-    private static final String TAG = "AbstractParser";
+    private static final Logger LOG = Logger.getLogger("AbstractParser");
     private static final boolean DEBUG = Foursquare.DEBUG;
 
     private static XmlPullParserFactory sFactory;
@@ -52,10 +52,10 @@ public abstract class AbstractParser<T extends FoursquareType> implements Parser
             }
             return parseInner(parser);
         } catch (IOException e) {
-            if (DEBUG) Log.d(TAG, "IOException", e);
+            if (DEBUG) LOG.log(Level.FINE, "IOException", e);
             throw new FoursquareParseException(e.getMessage());
         } catch (XmlPullParserException e) {
-            if (DEBUG) Log.d(TAG, "XmlPullParserException", e);
+            if (DEBUG) LOG.log(Level.FINE, "XmlPullParserException", e);
             throw new FoursquareParseException(e.getMessage());
         }
     }
@@ -76,7 +76,7 @@ public abstract class AbstractParser<T extends FoursquareType> implements Parser
                         }
                     }
                     is.close();
-                    Log.d(TAG, sb.toString());
+                    LOG.log(Level.FINE, sb.toString());
                 }
                 parser.setInput(new StringReader(sb.toString()));
             } else {

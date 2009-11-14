@@ -13,16 +13,16 @@ import com.joelapenna.foursquare.types.Group;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import android.util.Log;
-
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
 public class GroupParser extends AbstractParser<Group> {
-    private static final String TAG = "GroupParser";
+    private static final Logger LOG = Logger.getLogger("GroupParser");
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     private Parser<? extends FoursquareType> mSubParser;
@@ -39,9 +39,9 @@ public class GroupParser extends AbstractParser<Group> {
         group.setType(parser.getAttributeValue(null, "type"));
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) Log.d(TAG, "Tag Name: " + String.valueOf(parser.getName()));
+            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
             FoursquareType item = this.mSubParser.parse(parser);
-            if (DEBUG) Log.d(TAG, "adding item: " + item);
+            if (DEBUG) LOG.log(Level.FINE, "adding item: " + item);
             group.add(item);
         }
         return group;

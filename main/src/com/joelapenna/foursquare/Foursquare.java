@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  */
 public class Foursquare {
     private static final Logger LOG = Logger.getLogger("Foursquare");
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     public static final boolean PARSER_DEBUG = false;
 
     public static final String MALE = "male";
@@ -40,7 +40,7 @@ public class Foursquare {
     @Classic
     public Foursquare(boolean debug, String clientVersion, boolean useOAuth) {
         if (debug) {
-            if (DEBUG) LOG.log(Level.FINE, "Using DEBUG domain.");
+            LOG.log(Level.INFO, "Using DEBUG domain.");
             mFoursquareV1 = new FoursquareHttpApiV1("10.0.2.2:8080", clientVersion, useOAuth);
         } else {
             mFoursquareV1 = new FoursquareHttpApiV1(clientVersion, useOAuth);
