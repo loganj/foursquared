@@ -61,8 +61,8 @@ public class BrowsableActivity extends Activity {
         switch (sUriMatcher.match(uri)) {
             case URI_PATH_CHECKIN:
                 if (DEBUG) Log.d(TAG, "Matched: URI_PATH_CHECKIN");
-                intent = new Intent(this, MainActivity.class);
-                intent.putExtra(Foursquared.EXTRA_VENUE_ID, uri.getQueryParameter("mvenue"));
+                intent = new Intent(this, VenueActivity.class);
+                intent.putExtra(Foursquared.EXTRA_VENUE_ID, uri.getQueryParameter("vid"));
                 startActivity(intent);
                 break;
             case URI_PATH_CHECKINS:
