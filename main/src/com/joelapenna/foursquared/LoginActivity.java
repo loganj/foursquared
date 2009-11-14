@@ -123,7 +123,7 @@ public class LoginActivity extends Activity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent( //
-                        Intent.ACTION_VIEW, Uri.parse("http://m.foursquare.com./signup")));
+                        Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_MOBILE_SIGNUP)));
             }
         });
 

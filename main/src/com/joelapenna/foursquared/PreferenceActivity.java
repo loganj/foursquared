@@ -86,11 +86,11 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
 
         } else if (Preferences.PREFERENCE_FRIEND_ADD.equals(key)) {
             startActivity(new Intent( //
-                    Intent.ACTION_VIEW, Uri.parse("http://m.foursquare.com./addfriends")));
+                    Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_MOBILE_ADDFRIENDS)));
 
         } else if (Preferences.PREFERENCE_FRIEND_REQUESTS.equals(key)) {
             startActivity(new Intent( //
-                    Intent.ACTION_VIEW, Uri.parse("http://m.foursquare.com./friends")));
+                    Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_MOBILE_FRIENDS)));
 
         } else if (Preferences.PREFERENCE_CITY_NAME.equals(key)) {
             new UpdateCityTask().execute();

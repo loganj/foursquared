@@ -29,6 +29,12 @@ public class Foursquare {
     public static final boolean DEBUG = false;
     public static final boolean PARSER_DEBUG = false;
 
+    public static final String FOURSQUARE_API_DOMAIN = "api.foursquare.com";
+
+    public static final String FOURSQUARE_MOBILE_ADDFRIENDS = "http://m.foursquare.com/addfriends";
+    public static final String FOURSQUARE_MOBILE_FRIENDS = "http://m.foursquare.com/friends";
+    public static final String FOURSQUARE_MOBILE_SIGNUP = "http://m.foursquare.com/signup";
+
     public static final String MALE = "male";
     public static final String FEMALE = "female";
 
@@ -169,7 +175,7 @@ public class Foursquare {
     }
 
     public static final FoursquareHttpApiV1 createHttpApi(String clientVersion, boolean useOAuth) {
-        return createHttpApi(FoursquareHttpApiV1.FOURSQUARE_API_DOMAIN, clientVersion, useOAuth);
+        return createHttpApi(FOURSQUARE_API_DOMAIN, clientVersion, useOAuth);
     }
 
     /**

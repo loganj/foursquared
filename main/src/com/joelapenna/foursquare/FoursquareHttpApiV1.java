@@ -49,8 +49,6 @@ public class FoursquareHttpApiV1 {
             .getLogger(FoursquareHttpApiV1.class.getCanonicalName());
     private static final boolean DEBUG = Foursquare.DEBUG;
 
-    public static final String FOURSQUARE_API_DOMAIN = "api.foursquare.com.";
-
     private static final String URL_API_AUTHEXCHANGE = "/authexchange";
 
     private static final String URL_API_ADDVENUE = "/addvenue";
