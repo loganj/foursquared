@@ -45,7 +45,7 @@ public class StringFormatters {
         sb.append(user.getFirstname());
 
         String lastName = user.getLastname();
-        if (lastName.length() > 0) {
+        if (lastName != null && lastName.length() > 0) {
             sb.append(" ");
             sb.append(lastName.substring(0, 1) + ".");
         }
