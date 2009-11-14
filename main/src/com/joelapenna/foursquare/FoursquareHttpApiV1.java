@@ -45,8 +45,11 @@ import java.util.logging.Logger;
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class FoursquareHttpApiV1 {
-    private static final Logger LOG = Logger.getLogger(FoursquareHttpApiV1.class.getCanonicalName());
+    private static final Logger LOG = Logger
+            .getLogger(FoursquareHttpApiV1.class.getCanonicalName());
     private static final boolean DEBUG = Foursquare.DEBUG;
+
+    public static final String FOURSQUARE_API_DOMAIN = "api.foursquare.com.";
 
     private static final String URL_API_AUTHEXCHANGE = "/authexchange";
 
@@ -67,10 +70,6 @@ public class FoursquareHttpApiV1 {
 
     private final String mApiBaseUrl;
     private final AuthScope mAuthScope;
-
-    public FoursquareHttpApiV1(String clientVersion, boolean useOAuth) {
-        this("api.foursquare.com.", clientVersion, useOAuth);
-    }
 
     public FoursquareHttpApiV1(String domain, String clientVersion, boolean useOAuth) {
         mApiBaseUrl = "http://" + domain + "/v1";

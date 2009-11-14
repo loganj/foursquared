@@ -162,14 +162,14 @@ public class Foursquare {
         return sb.toString();
     }
 
-    public static final FoursquareHttpApiV1 createHttpApi(String clientVersion, boolean useOAuth) {
-        return new FoursquareHttpApiV1(clientVersion, useOAuth);
-    }
-
     public static final FoursquareHttpApiV1 createHttpApi(String domain, String clientVersion,
             boolean useOAuth) {
         LOG.log(Level.INFO, "Using foursquare.com for requests.");
         return new FoursquareHttpApiV1(domain, clientVersion, useOAuth);
+    }
+
+    public static final FoursquareHttpApiV1 createHttpApi(String clientVersion, boolean useOAuth) {
+        return createHttpApi(FoursquareHttpApiV1.FOURSQUARE_API_DOMAIN, clientVersion, useOAuth);
     }
 
     /**
