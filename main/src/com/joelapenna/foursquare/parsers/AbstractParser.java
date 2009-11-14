@@ -23,8 +23,8 @@ import java.util.logging.Logger;
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public abstract class AbstractParser<T extends FoursquareType> implements Parser<T> {
-    private static final Logger LOG = Logger.getLogger("AbstractParser");
-    private static final boolean DEBUG = Foursquare.DEBUG;
+    private static final Logger LOG = Logger.getLogger(AbstractParser.class.getCanonicalName());
+    private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     private static XmlPullParserFactory sFactory;
     static {

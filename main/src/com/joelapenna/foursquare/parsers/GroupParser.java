@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * @param <T>
  */
 public class GroupParser extends AbstractParser<Group> {
-    private static final Logger LOG = Logger.getLogger("GroupParser");
+    private static final Logger LOG = Logger.getLogger(GroupParser.class.getCanonicalName());
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     private Parser<? extends FoursquareType> mSubParser;

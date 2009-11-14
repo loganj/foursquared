@@ -46,7 +46,7 @@ import java.util.logging.Logger;
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 abstract public class AbstractHttpApi implements HttpApi{
-    protected static final Logger LOG = Logger.getLogger("AbstractHttpApi");
+    protected static final Logger LOG = Logger.getLogger(AbstractHttpApi.class.getCanonicalName());
     protected static final boolean DEBUG = Foursquare.DEBUG;
 
     private static final String DEFAULT_CLIENT_VERSION = "com.joelapenna.foursquare";

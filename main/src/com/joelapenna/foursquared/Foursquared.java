@@ -13,6 +13,7 @@ import com.joelapenna.foursquared.location.BestLocationListener;
 import com.joelapenna.foursquared.location.CityLocationListener;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.DumpcatcherHelper;
+import com.joelapenna.foursquared.util.JavaLoggingHandler;
 import com.joelapenna.foursquared.util.NullDiskCache;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 
@@ -39,6 +40,8 @@ import android.view.Menu;
 
 import java.io.IOException;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -46,6 +49,10 @@ import java.util.Observer;
 public class Foursquared extends Application {
     private static final String TAG = "Foursquared";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
+    static {
+        Logger.getLogger("com.joelapenna.foursquare").addHandler(new JavaLoggingHandler());
+        Logger.getLogger("com.joelapenna.foursquare").setLevel(Level.ALL);
+    }
 
     public static final String PACKAGE_NAME = "com.joelapenna.foursquared";
 
@@ -199,7 +206,7 @@ public class Foursquared extends Application {
 
     /**
      * Set up resource managers on the application depending on SD card state.
-     *
+     * 
      * @author Joe LaPenna (joe@joelapenna.com)
      */
     private class MediaCardStateBroadcastReceiver extends BroadcastReceiver {

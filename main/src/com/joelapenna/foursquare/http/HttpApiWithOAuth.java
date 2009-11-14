@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class HttpApiWithOAuth extends AbstractHttpApi {
-    protected static final Logger LOG = Logger.getLogger("HttpApiWithOAuth");
+    protected static final Logger LOG = Logger.getLogger(HttpApiWithOAuth.class.getCanonicalName());
     protected static final boolean DEBUG = Foursquare.DEBUG;
 
     private OAuthConsumer mConsumer;

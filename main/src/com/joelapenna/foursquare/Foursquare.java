@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Foursquare {
-    private static final Logger LOG = Logger.getLogger("Foursquare");
+    private static final Logger LOG = Logger.getLogger("com.joelapenna.foursquare");
     public static final boolean DEBUG = true;
     public static final boolean PARSER_DEBUG = false;
 
@@ -40,9 +40,10 @@ public class Foursquare {
     @Classic
     public Foursquare(boolean debug, String clientVersion, boolean useOAuth) {
         if (debug) {
-            LOG.log(Level.INFO, "Using DEBUG domain.");
+            LOG.log(Level.INFO, "Using 10.0.2.2:8080 for requests.");
             mFoursquareV1 = new FoursquareHttpApiV1("10.0.2.2:8080", clientVersion, useOAuth);
         } else {
+            LOG.log(Level.INFO, "Using foursquare.com for requests.");
             mFoursquareV1 = new FoursquareHttpApiV1(clientVersion, useOAuth);
         }
     }

@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  * @param <T>
  */
 public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
-    private static final Logger LOG = Logger.getLogger("%(type_name)sParser");
+    private static final Logger LOG = Logger.getLogger(%(type_name)sParser.class.getCanonicalName());
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override

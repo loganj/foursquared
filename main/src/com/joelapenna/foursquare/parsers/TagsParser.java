@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * @param <T>
  */
 public class TagsParser extends AbstractParser<Tags> {
-    private static final Logger LOG = Logger.getLogger("TagsParser");
+    private static final Logger LOG = Logger.getLogger(TagsParser.class.getCanonicalName());
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override

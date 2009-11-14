@@ -17,13 +17,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Auto-generated: 2009-11-12 21:45:35.649207
+ * Auto-generated: 2009-11-13 21:59:24.829338
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
 public class BadgeParser extends AbstractParser<Badge> {
-    private static final Logger LOG = Logger.getLogger("BadgeParser");
+    private static final Logger LOG = Logger.getLogger(BadgeParser.class.getCanonicalName());
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
