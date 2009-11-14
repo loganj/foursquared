@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  */
 public class Foursquare {
     private static final Logger LOG = Logger.getLogger("com.joelapenna.foursquare");
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final boolean PARSER_DEBUG = false;
 
     public static final String MALE = "male";
@@ -38,14 +38,8 @@ public class Foursquare {
 
     @V1
     @Classic
-    public Foursquare(boolean debug, String clientVersion, boolean useOAuth) {
-        if (debug) {
-            LOG.log(Level.INFO, "Using 10.0.2.2:8080 for requests.");
-            mFoursquareV1 = new FoursquareHttpApiV1("10.0.2.2:8080", clientVersion, useOAuth);
-        } else {
-            LOG.log(Level.INFO, "Using foursquare.com for requests.");
-            mFoursquareV1 = new FoursquareHttpApiV1(clientVersion, useOAuth);
-        }
+    public Foursquare(FoursquareHttpApiV1 httpApi) {
+        mFoursquareV1 = httpApi;
     }
 
     public void setCredentials(String phone, String password) {
@@ -166,6 +160,16 @@ public class Foursquare {
         sb.append("&cid=");
         sb.append(checkinId);
         return sb.toString();
+    }
+
+    public static final FoursquareHttpApiV1 createHttpApi(String clientVersion, boolean useOAuth) {
+        return new FoursquareHttpApiV1(clientVersion, useOAuth);
+    }
+
+    public static final FoursquareHttpApiV1 createHttpApi(String domain, String clientVersion,
+            boolean useOAuth) {
+        LOG.log(Level.INFO, "Using foursquare.com for requests.");
+        return new FoursquareHttpApiV1(domain, clientVersion, useOAuth);
     }
 
     /**
