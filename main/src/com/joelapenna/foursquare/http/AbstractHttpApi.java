@@ -37,7 +37,7 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-abstract public class AbstractHttpApi implements HttpApi{
+abstract public class AbstractHttpApi implements HttpApi {
     protected static final Logger LOG = Logger.getLogger(AbstractHttpApi.class.getCanonicalName());
     protected static final boolean DEBUG = Foursquare.DEBUG;
 
@@ -71,7 +71,8 @@ abstract public class AbstractHttpApi implements HttpApi{
         if (DEBUG) LOG.log(Level.FINE, "doHttpRequest: " + httpRequest.getURI());
 
         HttpResponse response = executeHttpRequest(httpRequest);
-        if (DEBUG) LOG.log(Level.FINE, "executed HttpRequest for: " + httpRequest.getURI().toString());
+        if (DEBUG) LOG.log(Level.FINE, "executed HttpRequest for: "
+                + httpRequest.getURI().toString());
 
         switch (response.getStatusLine().getStatusCode()) {
             case 200:
@@ -132,13 +133,14 @@ abstract public class AbstractHttpApi implements HttpApi{
 
     /**
      * execute() an httpRequest catching exceptions and returning null instead.
-     *
+     * 
      * @param httpRequest
      * @return
      * @throws IOException
      */
     public HttpResponse executeHttpRequest(HttpRequestBase httpRequest) throws IOException {
-        if (DEBUG) LOG.log(Level.FINE, "executing HttpRequest for: " + httpRequest.getURI().toString());
+        if (DEBUG) LOG.log(Level.FINE, "executing HttpRequest for: "
+                + httpRequest.getURI().toString());
         try {
             mHttpClient.getConnectionManager().closeExpiredConnections();
             return mHttpClient.execute(httpRequest);
@@ -150,7 +152,7 @@ abstract public class AbstractHttpApi implements HttpApi{
 
     public HttpGet createHttpGet(String url, NameValuePair... nameValuePairs) {
         if (DEBUG) LOG.log(Level.FINE, "creating HttpGet for: " + url);
-        String query = URLEncodedUtils.format(Arrays.asList(nameValuePairs), HTTP.UTF_8);
+        String query = URLEncodedUtils.format(stripNulls(nameValuePairs), HTTP.UTF_8);
         HttpGet httpGet = new HttpGet(url + "?" + query);
         httpGet.addHeader(CLIENT_VERSION_HEADER, mClientVersion);
         if (DEBUG) LOG.log(Level.FINE, "Created: " + httpGet.getURI());
@@ -159,14 +161,10 @@ abstract public class AbstractHttpApi implements HttpApi{
 
     public HttpPost createHttpPost(String url, NameValuePair... nameValuePairs) {
         if (DEBUG) LOG.log(Level.FINE, "creating HttpPost for: " + url);
-        List<NameValuePair> params = Arrays.asList(nameValuePairs);
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader(CLIENT_VERSION_HEADER, mClientVersion);
         try {
-            for (int i = 0; i < params.size(); i++) {
-                if (DEBUG) LOG.log(Level.FINE, "Param: " + params.get(i));
-            }
-            httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+            httpPost.setEntity(new UrlEncodedFormEntity(stripNulls(nameValuePairs), HTTP.UTF_8));
         } catch (UnsupportedEncodingException e1) {
             throw new IllegalArgumentException("Unable to encode http parameters.");
         }
@@ -174,10 +172,22 @@ abstract public class AbstractHttpApi implements HttpApi{
         return httpPost;
     }
 
+    private List<NameValuePair> stripNulls(NameValuePair... nameValuePairs) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        for (int i = 0; i < nameValuePairs.length; i++) {
+            NameValuePair param = nameValuePairs[i];
+            if (param.getValue() != null) {
+                if (DEBUG) LOG.log(Level.FINE, "Param: " + param);
+                params.add(param);
+            }
+        }
+        return params;
+    }
+
     /**
      * Create a thread-safe client. This client does not do redirecting, to allow us to capture
      * correct "error" codes.
-     *
+     * 
      * @return HttpClient
      */
     public static final DefaultHttpClient createHttpClient() {
