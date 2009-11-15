@@ -73,7 +73,7 @@ public class Preferences {
 
     /**
      * Log in a user and put credential information into the preferences edit queue.
-     *
+     * 
      * @param foursquare
      * @param login
      * @param password
@@ -91,12 +91,12 @@ public class Preferences {
         storeLoginAndPassword(editor, login, password);
         editor.commit();
 
-        City city = switchCity(foursquare, location);
-        storeCity(editor, city);
-        editor.commit();
-
         User user = foursquare.user(null, false, false);
         storeUser(editor, user);
+        editor.commit();
+
+        City city = switchCity(foursquare, location);
+        storeCity(editor, city);
         editor.commit();
 
         return user;
@@ -136,17 +136,29 @@ public class Preferences {
         City finalCity = null;
 
         if (location != null) {
+            if (DEBUG) Log.d(TAG, "Checking city with: " + location.toString());
             City newCity = foursquare.checkCity(LocationUtils.createFoursquareLocation(location));
 
             if (newCity != null) {
+                if (DEBUG) Log.d(TAG, "Foursquare guesses you're here: " + newCity.getName());
                 Data response = foursquare.switchCity(newCity.getId());
                 if (response.status()) {
+                    if (DEBUG) Log.d(TAG, "Foursquare knows you're here: " + newCity.getName());
                     finalCity = newCity;
                 }
             }
 
         }
         return finalCity;
+    }
+
+    public static void storeCity(final Editor editor, City city) {
+        if (city != null) {
+            editor.putString(PREFERENCE_CITY_ID, city.getId());
+            editor.putString(PREFERENCE_CITY_GEOLAT, city.getGeolat());
+            editor.putString(PREFERENCE_CITY_GEOLONG, city.getGeolong());
+            editor.putString(PREFERENCE_CITY_NAME, city.getName());
+        }
     }
 
     public static void storeLoginAndPassword(final Editor editor, String login, String password) {
@@ -161,15 +173,6 @@ public class Preferences {
             if (DEBUG) Log.d(TAG, "Setting user info");
         } else {
             if (Preferences.DEBUG) Log.d(Preferences.TAG, "Unable to lookup user.");
-        }
-    }
-
-    public static void storeCity(final Editor editor, City city) {
-        if (city != null) {
-            editor.putString(PREFERENCE_CITY_ID, city.getId());
-            editor.putString(PREFERENCE_CITY_GEOLAT, city.getGeolat());
-            editor.putString(PREFERENCE_CITY_GEOLONG, city.getGeolong());
-            editor.putString(PREFERENCE_CITY_NAME, city.getName());
         }
     }
 }

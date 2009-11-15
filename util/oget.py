@@ -27,7 +27,7 @@ import oauth
 """From: http://groups.google.com/group/foursquare-api/web/oauth
 
 @consumer = OAuth::Consumer.new("consumer_token","consumer_secret", {
-       :site               => "http://playfoursquare.com",
+       :site               => "http://foursquare.com",
        :scheme             => :header,
        :http_method        => :post,
        :request_token_path => "/oauth/request_token",
@@ -36,14 +36,13 @@ import oauth
       })
 """
 
-SERVER = 'api.playfoursquare.com'
-PORT = 80
+SERVER = 'api.foursquare.com:80'
 
 CONTENT_TYPE_HEADER = {'Content-Type' :'application/x-www-form-urlencoded'}
 
 SIGNATURE_METHOD = oauth.OAuthSignatureMethod_HMAC_SHA1()
 
-AUTHEXCHANGE_URL = 'http://api.playfoursquare.com/v1/authexchange'
+AUTHEXCHANGE_URL = 'http://api.foursquare.com/v1/authexchange'
 
 
 def parse_auth_response(auth_response):
@@ -83,7 +82,7 @@ def main():
   if not access_token:
     oauth_request = create_signed_oauth_request(username, password, consumer)
 
-    connection = httplib.HTTPConnection('api.playfoursquare.com:80')
+    connection = httplib.HTTPConnection(SERVER)
 
     headers = {'Content-Type' :'application/x-www-form-urlencoded'}
     connection.request(oauth_request.http_method, AUTHEXCHANGE_URL,
@@ -100,7 +99,7 @@ def main():
       parameters=parameters)
   oauth_request.sign_request(SIGNATURE_METHOD, consumer, access_token)
 
-  connection = httplib.HTTPConnection('api.playfoursquare.com:80')
+  connection = httplib.HTTPConnection(SERVER)
   connection.request(oauth_request.http_method, oauth_request.to_url(),
       body=oauth_request.to_postdata(), headers=CONTENT_TYPE_HEADER)
 

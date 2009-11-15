@@ -210,6 +210,7 @@ public class LoginActivity extends Activity {
                 }
 
             } catch (Exception e) {
+                if (DEBUG) Log.d(TAG, "Caught Excption logging in.", e);
                 mReason = e;
             }
 
