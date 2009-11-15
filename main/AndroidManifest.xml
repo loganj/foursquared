@@ -77,7 +77,7 @@
         <data
           android:scheme="http"
           android:host="m.foursquare.com"
-          android:pathPattern="/checkin?mvenue=.*" />
+          android:pathPrefix="/checkin" />
         <data
           android:scheme="http"
           android:host="m.foursquare.com"
