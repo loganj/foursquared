@@ -194,11 +194,11 @@ public class FoursquareHttpApiV1 {
     /*
      * /switchcity?cityid=24
      */
-    Data switchcity(String cityid) throws FoursquareException, FoursquareCredentialsException,
+    City switchcity(String cityid) throws FoursquareException, FoursquareCredentialsException,
             FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_SWITCHCITY), //
                 new BasicNameValuePair("cityid", cityid));
-        return (Data)mHttpApi.doHttpRequest(httpPost, new DataParser());
+        return (City)mHttpApi.doHttpRequest(httpPost, new CityParser());
     }
 
     /*

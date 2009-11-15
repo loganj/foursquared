@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 /**
  * Auto-generated: 2009-11-13 21:59:24.038649
- *
+ * 
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
@@ -54,6 +54,9 @@ public class CityParser extends AbstractParser<City> {
 
             } else if ("timezone".equals(name)) {
                 city.setTimezone(parser.nextText());
+
+            } else if ("cityid".equals(name)) {
+                city.setId(parser.nextText());
 
             } else {
                 // Consume something we don't understand.

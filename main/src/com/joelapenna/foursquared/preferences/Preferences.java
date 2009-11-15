@@ -141,11 +141,9 @@ public class Preferences {
 
             if (newCity != null) {
                 if (DEBUG) Log.d(TAG, "Foursquare guesses you're here: " + newCity.getName());
-                Data response = foursquare.switchCity(newCity.getId());
-                if (response.status()) {
-                    if (DEBUG) Log.d(TAG, "Foursquare knows you're here: " + newCity.getName());
-                    finalCity = newCity;
-                }
+                foursquare.switchCity(newCity.getId()); // This will raise an exception if it fails.
+                if (DEBUG) Log.d(TAG, "Foursquare knows you're here: " + newCity.getName());
+                finalCity = newCity;
             }
 
         }

@@ -128,7 +128,7 @@ public class Foursquare {
     }
 
     @V1
-    public Data switchCity(String cityId) throws FoursquareException, FoursquareError, IOException {
+    public City switchCity(String cityId) throws FoursquareException, FoursquareError, IOException {
         return mFoursquareV1.switchcity(cityId);
     }
 
