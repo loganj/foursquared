@@ -26,8 +26,8 @@ import java.util.logging.Logger;
  */
 public class Foursquare {
     private static final Logger LOG = Logger.getLogger("com.joelapenna.foursquare");
-    public static final boolean DEBUG = true;
-    public static final boolean PARSER_DEBUG = true;
+    public static final boolean DEBUG = false;
+    public static final boolean PARSER_DEBUG = false;
 
     public static final String FOURSQUARE_API_DOMAIN = "api.foursquare.com";
 
