@@ -81,9 +81,9 @@ public class VenueCheckinsActivity extends LoadableListActivity {
         getListView().setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                User user = (User)parent.getAdapter().getItem(position);
-                if (user != null) {
-                    startItemActivity(user);
+                Checkin checkin = (Checkin)parent.getAdapter().getItem(position);
+                if (checkin != null) {
+                    startItemActivity(checkin.getUser());
                 }
             }
         });
