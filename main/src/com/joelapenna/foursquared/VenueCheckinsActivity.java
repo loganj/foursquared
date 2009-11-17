@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Mayor;
 import com.joelapenna.foursquare.types.User;
@@ -13,7 +14,7 @@ import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
-import com.joelapenna.foursquared.widget.UserListAdapter;
+import com.joelapenna.foursquared.widget.CheckinListAdapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -45,7 +46,7 @@ public class VenueCheckinsActivity extends LoadableListActivity {
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private Observer mParentDataObserver = new ParentDataObserver();
-    private UserListAdapter mListAdapter;
+    private CheckinListAdapter mListAdapter;
     private View mMayorLayout;
 
     @Override
@@ -93,7 +94,7 @@ public class VenueCheckinsActivity extends LoadableListActivity {
         setListAdapter(mListAdapter);
     }
 
-    private void putCheckinsInAdapter(Group<User> checkins) {
+    private void putCheckinsInAdapter(Group<Checkin> checkins) {
         setEmptyView();
         mListAdapter.setGroup(checkins);
     }
@@ -125,7 +126,8 @@ public class VenueCheckinsActivity extends LoadableListActivity {
                 mayor.getCount() + " Checkins");
 
         final ImageView photo = (ImageView)findViewById(R.id.mayorPhoto);
-        final RemoteResourceManager rrm = ((Foursquared)getApplication()).getRemoteResourceManager();
+        final RemoteResourceManager rrm = ((Foursquared)getApplication())
+                .getRemoteResourceManager();
         final Uri photoUri = Uri.parse(mayor.getUser().getPhoto());
 
         try {
@@ -187,33 +189,19 @@ public class VenueCheckinsActivity extends LoadableListActivity {
             VenueActivity parent = (VenueActivity)getParent();
             Venue venue = parent.venueObservable.getVenue();
 
-            // The /venue api point returns a people block filled with a whole *1* group. Its
-            // possible that there will be more in the future with descriptive type attributes, then
-            // we'll have to refactor this activity to no longer smush all the groups into one
-            // concise group. Until then though, we're going to some cleaning here to merge the
-            // group that is served to the list adapter is only 1 level deep (the <user>s).
-            Group<Group<User>> peopleGroups = venue.getPeople();
-            Group<User> people = new Group<User>();
-            people.setType("Who's here");
-            if (peopleGroups != null) {
-                for (int i = 0; i < peopleGroups.size(); i++) {
-                    Group<User> peopleGroup = peopleGroups.get(i);
-                    for (int j = 0; j < peopleGroup.size(); j++) {
-                        people.add(peopleGroup.get(j));
-                    }
-                }
-                Collections.sort(people, Comparators.getUserRecencyComparator());
-            }
+            // For each checkin, lets get the user because that is what we're concerned about here.
+            Group<Checkin> checkins = venue.getCheckins();
+            Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
 
-            if (!observed && venue != null && people != null) {
+            if (!observed && venue != null && checkins != null) {
                 observed = true;
                 ensureMayor(venue);
-                putCheckinsInAdapter(people);
+                putCheckinsInAdapter(checkins);
             }
         }
     }
 
-    private class HeaderAwareCheckinListAdapter extends UserListAdapter {
+    private class HeaderAwareCheckinListAdapter extends CheckinListAdapter {
         public HeaderAwareCheckinListAdapter(Context context, RemoteResourceManager rrm) {
             super(context, rrm);
         }

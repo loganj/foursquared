@@ -13,11 +13,9 @@
   <twitter>stupditwittername</twitter>
   <geolat>37.7729</geolat>
   <geolong>-122.437</geolong>
-  <people type="Group">
-    <now type="Group">
-      <user type="User"></user>
-    </now>
-  </people>
+  <checkins type="Group">
+    <checkin type="Checkin"></checkin>
+  </checkins>
   <stats type="Stats"></stats>
   <tips type="Group">
     <tip type="Tip"></tip>

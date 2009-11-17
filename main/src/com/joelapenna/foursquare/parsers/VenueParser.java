@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Auto-generated: 2009-11-13 21:59:24.445917
+ * Auto-generated: 2009-11-17 09:33:44.568010
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -39,6 +39,9 @@ public class VenueParser extends AbstractParser<Venue> {
             String name = parser.getName();
             if ("address".equals(name)) {
                 venue.setAddress(parser.nextText());
+
+            } else if ("checkins".equals(name)) {
+                venue.setCheckins(new GroupParser(new CheckinParser()).parse(parser));
 
             } else if ("city".equals(name)) {
                 venue.setCity(parser.nextText());
@@ -63,9 +66,6 @@ public class VenueParser extends AbstractParser<Venue> {
 
             } else if ("name".equals(name)) {
                 venue.setName(parser.nextText());
-
-            } else if ("people".equals(name)) {
-                venue.setPeople(new GroupParser(new GroupParser(new UserParser())).parse(parser));
 
             } else if ("phone".equals(name)) {
                 venue.setPhone(parser.nextText());

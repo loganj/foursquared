@@ -15,40 +15,39 @@
     <tag>lunch</tag>
     <tag>pub</tag>
   </tags>
-  <people>
-    <later>
+  <checkins>
+    <checkin>
+      <id>337912</id>
+      <created>Mon, 08 Jun 09 01:53:09 +0000</created>
+      <shout>Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Really long shout. Done. </shout>
       <user>
-        <id>1919</id>
-        <created>Thu, 14 Sep 09 01:14:15 +0000</created>
-        <firstname>Later</firstname>
-        <lastname>LaPenna (sort 3)</lastname>
-        <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/4a76cfe720e34.jpg</photo>
+        <id>9923</id>
+        <firstname>Test2</firstname>
+        <lastname>User2</lastname>
+        <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/blank_girl.png</photo>
       </user>
-    </later>
-    <now type="Who's here">
+    </checkin>
+    <checkin>
+      <id>337845</id>
+      <user>
+        <id>9711</id>
+        <firstname>testuser</firstname>
+        <lastname>lapenna</lastname>
+        <photo>http://playfoursquare.s3.amazonaws.com/userpix/9711_1245032443.jpg</photo>
+      </user>
+      <created>Mon, 07 Aug 09 01:34:54 +0000</created>
+    </checkin>
+    <checkin>
+      <id>337846</id>
       <user>
         <id>1818</id>
-        <created>Thu, 17 Sep 09 01:14:15 +0000</created>
         <firstname>Joe</firstname>
-        <lastname>LaPenna (sort 1)</lastname>
+        <lastname>LaPenna</lastname>
         <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/4a76cfe720e34.jpg</photo>
       </user>
-      <user>
-        <id>1819</id>
-        <created>Thu, 15 Sep 09 01:14:15 +0000</created>
-        <firstname>Joe</firstname>
-        <lastname>LaPenna (sort 2)</lastname>
-        <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/4a76cfe720e34.jpg</photo>
-      </user>
-      <user>
-        <id>1820</id>
-        <created>Thu, 18 Sep 09 01:14:15 +0000</created>
-        <firstname>Joe</firstname>
-        <lastname>LaPenna (sort 0)</lastname>
-        <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/4a76cfe720e34.jpg</photo>
-      </user>
-    </now>
-  </people>
+      <created>Mon, 17 Aug 09 01:34:54 +0000</created>
+    </checkin>
+  </checkins>
   <stats>
     <checkins>77</checkins>
     <beenhere/>

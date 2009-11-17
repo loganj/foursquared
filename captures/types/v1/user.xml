@@ -6,6 +6,7 @@
   <photo></photo>
   <gender></gender>
   <twitter_name>jlapenna_testuser</twitter_name>
+  <friendstatus>friend|pendingyou|pendingthem</friendstatus>
   <city type="City"></city>
   <checkin type="Checkin"></checkin>
   <settings type="Settings"></settings>

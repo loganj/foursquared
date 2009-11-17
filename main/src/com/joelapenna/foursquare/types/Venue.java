@@ -5,13 +5,14 @@
 package com.joelapenna.foursquare.types;
 
 /**
- * Auto-generated: 2009-11-12 21:45:35.261773
+ * Auto-generated: 2009-11-17 09:33:51.550183
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Venue implements FoursquareType {
 
     private String mAddress;
+    private Group mCheckins;
     private String mCity;
     private String mCityid;
     private String mCrossstreet;
@@ -20,7 +21,6 @@ public class Venue implements FoursquareType {
     private String mGeolong;
     private String mId;
     private String mName;
-    private Group mPeople;
     private String mPhone;
     private String mState;
     private Stats mStats;
@@ -39,6 +39,14 @@ public class Venue implements FoursquareType {
 
     public void setAddress(String address) {
         mAddress = address;
+    }
+
+    public Group getCheckins() {
+        return mCheckins;
+    }
+
+    public void setCheckins(Group checkins) {
+        mCheckins = checkins;
     }
 
     public String getCity() {
@@ -103,14 +111,6 @@ public class Venue implements FoursquareType {
 
     public void setName(String name) {
         mName = name;
-    }
-
-    public Group getPeople() {
-        return mPeople;
-    }
-
-    public void setPeople(Group people) {
-        mPeople = people;
     }
 
     public String getPhone() {
