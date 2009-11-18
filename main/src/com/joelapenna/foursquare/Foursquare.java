@@ -151,10 +151,10 @@ public class Foursquare {
     }
 
     @V1
-    public Group<Group<Venue>> venues(Location location, String query, int radius, int limit)
+    public Group<Group<Venue>> venues(Location location, String query, int limit)
             throws FoursquareException, FoursquareError, IOException {
         return mFoursquareV1.venues(location.mGeolat, location.mGeolong, location.mGeohacc,
-                location.mGeovacc, location.mGeoalt, query, radius, limit);
+                location.mGeovacc, location.mGeoalt, query, limit);
     }
 
     @Classic

@@ -221,8 +221,6 @@ public class NearbyVenuesActivity extends LoadableListActivity {
 
     private class SearchTask extends AsyncTask<Void, Void, Group<Group<Venue>>> {
 
-        private static final int METERS_PER_MILE = 1609;
-
         private Exception mReason = null;
 
         @Override
@@ -265,7 +263,6 @@ public class NearbyVenuesActivity extends LoadableListActivity {
 
             String geolat;
             String geolong;
-            int radius;
             if (location == null) {
                 if (DEBUG) Log.d(TAG, "SearchTask.search(): doing user lookup");
                 // Foursquare requires a lat, lng for a venue search, so we have to pull it from the
@@ -273,22 +270,15 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 City city = foursquare.user(null, false, false).getCity();
                 geolat = String.valueOf(city.getGeolat());
                 geolong = String.valueOf(city.getGeolong());
-                radius = 1;
             } else {
                 if (DEBUG) Log.d(TAG, "SearchTask.search(): searching with location: " + location);
                 DumpcatcherHelper.sendLocation("/venues#NearbyVenuesActivity", location);
                 geolat = String.valueOf(location.getLatitude());
                 geolong = String.valueOf(location.getLongitude());
-
-                if (location.hasAccuracy()) {
-                    radius = (int)Math.round(location.getAccuracy() / (double)METERS_PER_MILE);
-                } else {
-                    radius = 1;
-                }
             }
             if (DEBUG) Log.d(TAG, "SearchTask.search(): executing: " + geolat + ", " + geolong);
             Group<Group<Venue>> groups = foursquare.venues(
-                    new Foursquare.Location(geolat, geolong), mSearchHolder.query, radius, 30);
+                    new Foursquare.Location(geolat, geolong), mSearchHolder.query, 30);
             for (int i = 0; i < groups.size(); i++) {
                 Collections.sort(groups.get(i), Comparators.getVenueNameComparator());
             }

@@ -255,7 +255,7 @@ public class FoursquareHttpApiV1 {
      */
     @SuppressWarnings("unchecked")
     Group<Group<Venue>> venues(String geolat, String geolong, String geohacc, String geovacc,
-            String geoalt, String query, int radius, int limit) throws FoursquareException,
+            String geoalt, String query, int limit) throws FoursquareException,
             FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_VENUES), //
                 new BasicNameValuePair("geolat", geolat), //
@@ -264,7 +264,6 @@ public class FoursquareHttpApiV1 {
                 new BasicNameValuePair("geovacc", geovacc), //
                 new BasicNameValuePair("geoalt", geoalt), //
                 new BasicNameValuePair("q", query), //
-                new BasicNameValuePair("r", String.valueOf(radius)), //
                 new BasicNameValuePair("l", String.valueOf(limit)));
         return (Group<Group<Venue>>)mHttpApi.doHttpRequest(httpGet, new GroupParser(
                 new GroupParser(new VenueParser())));

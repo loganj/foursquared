@@ -357,8 +357,6 @@ public class SearchVenuesActivity extends TabActivity {
 
     private class SearchTask extends AsyncTask<Void, Void, Group<Group<Venue>>> {
 
-        private static final int METERS_PER_MILE = 1609;
-
         private Exception mReason = null;
 
         @Override
@@ -400,28 +398,21 @@ public class SearchVenuesActivity extends TabActivity {
             Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
             String geolat;
             String geolong;
-            int radius;
             if (location == null) {
                 // Foursquare requires a lat, lng for a venue search, so we have to pull it from the
                 // server if we cannot determine it locally.
                 City city = foursquare.user(null, false, false).getCity();
                 geolat = String.valueOf(city.getGeolat());
                 geolong = String.valueOf(city.getGeolong());
-                radius = 1;
             } else {
                 if (DEBUG) Log.d(TAG, "Searching with location: " + location);
                 DumpcatcherHelper.sendLocation("/venues#SearchVenuesActivity", location);
                 geolat = String.valueOf(location.getLatitude());
                 geolong = String.valueOf(location.getLongitude());
-                if (location.hasAccuracy()) {
-                    radius = (int)Math.round(location.getAccuracy() / (double)METERS_PER_MILE);
-                } else {
-                    radius = 1;
-                }
             }
             Group<Group<Venue>> groups = foursquare.venues(
                     new Foursquare.Location(geolat, geolong),
-                    mSearchHolder.query, radius, 30);
+                    mSearchHolder.query, 30);
             for (int i = 0; i < groups.size(); i++) {
                 Collections.sort(groups.get(i), Comparators.getVenueDistanceComparator());
             }
