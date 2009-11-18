@@ -191,11 +191,11 @@ public class VenueCheckinsActivity extends LoadableListActivity {
 
             // For each checkin, lets get the user because that is what we're concerned about here.
             Group<Checkin> checkins = venue.getCheckins();
-            Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
 
             if (!observed && venue != null && checkins != null) {
                 observed = true;
                 ensureMayor(venue);
+                Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
                 putCheckinsInAdapter(checkins);
             }
         }
