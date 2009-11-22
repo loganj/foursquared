@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Auto-generated: 2009-11-13 21:59:23.790711
+ * Auto-generated: 2009-11-22 15:52:38.272773
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -39,6 +39,9 @@ public class CheckinParser extends AbstractParser<Checkin> {
             String name = parser.getName();
             if ("created".equals(name)) {
                 checkin.setCreated(parser.nextText());
+
+            } else if ("display".equals(name)) {
+                checkin.setDisplay(parser.nextText());
 
             } else if ("id".equals(name)) {
                 checkin.setId(parser.nextText());

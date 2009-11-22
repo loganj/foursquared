@@ -32,12 +32,17 @@ public class StringFormatters {
     }
 
     public static String getCheckinMessage(Checkin checkin, boolean displayAtVenue) {
-        StringBuffer sb = new StringBuffer();
-        sb.append(getUserAbbreviatedName(checkin.getUser()));
-        if (checkin.getVenue() != null && displayAtVenue) {
-            sb.append(" @ " + checkin.getVenue().getName());
+        if (checkin.getDisplay() != null) {
+            return checkin.getDisplay();
+
+        } else {
+            StringBuffer sb = new StringBuffer();
+            sb.append(getUserAbbreviatedName(checkin.getUser()));
+            if (checkin.getVenue() != null && displayAtVenue) {
+                sb.append(" @ " + checkin.getVenue().getName());
+            }
+            return sb.toString();
         }
-        return sb.toString();
     }
 
     public static String getUserAbbreviatedName(User user) {

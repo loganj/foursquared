@@ -5,13 +5,14 @@
 package com.joelapenna.foursquare.types;
 
 /**
- * Auto-generated: 2009-11-12 21:45:34.697144
+ * Auto-generated: 2009-11-22 15:52:46.853461
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class Checkin implements FoursquareType {
 
     private String mCreated;
+    private String mDisplay;
     private String mId;
     private String mShout;
     private User mUser;
@@ -26,6 +27,14 @@ public class Checkin implements FoursquareType {
 
     public void setCreated(String created) {
         mCreated = created;
+    }
+
+    public String getDisplay() {
+        return mDisplay;
+    }
+
+    public void setDisplay(String display) {
+        mDisplay = display;
     }
 
     public String getId() {
