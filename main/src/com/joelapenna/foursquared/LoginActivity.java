@@ -6,7 +6,6 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
@@ -54,8 +53,9 @@ public class LoginActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.login_activity);
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefs.edit().clear().commit();
+        Preferences.logoutUser( //
+                ((Foursquared)getApplication()).getFoursquare(), //
+                PreferenceManager.getDefaultSharedPreferences(this).edit());
 
         // Set up the UI.
         ensureUi();
@@ -196,8 +196,8 @@ public class LoginActivity extends Activity {
                         location, editor);
 
                 // Make sure prefs make a round trip.
-                User prefsUser = Preferences.getUser(prefs);
-                if (prefsUser == null || TextUtils.isEmpty(prefsUser.getId())) {
+                String userId = Preferences.getUserId(prefs);
+                if (TextUtils.isEmpty(userId)) {
                     if (DEBUG) Log.d(TAG, "Preference store calls failed");
                     throw new FoursquareException(getResources().getString(
                             R.string.login_failed_login_toast));
@@ -219,7 +219,7 @@ public class LoginActivity extends Activity {
 
             if (loggedIn) {
                 sendBroadcast(new Intent(Foursquared.INTENT_ACTION_LOGGED_IN));
-                String city = foursquared.getUser().getCity().getName();
+                String city = foursquared.getUserCity().getName();
                 Toast.makeText(
                         //
                         LoginActivity.this, getString(R.string.login_welcome_toast, city),

@@ -4,8 +4,6 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.types.User;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -18,7 +16,6 @@ import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -48,15 +45,11 @@ public class StatsActivity extends Activity {
         webView.setWebViewClient(new MyWebViewClient());
         webView.setWebChromeClient(new MyWebChromeClient());
 
-        User user = ((Foursquared)getApplication()).getUser();
-        if (user == null || user.getCity() == null || user.getCity().getId() == null) {
-            Toast.makeText(this, "Unable to determine user id and city.", Toast.LENGTH_LONG);
-            finish();
-            return;
-        }
+        String userId = ((Foursquared)getApplication()).getUserId();
+        String cityId = ((Foursquared)getApplication()).getUserCity().getId();
 
-        String url = "http://foursquare.com./iphone/me?view=all&scope=friends&uid=" + user.getId()
-                + "&cityid=" + user.getCity().getId();
+        String url = "http://foursquare.com./iphone/me?view=all&scope=friends&uid=" + userId
+                + "&cityid=" + cityId;
         Log.d(TAG, url);
         webView.loadUrl(url);
     }

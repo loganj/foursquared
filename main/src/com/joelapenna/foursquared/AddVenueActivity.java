@@ -122,7 +122,7 @@ public class AddVenueActivity extends Activity {
         } else {
             new AddressLookupTask().execute();
         }
-        mStateHolder.foursquareCity = ((Foursquared)getApplication()).getUser().getCity();
+        mStateHolder.foursquareCity = ((Foursquared)getApplication()).getUserCity();
     }
 
     @Override

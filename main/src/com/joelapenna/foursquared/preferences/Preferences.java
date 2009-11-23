@@ -9,7 +9,6 @@ import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
-import com.joelapenna.foursquare.types.Settings;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.location.LocationUtils;
@@ -43,18 +42,15 @@ public class Preferences {
     // Credentials related preferences
     public static final String PREFERENCE_LOGIN = "phone";
     public static final String PREFERENCE_PASSWORD = "password";
-    public static final String PREFERENCE_OAUTH_TOKEN = "oauth_token";
-    public static final String PREFERENCE_OAUTH_TOKEN_SECRET = "oauth_token_secret";
 
-    // Extra info for getUser
+    // Extra info for getUserCity
     private static final String PREFERENCE_CITY_ID = "city_id";
     private static final String PREFERENCE_CITY_GEOLAT = "city_geolat";
     private static final String PREFERENCE_CITY_GEOLONG = "city_geolong";
-    private static final String PREFERENCE_FIRST = "first_name";
-    private static final String PREFERENCE_GENDER = "gender";
+    private static final String PREFERENCE_CITY_SHORTNAME = "city_shortname";
+
+    // Extra info for getUserId
     private static final String PREFERENCE_ID = "id";
-    private static final String PREFERENCE_LAST = "last_name";
-    private static final String PREFERENCE_PHOTO = "photo";
 
     // Not-in-XML preferences for dumpcatcher
     public static final String PREFERENCE_DUMPCATCHER_CLIENT = "dumpcatcher_client";
@@ -70,17 +66,6 @@ public class Preferences {
         return uniqueId;
     }
 
-    /**
-     * Log in a user and put credential information into the preferences edit queue.
-     *
-     * @param foursquare
-     * @param login
-     * @param password
-     * @param editor
-     * @throws FoursquareCredentialsException
-     * @throws FoursquareException
-     * @throws IOException
-     */
     public static boolean loginUser(Foursquare foursquare, String login, String password,
             Location location, Editor editor) throws FoursquareCredentialsException,
             FoursquareException, IOException {
@@ -117,26 +102,18 @@ public class Preferences {
         return editor.clear().commit();
     }
 
-    public static User getUser(SharedPreferences prefs) {
+    public static City getUserCity(SharedPreferences prefs) {
         City city = new City();
         city.setId(prefs.getString(Preferences.PREFERENCE_CITY_ID, null));
         city.setName(prefs.getString(Preferences.PREFERENCE_CITY_NAME, null));
+        city.setShortname(prefs.getString(Preferences.PREFERENCE_CITY_SHORTNAME, null));
         city.setGeolat(prefs.getString(Preferences.PREFERENCE_CITY_GEOLAT, null));
         city.setGeolong(prefs.getString(Preferences.PREFERENCE_CITY_GEOLONG, null));
+        return city;
+    }
 
-        Settings settings = new Settings();
-        settings.setSendtotwitter(prefs.getBoolean(PREFERENCE_TWITTER_CHECKIN, false));
-
-        User user = new User();
-        user.setId(prefs.getString(PREFERENCE_ID, null));
-        user.setFirstname(prefs.getString(PREFERENCE_FIRST, null));
-        user.setLastname(prefs.getString(PREFERENCE_LAST, null));
-        user.setGender(prefs.getString(PREFERENCE_GENDER, null));
-        user.setPhoto(prefs.getString(PREFERENCE_PHOTO, null));
-        user.setCity(city);
-        user.setSettings(settings);
-
-        return user;
+    public static String getUserId(SharedPreferences prefs) {
+        return prefs.getString(PREFERENCE_ID, null);
     }
 
     public static City switchCity(Foursquare foursquare, Location location)
@@ -164,6 +141,7 @@ public class Preferences {
             editor.putString(PREFERENCE_CITY_GEOLAT, city.getGeolat());
             editor.putString(PREFERENCE_CITY_GEOLONG, city.getGeolong());
             editor.putString(PREFERENCE_CITY_NAME, city.getName());
+            editor.putString(PREFERENCE_CITY_SHORTNAME, city.getShortname());
         }
     }
 

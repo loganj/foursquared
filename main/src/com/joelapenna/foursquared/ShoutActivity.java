@@ -5,7 +5,6 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.types.CheckinResult;
-import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.location.LocationUtils;
@@ -235,9 +234,9 @@ public class ShoutActivity extends Activity {
                     }
                     WebView webView = (WebView)layout.findViewById(R.id.webView);
 
-                    User user = ((Foursquared)getApplication()).getUser();
+                    String userId = ((Foursquared)getApplication()).getUserId();
                     webView.loadUrl(((Foursquared)getApplication()).getFoursquare()
-                            .checkinResultUrl(user.getId(), mDialogStateHolder.checkinId));
+                            .checkinResultUrl(userId, mDialogStateHolder.checkinId));
 
                 }
                 return dialogBuilder.create();

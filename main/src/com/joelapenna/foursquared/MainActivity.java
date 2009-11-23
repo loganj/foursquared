@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Window;
 import android.widget.TabHost;
@@ -40,15 +41,14 @@ public class MainActivity extends TabActivity {
         registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         // Don't start the main activity if we don't have credentials
-        if (!((Foursquared)getApplication()).getFoursquare().hasLoginAndPassword()) {
+        Foursquared foursquared = (Foursquared)getApplication();
+        if (!foursquared.getFoursquare().hasLoginAndPassword()) {
             if (DEBUG) Log.d(TAG, "No login and password.");
-            setVisible(false);
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.setAction(Intent.ACTION_MAIN);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY
-                    | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
+            redirectToLoginActivity();
+        } else if (TextUtils.isEmpty(foursquared.getUserId())
+                || TextUtils.isEmpty(foursquared.getUserCity().getId())) {
+            if (DEBUG) Log.d(TAG, "Missing required preferences.");
+            redirectToLoginActivity();
         }
 
         if (DEBUG) Log.d(TAG, "Setting up main activity layout.");
@@ -85,5 +85,15 @@ public class MainActivity extends TabActivity {
                 .setContent(new Intent(this, FriendsActivity.class)) // The contained activity
                 );
         mTabHost.setCurrentTab(0);
+    }
+
+    private void redirectToLoginActivity() {
+        setVisible(false);
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 }

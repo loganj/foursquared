@@ -132,8 +132,12 @@ public class Foursquared extends Application {
         return mFoursquare;
     }
 
-    public User getUser() {
-        return Preferences.getUser(mPrefs);
+    public String getUserId() {
+        return Preferences.getUserId(mPrefs);
+    }
+
+    public City getUserCity() {
+        return Preferences.getUserCity(mPrefs);
     }
 
     public RemoteResourceManager getRemoteResourceManager() {
@@ -210,7 +214,7 @@ public class Foursquared extends Application {
 
     /**
      * Set up resource managers on the application depending on SD card state.
-     * 
+     *
      * @author Joe LaPenna (joe@joelapenna.com)
      */
     private class MediaCardStateBroadcastReceiver extends BroadcastReceiver {
