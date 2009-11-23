@@ -5,8 +5,10 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.preferences.Preferences;
+import com.joelapenna.foursquared.util.NotificationsUtil;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -158,24 +160,6 @@ public class LoginActivity extends Activity {
 
         mPhoneUsernameEditText.addTextChangedListener(fieldValidatorTextWatcher);
         mPasswordEditText.addTextChangedListener(fieldValidatorTextWatcher);
-
-        ensurePhoneNumber();
-    }
-
-    private void ensurePhoneNumber() {
-        if (TextUtils.isEmpty(mPhoneUsernameEditText.getText().toString())) {
-            if (LoginActivity.DEBUG) Log.d(TAG, "Looking up phone number.");
-
-            TelephonyManager telephony = (TelephonyManager)getSystemService(Activity.TELEPHONY_SERVICE);
-            String lookup = telephony.getLine1Number();
-
-            if (!TextUtils.isEmpty(lookup) && lookup.startsWith("1")) {
-                lookup = lookup.substring(1);
-                if (LoginActivity.DEBUG) Log.d(LoginActivity.TAG,
-                        "Phone number not found. Setting it: " + lookup);
-                mPhoneUsernameEditText.setText(lookup);
-            }
-        }
     }
 
     private class LoginTask extends AsyncTask<Void, Void, Boolean> {
@@ -193,29 +177,40 @@ public class LoginActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
             if (DEBUG) Log.d(TAG, "doInBackground()");
-            Editor editor = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this)
-                    .edit();
+            SharedPreferences prefs = PreferenceManager
+                    .getDefaultSharedPreferences(LoginActivity.this);
+            Editor editor = prefs.edit();
             Foursquared foursquared = (Foursquared)getApplication();
-            Location location = foursquared.getLastKnownLocation();
             Foursquare foursquare = foursquared.getFoursquare();
             try {
                 String phoneNumber = mPhoneUsernameEditText.getText().toString();
                 String password = mPasswordEditText.getText().toString();
 
-                User user = Preferences.loginUser(foursquare, phoneNumber, password, location,
-                        editor);
-
-                if (user != null && !TextUtils.isEmpty(user.getId())) {
-                    return true;
+                Location location = foursquared.getLastKnownLocation();
+                if (location == null) {
+                    if (DEBUG) Log.d(TAG, "unable to determine location");
+                    throw new FoursquareException(getResources().getString(
+                            R.string.no_location_providers));
                 }
 
-            } catch (Exception e) {
-                if (DEBUG) Log.d(TAG, "Caught Excption logging in.", e);
-                mReason = e;
-            }
+                boolean loggedIn = Preferences.loginUser(foursquare, phoneNumber, password,
+                        location, editor);
 
-            Preferences.logoutUser(foursquare, editor);
-            return false;
+                // Make sure prefs make a round trip.
+                User prefsUser = Preferences.getUser(prefs);
+                if (prefsUser == null || TextUtils.isEmpty(prefsUser.getId())) {
+                    if (DEBUG) Log.d(TAG, "Preference store calls failed");
+                    throw new FoursquareException(getResources().getString(
+                            R.string.login_failed_login_toast));
+                }
+                return loggedIn;
+
+            } catch (Exception e) {
+                if (DEBUG) Log.d(TAG, "Caught Exception logging in.", e);
+                mReason = e;
+                Preferences.logoutUser(foursquare, editor);
+                return false;
+            }
         }
 
         @Override
@@ -237,8 +232,7 @@ public class LoginActivity extends Activity {
 
             } else {
                 sendBroadcast(new Intent(Foursquared.INTENT_ACTION_LOGGED_OUT));
-                Toast.makeText(LoginActivity.this, R.string.login_failed_login_toast,
-                        Toast.LENGTH_LONG).show();
+                NotificationsUtil.ToastReasonForFailure(LoginActivity.this, mReason);
             }
             dismissProgressDialog();
         }

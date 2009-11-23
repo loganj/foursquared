@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
@@ -127,7 +128,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                 Location location = foursquared.getLastKnownLocation();
                 if (location == null) {
                     if (DEBUG) Log.d(TAG, "unable to determine location");
-                    return null;
+                    throw new FoursquareException("Unable to determine location.");
                 }
 
                 Foursquare foursquare = foursquared.getFoursquare();
@@ -140,10 +141,11 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                 editor.commit();
 
                 return newCity;
+
             } catch (Exception e) {
                 mReason = e;
+                return null;
             }
-            return null;
         }
 
         @Override

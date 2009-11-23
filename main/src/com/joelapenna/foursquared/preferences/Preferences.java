@@ -73,7 +73,7 @@ public class Preferences {
 
     /**
      * Log in a user and put credential information into the preferences edit queue.
-     * 
+     *
      * @param foursquare
      * @param login
      * @param password
@@ -82,24 +82,33 @@ public class Preferences {
      * @throws FoursquareException
      * @throws IOException
      */
-    public static User loginUser(Foursquare foursquare, String login, String password,
+    public static boolean loginUser(Foursquare foursquare, String login, String password,
             Location location, Editor editor) throws FoursquareCredentialsException,
             FoursquareException, IOException {
         if (DEBUG) Log.d(Preferences.TAG, "Trying to log in.");
 
         foursquare.setCredentials(login, password);
         storeLoginAndPassword(editor, login, password);
-        editor.commit();
+        if (!editor.commit()) {
+            if (DEBUG) Log.d(TAG, "storeLoginAndPassword commit failed");
+            return false;
+        }
 
         User user = foursquare.user(null, false, false);
         storeUser(editor, user);
-        editor.commit();
+        if (!editor.commit()) {
+            if (DEBUG) Log.d(TAG, "storeUser commit failed");
+            return false;
+        }
 
         City city = switchCity(foursquare, location);
         storeCity(editor, city);
-        editor.commit();
+        if (!editor.commit()) {
+            if (DEBUG) Log.d(TAG, "switchCity commit failed");
+            return false;
+        }
 
-        return user;
+        return true;
     }
 
     public static boolean logoutUser(Foursquare foursquare, Editor editor) {

@@ -85,7 +85,7 @@ abstract public class AbstractHttpApi implements HttpApi {
 
             case 401:
                 response.getEntity().consumeContent();
-                if (DEBUG) LOG.log(Level.FINE, EntityUtils.toString(response.getEntity()));
+                if (DEBUG) LOG.log(Level.FINE, "HTTP Code: 401");
                 throw new FoursquareCredentialsException(response.getStatusLine().toString());
 
             case 404:
@@ -133,7 +133,7 @@ abstract public class AbstractHttpApi implements HttpApi {
 
     /**
      * execute() an httpRequest catching exceptions and returning null instead.
-     * 
+     *
      * @param httpRequest
      * @return
      * @throws IOException
@@ -187,7 +187,7 @@ abstract public class AbstractHttpApi implements HttpApi {
     /**
      * Create a thread-safe client. This client does not do redirecting, to allow us to capture
      * correct "error" codes.
-     * 
+     *
      * @return HttpClient
      */
     public static final DefaultHttpClient createHttpClient() {

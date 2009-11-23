@@ -171,6 +171,10 @@
 
   <string
     name="friends_appwidget_footer_text">Updated %s</string>
+
+  <string
+    name="no_location_providers">Unable to determine location. Please Enable GPS or Network Location</string>
+
   -->
 
 </resources>
