@@ -87,10 +87,6 @@ public class DumpcatcherHelper {
         sendCrash(usage, null, null, "usage");
     }
 
-    public static void sendLocation(String purpose, final Location location) {
-        sendCrash(purpose, location.toString(), null, "location");
-    }
-
     private static final class DefaultUnhandledExceptionHandler extends
             DumpcatcherUncaughtExceptionHandler {
 

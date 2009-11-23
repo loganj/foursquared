@@ -406,7 +406,6 @@ public class SearchVenuesActivity extends TabActivity {
                 geolong = String.valueOf(city.getGeolong());
             } else {
                 if (DEBUG) Log.d(TAG, "Searching with location: " + location);
-                DumpcatcherHelper.sendLocation("/venues#SearchVenuesActivity", location);
                 geolat = String.valueOf(location.getLatitude());
                 geolong = String.valueOf(location.getLongitude());
             }

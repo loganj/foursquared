@@ -272,7 +272,6 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 geolong = String.valueOf(city.getGeolong());
             } else {
                 if (DEBUG) Log.d(TAG, "SearchTask.search(): searching with location: " + location);
-                DumpcatcherHelper.sendLocation("/venues#NearbyVenuesActivity", location);
                 geolat = String.valueOf(location.getLatitude());
                 geolong = String.valueOf(location.getLongitude());
             }
