@@ -5,7 +5,7 @@
 package com.joelapenna.foursquare.types;
 
 /**
- * Auto-generated: 2009-11-22 15:52:46.853461
+ * Auto-generated: 2009-11-22 20:21:34.324313
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
@@ -14,6 +14,7 @@ public class Checkin implements FoursquareType {
     private String mCreated;
     private String mDisplay;
     private String mId;
+    private boolean mIsmayor;
     private String mShout;
     private User mUser;
     private Venue mVenue;
@@ -43,6 +44,14 @@ public class Checkin implements FoursquareType {
 
     public void setId(String id) {
         mId = id;
+    }
+
+    public boolean ismayor() {
+        return mIsmayor;
+    }
+
+    public void setIsmayor(boolean ismayor) {
+        mIsmayor = ismayor;
     }
 
     public String getShout() {

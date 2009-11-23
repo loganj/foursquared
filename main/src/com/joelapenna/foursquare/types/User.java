@@ -5,7 +5,7 @@
 package com.joelapenna.foursquare.types;
 
 /**
- * Auto-generated: 2009-11-12 21:45:35.024509
+ * Auto-generated: 2009-11-22 20:22:15.894015
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
@@ -15,13 +15,16 @@ public class User implements FoursquareType {
     private Checkin mCheckin;
     private City mCity;
     private String mCreated;
+    private String mEmail;
     private String mFirstname;
+    private String mFriendstatus;
     private String mGender;
     private String mId;
     private String mLastname;
+    private String mPhone;
     private String mPhoto;
     private Settings mSettings;
-    private String mTwitterName;
+    private String mTwitter;
 
     public User() {
     }
@@ -58,12 +61,28 @@ public class User implements FoursquareType {
         mCreated = created;
     }
 
+    public String getEmail() {
+        return mEmail;
+    }
+
+    public void setEmail(String email) {
+        mEmail = email;
+    }
+
     public String getFirstname() {
         return mFirstname;
     }
 
     public void setFirstname(String firstname) {
         mFirstname = firstname;
+    }
+
+    public String getFriendstatus() {
+        return mFriendstatus;
+    }
+
+    public void setFriendstatus(String friendstatus) {
+        mFriendstatus = friendstatus;
     }
 
     public String getGender() {
@@ -90,6 +109,14 @@ public class User implements FoursquareType {
         mLastname = lastname;
     }
 
+    public String getPhone() {
+        return mPhone;
+    }
+
+    public void setPhone(String phone) {
+        mPhone = phone;
+    }
+
     public String getPhoto() {
         return mPhoto;
     }
@@ -106,12 +133,12 @@ public class User implements FoursquareType {
         mSettings = settings;
     }
 
-    public String getTwitterName() {
-        return mTwitterName;
+    public String getTwitter() {
+        return mTwitter;
     }
 
-    public void setTwitterName(String twitterName) {
-        mTwitterName = twitterName;
+    public void setTwitter(String twitter) {
+        mTwitter = twitter;
     }
 
 }

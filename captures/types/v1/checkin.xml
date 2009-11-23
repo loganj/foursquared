@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <checkin>
   <id>337912</id>
+  <ismayor type="boolean"></ismayor>
   <shout>text</shout>
   <user type="User"></user>
   <venue type="Venue"></venue>

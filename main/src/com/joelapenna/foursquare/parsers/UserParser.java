@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Auto-generated: 2009-11-13 21:59:24.166699
+ * Auto-generated: 2009-11-22 20:22:15.986656
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -49,8 +49,14 @@ public class UserParser extends AbstractParser<User> {
             } else if ("created".equals(name)) {
                 user.setCreated(parser.nextText());
 
+            } else if ("email".equals(name)) {
+                user.setEmail(parser.nextText());
+
             } else if ("firstname".equals(name)) {
                 user.setFirstname(parser.nextText());
+
+            } else if ("friendstatus".equals(name)) {
+                user.setFriendstatus(parser.nextText());
 
             } else if ("gender".equals(name)) {
                 user.setGender(parser.nextText());
@@ -61,14 +67,17 @@ public class UserParser extends AbstractParser<User> {
             } else if ("lastname".equals(name)) {
                 user.setLastname(parser.nextText());
 
+            } else if ("phone".equals(name)) {
+                user.setPhone(parser.nextText());
+
             } else if ("photo".equals(name)) {
                 user.setPhoto(parser.nextText());
 
             } else if ("settings".equals(name)) {
                 user.setSettings(new SettingsParser().parse(parser));
 
-            } else if ("twitter_name".equals(name)) {
-                user.setTwitterName(parser.nextText());
+            } else if ("twitter".equals(name)) {
+                user.setTwitter(parser.nextText());
 
             } else {
                 // Consume something we don't understand.

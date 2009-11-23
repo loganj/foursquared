@@ -5,7 +5,9 @@
   <lastname>Lapenna</lastname>
   <photo></photo>
   <gender></gender>
-  <twitter_name>jlapenna_testuser</twitter_name>
+  <twitter>jlapenna_testuser</twitter>
+  <phone>654245432</phone>
+  <email>testuser2@joelapenna.com</email>
   <friendstatus>friend|pendingyou|pendingthem</friendstatus>
   <city type="City"></city>
   <checkin type="Checkin"></checkin>
