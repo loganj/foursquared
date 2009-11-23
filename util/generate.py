@@ -7,7 +7,11 @@ import sys
 BASEDIR = '../main/src/com/joelapenna/foursquare'
 TYPESDIR = '../captures/types/v1'
 
-for f in os.listdir(TYPESDIR):
+captures = sys.argv[1:]
+if not captures:
+  captures = os.listdir(TYPESDIR)
+
+for f in captures:
   basename = f.split('.')[0]
   javaname = ''.join([c.capitalize() for c in basename.split('_')])
   fullpath = os.path.join(TYPESDIR, f)
