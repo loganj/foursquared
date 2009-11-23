@@ -41,13 +41,8 @@ public class MainActivity extends TabActivity {
         registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         // Don't start the main activity if we don't have credentials
-        Foursquared foursquared = (Foursquared)getApplication();
-        if (!foursquared.getFoursquare().hasLoginAndPassword()) {
-            if (DEBUG) Log.d(TAG, "No login and password.");
-            redirectToLoginActivity();
-        } else if (TextUtils.isEmpty(foursquared.getUserId())
-                || TextUtils.isEmpty(foursquared.getUserCity().getId())) {
-            if (DEBUG) Log.d(TAG, "Missing required preferences.");
+        if (!((Foursquared)getApplication()).isReady()) {
+            if (DEBUG) Log.d(TAG, "Not ready for user.");
             redirectToLoginActivity();
         }
 

@@ -9,6 +9,7 @@ import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquared.app.FoursquaredService;
 import com.joelapenna.foursquared.location.BestLocationListener;
 import com.joelapenna.foursquared.location.CityLocationListener;
 import com.joelapenna.foursquared.preferences.Preferences;
@@ -18,6 +19,7 @@ import com.joelapenna.foursquared.util.NullDiskCache;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 
 import android.app.Application;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +37,7 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 
@@ -78,7 +81,7 @@ public class Foursquared extends Application {
     private CityLocationListener mCityLocationListener = new CityLocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            switchCity(location);
+            requestSwitchCity(location);
             mBestLocationListener.onLocationChanged(location);
         }
     };
@@ -128,6 +131,13 @@ public class Foursquared extends Application {
         loadFoursquare();
     }
 
+    public boolean isReady() {
+        return getFoursquare().hasLoginAndPassword() //
+                && !TextUtils.isEmpty(getUserId()) //
+                && !TextUtils.isEmpty(getUserCity().getId()) //
+        ;
+    }
+
     public Foursquare getFoursquare() {
         return mFoursquare;
     }
@@ -164,13 +174,18 @@ public class Foursquared extends Application {
         this.removeLocationUpdates();
     }
 
-    public void switchCity(Location location) {
+    public Location getLastKnownLocation() {
+        return mBestLocationListener.getLastKnownLocation();
+    }
+
+    public void requestSwitchCity(Location location) {
         mTaskHandler.sendMessage( //
                 mTaskHandler.obtainMessage(TaskHandler.MESSAGE_SWITCH_CITY, location));
     }
 
-    public Location getLastKnownLocation() {
-        return mBestLocationListener.getLastKnownLocation();
+    public void requestStartService() {
+        mTaskHandler.sendMessage( //
+                mTaskHandler.obtainMessage(TaskHandler.MESSAGE_START_SERVICE));
     }
 
     private void loadFoursquare() {
@@ -282,6 +297,7 @@ public class Foursquared extends Application {
 
         private static final int MESSAGE_SWITCH_CITY = 0;
         private static final int MESSAGE_UPDATE_USER = 1;
+        private static final int MESSAGE_START_SERVICE = 2;
 
         public TaskHandler(Looper looper) {
             super(looper);
@@ -327,6 +343,12 @@ public class Foursquared extends Application {
                         if (DEBUG) Log.d(TAG, "IOException", e);
                         // TODO Auto-generated catch block
                     }
+                    return;
+
+                case MESSAGE_START_SERVICE:
+                    Intent serviceIntent = new Intent(Foursquared.this, FoursquaredService.class);
+                    serviceIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                    startService(serviceIntent);
                     return;
             }
         }

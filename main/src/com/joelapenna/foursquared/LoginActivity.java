@@ -6,11 +6,13 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquared.app.FoursquaredService;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -224,9 +226,16 @@ public class LoginActivity extends Activity {
                         //
                         LoginActivity.this, getString(R.string.login_welcome_toast, city),
                         Toast.LENGTH_LONG).show();
+
+                // Launch the service to update any widgets, etc.
+                foursquared.requestStartService();
+
+                // Launch the main activity to let the user do anything.
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+
+                // Be done with the activity.
                 finish();
 
             } else {

@@ -345,7 +345,7 @@ public class ShoutActivity extends Activity {
 
             try {
                 Location location = ((Foursquared)getApplication()).getLastKnownLocation();
-                ((Foursquared)getApplication()).switchCity(location);
+                ((Foursquared)getApplication()).requestSwitchCity(location);
                 return ((Foursquared)getApplication()).getFoursquare().checkin(venueId, null,
                         LocationUtils.createFoursquareLocation(location), mShout, isPrivate,
                         mTellTwitter);

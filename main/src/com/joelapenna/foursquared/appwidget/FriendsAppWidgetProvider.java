@@ -81,12 +81,24 @@ public class FriendsAppWidgetProvider extends AppWidgetProvider {
         views.setOnClickPendingIntent(R.id.widgetFooter, PendingIntent.getService(context, 0,
                 baseIntent, 0));
 
-        int numCheckins = checkins.size();
-        for (int i = 0; i < WIDGET_VIEW_IDS.length; i++) {
-            if (i < numCheckins) {
-                updateCheckinView(context, rrm, views, checkins.get(i), WIDGET_VIEW_IDS[i]);
-            } else {
+        // Now hide all views if checkins is null (a sign of not being logged in), or populate the
+        // checkins.
+        if (checkins == null) {
+            if (DEBUG) Log.d(TAG, "checkins is null, hiding UI.");
+            views.setViewVisibility(R.id.widgetNotLoggedInTextView, View.VISIBLE);
+            for (int i = 0; i < WIDGET_VIEW_IDS.length; i++) {
                 hideCheckinView(views, WIDGET_VIEW_IDS[i]);
+            }
+        } else {
+            if (DEBUG) Log.d(TAG, "Displaying checkins");
+            views.setViewVisibility(R.id.widgetNotLoggedInTextView, View.GONE);
+            int numCheckins = checkins.size();
+            for (int i = 0; i < WIDGET_VIEW_IDS.length; i++) {
+                if (i < numCheckins) {
+                    updateCheckinView(context, rrm, views, checkins.get(i), WIDGET_VIEW_IDS[i]);
+                } else {
+                    hideCheckinView(views, WIDGET_VIEW_IDS[i]);
+                }
             }
         }
 

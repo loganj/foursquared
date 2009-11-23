@@ -13,6 +13,15 @@
     android:paddingTop="38dip"
     android:orientation="vertical">
 
+    <TextView
+      android:id="@+id/widgetNotLoggedInTextView"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:visibility="gone"
+      android:background="@drawable/blue_fade"
+
+      android:text="@string/friends_appwidget_not_logged_in" />
+
     <RelativeLayout
       android:id="@+id/widgetItem0"
       android:layout_width="fill_parent"
@@ -522,6 +531,7 @@
 
   </LinearLayout>
 
+  <!--  Listed last so it is layered "on top" -->
   <RelativeLayout
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
