@@ -336,10 +336,6 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         public Group<Group<Venue>> getSearchResults() {
             return mSearchHolder.results;
         }
-
-        public String getQuery() {
-            return mSearchHolder.query;
-        }
     }
 
     private class SearchLocationObserver implements Observer {

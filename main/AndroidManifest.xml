@@ -2,8 +2,8 @@
 <manifest
   xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.joelapenna.foursquared"
-  android:versionName="2009-11-17"
-  android:versionCode="2009111702">
+  android:versionName="2009-11-22"
+  android:versionCode="2009112200">
 
   <uses-permission
     android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -13,8 +13,6 @@
     android:name="android.permission.CALL_PHONE" />
   <uses-permission
     android:name="android.permission.INTERNET" />
-  <uses-permission
-    android:name="android.permission.READ_PHONE_STATE" />
   <uses-permission
     android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 

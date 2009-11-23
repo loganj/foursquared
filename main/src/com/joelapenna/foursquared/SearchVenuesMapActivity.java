@@ -14,6 +14,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Stats;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
+import com.joelapenna.foursquared.maps.CrashFixMyLocationOverlay;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
 
 import android.content.Intent;
@@ -107,7 +108,7 @@ public class SearchVenuesMapActivity extends MapActivity {
         mMapView.setBuiltInZoomControls(true);
         mMapController = mMapView.getController();
 
-        mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
+        mMyLocationOverlay = new CrashFixMyLocationOverlay(this, mMapView);
         mMapView.getOverlays().add(mMyLocationOverlay);
         mMyLocationOverlay.runOnFirstFix(new Runnable() {
             public void run() {

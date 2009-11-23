@@ -9,7 +9,6 @@ import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
-import com.joelapenna.foursquare.types.Data;
 import com.joelapenna.foursquare.types.Settings;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;

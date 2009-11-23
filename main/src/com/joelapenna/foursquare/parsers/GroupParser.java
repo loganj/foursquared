@@ -32,10 +32,10 @@ public class GroupParser extends AbstractParser<Group> {
     }
 
     @Override
-    public Group parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
+    public Group<FoursquareType> parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareParseException, FoursquareError {
 
-        Group group = new Group();
+        Group<FoursquareType> group = new Group<FoursquareType>();
         group.setType(parser.getAttributeValue(null, "type"));
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
