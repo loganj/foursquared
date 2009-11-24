@@ -54,14 +54,14 @@
         <TableRow>
           <EditText
             android:id="@+id/stateEditText"
-            android:layout_width="0px"
+            android:layout_width="0dip"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:imeOptions="actionNext"
             android:hint="@string/state" />
           <EditText
             android:id="@+id/zipEditText"
-            android:layout_width="0px"
+            android:layout_width="0dip"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:imeOptions="actionNext"

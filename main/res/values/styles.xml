@@ -81,11 +81,11 @@
   <style
     name="venueQuickCheckinStyle">
     <item
-      name="android:paddingTop">0px</item>
+      name="android:paddingTop">0dip</item>
     <item
-      name="android:paddingBottom">0px</item>
+      name="android:paddingBottom">0dip</item>
     <item
-      name="android:paddingLeft">16px</item>
+      name="android:paddingLeft">16dip</item>
     <item
       name="android:background">@drawable/quick_checkin_states</item>
     <item

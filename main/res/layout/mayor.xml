@@ -12,9 +12,9 @@
   <ImageView
     android:id="@+id/photo"
 
-  android:layout_height="46px"
-  android:layout_width="46px"
-  android:padding="2px"
+  android:layout_height="46dip"
+  android:layout_width="46dip"
+  android:padding="2dip"
     android:background="#186db5"
     android:layout_alignParentTop="true"
     android:layout_alignParentLeft="true"
