@@ -194,9 +194,9 @@
     <string
     name="preferences_immediate_checkin_title">Checkin without prompt</string>
    <string
-    name="preferences_immediate_checkin_summary_on">Checkin without confirmation when using 'Quick Checkin'</string>
+    name="preferences_immediate_checkin_summary_on">Checkin without confirmation when using \'Quick Checkin\'.</string>
    <string
-    name="preferences_immediate_checkin_summary_off">Prompt for a shout when using 'Quick Checkin'</string>
+    name="preferences_immediate_checkin_summary_off">Prompt for a shout when using \'Quick Checkin\'.</string>
     <string
     name="preferences_category_friends">Friends</string>
    <string
@@ -216,6 +216,6 @@
   <string
     name="preferences_logout_title">Logout</string>
    <string
-    name="preferences_logout_summary">Sign out of Foursquare</string>
+    name="preferences_logout_summary">Sign out of Foursquare.</string>
 
 </resources>

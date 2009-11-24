@@ -19,7 +19,7 @@
       android:dependency="share_checkin"
       android:title="@string/preferences_twitter_checkin_title"
       android:summaryOn="@string/preferences_twitter_checkin_summary_on"
-      android:summaryOff="string/preferences_twitter_checkin_summary_off"
+      android:summaryOff="@string/preferences_twitter_checkin_summary_off"
       android:defaultValue="false" />
     <CheckBoxPreference
       android:key="immediate_checkin"
