@@ -5,57 +5,57 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
 
   <PreferenceCategory
-    android:title="Check-in Defaults">
+    android:title="@string/preferences_category_checkin_defaults">
     <CheckBoxPreference
       android:key="share_checkin"
       android:persistent="true"
-      android:title="Tell my friends"
-      android:summaryOn="By default, tell my friends when I check-in."
-      android:summaryOff="By default, don't tell my friends when I check-in."
+      android:title="@string/preferences_share_checkin_title"
+      android:summaryOn="@string/preferences_share_summary_on"
+      android:summaryOff="@string/preferences_share_summary_off"
       android:defaultValue="true" />
     <CheckBoxPreference
       android:key="twitter_checkin"
       android:persistent="true"
       android:dependency="share_checkin"
-      android:title="Tell Twitter"
-      android:summaryOn="By default, tweet my checkins."
-      android:summaryOff="By default, don't tweet my checkins."
+      android:title="@string/preferences_twitter_checkin_title"
+      android:summaryOn="@string/preferences_twitter_checkin_summary_on"
+      android:summaryOff="string/preferences_twitter_checkin_summary_off"
       android:defaultValue="false" />
     <CheckBoxPreference
       android:key="immediate_checkin"
       android:persistent="true"
-      android:title="Checkin without prompt"
-      android:summaryOn="Checkin without confirmation when using 'Quick Checkin'"
-      android:summaryOff="Prompt for a shout when using 'Quick Checkin'"
+      android:title="@string/preferences_immediate_checkin_title"
+      android:summaryOn="@string/preferences_immediate_checkin_summary_on"
+      android:summaryOff="@string/preferences_immediate_checkin_summary_off"
       android:defaultValue="true" />
   </PreferenceCategory>
 
   <PreferenceCategory
-    android:title="Friends">
+    android:title="@string/preferences_category_friends">
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="friend_add"
-      android:title="Add Friends"
-      android:summary="Add Friends with foursquare.com." />
+      android:title="@string/preferences_friend_add_title"
+      android:summary="@string/preferences_friend_add_summary"/>
 
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="friend_requests"
-      android:title="Friend Requests"
-      android:summary="Manage friends with foursquare.com." />
+      android:title="@string/preferences_friend_requests_title"
+      android:summary="@string/preferences_friend_requests_summary" />
   </PreferenceCategory>
 
   <PreferenceCategory
-    android:title="User Actions">
+    android:title="@string/preferences_category_user_actions">
 
     <com.joelapenna.foursquared.preferences.CityNamePreference
       android:key="city_name"
       android:persistent="true"
-      android:title="Update City"
-      android:summary="Update your foursquare city." />
+      android:title="@string/preferences_city_name_title"
+      android:summary="@string/preferences_city_name_summary" />
 
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="logout"
-      android:title="Logout"
-      android:summary="Sign out of Foursquare" />
+      android:title="@string/preferences_logout_title"
+      android:summary="@string/preferences_logout_summary" />
   </PreferenceCategory>
 
 </PreferenceScreen>
