@@ -96,7 +96,6 @@ public class VenueCheckinsActivity extends LoadableListActivity {
     }
 
     private final class ParentDataObserver implements Observer {
-        private boolean observed = false;
 
         @SuppressWarnings("unchecked")
         @Override
@@ -105,30 +104,25 @@ public class VenueCheckinsActivity extends LoadableListActivity {
             VenueActivity parent = (VenueActivity)getParent();
             Venue venue = parent.venueObservable.getVenue();
 
-            // For each checkin, lets get the user because that is what we're concerned about here.
+            boolean hasMayor = venue.getStats() != null && venue.getStats().getMayor() != null;
+            if (hasMayor) {
+                if (DEBUG) Log.d(TAG, "Found mayor, pushing to adapter.");
+                putMayorInAdapter(venue.getStats().getMayor());
+            }
+
             Group<Checkin> checkins = venue.getCheckins();
+            boolean hasCheckins = venue.getCheckins() != null && venue.getCheckins().size() > 0;
+            if (hasCheckins) {
+                if (DEBUG) Log.d(TAG, "Found checkins, pushing to adapter.");
+                Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
+                putCheckinsInAdapter(checkins);
+            }
 
-            if (!observed && venue != null && checkins != null) {
-                observed = true;
-
-                boolean hasMayor = venue.getStats() != null && venue.getStats().getMayor() != null;
-                if (hasMayor) {
-                    if (DEBUG) Log.d(TAG, "Found mayor, pushing to adapter.");
-                    putMayorInAdapter(venue.getStats().getMayor());
-                }
-
-                boolean hasCheckins = venue.getCheckins().size() > 0;
-                if (hasCheckins) {
-                    if (DEBUG) Log.d(TAG, "Found checkins, pushing to adapter.");
-                    Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
-                    putCheckinsInAdapter(checkins);
-                }
-
-                if (hasMayor || hasCheckins) {
-                    mListAdapter.notifyDataSetInvalidated();
-                } else {
-                    setEmptyView();
-                }
+            if (hasMayor || hasCheckins) {
+                mListAdapter.notifyDataSetInvalidated();
+            } else {
+                if (DEBUG) Log.d(TAG, "No data. Setting empty");
+                setEmptyView();
             }
         }
     }
