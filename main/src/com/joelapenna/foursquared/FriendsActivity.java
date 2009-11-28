@@ -11,6 +11,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.R.drawable;
 import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.util.Comparators;
+import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
 
@@ -51,6 +52,7 @@ public class FriendsActivity extends LoadableListActivity {
     private static final int MENU_SHOUT = 2;
     private static final int MENU_STATS = 3;
     private static final int MENU_MYINFO = 4;
+    private static final int MENU_FEEDBACK = 5;
 
     private static final int MENU_GROUP_SEARCH = 0;
 
@@ -120,6 +122,8 @@ public class FriendsActivity extends LoadableListActivity {
                 .setIcon(android.R.drawable.ic_menu_recent_history);
         menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
                 .setIcon(drawable.ic_menu_myinfo);
+        menu.add(Menu.NONE, MENU_FEEDBACK, Menu.NONE, R.string.feedback_label) //
+        .setIcon(android.R.drawable.ic_menu_send);
         Foursquared.addPreferencesToMenu(this, menu);
         return true;
     }
@@ -140,6 +144,9 @@ public class FriendsActivity extends LoadableListActivity {
                 return true;
             case MENU_MYINFO:
                 startActivity(new Intent(FriendsActivity.this, UserActivity.class));
+                return true;
+            case MENU_FEEDBACK:
+                MenuUtils.SendFeedBack(this, (Foursquared)getApplication());
                 return true;
         }
         return super.onOptionsItemSelected(item);

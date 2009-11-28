@@ -45,6 +45,20 @@
     name="checkins_label">Friends</string>
   <string
     name="myinfo_label">My Info</string>
+   <string
+    name="feedback_label">Send Feedback</string>
+  <string
+    name="feedback_subject">Fousquare for Android Feedback</string>
+  <string
+    name="feedback_error">Couldn't find configured email client.</string>
+   <string
+    name="feedback_more">If you're reporting problem please provide answers to questions below:</string>
+   <string
+    name="feedback_q1">What steps will reproduce the problem?</string>
+    <string
+    name="feedback_q2">What is the expected output? What do you see instead?</string>
+   <string
+    name="feedback_q3">Please provide any additional information below.</string>
   <string
     name="nearby_label">Nearby</string>
   <string
@@ -79,6 +93,10 @@
 
   <string
     name="login_dialog_title">Logging in...</string>
+  <string
+    name="login_get_started">Get Started</string>
+   <string
+    name="login_get_started_more">Got foursquare account? We just need your phone# and password</string>
   <string
     name="login_dialog_message">Please wait while logging into Foursquare...</string>
 

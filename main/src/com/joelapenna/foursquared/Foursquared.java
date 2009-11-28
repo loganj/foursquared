@@ -150,6 +150,13 @@ public class Foursquared extends Application {
         return Preferences.getUserCity(mPrefs);
     }
 
+    public String getVersion() {
+
+        if (mVersion != null)
+            return mVersion;
+        return "";
+    }
+
     public RemoteResourceManager getRemoteResourceManager() {
         return mRemoteResourceManager;
     }

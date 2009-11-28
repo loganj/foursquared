@@ -13,6 +13,7 @@ import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.location.BestLocationListener;
 import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.util.DumpcatcherHelper;
+import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
@@ -54,6 +55,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     private static final int MENU_ADD_VENUE = 1;
     private static final int MENU_SEARCH = 2;
     private static final int MENU_MYINFO = 3;
+    private static final int MENU_FEEDBACK = 4;
 
     private SearchTask mSearchTask;
     private SearchHolder mSearchHolder = new SearchHolder();
@@ -147,6 +149,8 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 .setIcon(android.R.drawable.ic_menu_add);
         menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
                 .setIcon(R.drawable.ic_menu_myinfo);
+        menu.add(Menu.NONE, MENU_FEEDBACK, Menu.NONE, R.string.feedback_label) //
+        .setIcon(android.R.drawable.ic_menu_send);
         Foursquared.addPreferencesToMenu(this, menu);
         return true;
     }
@@ -167,6 +171,9 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 return true;
             case MENU_MYINFO:
                 startActivity(new Intent(NearbyVenuesActivity.this, UserActivity.class));
+                return true;
+            case MENU_FEEDBACK:
+                MenuUtils.SendFeedBack(this, (Foursquared)getApplication());
                 return true;
         }
         return super.onOptionsItemSelected(item);

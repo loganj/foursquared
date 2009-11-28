@@ -12,6 +12,7 @@ import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
 import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.util.DumpcatcherHelper;
+import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
@@ -62,6 +63,7 @@ public class SearchVenuesActivity extends TabActivity {
     private static final int MENU_REFRESH = 1;
     private static final int MENU_NEARBY = 2;
     private static final int MENU_ADD_VENUE = 3;
+    private static final int MENU_FEEDBACK = 4;
 
     private static final int MENU_GROUP_SEARCH = 0;
 
@@ -156,6 +158,8 @@ public class SearchVenuesActivity extends TabActivity {
                 .setIcon(R.drawable.ic_menu_refresh);
         menu.add(MENU_GROUP_SEARCH, MENU_ADD_VENUE, Menu.NONE, R.string.add_venue_label) //
                 .setIcon(android.R.drawable.ic_menu_add);
+        menu.add(Menu.NONE, MENU_FEEDBACK, Menu.NONE, R.string.feedback_label) //
+        .setIcon(android.R.drawable.ic_menu_send);
 
         return true;
     }
@@ -176,6 +180,9 @@ public class SearchVenuesActivity extends TabActivity {
                 Intent intent = new Intent(SearchVenuesActivity.this, AddVenueActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
                 startActivity(intent);
+                return true;
+            case MENU_FEEDBACK:
+                MenuUtils.SendFeedBack(this, (Foursquared)getApplication());
                 return true;
         }
         return super.onOptionsItemSelected(item);

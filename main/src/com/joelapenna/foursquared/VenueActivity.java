@@ -7,6 +7,7 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
+import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.VenueView;
 
@@ -52,6 +53,7 @@ public class VenueActivity extends TabActivity {
     private static final int MENU_SHOUT = 1;
     private static final int MENU_TIPADD = 2;
     private static final int MENU_CALL = 3;
+    private static final int MENU_FEEDBACK = 4;
 
     private static final int RESULT_SHOUT = 1;
 
@@ -119,6 +121,8 @@ public class VenueActivity extends TabActivity {
                 android.R.drawable.ic_menu_set_as);
 
         menu.add(Menu.NONE, MENU_CALL, 3, R.string.call).setIcon(android.R.drawable.ic_menu_call);
+        menu.add(Menu.NONE, MENU_FEEDBACK, Menu.NONE, R.string.feedback_label) //
+        .setIcon(android.R.drawable.ic_menu_send);
 
         Foursquared.addPreferencesToMenu(this, menu);
         return true;
@@ -132,6 +136,7 @@ public class VenueActivity extends TabActivity {
         boolean callEnabled = mStateHolder.venue != null
                 && !TextUtils.isEmpty(mStateHolder.venue.getPhone());
         menu.findItem(MENU_CALL).setEnabled(callEnabled);
+
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -154,6 +159,9 @@ public class VenueActivity extends TabActivity {
                 Uri phoneUri = Uri.fromParts("tel", mStateHolder.venue.getPhone(), null);
                 startActivity(new Intent(Intent.ACTION_CALL, phoneUri));
                 // nothing sucka.
+                return true;
+            case MENU_FEEDBACK:
+                MenuUtils.SendFeedBack(this, (Foursquared)getApplication());
                 return true;
             default:
                 return false;
