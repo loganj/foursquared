@@ -33,6 +33,8 @@ Java > Installed JREs > Execution Environment - Set compatible JRE for
 File > Import > Existing project - Browse to $foursquared/main
 File > Import > Existing project - Browse to $foursquared/tests
 
+Next, you'll want to set up your project's formatting and import settings using the files in examples/eclipse
+
 
 === Building a release ===
 
