@@ -19,12 +19,23 @@ Step Zero:
 Install some eclipse/ant/sdk awesomeness.
 http://developer.android.com/sdk/index.html
 
-Then, you have to make sure some eclipse settings are exactly correct. From preferences:
+Then, you have to make sure some eclipse build settings are exactly correct. From preferences:
 
 Java > Compiler > Compiler Compliance Level - Set to "1.6"
 Java > Installed JREs - Should list only something Java6/1.6 related.
 Java > Installed JREs > Execution Environment - Set compatible JRE for
     "JavaSE-1.6"
+
+===Eclipse Preferences===
+
+Use the files in examples/eclipse to set up your import order formatting and cleanup. You should enable auto-clean-up on save as well.
+
+Java > Code Style > Cleanup - Import examples/eclipse/cleanup.xml
+Java > Code Style > Formatter - Import examples/eclipse/formatting.xml
+Java > Code Style > Organize Imports - Import examples/eclipse/importorder
+
+In general, we follow the android style guide:
+    http://source.android.com/submit-patches/code-style-guide
 
 
 ===Setting up foursqure projects===
@@ -32,6 +43,8 @@ Java > Installed JREs > Execution Environment - Set compatible JRE for
 ====Real foursquare projects====
 File > Import > Existing project - Browse to $foursquared/main
 File > Import > Existing project - Browse to $foursquared/tests
+
+Next, you'll want to set up your project's formatting and import settings using the files in examples/eclipse
 
 
 === Building a release ===
