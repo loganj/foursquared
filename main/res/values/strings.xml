@@ -54,11 +54,11 @@
    <string
     name="feedback_more">If you're reporting problem please provide answers to questions below:</string>
    <string
-    name="feedback_q1">What steps will reproduce the problem?</string>
+    name="feedback_question_how_to_reproduce">What steps will reproduce the problem?</string>
     <string
-    name="feedback_q2">What is the expected output? What do you see instead?</string>
+    name="feedback_question_expected_output">What is the expected output? What do you see instead?</string>
    <string
-    name="feedback_q3">Please provide any additional information below.</string>
+    name="feedback_question_additional_information">Please provide any additional information below.</string>
   <string
     name="nearby_label">Nearby</string>
   <string

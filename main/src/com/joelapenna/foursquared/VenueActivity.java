@@ -122,9 +122,9 @@ public class VenueActivity extends TabActivity {
 
         menu.add(Menu.NONE, MENU_CALL, 3, R.string.call).setIcon(android.R.drawable.ic_menu_call);
         menu.add(Menu.NONE, MENU_FEEDBACK, Menu.NONE, R.string.feedback_label) //
-        .setIcon(android.R.drawable.ic_menu_send);
+                .setIcon(android.R.drawable.ic_menu_send);
 
-        Foursquared.addPreferencesToMenu(this, menu);
+        MenuUtils.addPreferencesToMenu(this, menu);
         return true;
     }
 
@@ -136,7 +136,6 @@ public class VenueActivity extends TabActivity {
         boolean callEnabled = mStateHolder.venue != null
                 && !TextUtils.isEmpty(mStateHolder.venue.getPhone());
         menu.findItem(MENU_CALL).setEnabled(callEnabled);
-
 
         return super.onPrepareOptionsMenu(menu);
     }

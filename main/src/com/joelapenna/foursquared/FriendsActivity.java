@@ -123,8 +123,8 @@ public class FriendsActivity extends LoadableListActivity {
         menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
                 .setIcon(drawable.ic_menu_myinfo);
         menu.add(Menu.NONE, MENU_FEEDBACK, Menu.NONE, R.string.feedback_label) //
-        .setIcon(android.R.drawable.ic_menu_send);
-        Foursquared.addPreferencesToMenu(this, menu);
+                .setIcon(android.R.drawable.ic_menu_send);
+        MenuUtils.addPreferencesToMenu(this, menu);
         return true;
     }
 

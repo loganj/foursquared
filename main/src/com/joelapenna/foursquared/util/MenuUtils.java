@@ -4,42 +4,49 @@
 
 package com.joelapenna.foursquared.util;
 
+import com.joelapenna.foursquared.Foursquared;
+import com.joelapenna.foursquared.PreferenceActivity;
+import com.joelapenna.foursquared.R;
+
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
+import android.view.Menu;
 import android.widget.Toast;
-
-import com.joelapenna.foursquared.Foursquared;
-import com.joelapenna.foursquared.R;
 
 /**
  * @author Alex Volovoy (avolovoy@gmail.com) Collection of common functions
  *         which are called from the menu
  */
 public class MenuUtils {
+    // Common menu items
+    private static final int MENU_PREFERENCES = -1;
 
-    public static void SendFeedBack(Context ctx, Foursquared foursquared) {
+    private static final int MENU_GROUP_SYSTEM = 20;
+
+    public static void SendFeedBack(Context context, Foursquared foursquared) {
 
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
-        String[] mailto = {
+        final String[] mailto = {
             "foursquared-dev@googlegroups.com"
         };
-        String separator = "|";
-        String new_line = "\n";
+        final String separator = "|";
+        final String new_line = "\n";
         StringBuilder body = new StringBuilder();
-        Resources res = ctx.getResources();
+        Resources res = context.getResources();
         body.append(new_line);
         body.append(new_line);
         body.append(res.getString(R.string.feedback_more));
         body.append(new_line);
-        body.append(res.getString(R.string.feedback_q1));
+        body.append(res.getString(R.string.feedback_question_how_to_reproduce));
         body.append(new_line);
         body.append(new_line);
-        body.append(res.getString(R.string.feedback_q2));
+        body.append(res.getString(R.string.feedback_question_expected_output));
         body.append(new_line);
         body.append(new_line);
-        body.append(res.getString(R.string.feedback_q3));
+        body.append(res.getString(R.string.feedback_question_additional_information));
         body.append(new_line);
         body.append(new_line);
         body.append("--------------------------------------");
@@ -63,14 +70,23 @@ public class MenuUtils {
         body.append(Build.DISPLAY);
         body.append(new_line);
         body.append(new_line);
-        sendIntent.putExtra(Intent.EXTRA_SUBJECT, ctx.getString(R.string.feedback_subject));
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.feedback_subject));
         sendIntent.putExtra(Intent.EXTRA_EMAIL, mailto);
         sendIntent.putExtra(Intent.EXTRA_TEXT, body.toString());
         sendIntent.setType("message/rfc822");
         try {
-            ctx.startActivity(Intent.createChooser(sendIntent, ctx.getText(R.string.feedback_subject)));
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(ctx, ctx.getText(R.string.feedback_error), Toast.LENGTH_SHORT).show();
+            context.startActivity(Intent.createChooser(sendIntent, context
+                    .getText(R.string.feedback_subject)));
+        } catch (ActivityNotFoundException ex) {
+            Toast.makeText(context, context.getText(R.string.feedback_error), Toast.LENGTH_SHORT)
+                    .show();
         }
+    }
+
+    public static void addPreferencesToMenu(Context context, Menu menu) {
+        Intent intent = new Intent(context, PreferenceActivity.class);
+        menu.add(MENU_GROUP_SYSTEM, MENU_PREFERENCES, Menu.CATEGORY_SECONDARY,
+                R.string.preferences_label) //
+                .setIcon(android.R.drawable.ic_menu_preferences).setIntent(intent);
     }
 }

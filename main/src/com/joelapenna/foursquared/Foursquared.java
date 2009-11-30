@@ -39,7 +39,6 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
 
 import java.io.IOException;
 import java.util.Observer;
@@ -62,10 +61,6 @@ public class Foursquared extends Application {
     public static final String INTENT_ACTION_LOGGED_OUT = "com.joelapenna.foursquared.intent.action.LOGGED_OUT";
     public static final String INTENT_ACTION_LOGGED_IN = "com.joelapenna.foursquared.intent.action.LOGGED_IN";
     public static final String EXTRA_VENUE_ID = "com.joelapenna.foursquared.VENUE_ID";
-
-    // Common menu items
-    private static final int MENU_PREFERENCES = -1;
-    private static final int MENU_GROUP_SYSTEM = 20;
 
     private String mVersion = null;
 
@@ -225,13 +220,6 @@ public class Foursquared extends Application {
             if (DEBUG) Log.d(TAG, "Falling back to NullDiskCache for RemoteResourceManager");
             mRemoteResourceManager = new RemoteResourceManager(new NullDiskCache());
         }
-    }
-
-    public static void addPreferencesToMenu(Context context, Menu menu) {
-        Intent intent = new Intent(context, PreferenceActivity.class);
-        menu.add(MENU_GROUP_SYSTEM, MENU_PREFERENCES, Menu.CATEGORY_SECONDARY,
-                R.string.preferences_label) //
-                .setIcon(android.R.drawable.ic_menu_preferences).setIntent(intent);
     }
 
     /**
