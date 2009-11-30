@@ -77,6 +77,12 @@
 
   <string
     name="login_dialog_title">Inloggen</string>
+  <!-- 
+  <string
+    name="login_get_started">Get Started</string>
+  <string
+    name="login_get_started_more">Got foursquare account? We just need your phone# and password</string>
+   -->
   <string
     name="login_dialog_message">Wacht a.u.b. terwijl we inloggen op Foursquare...</string>
 
@@ -174,6 +180,47 @@
 
   <string
     name="no_location_providers">Unable to determine location. Please Enable GPS or Network Location</string>
+
+  <string
+    name="preferences_category_checkin_defaults">Check-in Defaults</string>
+  <string
+    name="preferences_share_checkin_title">Tell my friends</string>
+  <string
+    name="preferences_share_summary_on">By default, tell my friends when I check-in.</string>
+   <string
+    name="preferences_share_summary_off">By default, don't tell my friends when I check-in.</string>
+   <string
+    name="preferences_twitter_checkin_title">Tell Twitter</string>
+   <string
+    name="preferences_twitter_checkin_summary_on">By default, tweet my checkins.</string>
+   <string
+    name="preferences_twitter_checkin_summary_off">By default, don't tweet my checkins.</string>
+    <string
+    name="preferences_immediate_checkin_title">Checkin without prompt</string>
+   <string
+    name="preferences_immediate_checkin_summary_on">Checkin without confirmation when using \'Quick Checkin\'.</string>
+   <string
+    name="preferences_immediate_checkin_summary_off">Prompt for a shout when using \'Quick Checkin\'.</string>
+    <string
+    name="preferences_category_friends">Friends</string>
+   <string
+    name="preferences_friend_add_title">Add Friends</string>
+   <string
+    name="preferences_friend_add_summary">Add Friends with foursquare.com.</string>
+  <string
+    name="preferences_friend_requests_title">Friend Requests</string>
+   <string
+    name="preferences_friend_requests_summary">Manage friends with foursquare.com.</string>
+   <string
+    name="preferences_category_user_actions">User Actions</string>
+   <string
+    name="preferences_city_name_title">Update City</string>
+   <string
+    name="preferences_city_name_summary">Update your foursquare city."</string>
+  <string
+    name="preferences_logout_title">Logout</string>
+   <string
+    name="preferences_logout_summary">Sign out of Foursquare.</string>
 
   -->
 

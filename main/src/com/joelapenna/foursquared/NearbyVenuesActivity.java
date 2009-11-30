@@ -12,7 +12,6 @@ import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.location.BestLocationListener;
 import com.joelapenna.foursquared.util.Comparators;
-import com.joelapenna.foursquared.util.DumpcatcherHelper;
 import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
@@ -150,8 +149,8 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
                 .setIcon(R.drawable.ic_menu_myinfo);
         menu.add(Menu.NONE, MENU_FEEDBACK, Menu.NONE, R.string.feedback_label) //
-        .setIcon(android.R.drawable.ic_menu_send);
-        Foursquared.addPreferencesToMenu(this, menu);
+                .setIcon(android.R.drawable.ic_menu_send);
+        MenuUtils.addPreferencesToMenu(this, menu);
         return true;
     }
 
