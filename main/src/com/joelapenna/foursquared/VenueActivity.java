@@ -121,7 +121,7 @@ public class VenueActivity extends TabActivity {
                 android.R.drawable.ic_menu_set_as);
 
         menu.add(Menu.NONE, MENU_CALL, 3, R.string.call).setIcon(android.R.drawable.ic_menu_call);
-        menu.add(Menu.NONE, MENU_FEEDBACK, Menu.NONE, R.string.feedback_label) //
+        menu.add(Menu.NONE, MENU_FEEDBACK, 4, R.string.feedback_label) //
                 .setIcon(android.R.drawable.ic_menu_send);
 
         MenuUtils.addPreferencesToMenu(this, menu);
