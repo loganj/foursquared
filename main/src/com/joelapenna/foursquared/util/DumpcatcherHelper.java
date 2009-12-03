@@ -13,7 +13,6 @@ import com.joelapenna.foursquared.R;
 import org.apache.http.HttpResponse;
 
 import android.content.res.Resources;
-import android.location.Location;
 import android.util.Log;
 
 import java.lang.Thread.UncaughtExceptionHandler;
@@ -26,11 +25,13 @@ import java.util.logging.Level;
  */
 public class DumpcatcherHelper {
     private static final String TAG = "DumpcatcherHelper";
+
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private static final ExecutorService mExecutor = Executors.newFixedThreadPool(2);
 
     private static Dumpcatcher sDumpcatcher;
+
     private static String sClient;
 
     public DumpcatcherHelper(String client, Resources resources) {
@@ -40,13 +41,15 @@ public class DumpcatcherHelper {
 
     public static void setupDumpcatcher(Resources resources) {
         if (FoursquaredSettings.DUMPCATCHER_TEST) {
-            if (FoursquaredSettings.DEBUG) Log.d(TAG, "Loading Dumpcatcher TEST");
+            if (FoursquaredSettings.DEBUG)
+                Log.d(TAG, "Loading Dumpcatcher TEST");
             sDumpcatcher = new Dumpcatcher( //
                     resources.getString(R.string.test_dumpcatcher_product_key), //
                     resources.getString(R.string.test_dumpcatcher_secret), //
                     resources.getString(R.string.test_dumpcatcher_url), sClient, 5);
         } else {
-            if (FoursquaredSettings.DEBUG) Log.d(TAG, "Loading Dumpcatcher Live");
+            if (FoursquaredSettings.DEBUG)
+                Log.d(TAG, "Loading Dumpcatcher Live");
             sDumpcatcher = new Dumpcatcher( //
                     resources.getString(R.string.dumpcatcher_product_key), //
                     resources.getString(R.string.dumpcatcher_secret), //
@@ -54,7 +57,8 @@ public class DumpcatcherHelper {
         }
 
         UncaughtExceptionHandler handler = new DefaultUnhandledExceptionHandler(sDumpcatcher);
-        // This can hang the app starving android of its ability to properly kill threads... maybe.
+        // This can hang the app starving android of its ability to properly
+        // kill threads... maybe.
         Thread.setDefaultUncaughtExceptionHandler(handler);
         Thread.currentThread().setUncaughtExceptionHandler(handler);
     }
@@ -69,7 +73,8 @@ public class DumpcatcherHelper {
                             level, "usage");
                     response.getEntity().consumeContent();
                 } catch (Exception e) {
-                    if (DEBUG) Log.d(TAG, "Unable to sendCrash");
+                    if (DEBUG)
+                        Log.d(TAG, "Unable to sendCrash");
                 }
             }
         });
@@ -97,6 +102,7 @@ public class DumpcatcherHelper {
             super(dumpcatcher);
         }
 
+        @Override
         public void uncaughtException(Thread t, Throwable e) {
             super.uncaughtException(t, e);
             mOriginalExceptionHandler.uncaughtException(t, e);
