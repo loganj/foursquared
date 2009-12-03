@@ -4,6 +4,7 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
@@ -345,6 +346,11 @@ public class ShoutActivity extends Activity {
 
             try {
                 Location location = ((Foursquared)getApplication()).getLastKnownLocation();
+                if (location == null) {
+                    if (DEBUG) Log.d(TAG, "unable to determine location");
+                    throw new FoursquareException(getResources().getString(
+                            R.string.no_location_providers));
+                }
                 ((Foursquared)getApplication()).requestSwitchCity(location);
                 return ((Foursquared)getApplication()).getFoursquare().checkin(venueId, null,
                         LocationUtils.createFoursquareLocation(location), mShout, isPrivate,
