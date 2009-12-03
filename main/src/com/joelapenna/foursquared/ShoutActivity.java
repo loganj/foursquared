@@ -347,8 +347,7 @@ public class ShoutActivity extends Activity {
             try {
                 Location location = ((Foursquared)getApplication()).getLastKnownLocation();
                 if (location == null) {
-                    if (DEBUG)
-                        Log.d(TAG, "unable to determine location");
+                    if (DEBUG) Log.d(TAG, "unable to determine location");
                     throw new FoursquareException(getResources().getString(
                             R.string.no_location_providers));
                 }
