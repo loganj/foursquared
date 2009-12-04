@@ -52,7 +52,7 @@
   <string
     name="feedback_error">Couldn't find configured email client.</string>
    <string
-    name="feedback_more">If you're reporting problem please provide answers to questions below:</string>
+    name="feedback_more">If you are reporting problem please answer the questions below:</string>
    <string
     name="feedback_question_how_to_reproduce">What steps will reproduce the problem?</string>
     <string

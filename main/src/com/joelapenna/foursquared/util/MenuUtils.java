@@ -37,7 +37,6 @@ public class MenuUtils {
         final String[] mailto = {
             "foursquared-dev@googlegroups.com"
         };
-        final String separator = "|";
         final String new_line = "\n";
         StringBuilder body = new StringBuilder();
         Resources res = context.getResources();
@@ -56,22 +55,22 @@ public class MenuUtils {
         body.append(new_line);
         body.append("--------------------------------------");
         body.append(new_line);
-        body.append("ver:");
+        body.append("ver: ");
         body.append(foursquared.getVersion());
-        body.append(separator);
-        body.append("city:");
+        body.append(new_line);
+        body.append("city: ");
         body.append(foursquared.getUserCity().getName());
-        body.append(separator);
-        body.append("user:");
+        body.append(new_line);
+        body.append("user: ");
         body.append(foursquared.getUserId());
-        body.append(separator);
-        body.append("p:");
+        body.append(new_line);
+        body.append("p: ");
         body.append(Build.MODEL);
-        body.append(separator);
-        body.append("os:");
+        body.append(new_line);
+        body.append("os: ");
         body.append(Build.VERSION.RELEASE);
-        body.append(separator);
-        body.append("build#:");
+        body.append(new_line);
+        body.append("build#: ");
         body.append(Build.DISPLAY);
         body.append(new_line);
         body.append(new_line);
