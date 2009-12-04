@@ -128,6 +128,35 @@ public class Foursquare {
     }
 
     @V1
+    public Group<User> friends(String userId) throws FoursquareException, FoursquareError,
+            IOException {
+        return mFoursquareV1.friends(userId);
+    }
+
+    @V1
+    public Group<User> friendRequests() throws FoursquareException, FoursquareError, IOException {
+        return mFoursquareV1.friendRequests();
+    }
+
+    @V1
+    public User friendApprove(String userId) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
+        return mFoursquareV1.friendApprove(userId);
+    }
+
+    @V1
+    public User friendDeny(String userId) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
+        return mFoursquareV1.friendDeny(userId);
+    }
+
+    @V1
+    public User friendSendrequest(String userId) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
+        return mFoursquareV1.friendSendrequest(userId);
+    }
+
+    @V1
     public City switchCity(String cityId) throws FoursquareException, FoursquareError, IOException {
         return mFoursquareV1.switchcity(cityId);
     }
