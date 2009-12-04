@@ -92,6 +92,11 @@ abstract public class AbstractHttpApi implements HttpApi {
                 response.getEntity().consumeContent();
                 throw new FoursquareException(response.getStatusLine().toString());
 
+            case 500:
+                response.getEntity().consumeContent();
+                if (DEBUG) LOG.log(Level.FINE, "HTTP Code: 500");
+                throw new FoursquareException(response.getStatusLine().toString());
+
             default:
                 if (DEBUG) LOG.log(Level.FINE, "Default case for status code reached: "
                         + response.getStatusLine().toString());
