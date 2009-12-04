@@ -34,7 +34,7 @@
           android:layout_width="0dip"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:inputType="text"
+          android:inputType="textEmailAddress"
           android:textAppearance="@android:style/TextAppearance.Large"
           android:hint="@string/phone_number_or_email" />
         <EditText
@@ -42,7 +42,8 @@
           android:layout_width="0dip"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:password="true"
+          android:inputType="textPassword"
+          android:imeOptions="actionDone"
           android:textAppearance="@android:style/TextAppearance.Large"
           android:hint="@string/password" />
       </TableRow>
