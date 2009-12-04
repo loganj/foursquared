@@ -46,23 +46,31 @@ import java.util.Observer;
  */
 public class NearbyVenuesActivity extends LoadableListActivity {
     static final String TAG = "NearbyVenuesActivity";
+
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public static final long DELAY_TIME_IN_MS = 2000;
 
     private static final int MENU_REFRESH = 0;
+
     private static final int MENU_ADD_VENUE = 1;
+
     private static final int MENU_SEARCH = 2;
+
     private static final int MENU_MYINFO = 3;
-    private static final int MENU_FEEDBACK = 4;
 
     private SearchTask mSearchTask;
+
     private SearchHolder mSearchHolder = new SearchHolder();
+
     private SearchHandler mSearchHandler = new SearchHandler();
+
     private SearchLocationObserver mSearchLocationObserver = new SearchLocationObserver();
+
     private SearchResultsObservable mSearchResultsObservable = new SearchResultsObservable();
 
     private ListView mListView;
+
     private SeparatedListAdapter mListAdapter;
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
@@ -86,7 +94,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Venue venue = (Venue)parent.getAdapter().getItem(position);
+                Venue venue = (Venue) parent.getAdapter().getItem(position);
                 startItemActivity(venue);
             }
         });
@@ -94,13 +102,13 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         mSearchResultsObservable.addObserver(new Observer() {
             @Override
             public void update(Observable observable, Object data) {
-                putSearchResultsInAdapter(((SearchResultsObservable)observable).getSearchResults());
+                putSearchResultsInAdapter(((SearchResultsObservable) observable).getSearchResults());
             }
         });
 
         if (getLastNonConfigurationInstance() != null) {
             if (DEBUG) Log.d(TAG, "Restoring state.");
-            SearchHolder holder = (SearchHolder)getLastNonConfigurationInstance();
+            SearchHolder holder = (SearchHolder) getLastNonConfigurationInstance();
             if (holder.results != null) {
                 setSearchResults(holder.results);
             }
@@ -117,7 +125,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     public void onResume() {
         super.onResume();
         if (DEBUG) Log.d(TAG, "onResume");
-        ((Foursquared)getApplication()).requestLocationUpdates(mSearchLocationObserver);
+        ((Foursquared) getApplication()).requestLocationUpdates(mSearchLocationObserver);
 
         if (mSearchHolder.results == null) {
             mSearchHandler.sendEmptyMessageDelayed(SearchHandler.MESSAGE_SEARCH, DELAY_TIME_IN_MS);
@@ -127,7 +135,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     @Override
     public void onPause() {
         super.onPause();
-        ((Foursquared)getApplication()).removeLocationUpdates(mSearchLocationObserver);
+        ((Foursquared) getApplication()).removeLocationUpdates(mSearchLocationObserver);
     }
 
     @Override
@@ -148,9 +156,10 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 .setIcon(android.R.drawable.ic_menu_add);
         menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
                 .setIcon(R.drawable.ic_menu_myinfo);
-        menu.add(Menu.NONE, MENU_FEEDBACK, Menu.NONE, R.string.feedback_label) //
-                .setIcon(android.R.drawable.ic_menu_send);
+
+        MenuUtils.addSendFeedbackToMenu((Foursquared) getApplication(), this, menu);
         MenuUtils.addPreferencesToMenu(this, menu);
+
         return true;
     }
 
@@ -170,9 +179,6 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 return true;
             case MENU_MYINFO:
                 startActivity(new Intent(NearbyVenuesActivity.this, UserActivity.class));
-                return true;
-            case MENU_FEEDBACK:
-                MenuUtils.SendFeedBack(this, (Foursquared)getApplication());
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -263,7 +269,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
 
         public Group<Group<Venue>> search() throws FoursquareException, IOException {
             if (DEBUG) Log.d(TAG, "SearchTask.search()");
-            Foursquared foursquared = (Foursquared)getApplication();
+            Foursquared foursquared = (Foursquared) getApplication();
             Foursquare foursquare = foursquared.getFoursquare();
             Location location = foursquared.getLastKnownLocation();
 
@@ -271,7 +277,8 @@ public class NearbyVenuesActivity extends LoadableListActivity {
             String geolong;
             if (location == null) {
                 if (DEBUG) Log.d(TAG, "SearchTask.search(): doing user lookup");
-                // Foursquare requires a lat, lng for a venue search, so we have to pull it from the
+                // Foursquare requires a lat, lng for a venue search, so we have
+                // to pull it from the
                 // server if we cannot determine it locally.
                 City city = foursquare.user(null, false, false).getCity();
                 geolat = String.valueOf(city.getGeolat());
@@ -294,7 +301,9 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     private class SearchHandler extends Handler {
 
         public static final int MESSAGE_FORCE_SEARCH = 0;
+
         public static final int MESSAGE_STOP_SEARCH = 1;
+
         public static final int MESSAGE_SEARCH = 2;
 
         private boolean mFirstSearchCompleted = false;
@@ -306,7 +315,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
 
             switch (msg.what) {
                 case MESSAGE_FORCE_SEARCH:
-                    mSearchTask = (SearchTask)new SearchTask().execute();
+                    mSearchTask = (SearchTask) new SearchTask().execute();
                     return;
 
                 case MESSAGE_STOP_SEARCH:
@@ -321,7 +330,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                             || AsyncTask.Status.FINISHED.equals(mSearchTask.getStatus())
                             && !mFirstSearchCompleted) {
                         mFirstSearchCompleted = true;
-                        mSearchTask = (SearchTask)new SearchTask().execute();
+                        mSearchTask = (SearchTask) new SearchTask().execute();
                     }
                     return;
 
@@ -333,6 +342,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
 
     private class SearchResultsObservable extends Observable {
 
+        @Override
         public void notifyObservers(Object data) {
             setChanged();
             super.notifyObservers(data);
@@ -349,10 +359,10 @@ public class NearbyVenuesActivity extends LoadableListActivity {
 
         @Override
         public void update(Observable observable, Object data) {
-            Location location = (Location)data;
+            Location location = (Location) data;
             // Fire a search if we haven't done so yet.
             if (!mRequestedFirstSearch
-                    && ((BestLocationListener)observable).isAccurateEnough(location)) {
+                    && ((BestLocationListener) observable).isAccurateEnough(location)) {
                 mRequestedFirstSearch = true;
                 mSearchHandler.removeMessages(SearchHandler.MESSAGE_SEARCH);
                 mSearchHandler.sendEmptyMessage(SearchHandler.MESSAGE_SEARCH);
@@ -362,6 +372,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
 
     private static class SearchHolder {
         Group<Group<Venue>> results;
+
         String query;
     }
 }

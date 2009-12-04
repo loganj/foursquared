@@ -53,27 +53,37 @@ import java.util.Observable;
  */
 public class SearchVenuesActivity extends TabActivity {
     static final String TAG = "SearchVenuesActivity";
+
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public static final String QUERY_NEARBY = null;
+
     public static SearchResultsObservable searchResultsObservable;
 
     private static final int MENU_SEARCH = 0;
+
     private static final int MENU_REFRESH = 1;
+
     private static final int MENU_NEARBY = 2;
+
     private static final int MENU_ADD_VENUE = 3;
-    private static final int MENU_FEEDBACK = 4;
 
     private static final int MENU_GROUP_SEARCH = 0;
 
     private SearchTask mSearchTask;
+
     private SearchHolder mSearchHolder = new SearchHolder();
 
     private ListView mListView;
+
     private LinearLayout mEmpty;
+
     private TextView mEmptyText;
+
     private ProgressBar mEmptyProgress;
+
     private TabHost mTabHost;
+
     private SeparatedListAdapter mListAdapter;
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
@@ -83,6 +93,7 @@ public class SearchVenuesActivity extends TabActivity {
             finish();
         }
     };
+
     private boolean mIsShortcutPicker;
 
     @Override
@@ -103,7 +114,7 @@ public class SearchVenuesActivity extends TabActivity {
 
         if (getLastNonConfigurationInstance() != null) {
             if (DEBUG) Log.d(TAG, "Restoring state.");
-            SearchHolder holder = (SearchHolder)getLastNonConfigurationInstance();
+            SearchHolder holder = (SearchHolder) getLastNonConfigurationInstance();
             if (holder.results != null) {
                 mSearchHolder.query = holder.query;
                 setSearchResults(holder.results);
@@ -123,16 +134,16 @@ public class SearchVenuesActivity extends TabActivity {
     @Override
     public void onResume() {
         super.onResume();
-        ((Foursquared)getApplication()).requestLocationUpdates();
+        ((Foursquared) getApplication()).requestLocationUpdates();
         if (mSearchHolder.results == null && mSearchTask == null) {
-            mSearchTask = (SearchTask)new SearchTask().execute();
+            mSearchTask = (SearchTask) new SearchTask().execute();
         }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ((Foursquared)getApplication()).removeLocationUpdates();
+        ((Foursquared) getApplication()).removeLocationUpdates();
     }
 
     @Override
@@ -157,8 +168,8 @@ public class SearchVenuesActivity extends TabActivity {
                 .setIcon(R.drawable.ic_menu_refresh);
         menu.add(MENU_GROUP_SEARCH, MENU_ADD_VENUE, Menu.NONE, R.string.add_venue_label) //
                 .setIcon(android.R.drawable.ic_menu_add);
-        menu.add(Menu.NONE, MENU_FEEDBACK, Menu.NONE, R.string.feedback_label) //
-                .setIcon(android.R.drawable.ic_menu_send);
+
+        MenuUtils.addSendFeedbackToMenu((Foursquared) getApplication(), this, menu);
 
         return true;
     }
@@ -179,9 +190,6 @@ public class SearchVenuesActivity extends TabActivity {
                 Intent intent = new Intent(SearchVenuesActivity.this, AddVenueActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
                 startActivity(intent);
-                return true;
-            case MENU_FEEDBACK:
-                MenuUtils.SendFeedBack(this, (Foursquared)getApplication());
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -251,7 +259,7 @@ public class SearchVenuesActivity extends TabActivity {
                 return;
             }
         }
-        mSearchTask = (SearchTask)new SearchTask().execute();
+        mSearchTask = (SearchTask) new SearchTask().execute();
     }
 
     void startItemActivity(Venue venue) {
@@ -292,18 +300,18 @@ public class SearchVenuesActivity extends TabActivity {
         if (mListView != null) {
             throw new IllegalStateException("Trying to initialize already initialized ListView");
         }
-        mEmpty = (LinearLayout)findViewById(R.id.empty);
-        mEmptyText = (TextView)findViewById(R.id.emptyText);
-        mEmptyProgress = (ProgressBar)findViewById(R.id.emptyProgress);
+        mEmpty = (LinearLayout) findViewById(R.id.empty);
+        mEmptyText = (TextView) findViewById(R.id.emptyText);
+        mEmptyProgress = (ProgressBar) findViewById(R.id.emptyProgress);
 
-        mListView = (ListView)findViewById(R.id.list);
+        mListView = (ListView) findViewById(R.id.list);
         mListAdapter = new SeparatedListAdapter(this);
 
         mListView.setAdapter(mListAdapter);
         mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Venue venue = (Venue)parent.getAdapter().getItem(position);
+                Venue venue = (Venue) parent.getAdapter().getItem(position);
                 if (mIsShortcutPicker) {
                     setupShortcut(venue);
                     finish();
@@ -315,9 +323,12 @@ public class SearchVenuesActivity extends TabActivity {
     }
 
     protected void setupShortcut(Venue venue) {
-        // First, set up the shortcut intent. For this example, we simply create an intent that
-        // will bring us directly back to this activity. A more typical implementation would use a
-        // data Uri in order to display a more specific result, or a custom action in order to
+        // First, set up the shortcut intent. For this example, we simply create
+        // an intent that
+        // will bring us directly back to this activity. A more typical
+        // implementation would use a
+        // data Uri in order to display a more specific result, or a custom
+        // action in order to
         // launch a specific operation.
 
         Intent shortcutIntent = new Intent(Intent.ACTION_MAIN);
@@ -348,14 +359,16 @@ public class SearchVenuesActivity extends TabActivity {
 
         mTabHost.addTab(mTabHost.newTabSpec("results") //
                 .setIndicator(getString(R.string.search_venues_label),
-                        resources.getDrawable(R.drawable.places_tab)) // the tab icon
+                        resources.getDrawable(R.drawable.places_tab)) // the tab
+                // icon
                 .setContent(R.id.listviewLayout) //
                 );
 
         Intent intent = new Intent(this, SearchVenuesMapActivity.class);
         mTabHost.addTab(mTabHost.newTabSpec("map") //
                 .setIndicator(getString(R.string.map_label),
-                        resources.getDrawable(R.drawable.map_tab)) // the tab icon
+                        resources.getDrawable(R.drawable.map_tab)) // the tab
+                // icon
                 .setContent(intent) // The contained activity
                 );
         mTabHost.setCurrentTab(0);
@@ -400,12 +413,13 @@ public class SearchVenuesActivity extends TabActivity {
         }
 
         public Group<Group<Venue>> search() throws FoursquareException, IOException {
-            Location location = ((Foursquared)getApplication()).getLastKnownLocation();
-            Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
+            Location location = ((Foursquared) getApplication()).getLastKnownLocation();
+            Foursquare foursquare = ((Foursquared) getApplication()).getFoursquare();
             String geolat;
             String geolong;
             if (location == null) {
-                // Foursquare requires a lat, lng for a venue search, so we have to pull it from the
+                // Foursquare requires a lat, lng for a venue search, so we have
+                // to pull it from the
                 // server if we cannot determine it locally.
                 City city = foursquare.user(null, false, false).getCity();
                 geolat = String.valueOf(city.getGeolat());
@@ -416,8 +430,7 @@ public class SearchVenuesActivity extends TabActivity {
                 geolong = String.valueOf(location.getLongitude());
             }
             Group<Group<Venue>> groups = foursquare.venues(
-                    new Foursquare.Location(geolat, geolong),
-                    mSearchHolder.query, 30);
+                    new Foursquare.Location(geolat, geolong), mSearchHolder.query, 30);
             for (int i = 0; i < groups.size(); i++) {
                 Collections.sort(groups.get(i), Comparators.getVenueDistanceComparator());
             }
@@ -427,11 +440,13 @@ public class SearchVenuesActivity extends TabActivity {
 
     private static class SearchHolder {
         Group<Group<Venue>> results;
+
         String query;
     }
 
     class SearchResultsObservable extends Observable {
 
+        @Override
         public void notifyObservers(Object data) {
             setChanged();
             super.notifyObservers(data);

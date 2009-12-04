@@ -8,12 +8,15 @@ import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.PreferenceActivity;
 import com.joelapenna.foursquared.R;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.Toast;
 
 /**
@@ -23,6 +26,8 @@ import android.widget.Toast;
 public class MenuUtils {
     // Common menu items
     private static final int MENU_PREFERENCES = -1;
+
+    public static final int MENU_FEEDBACK = -2;
 
     private static final int MENU_GROUP_SYSTEM = 20;
 
@@ -86,7 +91,22 @@ public class MenuUtils {
     public static void addPreferencesToMenu(Context context, Menu menu) {
         Intent intent = new Intent(context, PreferenceActivity.class);
         menu.add(MENU_GROUP_SYSTEM, MENU_PREFERENCES, Menu.CATEGORY_SECONDARY,
-                R.string.preferences_label) //
-                .setIcon(android.R.drawable.ic_menu_preferences).setIntent(intent);
+                R.string.preferences_label).setIcon(android.R.drawable.ic_menu_preferences)
+                .setIntent(intent);
+    }
+
+    public static void addSendFeedbackToMenu(final Foursquared foursquared,
+            final Activity activity, final Menu menu) {
+        menu
+                .add(MENU_GROUP_SYSTEM, MENU_FEEDBACK, Menu.CATEGORY_SECONDARY,
+                        R.string.feedback_label).setIcon(android.R.drawable.ic_menu_send)
+                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        MenuUtils.SendFeedBack(activity, foursquared);
+                        return true;
+                    }
+                });
     }
 }

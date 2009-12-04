@@ -46,14 +46,16 @@ import java.util.Observable;
  */
 public class VenueActivity extends TabActivity {
     private static final String TAG = "VenueActivity";
+
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private static final int DIALOG_TIPADD = 1;
 
     private static final int MENU_SHOUT = 1;
+
     private static final int MENU_TIPADD = 2;
+
     private static final int MENU_CALL = 3;
-    private static final int MENU_FEEDBACK = 4;
 
     private static final int RESULT_SHOUT = 1;
 
@@ -84,9 +86,9 @@ public class VenueActivity extends TabActivity {
 
         initTabHost();
 
-        StateHolder holder = (StateHolder)getLastNonConfigurationInstance();
+        StateHolder holder = (StateHolder) getLastNonConfigurationInstance();
 
-        mVenueView = (VenueView)findViewById(R.id.venue);
+        mVenueView = (VenueView) findViewById(R.id.venue);
         mVenueView.setCheckinButtonOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,10 +123,10 @@ public class VenueActivity extends TabActivity {
                 android.R.drawable.ic_menu_set_as);
 
         menu.add(Menu.NONE, MENU_CALL, 3, R.string.call).setIcon(android.R.drawable.ic_menu_call);
-        menu.add(Menu.NONE, MENU_FEEDBACK, 4, R.string.feedback_label) //
-                .setIcon(android.R.drawable.ic_menu_send);
 
+        MenuUtils.addSendFeedbackToMenu((Foursquared) getApplication(), this, menu);
         MenuUtils.addPreferencesToMenu(this, menu);
+
         return true;
     }
 
@@ -146,7 +148,8 @@ public class VenueActivity extends TabActivity {
             case MENU_SHOUT:
                 Intent intent = new Intent(VenueActivity.this, ShoutActivity.class);
                 ShoutActivity.venueIntoIntentExtras(mStateHolder.venue, intent);
-                // No matter what the immediate checkin user preference is, never auto-checkin
+                // No matter what the immediate checkin user preference is,
+                // never auto-checkin
                 // (always present the shout prompt).
                 intent.putExtra(ShoutActivity.EXTRA_IMMEDIATE_CHECKIN, false);
                 startActivityForResult(intent, RESULT_SHOUT);
@@ -159,26 +162,22 @@ public class VenueActivity extends TabActivity {
                 startActivity(new Intent(Intent.ACTION_CALL, phoneUri));
                 // nothing sucka.
                 return true;
-            case MENU_FEEDBACK:
-                MenuUtils.SendFeedBack(this, (Foursquared)getApplication());
-                return true;
-            default:
-                return false;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public Dialog onCreateDialog(int id) {
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View layout;
 
         switch (id) {
             case DIALOG_TIPADD:
                 layout = inflater.inflate(R.layout.tip_add_dialog,
-                        (ViewGroup)findViewById(R.id.layout_root));
+                        (ViewGroup) findViewById(R.id.layout_root));
 
-                final EditText editText = (EditText)layout.findViewById(R.id.editText);
-                final Spinner spinner = (Spinner)layout.findViewById(R.id.spinner);
+                final EditText editText = (EditText) layout.findViewById(R.id.editText);
+                final Spinner spinner = (Spinner) layout.findViewById(R.id.spinner);
 
                 return new AlertDialog.Builder(this) //
                         .setView(layout) //
@@ -188,7 +187,7 @@ public class VenueActivity extends TabActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String tip = editText.getText().toString();
-                                String type = ((String)spinner.getSelectedItem()).toLowerCase();
+                                String type = ((String) spinner.getSelectedItem()).toLowerCase();
                                 editText.setText("");
                                 spinner.setSelection(0);
                                 new TipAddTask().execute(tip, type);
@@ -208,11 +207,13 @@ public class VenueActivity extends TabActivity {
 
     @Override
     public void onPrepareDialog(int id, Dialog dialog) {
-        // If the tip add was a success we must have set mStateHolder.tip. If that is the case, then
-        // we clear the dialog because clearly they're looking to add a new tip and not post the
+        // If the tip add was a success we must have set mStateHolder.tip. If
+        // that is the case, then
+        // we clear the dialog because clearly they're looking to add a new tip
+        // and not post the
         // same one again.
         if (id == DIALOG_TIPADD && mStateHolder.tip != null) {
-            ((EditText)dialog.findViewById(R.id.editText)).setText("");
+            ((EditText) dialog.findViewById(R.id.editText)).setText("");
             mStateHolder.tip = null;
         }
     }
@@ -253,19 +254,19 @@ public class VenueActivity extends TabActivity {
         String tag;
         Intent intent;
 
-        tag = (String)this.getText(R.string.venue_tips_activity_label);
+        tag = (String) this.getText(R.string.venue_tips_activity_label);
         intent = new Intent(this, VenueTipsActivity.class);
         tabHost.addTab(tabHost.newTabSpec(tag) //
                 .setIndicator(getString(R.string.venue_info_tab),
                         resources.getDrawable(R.drawable.venue_info_tab)).setContent(intent));
 
-        tag = (String)this.getText(R.string.venue_info_activity_label);
+        tag = (String) this.getText(R.string.venue_info_activity_label);
         intent = new Intent(this, VenueMapActivity.class);
         tabHost.addTab(tabHost.newTabSpec(tag) //
                 .setIndicator(getString(R.string.map_label),
                         resources.getDrawable(R.drawable.map_tab)).setContent(intent));
 
-        tag = (String)this.getText(R.string.venue_checkin_activity_label);
+        tag = (String) this.getText(R.string.venue_checkin_activity_label);
         intent = new Intent(this, VenueCheckinsActivity.class);
         tabHost.addTab(tabHost.newTabSpec(tag) //
                 .setIndicator(getString(R.string.venue_checkins_tab),
@@ -290,6 +291,7 @@ public class VenueActivity extends TabActivity {
     }
 
     class VenueObservable extends Observable {
+        @Override
         public void notifyObservers(Object data) {
             setChanged();
             super.notifyObservers(data);
@@ -313,7 +315,7 @@ public class VenueActivity extends TabActivity {
         @Override
         protected Venue doInBackground(String... params) {
             try {
-                return ((Foursquared)getApplication()).getFoursquare().venue(params[0]);
+                return ((Foursquared) getApplication()).getFoursquare().venue(params[0]);
             } catch (Exception e) {
                 mReason = e;
             }
@@ -358,8 +360,8 @@ public class VenueActivity extends TabActivity {
                 assert params.length == 2;
                 String tip = params[0];
                 String type = params[1];
-                return ((Foursquared)getApplication()).getFoursquare().addTip(mStateHolder.venueId,
-                        tip, type);
+                return ((Foursquared) getApplication()).getFoursquare().addTip(
+                        mStateHolder.venueId, tip, type);
             } catch (Exception e) {
                 mReason = e;
             }
@@ -392,7 +394,9 @@ public class VenueActivity extends TabActivity {
 
     private static final class StateHolder {
         Venue venue = null;
+
         String venueId = null;
+
         Tip tip = null;
     }
 }

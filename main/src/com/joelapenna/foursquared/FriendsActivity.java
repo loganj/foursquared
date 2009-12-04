@@ -43,16 +43,20 @@ import java.util.Observable;
  */
 public class FriendsActivity extends LoadableListActivity {
     static final String TAG = "FriendsActivity";
+
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public static final String QUERY_NEARBY = null;
+
     public static SearchResultsObservable searchResultsObservable;
 
     private static final int MENU_REFRESH = 1;
+
     private static final int MENU_SHOUT = 2;
+
     private static final int MENU_STATS = 3;
+
     private static final int MENU_MYINFO = 4;
-    private static final int MENU_FEEDBACK = 5;
 
     private static final int MENU_GROUP_SEARCH = 0;
 
@@ -61,8 +65,11 @@ public class FriendsActivity extends LoadableListActivity {
     private SearchHolder mSearchHolder = new SearchHolder();
 
     private LinearLayout mEmpty;
+
     private TextView mEmptyText;
+
     private ProgressBar mEmptyProgress;
+
     private CheckinListAdapter mListAdapter;
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
@@ -84,7 +91,7 @@ public class FriendsActivity extends LoadableListActivity {
 
         if (getLastNonConfigurationInstance() != null) {
             if (DEBUG) Log.d(TAG, "Restoring state.");
-            SearchHolder holder = (SearchHolder)getLastNonConfigurationInstance();
+            SearchHolder holder = (SearchHolder) getLastNonConfigurationInstance();
             if (holder.results == null) {
                 executeSearchTask(holder.query);
             } else {
@@ -122,9 +129,10 @@ public class FriendsActivity extends LoadableListActivity {
                 .setIcon(android.R.drawable.ic_menu_recent_history);
         menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
                 .setIcon(drawable.ic_menu_myinfo);
-        menu.add(Menu.NONE, MENU_FEEDBACK, Menu.NONE, R.string.feedback_label) //
-                .setIcon(android.R.drawable.ic_menu_send);
+
+        MenuUtils.addSendFeedbackToMenu((Foursquared) getApplication(), this, menu);
         MenuUtils.addPreferencesToMenu(this, menu);
+
         return true;
     }
 
@@ -144,9 +152,6 @@ public class FriendsActivity extends LoadableListActivity {
                 return true;
             case MENU_MYINFO:
                 startActivity(new Intent(FriendsActivity.this, UserActivity.class));
-                return true;
-            case MENU_FEEDBACK:
-                MenuUtils.SendFeedBack(this, (Foursquared)getApplication());
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -174,19 +179,19 @@ public class FriendsActivity extends LoadableListActivity {
     }
 
     private void initListViewAdapter() {
-        mEmpty = (LinearLayout)findViewById(android.R.id.empty);
-        mEmptyText = (TextView)findViewById(R.id.emptyText);
-        mEmptyProgress = (ProgressBar)findViewById(R.id.emptyProgress);
+        mEmpty = (LinearLayout) findViewById(android.R.id.empty);
+        mEmptyText = (TextView) findViewById(R.id.emptyText);
+        mEmptyProgress = (ProgressBar) findViewById(R.id.emptyProgress);
 
         mListAdapter = new CheckinListAdapter(this, //
-                ((Foursquared)getApplication()).getRemoteResourceManager());
+                ((Foursquared) getApplication()).getRemoteResourceManager());
 
         ListView listView = getListView();
         listView.setAdapter(mListAdapter);
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Checkin checkin = (Checkin)parent.getAdapter().getItem(position);
+                Checkin checkin = (Checkin) parent.getAdapter().getItem(position);
                 if (checkin.getUser() != null) {
                     if (DEBUG) Log.d(TAG, "firing venue activity for venue");
                     Intent intent = new Intent(FriendsActivity.this, UserActivity.class);
@@ -234,7 +239,7 @@ public class FriendsActivity extends LoadableListActivity {
                 return;
             }
         }
-        mSearchTask = (SearchTask)new SearchTask().execute();
+        mSearchTask = (SearchTask) new SearchTask().execute();
     }
 
     private void ensureTitle(boolean finished) {
@@ -285,7 +290,7 @@ public class FriendsActivity extends LoadableListActivity {
         }
 
         Group<Checkin> search() throws FoursquareException, IOException {
-            Foursquare foursquare = ((Foursquared)getApplication()).getFoursquare();
+            Foursquare foursquare = ((Foursquared) getApplication()).getFoursquare();
             Group<Checkin> checkins;
             checkins = foursquare.checkins(null, null);
             Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
@@ -295,11 +300,13 @@ public class FriendsActivity extends LoadableListActivity {
 
     private static class SearchHolder {
         Group<Checkin> results;
+
         String query;
     }
 
     class SearchResultsObservable extends Observable {
 
+        @Override
         public void notifyObservers(Object data) {
             setChanged();
             super.notifyObservers(data);
