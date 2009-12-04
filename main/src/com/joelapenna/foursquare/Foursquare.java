@@ -33,6 +33,7 @@ public class Foursquare {
     public static final String FOURSQUARE_MOBILE_ADDFRIENDS = "http://m.foursquare.com/addfriends";
     public static final String FOURSQUARE_MOBILE_FRIENDS = "http://m.foursquare.com/friends";
     public static final String FOURSQUARE_MOBILE_SIGNUP = "http://m.foursquare.com/signup";
+    public static final String FOURSQUARE_PREFERENCES = "http://foursquare.com/settings";
 
     public static final String MALE = "male";
     public static final String FEMALE = "female";

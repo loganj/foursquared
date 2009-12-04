@@ -7,6 +7,13 @@
   <PreferenceCategory
     android:title="@string/preferences_category_checkin_defaults">
     <CheckBoxPreference
+      android:key="immediate_checkin"
+      android:persistent="true"
+      android:title="@string/preferences_immediate_checkin_title"
+      android:summaryOn="@string/preferences_immediate_checkin_summary_on"
+      android:summaryOff="@string/preferences_immediate_checkin_summary_off"
+      android:defaultValue="true" />
+    <CheckBoxPreference
       android:key="share_checkin"
       android:persistent="true"
       android:title="@string/preferences_share_checkin_title"
@@ -15,19 +22,12 @@
       android:defaultValue="true" />
     <CheckBoxPreference
       android:key="twitter_checkin"
-      android:persistent="true"
+      android:enabled="true"
+      android:persistent="false"
       android:dependency="share_checkin"
       android:title="@string/preferences_twitter_checkin_title"
       android:summaryOn="@string/preferences_twitter_checkin_summary_on"
-      android:summaryOff="@string/preferences_twitter_checkin_summary_off"
-      android:defaultValue="false" />
-    <CheckBoxPreference
-      android:key="immediate_checkin"
-      android:persistent="true"
-      android:title="@string/preferences_immediate_checkin_title"
-      android:summaryOn="@string/preferences_immediate_checkin_summary_on"
-      android:summaryOff="@string/preferences_immediate_checkin_summary_off"
-      android:defaultValue="true" />
+      android:summaryOff="@string/preferences_twitter_checkin_summary_off" />
   </PreferenceCategory>
 
   <PreferenceCategory

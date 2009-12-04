@@ -189,6 +189,10 @@ public class Foursquared extends Application {
         mTaskHandler.sendMessage( //
                 mTaskHandler.obtainMessage(TaskHandler.MESSAGE_START_SERVICE));
     }
+    
+    public void requestUpdateUser() {
+        mTaskHandler.sendEmptyMessage(TaskHandler.MESSAGE_UPDATE_USER);
+    }
 
     private void loadFoursquare() {
         // Try logging in and setting up foursquare oauth, then user credentials.
