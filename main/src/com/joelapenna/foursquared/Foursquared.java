@@ -107,7 +107,8 @@ public class Foursquared extends Application {
             DumpcatcherHelper.sendUsage("Started");
         }
 
-        // Sometimes we want the application to do some work on behalf of the Activity. Lets do that
+        // Sometimes we want the application to do some work on behalf of the
+        // Activity. Lets do that
         // asynchronously.
         mTaskThread = new HandlerThread(TAG + "-AsyncThread");
         mTaskThread.start();
@@ -147,9 +148,11 @@ public class Foursquared extends Application {
 
     public String getVersion() {
 
-        if (mVersion != null)
+        if (mVersion != null) {
             return mVersion;
-        return "";
+        } else {
+            return "";
+        }
     }
 
     public RemoteResourceManager getRemoteResourceManager() {
@@ -157,7 +160,8 @@ public class Foursquared extends Application {
     }
 
     public BestLocationListener requestLocationUpdates() {
-        mBestLocationListener.register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+        mBestLocationListener
+                .register((LocationManager) getSystemService(Context.LOCATION_SERVICE));
         return mBestLocationListener;
     }
 
@@ -168,7 +172,7 @@ public class Foursquared extends Application {
 
     public void removeLocationUpdates() {
         mBestLocationListener
-                .unregister((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+                .unregister((LocationManager) getSystemService(Context.LOCATION_SERVICE));
     }
 
     public void removeLocationUpdates(Observer observer) {
@@ -189,13 +193,14 @@ public class Foursquared extends Application {
         mTaskHandler.sendMessage( //
                 mTaskHandler.obtainMessage(TaskHandler.MESSAGE_START_SERVICE));
     }
-    
+
     public void requestUpdateUser() {
         mTaskHandler.sendEmptyMessage(TaskHandler.MESSAGE_UPDATE_USER);
     }
 
     private void loadFoursquare() {
-        // Try logging in and setting up foursquare oauth, then user credentials.
+        // Try logging in and setting up foursquare oauth, then user
+        // credentials.
         if (FoursquaredSettings.USE_DEBUG_SERVER) {
             mFoursquare = new Foursquare(Foursquare.createHttpApi("10.0.2.2:8080", mVersion, false));
         } else {
@@ -214,8 +219,10 @@ public class Foursquared extends Application {
     }
 
     private void loadResourceManagers() {
-        // We probably don't have SD card access if we get an IllegalStateException. If it did, lets
-        // at least have some sort of disk cache so that things don't npe when trying to access the
+        // We probably don't have SD card access if we get an
+        // IllegalStateException. If it did, lets
+        // at least have some sort of disk cache so that things don't npe when
+        // trying to access the
         // resource managers.
         try {
             if (DEBUG) Log.d(TAG, "Attempting to load RemoteResourceManager(cache)");
@@ -228,14 +235,16 @@ public class Foursquared extends Application {
 
     /**
      * Set up resource managers on the application depending on SD card state.
-     *
+     * 
      * @author Joe LaPenna (joe@joelapenna.com)
      */
     private class MediaCardStateBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (DEBUG) Log.d(TAG, "Media state changed, reloading resource managers:"
-                    + intent.getAction());
+            if (DEBUG)
+                Log
+                        .d(TAG, "Media state changed, reloading resource managers:"
+                                + intent.getAction());
             if (Intent.ACTION_MEDIA_UNMOUNTED.equals(intent.getAction())) {
                 getRemoteResourceManager().shutdown();
                 loadResourceManagers();
@@ -245,7 +254,8 @@ public class Foursquared extends Application {
         }
 
         public void register() {
-            // Register our media card broadcast receiver so we can enable/disable the cache as
+            // Register our media card broadcast receiver so we can
+            // enable/disable the cache as
             // appropriate.
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
@@ -269,20 +279,21 @@ public class Foursquared extends Application {
             if (INTENT_ACTION_LOGGED_IN.equals(intent.getAction())) {
                 // Watch for city changes.
                 mCityLocationListener
-                        .register((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+                        .register((LocationManager) getSystemService(Context.LOCATION_SERVICE));
 
                 // Pull latest user info.
                 mTaskHandler.sendEmptyMessage(TaskHandler.MESSAGE_UPDATE_USER);
 
             } else if (INTENT_ACTION_LOGGED_OUT.equals(intent.getAction())) {
                 mCityLocationListener
-                        .unregister((LocationManager)getSystemService(Context.LOCATION_SERVICE));
+                        .unregister((LocationManager) getSystemService(Context.LOCATION_SERVICE));
             }
 
         }
 
         public void register() {
-            // Register our media card broadcast receiver so we can enable/disable the cache as
+            // Register our media card broadcast receiver so we can
+            // enable/disable the cache as
             // appropriate.
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(INTENT_ACTION_LOGGED_IN);
@@ -310,7 +321,7 @@ public class Foursquared extends Application {
             switch (msg.what) {
                 case MESSAGE_SWITCH_CITY:
                     try {
-                        City city = Preferences.switchCity(mFoursquare, (Location)msg.obj);
+                        City city = Preferences.switchCity(mFoursquare, (Location) msg.obj);
                         Editor editor = mPrefs.edit();
                         Preferences.storeCity(editor, city);
                         editor.commit();
