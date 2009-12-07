@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Auto-generated: 2009-11-13 21:59:24.946622
+ * Auto-generated: 2009-12-06 10:51:54.301896
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -27,8 +27,8 @@ public class CheckinResultParser extends AbstractParser<CheckinResult> {
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
-    public CheckinResult parseInner(XmlPullParser parser) throws XmlPullParserException,
-            IOException, FoursquareError, FoursquareParseException {
+    public CheckinResult parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
+            FoursquareError, FoursquareParseException {
         parser.require(XmlPullParser.START_TAG, null, null);
 
         CheckinResult checkin_result = new CheckinResult();
@@ -53,7 +53,10 @@ public class CheckinResultParser extends AbstractParser<CheckinResult> {
                 checkin_result.setMessage(parser.nextText());
 
             } else if ("scoring".equals(name)) {
-                checkin_result.setScoring(new ScoringParser().parse(parser));
+                checkin_result.setScoring(new GroupParser(new ScoreParser()).parse(parser));
+
+            } else if ("specials".equals(name)) {
+                checkin_result.setSpecials(new GroupParser(new SpecialParser()).parse(parser));
 
             } else if ("venue".equals(name)) {
                 checkin_result.setVenue(new VenueParser().parse(parser));

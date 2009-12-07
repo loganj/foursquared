@@ -7,7 +7,7 @@ package com.joelapenna.foursquare.parsers;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
-import com.joelapenna.foursquare.types.Scoring;
+import com.joelapenna.foursquare.types.Special;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -17,34 +17,34 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Auto-generated: 2009-11-13 21:59:23.422827
+ * Auto-generated: 2009-12-06 10:00:38.341038
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
  */
-public class ScoringParser extends AbstractParser<Scoring> {
-    private static final Logger LOG = Logger.getLogger(ScoringParser.class.getCanonicalName());
+public class SpecialParser extends AbstractParser<Special> {
+    private static final Logger LOG = Logger.getLogger(SpecialParser.class.getCanonicalName());
     private static final boolean DEBUG = Foursquare.PARSER_DEBUG;
 
     @Override
-    public Scoring parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
+    public Special parseInner(XmlPullParser parser) throws XmlPullParserException, IOException,
             FoursquareError, FoursquareParseException {
         parser.require(XmlPullParser.START_TAG, null, null);
 
-        Scoring scoring = new Scoring();
+        Special special = new Special();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
             if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
 
             String name = parser.getName();
-            if ("rank".equals(name)) {
-                scoring.setRank(new GroupParser(new RankParser()).parse(parser));
+            if ("id".equals(name)) {
+                special.setId(parser.nextText());
 
-            } else if ("score".equals(name)) {
-                scoring.setScore(new ScoreParser().parse(parser));
+            } else if ("message".equals(name)) {
+                special.setMessage(parser.nextText());
 
-            } else if ("total".equals(name)) {
-                scoring.setTotal(new ScoreParser().parse(parser));
+            } else if ("type".equals(name)) {
+                special.setType(parser.nextText());
 
             } else {
                 // Consume something we don't understand.
@@ -52,6 +52,6 @@ public class ScoringParser extends AbstractParser<Scoring> {
                 skipSubTree(parser);
             }
         }
-        return scoring;
+        return special;
     }
 }

@@ -5,7 +5,7 @@
 package com.joelapenna.foursquare.types;
 
 /**
- * Auto-generated: 2009-11-12 21:45:35.708780
+ * Auto-generated: 2009-12-06 10:20:15.288167
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
@@ -16,7 +16,8 @@ public class CheckinResult implements FoursquareType {
     private String mId;
     private Mayor mMayor;
     private String mMessage;
-    private Scoring mScoring;
+    private Group mScoring;
+    private Group mSpecials;
     private Venue mVenue;
 
     public CheckinResult() {
@@ -62,12 +63,20 @@ public class CheckinResult implements FoursquareType {
         mMessage = message;
     }
 
-    public Scoring getScoring() {
+    public Group getScoring() {
         return mScoring;
     }
 
-    public void setScoring(Scoring scoring) {
+    public void setScoring(Group scoring) {
         mScoring = scoring;
+    }
+
+    public Group getSpecials() {
+        return mSpecials;
+    }
+
+    public void setSpecials(Group specials) {
+        mSpecials = specials;
     }
 
     public Venue getVenue() {

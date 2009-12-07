@@ -5,8 +5,13 @@
   <venue type="Venue"></venue>
   <mayor type="Mayor"></mayor>
   <created>Sun, 19 Jul 09 11:04:08 +0000</created>
-  <scoring type="Scoring"></scoring>
   <badges type="Group">
     <badge type="Badge"></badge>
   </badges>
+  <scoring type="Group" child="Score">
+     <score type="Score"></score>
+  </scoring>
+  <specials type="Group">
+    <special type="Special"></special>
+  </specials>
 </checkin_result>

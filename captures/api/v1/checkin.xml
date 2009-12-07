@@ -24,10 +24,6 @@
       <icon>http://foursquare.com/images/scoring/2.png</icon>
       <message>First stop today</message>
     </score>
-    <total>
-      <points>1</points>
-      <message>1 pts </message>
-    </total>
   </scoring>
   <badges>
     <badge>
@@ -38,6 +34,10 @@
     </badge>
   </badges>
   <specials>
-    <special>If you're the mayor, show the bartender and your first drink is free! (just beer and well drinks guys, let's be fair)</special>
+    <special>
+      <id>2</id>
+      <type>mayor</type>
+      <message>If you're the mayor, show the bartender and your first drink is free! (just beer and well drinks guys, let's be fair)</message>
+    </special>
   </specials>
 </checkin>
