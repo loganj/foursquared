@@ -61,29 +61,18 @@ public class SearchVenuesActivity extends TabActivity {
     public static SearchResultsObservable searchResultsObservable;
 
     private static final int MENU_SEARCH = 0;
-
     private static final int MENU_REFRESH = 1;
-
     private static final int MENU_NEARBY = 2;
-
     private static final int MENU_ADD_VENUE = 3;
-
     private static final int MENU_GROUP_SEARCH = 0;
 
     private SearchTask mSearchTask;
-
     private SearchHolder mSearchHolder = new SearchHolder();
-
     private ListView mListView;
-
     private LinearLayout mEmpty;
-
     private TextView mEmptyText;
-
     private ProgressBar mEmptyProgress;
-
     private TabHost mTabHost;
-
     private SeparatedListAdapter mListAdapter;
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
@@ -274,6 +263,7 @@ public class SearchVenuesActivity extends TabActivity {
             mEmpty.setVisibility(LinearLayout.GONE);
             mListView.setVisibility(ViewGroup.VISIBLE);
         } else {
+            mEmpty.setVisibility(LinearLayout.VISIBLE);
             mEmptyProgress.setVisibility(ViewGroup.GONE);
             mEmptyText.setText(R.string.no_search_results);
             mListView.setVisibility(ViewGroup.GONE);
