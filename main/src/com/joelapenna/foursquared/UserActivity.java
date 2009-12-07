@@ -11,6 +11,7 @@ import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
+import com.joelapenna.foursquared.util.StringFormatters;
 import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
 import com.joelapenna.foursquared.widget.VenueView;
 
@@ -349,7 +350,7 @@ public class UserActivity extends Activity {
 
         private void displayUser(User user) {
             if (DEBUG) Log.d(TAG, "loading user");
-            String fullName = user.getFirstname() + " " + user.getLastname();
+            String fullName = StringFormatters.getUserFullName(user);
             TextView name = (TextView)findViewById(R.id.name);
 
             name.setText(fullName);

@@ -45,6 +45,18 @@ public class StringFormatters {
         }
     }
 
+    public static String getUserFullName(User user) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(user.getFirstname());
+
+        String lastName = user.getLastname();
+        if (lastName != null && lastName.length() > 0) {
+            sb.append(" ");
+            sb.append(lastName);
+        }
+        return sb.toString();
+    }
+    
     public static String getUserAbbreviatedName(User user) {
         StringBuffer sb = new StringBuffer();
         sb.append(user.getFirstname());
