@@ -78,7 +78,7 @@
     style="@style/listSeparatorTextViewStyle" />
 
   <com.joelapenna.foursquared.widget.VenueView
-    android:id="@id/venue"
+    android:id="@+id/venue"
 
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"

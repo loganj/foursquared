@@ -1,47 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:foursquared="http://schemas.android.com/apk/res/com.joelapenna.foursquared"
-  android:layout_width="fill_parent"
-  android:layout_height="wrap_content"
-  android:layout_weight="1"
-  android:orientation="vertical">
-
-  <com.joelapenna.foursquared.widget.VenueView
-    android:id="@+id/venue"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="fill_parent"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    foursquared:checkinButton="false"
-    foursquared:collapsible="true" />
-
-  <CheckBox
-    android:id="@+id/tellFriendsCheckBox"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-
-    android:text="@string/tell_my_friends" />
-
-  <CheckBox
-    android:id="@+id/tellTwitterCheckBox"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-
-    android:text="@string/tell_twitter" />
-
-  <EditText
-    android:id="@+id/shoutEditText"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
-    android:imeOptions="actionDone"
-    android:lines="2"
-    android:hint="@string/shout_hint" />
-
-  <Button
-    android:id="@+id/checkinButton"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-
-    android:text="@string/checkin_action_label" />
-
+    android:orientation="vertical"
+    android:background="@color/white"
+>
+    <include
+            layout="@layout/dialog_title" />
+    <CheckBox
+        android:id="@+id/tellFriendsCheckBox"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:textColor="@android:color/primary_text_light"
+        android:text="@string/tell_my_friends" />
+    <CheckBox
+        android:id="@+id/tellTwitterCheckBox"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:textColor="@android:color/primary_text_light"
+        android:text="@string/tell_twitter" />
+    <EditText
+        android:id="@+id/shoutEditText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
+        android:imeOptions="actionDone"
+        android:lines="2"
+        android:hint="@string/shout_hint" />
+    <Button
+        android:id="@+id/checkinButton"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@android:style/TextAppearance.Large"
+        android:text="@string/checkin_action_label" />
 </LinearLayout>
