@@ -165,6 +165,12 @@
   <string
     name="tell_twitter">Tell Twitter</string>
 
+  <string
+    name="checkin_score">Your Check-in score</string>
+  <string
+    name="c">Checked in @ </string>
+  <string
+    name="checkin_title_shouted">Shouted!</string>
   <!--
     The whitespace is a layout hack to make sure the dialog box doesn't bounce in size so quickly.
   -->
