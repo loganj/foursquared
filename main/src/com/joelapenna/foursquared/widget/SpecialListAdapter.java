@@ -4,34 +4,34 @@
 
 package com.joelapenna.foursquared.widget;
 
-import com.joelapenna.foursquare.types.Badge;
-import com.joelapenna.foursquared.FoursquaredSettings;
-import com.joelapenna.foursquared.R;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.joelapenna.foursquare.types.Special;
+import com.joelapenna.foursquared.FoursquaredSettings;
+import com.joelapenna.foursquared.R;
+
 /**
- * @author jlapenna
+ * @author avolovoy
  */
-public class BadgeListAdapter extends BaseBadgeAdapter {
-    private static final String TAG = "BadgeListAdapter";
+public class SpecialListAdapter extends BaseGroupAdapter<Special> {
+
+    private static final String TAG = "SpecialListAdapter";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private LayoutInflater mInflater;
     private int mLayoutToInflate;
 
-    public BadgeListAdapter(Context context) {
+    public SpecialListAdapter(Context context) {
         super(context);
         mInflater = LayoutInflater.from(context);
-        mLayoutToInflate = R.layout.badge_item;
+        mLayoutToInflate = R.layout.special_list_item;
     }
 
-    public BadgeListAdapter(Context context, int layoutResource) {
+    public SpecialListAdapter(Context context, int layoutResource) {
 
         super(context);
         mInflater = LayoutInflater.from(context);
@@ -53,8 +53,8 @@ public class BadgeListAdapter extends BaseBadgeAdapter {
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.icon = (ImageView)convertView.findViewById(R.id.icon);
-            holder.name = (TextView)convertView.findViewById(R.id.name);
+            // holder.icon = (ImageView)convertView.findViewById(R.id.icon);
+            holder.message = (TextView)convertView.findViewById(R.id.message);
 
             convertView.setTag(holder);
         } else {
@@ -63,14 +63,15 @@ public class BadgeListAdapter extends BaseBadgeAdapter {
             holder = (ViewHolder)convertView.getTag();
         }
 
-        Badge badge = (Badge)getItem(position);
-        holder.name.setText(badge.getName());
+        Special special = (Special)getItem(position);
+        holder.message.setText(special.getMessage());
 
         return convertView;
     }
 
     static class ViewHolder {
-        ImageView icon;
-        TextView name;
+
+        // ImageView icon;
+        TextView message;
     }
 }
