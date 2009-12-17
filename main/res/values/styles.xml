@@ -10,7 +10,7 @@
     <item
       name="android:listViewStyle">@style/listViewStyle</item>
   </style>
-
+  
   <style
     name="listSeparatorTextViewStyle"
     parent="@android:attr/listSeparatorTextViewStyle">
@@ -101,5 +101,47 @@
     <item
       name="android:textColor">@android:color/white</item>
   </style>
+
+  <style
+    name="TextStyleWhite">
+    <item
+      name="android:shadowColor">@color/dgrey_end</item>
+    <item
+      name="android:shadowRadius">2</item>
+    <item 
+      name="android:padding">3dip</item>
+    <item
+      name="android:shadowDy">1.4</item>
+    <item
+      name="android:shadowDx">1.4</item>
+    <item
+      name="android:textColor">@color/white</item>
+ 
+  </style>
+  <style
+    name="listSeparatorTextViewStylePurple"
+    parent="@android:attr/listSeparatorTextViewStyle">
+    <item
+      name="android:layout_height">wrap_content</item>
+    <item
+      name="android:layout_width">fill_parent</item>
+    <item
+      name="android:paddingLeft">5dip</item>
+    <item
+      name="android:background">@drawable/purple_gradient</item>
+    <item
+      name="android:textAppearance">@android:style/TextAppearance.Small</item>
+    <item
+      name="android:shadowColor">#111111</item>
+    <item
+      name="android:shadowRadius">1</item>
+    <item
+      name="android:shadowDy">1</item>
+    <item
+      name="android:textStyle">bold</item>
+    <item
+      name="android:textColor">@android:color/white</item>
+  </style>
+  
 </resources>
 
