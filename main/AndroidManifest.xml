@@ -102,19 +102,7 @@
 
       </intent-filter>
     </activity>
-    <activity
-      android:name=".CheckinResultActivity"
-      android:label="@string/shout_activity_label"
-      android:theme="@android:style/Theme.Dialog">
-      <intent-filter>
-      <action
-        android:name="android.intent.action.MAIN" />
-        </intent-filter>
-        <intent-filter>
-      <action
-        android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
-        </intent-filter>
-    </activity>
+
 
     <activity
       android:name=".FriendsActivity"

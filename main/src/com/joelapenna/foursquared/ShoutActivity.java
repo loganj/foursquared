@@ -80,7 +80,7 @@ public class ShoutActivity extends Activity {
     private CheckBox mTwitterCheckBox;
     private CheckBox mFriendsCheckBox;
     private EditText mShoutEditText;
-    private TextView mVenueView;
+    private VenueView mVenueView;
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
@@ -124,10 +124,9 @@ public class ShoutActivity extends Activity {
         // Try to restore the general state holder, from a configuration change.
         if (getLastNonConfigurationInstance() != null) {
             if (DEBUG) Log.d(TAG, "Using last non configuration instance");
-            mStateHolder = (StateHolder) getLastNonConfigurationInstance();
+            mStateHolder = (StateHolder)getLastNonConfigurationInstance();
         } else if (!mIsShouting) {
-            // Translate the extras received in this intent into a venue, then
-            // attach it to the
+            // Translate the extras received in this intent into a venue, then attach it to the
             // venue view.
             mStateHolder.venue = new Venue();
             intentExtrasIntoVenue(getIntent(), mStateHolder.venue);
@@ -145,7 +144,7 @@ public class ShoutActivity extends Activity {
             setVisible(false);
             if (!checkinCompleted) {
                 if (DEBUG) Log.d(TAG, "Immediate checkin is set.");
-                // mStateHolder.checkinTask = new CheckinTask().execute();
+                mStateHolder.checkinTask = new CheckinTask().execute();
             } else {
                 if (DEBUG) Log.d(TAG, "We have an existing checkin, not launching checkin task.");
             }
@@ -157,13 +156,13 @@ public class ShoutActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        ((Foursquared) getApplication()).requestLocationUpdates();
+        ((Foursquared)getApplication()).requestLocationUpdates();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ((Foursquared) getApplication()).removeLocationUpdates();
+        ((Foursquared)getApplication()).removeLocationUpdates();
     }
 
     @Override
@@ -214,17 +213,16 @@ public class ShoutActivity extends Activity {
                         }); //
 
                 // Set up the custom view for it.
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+                LayoutInflater inflater = (LayoutInflater)getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
                 View layout = inflater.inflate(R.layout.checkin_result_dialog,
-                        (ViewGroup) findViewById(R.id.layout_root));
+                        (ViewGroup)findViewById(R.id.layout_root));
                 dialogBuilder.setView(layout);
 
                 // Set the text message of the result.
-                TextView messageView = (TextView) layout.findViewById(R.id.messageTextView);
+                TextView messageView = (TextView)layout.findViewById(R.id.messageTextView);
                 messageView.setText(mDialogStateHolder.message);
 
-                // Set the title and web view which vary based on if the user is
-                // shouting.
+                // Set the title and web view which vary based on if the user is shouting.
 
                 if (mDialogStateHolder.shouting) {
                     dialogBuilder.setTitle("Shouted!");
@@ -235,10 +233,10 @@ public class ShoutActivity extends Activity {
                     } else {
                         dialogBuilder.setTitle("Checked in!");
                     }
-                    WebView webView = (WebView) layout.findViewById(R.id.webView);
+                    WebView webView = (WebView)layout.findViewById(R.id.webView);
 
-                    String userId = ((Foursquared) getApplication()).getUserId();
-                    webView.loadUrl(((Foursquared) getApplication()).getFoursquare()
+                    String userId = ((Foursquared)getApplication()).getUserId();
+                    webView.loadUrl(((Foursquared)getApplication()).getFoursquare()
                             .checkinResultUrl(userId, mDialogStateHolder.checkinId));
 
                 }
@@ -248,9 +246,8 @@ public class ShoutActivity extends Activity {
     }
 
     /**
-     * Because we cannot parcel venues properly yet (issue #5) we have to mutate
-     * a series of intent extras into a venue so that we can code to this future
-     * possibility.
+     * Because we cannot parcel venues properly yet (issue #5) we have to mutate a series of intent
+     * extras into a venue so that we can code to this future possibility.
      */
     public static final void intentExtrasIntoVenue(Intent intent, Venue venue) {
         Bundle extras = intent.getExtras();
@@ -278,11 +275,11 @@ public class ShoutActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.shout_activity);
 
-        mCheckinButton = (Button) findViewById(R.id.checkinButton);
-        mFriendsCheckBox = (CheckBox) findViewById(R.id.tellFriendsCheckBox);
-        mTwitterCheckBox = (CheckBox) findViewById(R.id.tellTwitterCheckBox);
-        mShoutEditText = (EditText) findViewById(R.id.shoutEditText);
-        mVenueView = (TextView) findViewById(R.id.title_text);
+        mCheckinButton = (Button)findViewById(R.id.checkinButton);
+        mFriendsCheckBox = (CheckBox)findViewById(R.id.tellFriendsCheckBox);
+        mTwitterCheckBox = (CheckBox)findViewById(R.id.tellTwitterCheckBox);
+        mShoutEditText = (EditText)findViewById(R.id.shoutEditText);
+        mVenueView = (VenueView)findViewById(R.id.venue);
 
         mCheckinButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -292,13 +289,7 @@ public class ShoutActivity extends Activity {
                 if (!TextUtils.isEmpty(shout)) {
                     mShout = shout;
                 }
-                String venueId = mStateHolder.venue.getId();
-                Intent checkin = new Intent(ShoutActivity.this, CheckinResultActivity.class);
-                checkin.putExtra(Foursquared.EXTRA_VENUE_ID, venueId);
-                startActivity(checkin);
-                finish();
-
-                // mStateHolder.checkinTask = new CheckinTask().execute();
+                mStateHolder.checkinTask = new CheckinTask().execute();
             }
         });
 
@@ -331,7 +322,7 @@ public class ShoutActivity extends Activity {
             mFriendsCheckBox.setEnabled(false);
             mCheckinButton.setText("Shout!");
         } else {
-            mVenueView.setText("Checkin @ " + mStateHolder.venue.getName());
+            mVenueView.setVenue(mStateHolder.venue);
         }
     }
 
@@ -354,14 +345,14 @@ public class ShoutActivity extends Activity {
             boolean isPrivate = !mTellFriends;
 
             try {
-                Location location = ((Foursquared) getApplication()).getLastKnownLocation();
+                Location location = ((Foursquared)getApplication()).getLastKnownLocation();
                 if (location == null) {
                     if (DEBUG) Log.d(TAG, "unable to determine location");
                     throw new FoursquareException(getResources().getString(
                             R.string.no_location_providers));
                 }
-                ((Foursquared) getApplication()).requestSwitchCity(location);
-                return ((Foursquared) getApplication()).getFoursquare().checkin(venueId, null,
+                ((Foursquared)getApplication()).requestSwitchCity(location);
+                return ((Foursquared)getApplication()).getFoursquare().checkin(venueId, null,
                         LocationUtils.createFoursquareLocation(location), mShout, isPrivate,
                         mTellTwitter);
             } catch (Exception e) {
@@ -408,8 +399,7 @@ public class ShoutActivity extends Activity {
     }
 
     private static class StateHolder {
-        // These are all enumerated because we currently cannot handle parceling
-        // venues! How sad!
+        // These are all enumerated because we currently cannot handle parceling venues! How sad!
         Venue venue = null;
         AsyncTask<Void, Void, CheckinResult> checkinTask = null;
     }

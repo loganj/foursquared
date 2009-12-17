@@ -3,8 +3,6 @@
   
 <resources>
     <color
-        name="white">#fff</color>
-    <color
         name="purple_start">#9b256b</color>
     <color
         name="purple_end">#5d2761</color>
@@ -12,20 +10,4 @@
         name="blue_start">#176bb4</color>
     <color
         name="blue_end">#7eddfc</color>
-    <color
-        name="lgrey_start">#BFC0C0</color>
-    <color
-        name="lgrey_end">#AEB2B7</color>
-    <color
-        name="dgrey_start">#4E4F50</color>
-    <color
-        name="dgrey_end">#2C3137</color>
-    <color
-        name="item_grey_start">#B4B8BA</color>
-    <color
-        name="item_grey_end">#62707C</color>
-     <color
-        name="black_start">#1E1E1E</color>
-    <color
-        name="black_end">#121212</color>
 </resources>

@@ -1,80 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <!-- Copyright 2009 Joe LaPenna -->
+  <!-- Copyright 2009 Joe LaPenna -->
+
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:padding="5dip"
+  android:background="@drawable/foursquare_gradient">
+  <ImageView
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@drawable/foursquare_gradient"
-    android:gravity="center_vertical"
->
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/main_logo" />
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="250dip"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:layout_alignParentRight="true"
-        android:layout_margin="10dip"
-        android:padding="10dip"
-        android:background="@drawable/purple_plate"
-    >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingBottom="2dip"
-            android:textAppearance="@android:style/TextAppearance.Large"
-            android:textColor="#FFF"
-            android:text="@string/login_get_started" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingBottom="2dip"
-            android:textColor="#FFF"
-            android:text="@string/login_get_started_more" />
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:layout_alignWithParentIfMissing="true"
+    android:layout_weight="1"
+    android:padding="3dip"
+    android:scaleType="centerInside"
+    android:src="@drawable/main_logo" />
+  <LinearLayout
+    android:id="@+id/controls"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:layout_weight="2"
+    android:orientation="vertical"
+    android:layout_alignParentBottom="true">
+    <TableLayout
+      android:id="@+id/buttonBar"
+      android:layout_height="wrap_content"
+      android:layout_width="fill_parent">
+      <TableRow>
         <EditText
-            android:id="@+id/phoneEditText"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            android:textAppearance="@android:style/TextAppearance.Large"
-            android:hint="@string/phone_number_or_email" />
+          android:id="@+id/phoneEditText"
+          android:layout_width="0dip"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:inputType="textEmailAddress"
+          android:textAppearance="@android:style/TextAppearance.Large"
+          android:hint="@string/phone_number_or_email" />
         <EditText
-            android:id="@+id/passwordEditText"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:imeOptions="actionDone"
-            android:textAppearance="@android:style/TextAppearance.Large"
-            android:hint="@string/password" />
-        <Button
-            android:id="@+id/button"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:enabled="false"
-            android:textAppearance="@android:style/TextAppearance.Large"
-            android:text="@string/login_label" />
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="3dip"
-            android:src="@drawable/line" />
-        <TextView
-            android:id="@+id/newAccountTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:paddingBottom="2dip"
-            android:textAppearance="@android:style/TextAppearance.Large"
-            android:textColor="#FFF"
-            android:text="@string/need_an_account" />
-    </LinearLayout>
+          android:id="@+id/passwordEditText"
+          android:layout_width="0dip"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:inputType="textPassword"
+          android:imeOptions="actionDone"
+          android:textAppearance="@android:style/TextAppearance.Large"
+          android:hint="@string/password" />
+      </TableRow>
+    </TableLayout>
+    <Button
+      android:id="@+id/button"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:enabled="false"
+      android:textAppearance="@android:style/TextAppearance.Large"
+      android:text="@string/login_label" />
+  </LinearLayout>
+  <TextView
+    android:id="@+id/newAccountTextView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentRight="true"
+    android:layout_above="@id/controls"
+    android:paddingBottom="2dip"
+    android:textAppearance="@android:style/TextAppearance.Large"
+    android:textColor="#0000ee"
+    android:text="@string/need_an_account" />
 </RelativeLayout>
