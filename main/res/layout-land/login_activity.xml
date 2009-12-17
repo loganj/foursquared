@@ -12,8 +12,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/loginPlaque"
+        android:scaleType="centerInside"
         android:src="@drawable/main_logo" />
     <LinearLayout
+        android:id="@+id/loginPlaque"
         android:orientation="vertical"
         android:layout_width="250dip"
         android:layout_height="wrap_content"
