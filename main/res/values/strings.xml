@@ -164,9 +164,17 @@
     name="tell_my_friends">Tell my Friends</string>
   <string
     name="tell_twitter">Tell Twitter</string>
-
+    
   <string
     name="checkin_score">Your Check-in score</string>
+  <string
+    name="checkin_totals">Totals:</string>
+  <string
+    name="checkin_points">Points</string>
+  <string
+    name="checkin_badges">You\'ve just unlocked</string>
+  <string
+    name="checkin_specials">Specials</string>
   <string
     name="c">Checked in @ </string>
   <string

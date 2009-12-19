@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="fill_parent"
+    android:id="@+id/shout"
+    android:layout_height="wrap_content"
     android:layout_width="fill_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:layout_below="@id/dialog_title"
 >
-    <include
-            layout="@layout/dialog_title" />
     <CheckBox
         android:id="@+id/tellFriendsCheckBox"
         android:layout_width="fill_parent"

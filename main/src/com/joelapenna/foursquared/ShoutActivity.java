@@ -4,37 +4,62 @@
 
 package com.joelapenna.foursquared;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.res.Resources;
+import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
+import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.types.Badge;
+import com.joelapenna.foursquare.types.CheckinResult;
+import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Mayor;
+import com.joelapenna.foursquare.types.Score;
+import com.joelapenna.foursquare.types.Special;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.util.VenueUtils;
+import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
+import com.joelapenna.foursquared.util.NotificationsUtil;
+import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
+import com.joelapenna.foursquared.widget.ScoreListAdapter;
+import com.joelapenna.foursquared.widget.SeparatedListAdapter;
+import com.joelapenna.foursquared.widget.SpecialListAdapter;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class ShoutActivity extends Activity {
+
     public static final String TAG = "ShoutActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
-
+    public static final String EXTRA_VENUE = "com.joelapenna.foursquared.VenueId";
     public static final String EXTRA_VENUE_NAME = "com.joelapenna.foursquared.ShoutActivity.VENUE_NAME";
     public static final String EXTRA_VENUE_ADDRESS = "com.joelapenna.foursquared.ShoutActivity.VENUE_ADDRESS";
     public static final String EXTRA_VENUE_CROSSSTREET = "com.joelapenna.foursquared.ShoutActivity.VENUE_CROSSSTREET";
@@ -44,32 +69,48 @@ public class ShoutActivity extends Activity {
     public static final String EXTRA_IMMEDIATE_CHECKIN = "com.joelapenna.foursquared.ShoutActivity.IMMEDIATE_CHECKIN";
     public static final String EXTRA_SHOUT = "com.joelapenna.foursquared.ShoutActivity.SHOUT";
 
-    private StateHolder mStateHolder = new StateHolder();
+    public static final String CHECKIN_IN_PROGRESS = "com.joelapenna.foursquared.ShoutActivity.CHECKIN_IN_PROGRESS";
 
+    private Dialog mProgressDialog;
     private boolean mIsShouting = true;
-    private boolean mImmediateCheckin = true;
     private boolean mTellFriends = true;
     private boolean mTellTwitter = false;
+    private boolean mImmediateCheckin = true;
+    private boolean mCheckinInProgress = false;
     private String mShout = null;
+    private CheckinResult mCheckinResult = null;
 
+    private ScoreListAdapter mScoreListAdapter;
+    private BadgeWithIconListAdapter mBadgeListAdapter;
     private Button mCheckinButton;
     private CheckBox mTwitterCheckBox;
     private CheckBox mFriendsCheckBox;
     private EditText mShoutEditText;
-    private TextView mVenueView;
+    private Venue mVenue;
 
+    private SpecialListAdapter mSpecialListAdapter;
+    private AsyncTask<Void, Void, CheckinResult> mCheckinTask = null;
+    private CheckinResultObservable mCheckinResultObservable = new CheckinResultObservable();
+    private CheckinResultObserver mCheckinResultObserver = new CheckinResultObserver();
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
+
         @Override
         public void onReceive(Context context, Intent intent) {
+
             if (DEBUG) Log.d(TAG, "onReceive: " + intent);
             finish();
         }
     };
+    private SeparatedListAdapter mListAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.d(TAG, "onCreate");
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.shout);
+
         registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         SharedPreferences settings = PreferenceManager
@@ -97,52 +138,68 @@ public class ShoutActivity extends Activity {
         if (DEBUG) Log.d(TAG, "Is Shouting: " + mIsShouting);
         if (DEBUG) Log.d(TAG, "Immediate Checkin: " + mImmediateCheckin);
 
-        // Try to restore the general state holder, from a configuration change.
-        if (getLastNonConfigurationInstance() != null) {
-            if (DEBUG) Log.d(TAG, "Using last non configuration instance");
-            mStateHolder = (StateHolder) getLastNonConfigurationInstance();
-        } else if (!mIsShouting) {
+        initListViewAdapters();
+        mCheckinResultObservable.addObserver(mCheckinResultObserver);
+
+        if (!mIsShouting) {
             // Translate the extras received in this intent into a venue, then
             // attach it to the
             // venue view.
-            mStateHolder.venue = new Venue();
-            intentExtrasIntoVenue(getIntent(), mStateHolder.venue);
+            mVenue = new Venue();
+            intentExtrasIntoVenue(getIntent(), mVenue);
+        }
+
+        // Try to restore the dialog state holder
+        if (savedInstanceState != null) {
+            mCheckinInProgress = savedInstanceState.getBoolean(CHECKIN_IN_PROGRESS);
         }
 
         if (mImmediateCheckin) {
-            startCheckinResult();
+            // setVisible(false);
+            if (!mCheckinInProgress) {
+                if (DEBUG) Log.d(TAG, "Immediate checkin is set.");
+                mCheckinTask = new CheckinTask().execute();
+            } else {
+                if (DEBUG) Log.d(TAG, "We have an existing checkin, not launching checkin task.");
+            }
         } else {
-            initializeUi();
+            initializeMainDialog();
         }
+
     }
 
     @Override
     public void onResume() {
+
         super.onResume();
         ((Foursquared) getApplication()).requestLocationUpdates();
     }
 
     @Override
     public void onPause() {
+
         super.onPause();
         ((Foursquared) getApplication()).removeLocationUpdates();
     }
 
     @Override
     public void onDestroy() {
+
         super.onDestroy();
         unregisterReceiver(mLoggedOutReceiver);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
 
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(CHECKIN_IN_PROGRESS, mCheckinInProgress);
     }
 
     @Override
     public Object onRetainNonConfigurationInstance() {
-        return mStateHolder;
+
+        return mCheckinResult;
     }
 
     /**
@@ -151,6 +208,7 @@ public class ShoutActivity extends Activity {
      * possibility.
      */
     public static final void intentExtrasIntoVenue(Intent intent, Venue venue) {
+
         Bundle extras = intent.getExtras();
         venue.setId(extras.getString(Foursquared.EXTRA_VENUE_ID));
         venue.setName(extras.getString(EXTRA_VENUE_NAME));
@@ -162,6 +220,7 @@ public class ShoutActivity extends Activity {
     }
 
     public static final void venueIntoIntentExtras(Venue venue, Intent intent) {
+
         intent.putExtra(Foursquared.EXTRA_VENUE_ID, venue.getId());
         intent.putExtra(ShoutActivity.EXTRA_VENUE_NAME, venue.getName());
         intent.putExtra(ShoutActivity.EXTRA_VENUE_ADDRESS, venue.getAddress());
@@ -171,76 +230,265 @@ public class ShoutActivity extends Activity {
         intent.putExtra(ShoutActivity.EXTRA_VENUE_ZIP, venue.getZip());
     }
 
-    private void initializeUi() {
-        setTheme(android.R.style.Theme_Dialog);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.shout_activity);
+    private void initListViewAdapters() {
+        mListAdapter = new SeparatedListAdapter(this, R.layout.purple_separator);
+        ((ListView) findViewById(R.id.result_list)).setAdapter(mListAdapter);
 
+        mScoreListAdapter = new ScoreListAdapter(this, ((Foursquared) getApplication())
+                .getRemoteResourceManager());
+
+        mSpecialListAdapter = new SpecialListAdapter(this);
+
+        mBadgeListAdapter = new BadgeWithIconListAdapter(this, ((Foursquared) getApplication())
+                .getRemoteResourceManager(), R.layout.badge_list_item);
+
+    }
+
+    private void initializeMainDialog() {
+
+        // setting main dialog visible
+        findViewById(R.id.shout).setVisibility(View.VISIBLE);
+        findViewById(R.id.checkin_result).setVisibility(View.GONE);
         mCheckinButton = (Button) findViewById(R.id.checkinButton);
         mFriendsCheckBox = (CheckBox) findViewById(R.id.tellFriendsCheckBox);
         mTwitterCheckBox = (CheckBox) findViewById(R.id.tellTwitterCheckBox);
         mShoutEditText = (EditText) findViewById(R.id.shoutEditText);
-        mVenueView = (TextView) findViewById(R.id.title_text);
-
         mCheckinButton.setOnClickListener(new OnClickListener() {
+
             @Override
             public void onClick(View v) {
+
                 mCheckinButton.setEnabled(false);
                 String shout = mShoutEditText.getText().toString();
                 if (!TextUtils.isEmpty(shout)) {
                     mShout = shout;
                 }
-                startCheckinResult();
-
+                mCheckinTask = new CheckinTask().execute();
             }
         });
-
         mTwitterCheckBox.setChecked(mTellTwitter);
-
         mTwitterCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
                 mTellTwitter = isChecked;
                 mTwitterCheckBox.setEnabled(isChecked);
             }
         });
         mFriendsCheckBox.setChecked(mTellFriends);
         mFriendsCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
                 mTellFriends = isChecked;
                 mTwitterCheckBox.setEnabled(isChecked);
-
                 if (!isChecked) {
                     mTellTwitter = false;
                     mTwitterCheckBox.setChecked(false);
                 }
             }
         });
-
         if (mIsShouting) {
-            mVenueView.setVisibility(ViewGroup.GONE);
             mFriendsCheckBox.setChecked(true);
             mFriendsCheckBox.setEnabled(false);
             mCheckinButton.setText("Shout!");
         } else {
-            mVenueView.setText("Checkin @ " + mStateHolder.venue.getName());
+            String venueName = mVenue.getName();
+            String title = (mIsShouting) ? "Shouting!" : "Checkin in @ " + venueName;
+            ((TextView) findViewById(R.id.title_text)).setText(title);
         }
     }
 
-    private void startCheckinResult() {
-        String venueId = mStateHolder.venue.getId();
-        Intent checkin = new Intent(ShoutActivity.this, CheckinResultActivity.class);
-        checkin.putExtra(Foursquared.EXTRA_VENUE_ID, venueId);
-        startActivity(checkin);
-        finish();
+    private Dialog showProgressDialog() {
+
+        if (mProgressDialog == null) {
+            // findViewById(R.id.shout).setVisibility(View.GONE);
+            // findViewById(R.id.checkin_result).setVisibility(View.GONE);
+            String title = (mIsShouting) ? "Shouting!" : "Checking in!";
+            String messageAction = (mIsShouting) ? "shout!" : "check-in!";
+            ProgressDialog dialog = new ProgressDialog(this);
+            dialog.setCancelable(true);
+            dialog.setIndeterminate(true);
+            dialog.setTitle(title);
+            dialog.setIcon(android.R.drawable.ic_dialog_info);
+            dialog.setMessage("Please wait while we " + messageAction);
+            dialog.setOnCancelListener(new OnCancelListener() {
+
+                public void onCancel(DialogInterface dialog) {
+                    setVisible(true);
+                    finish();
+                }
+            });
+            mProgressDialog = dialog;
+        }
+        setVisible(false);
+        mProgressDialog.show();
+        return mProgressDialog;
     }
 
-    private static class StateHolder {
-        // These are all enumerated because we currently cannot handle parceling
-        // venues! How sad!
-        Venue venue = null;
+    private void dismissProgressDialog() {
 
+        try {
+            mProgressDialog.dismiss();
+        } catch (IllegalArgumentException e) {
+            // We don't mind. android cleared it for us.
+        }
     }
 
+    class CheckinTask extends AsyncTask<Void, Void, CheckinResult> {
+
+        private Exception mReason;
+
+        @Override
+        public void onPreExecute() {
+            mCheckinInProgress = true;
+            setProgressBarIndeterminateVisibility(true);
+            showProgressDialog();
+        }
+
+        @Override
+        public CheckinResult doInBackground(Void... params) {
+
+            String venueId = null;
+            if (VenueUtils.isValid(mVenue)) {
+                venueId = mVenue.getId();
+            }
+
+            boolean isPrivate = !mTellFriends;
+            try {
+                Location location = ((Foursquared) getApplication()).getLastKnownLocation();
+                if (location == null) {
+                    if (DEBUG) Log.d(TAG, "unable to determine location");
+                    throw new FoursquareException(getResources().getString(
+                            R.string.no_location_providers));
+                }
+                ((Foursquared) getApplication()).requestSwitchCity(location);
+                return ((Foursquared) getApplication()).getFoursquare().checkin(venueId, null,
+                        LocationUtils.createFoursquareLocation(location), mShout, isPrivate,
+                        mTellTwitter);
+            } catch (Exception e) {
+                Log.d(TAG, "Storing reason: ", e);
+                mReason = e;
+            }
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(CheckinResult checkinResult) {
+
+            if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
+            setProgressBarIndeterminateVisibility(false);
+            if (checkinResult == null) {
+                NotificationsUtil.ToastReasonForFailure(ShoutActivity.this, mReason);
+                finish();
+            } else {
+                setCheckinResult(checkinResult);
+            }
+            dismissProgressDialog();
+            // Make sure the caller knows things worked out alright.
+            setResult(Activity.RESULT_OK);
+
+        }
+
+        @Override
+        protected void onCancelled() {
+
+            setProgressBarIndeterminateVisibility(false);
+            setVisible(true);
+            dismissProgressDialog();
+        }
+    }
+
+    private void setCheckinResult(CheckinResult checkinrResult) {
+
+        mCheckinResult = checkinrResult;
+        mCheckinResultObservable.notifyObservers(checkinrResult);
+    }
+
+    private class CheckinResultObservable extends Observable {
+
+        public void notifyObservers(Object data) {
+
+            setChanged();
+            super.notifyObservers(data);
+        }
+    }
+
+    private class CheckinResultObserver implements Observer {
+
+        @Override
+        public void update(Observable observable, Object data) {
+
+            CheckinResult checkinResult = (CheckinResult) data;
+            setVisible(true);
+            displayMain(checkinResult);
+            displayBadges(checkinResult);
+            displaySpecials(checkinResult);
+            displayScores(checkinResult);
+
+            // TODO Call displayBlock(s) for different parts of the response.
+        }
+
+        private void displayMain(CheckinResult checkinResult) {
+
+            // TODO Populate title and message correctly
+            // String checkinId = checkinResult.getId();
+            findViewById(R.id.shout).setVisibility(View.GONE);
+            findViewById(R.id.dialog_title).setVisibility(View.VISIBLE);
+            findViewById(R.id.checkin_result).setVisibility(View.VISIBLE);
+            String message = checkinResult.getMessage();
+            String title = (mIsShouting) ? "Shouted!" : "Checked in !";
+
+            // Set the text message of the result.
+            ((TextView) findViewById(R.id.title_text)).setText(title);
+            ((TextView) findViewById(R.id.score_message)).setText(message);
+
+            Mayor mayor = checkinResult.getMayor();
+            if (mayor != null) {
+                findViewById(R.id.crown).setVisibility(View.VISIBLE);
+                findViewById(R.id.mayor_message).setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.mayor_message)).setText(mayor.getMessage());
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        private void displayBadges(CheckinResult checkinResult) {
+
+            Group<Badge> badges = checkinResult.getBadges();
+            if (badges != null) {
+                mBadgeListAdapter.setGroup(badges);
+                mListAdapter.addSection(getResources().getString(R.string.checkin_badges),
+                        mBadgeListAdapter);
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        private void displayScores(CheckinResult checkinResult) {
+            Resources res = getResources();
+            Group<Score> scores = checkinResult.getScoring();
+            if (scores != null) {
+                mScoreListAdapter.setGroup(scores);
+                mListAdapter.addSection(res.getString(R.string.checkin_score), mScoreListAdapter);
+            }
+            int total = 0;
+            for (Score score : scores) {
+                total += Integer.parseInt(score.getPoints());
+            }
+            ((TextView) findViewById(R.id.totals)).setText(res.getString(R.string.checkin_totals)
+                    + " " + total + " " + res.getString(R.string.checkin_points));
+        }
+
+        @SuppressWarnings("unchecked")
+        private void displaySpecials(CheckinResult checkinResult) {
+
+            Group<Special> specials = checkinResult.getSpecials();
+            if (specials != null) {
+                mSpecialListAdapter.setGroup(specials);
+                mListAdapter.addSection(getResources().getString(R.string.checkin_specials),
+                        mSpecialListAdapter);
+            }
+        }
+    }
 }
