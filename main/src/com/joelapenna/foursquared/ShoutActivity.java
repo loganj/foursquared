@@ -467,15 +467,16 @@ public class ShoutActivity extends Activity {
         @SuppressWarnings("unchecked")
         private void displayScores(CheckinResult checkinResult) {
             Resources res = getResources();
+            int total = 0;
             Group<Score> scores = checkinResult.getScoring();
             if (scores != null) {
                 mScoreListAdapter.setGroup(scores);
                 mListAdapter.addSection(res.getString(R.string.checkin_score), mScoreListAdapter);
+                for (Score score : scores) {
+                    total += Integer.parseInt(score.getPoints());
+                }
             }
-            int total = 0;
-            for (Score score : scores) {
-                total += Integer.parseInt(score.getPoints());
-            }
+
             ((TextView) findViewById(R.id.totals)).setText(res.getString(R.string.checkin_totals)
                     + " " + total + " " + res.getString(R.string.checkin_points));
         }
