@@ -12,6 +12,7 @@
         android:layout_width="36dip"
         android:layout_height="36dip"
         android:layout_margin="5dip"
+        android:scaleType="center"
         android:layout_gravity="center_vertical" />
     <TextView
         android:id="@+id/scoreDesc"

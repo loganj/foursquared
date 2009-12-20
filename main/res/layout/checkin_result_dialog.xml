@@ -22,6 +22,8 @@
         android:layout_weight="0.5" />
     <RelativeLayout
         android:id="@+id/footer"
+        android:paddingTop="5dip"
+        android:paddingBottom="5dip"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
         android:background="@drawable/black_gradient"
@@ -39,11 +41,12 @@
             android:id="@+id/crown"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_margin="5dip"
+            android:layout_marginBottom="5dip"
+            android:layout_marginLeft="5dip"
             android:layout_below="@id/totals"
             android:gravity="center_vertical"
             android:src="@drawable/crown"
-            android:visibility="invisible" />
+            android:visibility="gone" />
         <TextView
             android:id="@+id/mayor_message"
             android:layout_width="fill_parent"
@@ -54,7 +57,7 @@
             android:textSize="14sp"
             android:paddingLeft="5dip"
             android:paddingRight="5dip"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:textAppearance="@style/TextStyleWhite" />
     </RelativeLayout>
 </LinearLayout>
