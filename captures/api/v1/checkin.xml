@@ -15,8 +15,15 @@
   </venue>
   <mayor>
     <type>nochange</type>
-    <checkins>11</checkins>
-    <message>You're still The Mayor of 4SQ HQ - Soho! (11 checkins in the past 2 months)</message>
+    <checkins>10</checkins>
+    <user>
+      <id>138</id>
+      <firstname>Dan</firstname>
+      <lastname>M.</lastname>
+      <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/138_1237786934.jpg</photo>
+      <gender>male</gender>
+    </user>
+    <message>Dan M. is The Mayor of Bowery Wine Company.</message>
   </mayor>
   <scoring>
     <score>

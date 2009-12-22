@@ -4,6 +4,7 @@
 
 package com.joelapenna.foursquared;
 
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -19,7 +20,10 @@ import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -32,10 +36,12 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
+import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Badge;
 import com.joelapenna.foursquare.types.CheckinResult;
@@ -43,11 +49,13 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Mayor;
 import com.joelapenna.foursquare.types.Score;
 import com.joelapenna.foursquare.types.Special;
+import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
+import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
 import com.joelapenna.foursquared.widget.ScoreListAdapter;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
@@ -59,6 +67,7 @@ import com.joelapenna.foursquared.widget.SpecialListAdapter;
 public class ShoutActivity extends Activity {
     public static final String TAG = "ShoutActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
+
     public static final String EXTRA_VENUE = "com.joelapenna.foursquared.VenueId";
     public static final String EXTRA_VENUE_NAME = "com.joelapenna.foursquared.ShoutActivity.VENUE_NAME";
     public static final String EXTRA_VENUE_ADDRESS = "com.joelapenna.foursquared.ShoutActivity.VENUE_ADDRESS";
@@ -69,6 +78,7 @@ public class ShoutActivity extends Activity {
     public static final String EXTRA_IMMEDIATE_CHECKIN = "com.joelapenna.foursquared.ShoutActivity.IMMEDIATE_CHECKIN";
     public static final String EXTRA_SHOUT = "com.joelapenna.foursquared.ShoutActivity.SHOUT";
     public static final String CHECKIN_IN_PROGRESS = "com.joelapenna.foursquared.ShoutActivity.CHECKIN_IN_PROGRESS";
+
     private Dialog mProgressDialog;
     private boolean mIsShouting = true;
     private boolean mTellFriends = true;
@@ -84,7 +94,8 @@ public class ShoutActivity extends Activity {
     private EditText mShoutEditText;
     private Venue mVenue;
     private SpecialListAdapter mSpecialListAdapter;
-    boolean mCheckinTaskRunning = false;
+
+    AsyncTask<Void, Void, CheckinResult> mCheckinTask = null;
 
     private CheckinResultObservable mCheckinResultObservable = new CheckinResultObservable();
     private CheckinResultObserver mCheckinResultObserver = new CheckinResultObserver();
@@ -137,7 +148,7 @@ public class ShoutActivity extends Activity {
         if (mImmediateCheckin) {
             if (DEBUG) Log.d(TAG, "Immediate checkin is set.");
             // Check if we already have task running
-            if (!mCheckinTaskRunning) new CheckinTask().execute();
+            if (mCheckinTask == null) new CheckinTask().execute();
         } else {
             initializeMainDialog();
         }
@@ -158,21 +169,8 @@ public class ShoutActivity extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mCheckinTask = null;
         unregisterReceiver(mLoggedOutReceiver);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-    }
-
-    /**
-     * We don't have any orientation specific resources so we can skip all that.
-     */
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
     }
 
     /**
@@ -228,7 +226,7 @@ public class ShoutActivity extends Activity {
                     mShout = shout;
                 }
                 // Check if we already have task running.
-                if (!mCheckinTaskRunning) new CheckinTask().execute();
+                if (mCheckinTask == null) new CheckinTask().execute();
                 new CheckinTask().execute();
             }
         });
@@ -305,7 +303,6 @@ public class ShoutActivity extends Activity {
         public void onPreExecute() {
             setProgressBarIndeterminateVisibility(true);
             showProgressDialog();
-            mCheckinTaskRunning = true;
         }
 
         @Override
@@ -336,7 +333,6 @@ public class ShoutActivity extends Activity {
         @Override
         public void onPostExecute(CheckinResult checkinResult) {
             if (DEBUG) Log.d(TAG, "CheckinTask: onPostExecute()");
-            mCheckinTaskRunning = false;
             setProgressBarIndeterminateVisibility(false);
             if (checkinResult == null) {
                 NotificationsUtil.ToastReasonForFailure(ShoutActivity.this, mReason);
@@ -351,7 +347,6 @@ public class ShoutActivity extends Activity {
 
         @Override
         protected void onCancelled() {
-            mCheckinTaskRunning = false;
             setProgressBarIndeterminateVisibility(false);
             setVisible(true);
             dismissProgressDialog();
