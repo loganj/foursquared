@@ -48,7 +48,7 @@
    <string
     name="feedback_label">Send Feedback</string>
   <string
-    name="feedback_subject">Fousquare for Android Feedback</string>
+    name="feedback_subject">Foursquare for Android Feedback</string>
   <string
     name="feedback_error">Couldn't find configured email client.</string>
    <string

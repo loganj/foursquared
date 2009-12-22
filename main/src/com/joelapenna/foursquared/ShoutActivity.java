@@ -4,9 +4,22 @@
 
 package com.joelapenna.foursquared;
 
-import java.io.IOException;
-import java.util.Observable;
-import java.util.Observer;
+import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.types.Badge;
+import com.joelapenna.foursquare.types.CheckinResult;
+import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Mayor;
+import com.joelapenna.foursquare.types.Score;
+import com.joelapenna.foursquare.types.Special;
+import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.util.VenueUtils;
+import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.preferences.Preferences;
+import com.joelapenna.foursquared.util.NotificationsUtil;
+import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
+import com.joelapenna.foursquared.widget.ScoreListAdapter;
+import com.joelapenna.foursquared.widget.SeparatedListAdapter;
+import com.joelapenna.foursquared.widget.SpecialListAdapter;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -18,12 +31,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
-import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -36,33 +45,16 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
-import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.types.Badge;
-import com.joelapenna.foursquare.types.CheckinResult;
-import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.Mayor;
-import com.joelapenna.foursquare.types.Score;
-import com.joelapenna.foursquare.types.Special;
-import com.joelapenna.foursquare.types.User;
-import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquare.util.VenueUtils;
-import com.joelapenna.foursquared.location.LocationUtils;
-import com.joelapenna.foursquared.preferences.Preferences;
-import com.joelapenna.foursquared.util.NotificationsUtil;
-import com.joelapenna.foursquared.util.RemoteResourceManager;
-import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
-import com.joelapenna.foursquared.widget.ScoreListAdapter;
-import com.joelapenna.foursquared.widget.SeparatedListAdapter;
-import com.joelapenna.foursquared.widget.SpecialListAdapter;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
+ * @author Alex Volovoy (avolovoy@gmail.com)
  */
 public class ShoutActivity extends Activity {
     public static final String TAG = "ShoutActivity";
@@ -383,7 +375,7 @@ public class ShoutActivity extends Activity {
             findViewById(R.id.dialog_title).setVisibility(View.VISIBLE);
             findViewById(R.id.checkin_result).setVisibility(View.VISIBLE);
             String message = checkinResult.getMessage();
-            String title = (mIsShouting) ? "Shouted!" : "Checked in !";
+            String title = (mIsShouting) ? "Shouted!" : "Checked in!";
             // Set the text message of the result.
             ((TextView) findViewById(R.id.title_text)).setText(title);
             ((TextView) findViewById(R.id.score_message)).setText(message);
