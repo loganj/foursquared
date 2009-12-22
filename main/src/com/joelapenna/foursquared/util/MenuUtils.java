@@ -35,7 +35,7 @@ public class MenuUtils {
 
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
         final String[] mailto = {
-            "foursquared-dev@googlegroups.com"
+            "foursquared-dev+feedback@googlegroups.com"
         };
         final String new_line = "\n";
         StringBuilder body = new StringBuilder();

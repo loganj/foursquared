@@ -105,15 +105,13 @@
   <style
     name="TextStyleWhite">
     <item
-      name="android:shadowColor">@color/dgrey_end</item>
+      name="android:shadowColor">#111111</item>
     <item
-      name="android:shadowRadius">2</item>
+      name="android:shadowRadius">1</item>
     <item 
       name="android:padding">3dip</item>
     <item
-      name="android:shadowDy">1.4</item>
-    <item
-      name="android:shadowDx">1.4</item>
+      name="android:shadowDy">1</item>
     <item
       name="android:textColor">@color/white</item>
  

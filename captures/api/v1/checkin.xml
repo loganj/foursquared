@@ -15,14 +15,26 @@
   </venue>
   <mayor>
     <type>nochange</type>
-    <checkins>11</checkins>
-    <message>You're still The Mayor of 4SQ HQ - Soho! (11 checkins in the past 2 months)</message>
+    <checkins>10</checkins>
+    <user>
+      <id>138</id>
+      <firstname>Dan</firstname>
+      <lastname>M.</lastname>
+      <photo>http://playfoursquare.s3.amazonaws.com/userpix_thumbs/138_1237786934.jpg</photo>
+      <gender>male</gender>
+    </user>
+    <message>Dan M. is The Mayor of Bowery Wine Company.</message>
   </mayor>
   <scoring>
     <score>
-      <points>1</points>
-      <icon>http://foursquare.com/images/scoring/2.png</icon>
+      <points>3</points>
+      <icon>http://foursquare.com/images/scoring/1.png</icon>
       <message>First stop today</message>
+    </score>
+	<score>
+      <points>4</points>
+      <icon>http://foursquare.com/images/scoring/2.png</icon>
+      <message>Travel bonus</message>
     </score>
   </scoring>
   <badges>
@@ -32,12 +44,23 @@
       <icon>http://playfoursquare.com/images/badges/newbie_on.png</icon>
       <description>Congrats on your first checkin!</description>
     </badge>
+    <badge>
+      <id>567</id>
+      <name>Adventure</name>
+      <icon>http://playfoursquare.com/images/badges/newbie_on.png</icon>
+      <description>10 checkins in 10 days!</description>
+    </badge>
   </badges>
   <specials>
     <special>
       <id>2</id>
       <type>mayor</type>
       <message>If you're the mayor, show the bartender and your first drink is free! (just beer and well drinks guys, let's be fair)</message>
+    </special>
+	<special>
+      <id>3</id>
+      <type>firstcheckin</type>
+      <message>if this is your first check in - you're buying !</message>
     </special>
   </specials>
 </checkin>

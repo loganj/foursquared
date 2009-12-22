@@ -1,0 +1,17 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+>
+    <include
+        layout="@layout/dialog_title" />
+    <include
+        layout="@layout/shout_activity"
+        android:id="@+id/shout" />
+    <include
+        layout="@layout/checkin_result_dialog"
+        android:id="@+id/checkin_result" />
+</RelativeLayout>

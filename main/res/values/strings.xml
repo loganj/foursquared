@@ -48,7 +48,7 @@
    <string
     name="feedback_label">Send Feedback</string>
   <string
-    name="feedback_subject">Fousquare for Android Feedback</string>
+    name="feedback_subject">Foursquare for Android Feedback</string>
   <string
     name="feedback_error">Couldn't find configured email client.</string>
    <string
@@ -164,7 +164,21 @@
     name="tell_my_friends">Tell my Friends</string>
   <string
     name="tell_twitter">Tell Twitter</string>
-
+    
+  <string
+    name="checkin_score">Your Check-in score</string>
+  <string
+    name="checkin_totals">Totals:</string>
+  <string
+    name="checkin_points">Points</string>
+  <string
+    name="checkin_badges">You\'ve just unlocked</string>
+  <string
+    name="checkin_specials">Specials</string>
+  <string
+    name="c">Checked in @ </string>
+  <string
+    name="checkin_title_shouted">Shouted!</string>
   <!--
     The whitespace is a layout hack to make sure the dialog box doesn't bounce in size so quickly.
   -->

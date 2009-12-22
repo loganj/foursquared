@@ -44,6 +44,13 @@ public class BadgeWithIconListAdapter extends BadgeListAdapter {
         mRrm.addObserver(new RemoteResourceManagerObserver());
     }
 
+    public BadgeWithIconListAdapter(Context context, RemoteResourceManager rrm, int layoutResource) {
+
+        super(context, layoutResource);
+        mRrm = rrm;
+        mRrm.addObserver(new RemoteResourceManagerObserver());
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, convertView, parent);
