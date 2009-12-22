@@ -7,5 +7,4 @@
     android:layout_height="wrap_content"
     android:padding="5dip"
     android:textColor="@color/black_end"
-    android:textAppearance="@android:style/TextAppearance.Small"
-    android:ellipsize="marquee" />
+    android:textAppearance="@android:style/TextAppearance.Small" />

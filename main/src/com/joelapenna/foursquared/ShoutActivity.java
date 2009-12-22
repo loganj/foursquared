@@ -12,6 +12,7 @@ import com.joelapenna.foursquare.types.Mayor;
 import com.joelapenna.foursquare.types.Score;
 import com.joelapenna.foursquare.types.Special;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.util.MayorUtils;
 import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
@@ -357,14 +358,21 @@ public class ShoutActivity extends Activity {
     }
 
     private class CheckinResultObserver implements Observer {
+        @SuppressWarnings("unchecked")
         @Override
         public void update(Observable observable, Object data) {
+            if (DEBUG) Log.d(TAG, "CheckinResult was observed.");
             CheckinResult checkinResult = (CheckinResult) data;
             displayMain(checkinResult);
-            displayBadges(checkinResult);
-            displaySpecials(checkinResult);
-            displayScores(checkinResult);
-            // TODO Call displayBlock(s) for different parts of the response.
+            displayBadges(checkinResult.getBadges());
+            displaySpecials(checkinResult.getSpecials());
+            
+            // Only display the footer if we have a score or a mayor change.
+            boolean showedScores = displayScores(checkinResult.getScoring());
+            boolean showedMayor = displayMayor(checkinResult.getMayor());
+            if (showedScores || showedMayor) {
+                findViewById(R.id.footer).setVisibility(View.VISIBLE);
+            }
         }
 
         private void displayMain(CheckinResult checkinResult) {
@@ -379,29 +387,32 @@ public class ShoutActivity extends Activity {
             // Set the text message of the result.
             ((TextView) findViewById(R.id.title_text)).setText(title);
             ((TextView) findViewById(R.id.score_message)).setText(message);
-            Mayor mayor = checkinResult.getMayor();
-            if (mayor != null) {
-                findViewById(R.id.crown).setVisibility(View.VISIBLE);
-                findViewById(R.id.mayor_message).setVisibility(View.VISIBLE);
-                ((TextView) findViewById(R.id.mayor_message)).setText(mayor.getMessage());
-            }
         }
 
-        @SuppressWarnings("unchecked")
-        private void displayBadges(CheckinResult checkinResult) {
-            Group<Badge> badges = checkinResult.getBadges();
+        private boolean displayMayor(Mayor mayor) {
+            if (mayor != null && !MayorUtils.TYPE_NOCHANGE.equals(mayor.getType())) {
+                // We're the mayor. Yay!
+                ((TextView) findViewById(R.id.mayor_message)).setText(mayor.getMessage());
+                findViewById(R.id.mayor_message).setVisibility(View.VISIBLE);
+                findViewById(R.id.mayor_crown).setVisibility(View.VISIBLE);
+                return true;
+            }
+            return false;
+        }
+
+        private boolean displayBadges(Group<Badge> badges) {
             if (badges != null) {
                 mBadgeListAdapter.setGroup(badges);
                 mListAdapter.addSection(getResources().getString(R.string.checkin_badges),
                         mBadgeListAdapter);
+                return true;
             }
+            return false;
         }
 
-        @SuppressWarnings("unchecked")
-        private void displayScores(CheckinResult checkinResult) {
+        private boolean displayScores(Group<Score> scores) {
             Resources res = getResources();
             int total = 0;
-            Group<Score> scores = checkinResult.getScoring();
             if (scores != null) {
                 mScoreListAdapter.setGroup(scores);
                 mListAdapter.addSection(res.getString(R.string.checkin_score), mScoreListAdapter);
@@ -409,22 +420,24 @@ public class ShoutActivity extends Activity {
                     total += Integer.parseInt(score.getPoints());
                 }
             }
-            if (total > 0)
-                ((TextView) findViewById(R.id.totals)).setText(res
-                        .getString(R.string.checkin_totals)
-                        + " " + total + " " + res.getString(R.string.checkin_points));
-            else
-                ((TextView) findViewById(R.id.totals)).setVisibility(View.GONE);
+            if (total > 0) {
+                TextView totals = ((TextView) findViewById(R.id.totals));
+                totals.setText(res.getString(R.string.checkin_totals) + " " + total + " "
+                        + res.getString(R.string.checkin_points));
+                totals.setVisibility(View.VISIBLE);
+                return true;
+            }
+            return false;
         }
 
-        @SuppressWarnings("unchecked")
-        private void displaySpecials(CheckinResult checkinResult) {
-            Group<Special> specials = checkinResult.getSpecials();
+        private boolean displaySpecials(Group<Special> specials) {
             if (specials != null) {
                 mSpecialListAdapter.setGroup(specials);
                 mListAdapter.addSection(getResources().getString(R.string.checkin_specials),
                         mSpecialListAdapter);
+                return true;
             }
+            return false;
         }
     }
 }

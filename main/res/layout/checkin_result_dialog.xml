@@ -27,18 +27,21 @@
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
         android:background="@drawable/black_gradient"
+        android:visibility="gone"
     >
         <TextView
             android:id="@+id/totals"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/mayor_crown"
             android:gravity="center"
             android:textSize="18sp"
             android:paddingLeft="10dip"
             android:paddingRight="10dip"
+            android:visibility="gone"
             android:textAppearance="@style/TextStyleWhite" />
         <ImageView
-            android:id="@+id/crown"
+            android:id="@+id/mayor_crown"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_marginBottom="5dip"
@@ -52,7 +55,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/totals"
-            android:layout_toRightOf="@id/crown"
+            android:layout_toRightOf="@id/mayor_crown"
             android:gravity="center"
             android:textSize="14sp"
             android:paddingLeft="5dip"
