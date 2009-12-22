@@ -183,6 +183,7 @@
     <activity
       android:name=".ShoutActivity"
       android:label="@string/shout_activity_label"
+      android:configChanges="keyboardHidden|orientation"
       android:theme="@android:style/Theme.Dialog">
       <intent-filter>
         <action

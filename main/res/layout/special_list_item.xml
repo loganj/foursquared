@@ -8,5 +8,4 @@
     android:padding="5dip"
     android:textColor="@color/black_end"
     android:textAppearance="@android:style/TextAppearance.Small"
-    android:ellipsize="marquee"
-    android:background="@drawable/item_grey_gradient" />
+    android:ellipsize="marquee" />
