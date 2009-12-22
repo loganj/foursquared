@@ -48,7 +48,7 @@ public class StatsActivity extends Activity {
         String userId = ((Foursquared)getApplication()).getUserId();
         String cityId = ((Foursquared)getApplication()).getUserCity().getId();
 
-        String url = "http://foursquare.com./iphone/me?view=all&scope=friends&uid=" + userId
+        String url = "http://foursquare.com/iphone/me?view=all&scope=friends&uid=" + userId
                 + "&cityid=" + cityId;
         Log.d(TAG, url);
         webView.loadUrl(url);
