@@ -42,7 +42,6 @@ public class Foursquare {
     private FoursquareHttpApiV1 mFoursquareV1;
 
     @V1
-    @Classic
     public Foursquare(FoursquareHttpApiV1 httpApi) {
         mFoursquareV1 = httpApi;
     }
@@ -192,12 +191,6 @@ public class Foursquare {
      * http://groups.google.com/group/foursquare-api/web/api-documentation
      */
     @interface V1 {
-    }
-
-    /**
-     * This api was reverse engineered from the iPhone app.
-     */
-    @interface Classic {
     }
 
     public static class Location {
