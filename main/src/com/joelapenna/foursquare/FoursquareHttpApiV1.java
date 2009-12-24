@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class FoursquareHttpApiV1 {
+class FoursquareHttpApiV1 {
     private static final Logger LOG = Logger
             .getLogger(FoursquareHttpApiV1.class.getCanonicalName());
     private static final boolean DEBUG = Foursquare.DEBUG;
