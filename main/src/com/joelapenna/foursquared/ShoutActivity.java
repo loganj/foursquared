@@ -220,7 +220,6 @@ public class ShoutActivity extends Activity {
                 }
                 // Check if we already have task running.
                 if (mCheckinTask == null) new CheckinTask().execute();
-                new CheckinTask().execute();
             }
         });
         mTwitterCheckBox.setChecked(mTellTwitter);
