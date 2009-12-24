@@ -9,6 +9,7 @@ import com.joelapenna.foursquare.types.Badge;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
@@ -262,7 +263,12 @@ public class UserActivity extends Activity {
         @Override
         protected User doInBackground(Void... params) {
             try {
-                return ((Foursquared)getApplication()).getFoursquare().user(mUserId, false, true);
+                return ((Foursquared) getApplication()).getFoursquare().user(
+                        mUserId,
+                        false,
+                        true,
+                        LocationUtils.createFoursquareLocation(((Foursquared) getApplication())
+                                .getLastKnownLocation()));
             } catch (Exception e) {
                 mReason = e;
             }

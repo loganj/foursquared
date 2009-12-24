@@ -58,9 +58,6 @@ public class MenuUtils {
         body.append("ver: ");
         body.append(foursquared.getVersion());
         body.append(new_line);
-        body.append("city: ");
-        body.append(foursquared.getUserCity().getName());
-        body.append(new_line);
         body.append("user: ");
         body.append(foursquared.getUserId());
         body.append(new_line);

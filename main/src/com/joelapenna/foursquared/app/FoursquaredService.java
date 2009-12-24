@@ -11,6 +11,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.appwidget.FriendsAppWidgetProvider;
+import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.Comparators;
 
 import android.app.Service;
@@ -49,7 +50,8 @@ public class FoursquaredService extends Service {
             Foursquared foursquared = ((Foursquared)getApplication());
             if (foursquared.isReady()) {
                 if (DEBUG) Log.d(TAG, "User settings are ready, starting normal widget update.");
-                checkins = foursquared.getFoursquare().checkins(null, null);
+                checkins = foursquared.getFoursquare().checkins(
+                        LocationUtils.createFoursquareLocation(foursquared.getLastKnownLocation()));
                 Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
 
                 // Request the user photos for the checkins... At the moment, this is async. It is

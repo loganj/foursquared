@@ -6,7 +6,6 @@ package com.joelapenna.foursquared.preferences;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsException;
-import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.User;
@@ -78,17 +77,11 @@ public class Preferences {
             return false;
         }
 
-        User user = foursquare.user(null, false, false);
+        User user = foursquare.user(null, false, false, LocationUtils
+                .createFoursquareLocation(location));
         storeUser(editor, user);
         if (!editor.commit()) {
             if (DEBUG) Log.d(TAG, "storeUser commit failed");
-            return false;
-        }
-
-        City city = switchCity(foursquare, location);
-        storeCity(editor, city);
-        if (!editor.commit()) {
-            if (DEBUG) Log.d(TAG, "switchCity commit failed");
             return false;
         }
 
@@ -114,25 +107,6 @@ public class Preferences {
 
     public static String getUserId(SharedPreferences prefs) {
         return prefs.getString(PREFERENCE_ID, null);
-    }
-
-    public static City switchCity(Foursquare foursquare, Location location)
-            throws FoursquareException, FoursquareError, IOException {
-        City finalCity = null;
-
-        if (location != null) {
-            if (DEBUG) Log.d(TAG, "Checking city with: " + location.toString());
-            City newCity = foursquare.checkCity(LocationUtils.createFoursquareLocation(location));
-
-            if (newCity != null) {
-                if (DEBUG) Log.d(TAG, "Foursquare guesses you're here: " + newCity.getName());
-                foursquare.switchCity(newCity.getId()); // This will raise an exception if it fails.
-                if (DEBUG) Log.d(TAG, "Foursquare knows you're here: " + newCity.getName());
-                finalCity = newCity;
-            }
-
-        }
-        return finalCity;
     }
 
     public static void storeCity(final Editor editor, City city) {

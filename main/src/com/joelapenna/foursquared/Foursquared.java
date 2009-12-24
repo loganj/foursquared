@@ -7,11 +7,10 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.app.FoursquaredService;
 import com.joelapenna.foursquared.location.BestLocationListener;
-import com.joelapenna.foursquared.location.CityLocationListener;
+import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.DumpcatcherHelper;
 import com.joelapenna.foursquared.util.JavaLoggingHandler;
@@ -73,13 +72,7 @@ public class Foursquared extends Application {
     private Foursquare mFoursquare;
 
     private BestLocationListener mBestLocationListener = new BestLocationListener();
-    private CityLocationListener mCityLocationListener = new CityLocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-            requestSwitchCity(location);
-            mBestLocationListener.onLocationChanged(location);
-        }
-    };
+    private BestLocationListener mCityLocationListener = new BestLocationListener();
 
     @Override
     public void onCreate() {
@@ -128,10 +121,7 @@ public class Foursquared extends Application {
     }
 
     public boolean isReady() {
-        return getFoursquare().hasLoginAndPassword() //
-                && !TextUtils.isEmpty(getUserId()) //
-                && !TextUtils.isEmpty(getUserCity().getId()) //
-        ;
+        return getFoursquare().hasLoginAndPassword() && !TextUtils.isEmpty(getUserId());
     }
 
     public Foursquare getFoursquare() {
@@ -140,10 +130,6 @@ public class Foursquared extends Application {
 
     public String getUserId() {
         return Preferences.getUserId(mPrefs);
-    }
-
-    public City getUserCity() {
-        return Preferences.getUserCity(mPrefs);
     }
 
     public String getVersion() {
@@ -319,27 +305,10 @@ public class Foursquared extends Application {
             if (DEBUG) Log.d(TAG, "handleMessage: " + msg.what);
 
             switch (msg.what) {
-                case MESSAGE_SWITCH_CITY:
-                    try {
-                        City city = Preferences.switchCity(mFoursquare, (Location) msg.obj);
-                        Editor editor = mPrefs.edit();
-                        Preferences.storeCity(editor, city);
-                        editor.commit();
-                    } catch (FoursquareError e) {
-                        if (DEBUG) Log.d(TAG, "FoursquareError", e);
-                        // TODO Auto-generated catch block
-                    } catch (FoursquareException e) {
-                        if (DEBUG) Log.d(TAG, "FoursquareException", e);
-                        // TODO Auto-generated catch block
-                    } catch (IOException e) {
-                        if (DEBUG) Log.d(TAG, "IOException", e);
-                        // TODO Auto-generated catch block
-                    }
-                    return;
-
                 case MESSAGE_UPDATE_USER:
                     try {
-                        User user = getFoursquare().user(null, false, false);
+                        User user = getFoursquare().user(null, false, false,
+                                LocationUtils.createFoursquareLocation(getLastKnownLocation()));
                         Editor editor = mPrefs.edit();
                         Preferences.storeUser(editor, user);
                         editor.commit();

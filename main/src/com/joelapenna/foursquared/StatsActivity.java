@@ -46,10 +46,9 @@ public class StatsActivity extends Activity {
         webView.setWebChromeClient(new MyWebChromeClient());
 
         String userId = ((Foursquared)getApplication()).getUserId();
-        String cityId = ((Foursquared)getApplication()).getUserCity().getId();
 
-        String url = "http://foursquare.com/iphone/me?view=all&scope=friends&uid=" + userId
-                + "&cityid=" + cityId;
+        // TODO(jlapenna): Send geo-coord parameters with this URL.
+        String url = "http://foursquare.com/iphone/me?view=all&scope=friends&uid=" + userId;
         Log.d(TAG, url);
         webView.loadUrl(url);
     }

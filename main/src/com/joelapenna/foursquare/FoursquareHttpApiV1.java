@@ -52,8 +52,6 @@ public class FoursquareHttpApiV1 {
     private static final String URL_API_ADDVENUE = "/addvenue";
     private static final String URL_API_ADDTIP = "/addtip";
     private static final String URL_API_CITIES = "/cities";
-    private static final String URL_API_CHECKCITY = "/checkcity";
-    private static final String URL_API_SWITCHCITY = "/switchcity";
     private static final String URL_API_CHECKINS = "/checkins";
     private static final String URL_API_CHECKIN = "/checkin";
     private static final String URL_API_USER = "/user";
@@ -134,12 +132,18 @@ public class FoursquareHttpApiV1 {
     /*
      * /addtip?vid=1234&text=I%20added%20a%20tip&type=todo (type defaults "tip")
      */
-    Tip addtip(String vid, String text, String type) throws FoursquareException,
+    Tip addtip(String vid, String text, String type, String geolat, String geolong, String geohacc,
+            String geovacc, String geoalt) throws FoursquareException,
             FoursquareCredentialsException, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_ADDTIP), //
                 new BasicNameValuePair("vid", vid), //
                 new BasicNameValuePair("text", text), //
-                new BasicNameValuePair("type", type));
+                new BasicNameValuePair("type", type), //
+                new BasicNameValuePair("geolat", geolat), //
+                new BasicNameValuePair("geolong", geolong), //
+                new BasicNameValuePair("geohacc", geohacc), //
+                new BasicNameValuePair("geovacc", geovacc), //
+                new BasicNameValuePair("geoalt", geoalt));
         return (Tip) mHttpApi.doHttpRequest(httpPost, new TipParser());
     }
 
@@ -150,7 +154,6 @@ public class FoursquareHttpApiV1 {
      * @param city the city name where this venue is
      * @param state the state where the city is
      * @param zip (optional) the ZIP code for the venue
-     * @param cityid (required) the foursquare cityid where the venue is
      * @param phone (optional) the phone number for the venue
      * @return
      * @throws FoursquareException
@@ -159,7 +162,8 @@ public class FoursquareHttpApiV1 {
      * @throws IOException
      */
     Venue addvenue(String name, String address, String crossstreet, String city, String state,
-            String zip, String cityid, String phone) throws FoursquareException,
+            String zip, String phone, String geolat, String geolong, String geohacc,
+            String geovacc, String geoalt) throws FoursquareException,
             FoursquareCredentialsException, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_ADDVENUE), //
                 new BasicNameValuePair("name", name), //
@@ -168,8 +172,12 @@ public class FoursquareHttpApiV1 {
                 new BasicNameValuePair("city", city), //
                 new BasicNameValuePair("state", state), //
                 new BasicNameValuePair("zip", zip), //
-                new BasicNameValuePair("cityid", cityid), //
-                new BasicNameValuePair("phone", phone) //
+                new BasicNameValuePair("phone", phone), //
+                new BasicNameValuePair("geolat", geolat), //
+                new BasicNameValuePair("geolong", geolong), //
+                new BasicNameValuePair("geohacc", geohacc), //
+                new BasicNameValuePair("geovacc", geovacc), //
+                new BasicNameValuePair("geoalt", geoalt) //
                 );
         return (Venue) mHttpApi.doHttpRequest(httpPost, new VenueParser());
     }
@@ -185,34 +193,12 @@ public class FoursquareHttpApiV1 {
     }
 
     /*
-     * /checkcity?geolat=37.770900&geolong=-122.436987
-     */
-    City checkcity(String geolat, String geolong) throws FoursquareException,
-            FoursquareCredentialsException, FoursquareError, IOException {
-        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_CHECKCITY), //
-                new BasicNameValuePair("geolat", geolat), //
-                new BasicNameValuePair("geolong", geolong));
-        return (City) mHttpApi.doHttpRequest(httpGet, new CityParser());
-    }
-
-    /*
-     * /switchcity?cityid=24
-     */
-    City switchcity(String cityid) throws FoursquareException, FoursquareCredentialsException,
-            FoursquareError, IOException {
-        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_SWITCHCITY), //
-                new BasicNameValuePair("cityid", cityid));
-        return (City) mHttpApi.doHttpRequest(httpPost, new CityParser());
-    }
-
-    /*
-     * /checkins?cityid=23
+     * /checkins?
      */
     @SuppressWarnings("unchecked")
-    Group<Checkin> checkins(String cityid, String geolat, String geolong, String geohacc,
-            String geovacc, String geoalt) throws FoursquareException, FoursquareError, IOException {
+    Group<Checkin> checkins(String geolat, String geolong, String geohacc, String geovacc,
+            String geoalt) throws FoursquareException, FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_CHECKINS), //
-                new BasicNameValuePair("cityid", cityid), //
                 new BasicNameValuePair("geolat", geolat), //
                 new BasicNameValuePair("geolong", geolong), //
                 new BasicNameValuePair("geohacc", geohacc), //
@@ -245,12 +231,19 @@ public class FoursquareHttpApiV1 {
     /**
      * /user?uid=9937
      */
-    User user(String uid, boolean mayor, boolean badges) throws FoursquareException,
+    User user(String uid, boolean mayor, boolean badges, String geolat, String geolong,
+            String geohacc, String geovacc, String geoalt) throws FoursquareException,
             FoursquareCredentialsException, FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_USER), //
                 new BasicNameValuePair("uid", uid), //
                 new BasicNameValuePair("mayor", (mayor) ? "1" : "0"), //
-                new BasicNameValuePair("badges", (badges) ? "1" : "0"));
+                new BasicNameValuePair("badges", (badges) ? "1" : "0"), //
+                new BasicNameValuePair("geolat", geolat), //
+                new BasicNameValuePair("geolong", geolong), //
+                new BasicNameValuePair("geohacc", geohacc), //
+                new BasicNameValuePair("geovacc", geovacc), //
+                new BasicNameValuePair("geoalt", geoalt) //
+                );
         return (User) mHttpApi.doHttpRequest(httpGet, new UserParser());
     }
 
@@ -276,10 +269,17 @@ public class FoursquareHttpApiV1 {
     /**
      * /venue?vid=1234
      */
-    Venue venue(String vid) throws FoursquareException, FoursquareCredentialsException,
+    Venue venue(String vid, String geolat, String geolong, String geohacc, String geovacc,
+            String geoalt) throws FoursquareException, FoursquareCredentialsException,
             FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_VENUE), //
-                new BasicNameValuePair("vid", vid));
+                new BasicNameValuePair("vid", vid), //
+                new BasicNameValuePair("geolat", geolat), //
+                new BasicNameValuePair("geolong", geolong), //
+                new BasicNameValuePair("geohacc", geohacc), //
+                new BasicNameValuePair("geovacc", geovacc), //
+                new BasicNameValuePair("geoalt", geoalt) //
+                );
         return (Venue) mHttpApi.doHttpRequest(httpGet, new VenueParser());
     }
 
@@ -295,7 +295,8 @@ public class FoursquareHttpApiV1 {
                 new BasicNameValuePair("geohacc", geohacc), //
                 new BasicNameValuePair("geovacc", geovacc), //
                 new BasicNameValuePair("geoalt", geoalt), //
-                new BasicNameValuePair("l", String.valueOf(limit)));
+                new BasicNameValuePair("l", String.valueOf(limit)) //
+                );
         return (Group<Group<Tip>>) mHttpApi.doHttpRequest(httpGet, new GroupParser(new GroupParser(
                 new TipParser())));
     }
@@ -304,9 +305,16 @@ public class FoursquareHttpApiV1 {
      * /friends?uid=9937
      */
     @SuppressWarnings("unchecked")
-    Group<User> friends(String uid) throws FoursquareException, FoursquareError, IOException {
+    Group<User> friends(String uid, String geolat, String geolong, String geohacc, String geovacc,
+            String geoalt) throws FoursquareException, FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_FRIENDS), //
-                new BasicNameValuePair("uid", uid));
+                new BasicNameValuePair("uid", uid), //
+                new BasicNameValuePair("geolat", geolat), //
+                new BasicNameValuePair("geolong", geolong), //
+                new BasicNameValuePair("geohacc", geohacc), //
+                new BasicNameValuePair("geovacc", geovacc), //
+                new BasicNameValuePair("geoalt", geoalt) //
+                );
         return (Group<User>) mHttpApi.doHttpRequest(httpGet, new GroupParser(new UserParser()));
     }
 

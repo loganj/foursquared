@@ -7,6 +7,7 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
+import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.VenueView;
@@ -315,7 +316,10 @@ public class VenueActivity extends TabActivity {
         @Override
         protected Venue doInBackground(String... params) {
             try {
-                return ((Foursquared) getApplication()).getFoursquare().venue(params[0]);
+                return ((Foursquared) getApplication()).getFoursquare().venue(
+                        params[0],
+                        LocationUtils.createFoursquareLocation(((Foursquared) getApplication())
+                                .getLastKnownLocation()));
             } catch (Exception e) {
                 mReason = e;
             }
@@ -361,7 +365,11 @@ public class VenueActivity extends TabActivity {
                 String tip = params[0];
                 String type = params[1];
                 return ((Foursquared) getApplication()).getFoursquare().addTip(
-                        mStateHolder.venueId, tip, type);
+                        mStateHolder.venueId,
+                        tip,
+                        type,
+                        LocationUtils.createFoursquareLocation(((Foursquared) getApplication())
+                                .getLastKnownLocation()));
             } catch (Exception e) {
                 mReason = e;
             }

@@ -6,7 +6,6 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
@@ -16,7 +15,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -28,7 +26,6 @@ import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -121,76 +118,8 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
             startActivity(new Intent( //
                     Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_MOBILE_FRIENDS)));
 
-        } else if (Preferences.PREFERENCE_CITY_NAME.equals(key)) {
-            new UpdateCityTask().execute();
         }
         return true;
-    }
-
-    private class UpdateCityTask extends AsyncTask<Void, Void, City> {
-        private static final String TAG = "UpdateCityTask";
-
-        private static final boolean DEBUG = FoursquaredSettings.DEBUG;
-
-        private Exception mReason;
-
-        @Override
-        protected void onPreExecute() {
-            if (DEBUG) Log.d(TAG, "onPreExecute()");
-            Toast.makeText(PreferenceActivity.this,
-                    getString(R.string.preferences_updating_city_toast), Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        protected City doInBackground(Void... params) {
-            if (DEBUG) Log.d(TAG, "doInBackground()");
-            try {
-                Foursquared foursquared = (Foursquared) getApplication();
-                Location location = foursquared.getLastKnownLocation();
-                if (location == null) {
-                    if (DEBUG) Log.d(TAG, "unable to determine location");
-                    throw new FoursquareException("Unable to determine location.");
-                }
-
-                Foursquare foursquare = foursquared.getFoursquare();
-                City newCity = foursquare.checkCity(//
-                        LocationUtils.createFoursquareLocation(location));
-                foursquare.switchCity(newCity.getId());
-
-                Editor editor = mPrefs.edit();
-                Preferences.storeCity(editor, newCity);
-                editor.commit();
-
-                return newCity;
-
-            } catch (Exception e) {
-                mReason = e;
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(City city) {
-            if (city == null) {
-                NotificationsUtil.ToastReasonForFailure(PreferenceActivity.this, mReason);
-            } else {
-                Toast.makeText(PreferenceActivity.this,
-                        getString(R.string.preferences_welcome_city_toast, city.getName()),
-                        Toast.LENGTH_LONG).show();
-                // Back to the stupid lame-o hack of restarting the activity so
-                // it shows the
-                // background-updated preference.
-                finish();
-                startActivity(getIntent());
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            Toast.makeText(PreferenceActivity.this,
-                    getString(R.string.preferences_unable_to_find_city_toast), Toast.LENGTH_LONG)
-                    .show();
-        }
     }
 
     private class TwitterTask extends AsyncTask<Void, Void, Boolean> {
@@ -212,7 +141,8 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                 }
 
                 Foursquare foursquare = foursquared.getFoursquare();
-                return foursquare.user(null, false, false).getSettings().sendtotwitter();
+                return foursquare.user(null, false, false,
+                        LocationUtils.createFoursquareLocation(location)).getSettings().sendtotwitter();
 
             } catch (Exception e) {
                 mReason = e;

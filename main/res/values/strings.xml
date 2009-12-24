@@ -101,7 +101,7 @@
     name="login_dialog_message">Please wait while logging into Foursquare...</string>
 
   <string
-    name="login_welcome_toast">Welcome to %s!</string>
+    name="login_welcome_toast">Welcome to Foursquare!</string>
   <string
     name="login_failed_login_toast">Unable to log in. Please check your phone number and password.</string>
 

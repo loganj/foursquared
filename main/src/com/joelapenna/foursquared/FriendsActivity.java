@@ -10,6 +10,7 @@ import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.R.drawable;
 import com.joelapenna.foursquared.app.LoadableListActivity;
+import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
@@ -292,7 +293,9 @@ public class FriendsActivity extends LoadableListActivity {
         Group<Checkin> search() throws FoursquareException, IOException {
             Foursquare foursquare = ((Foursquared) getApplication()).getFoursquare();
             Group<Checkin> checkins;
-            checkins = foursquare.checkins(null, null);
+            checkins = foursquare.checkins(LocationUtils
+                    .createFoursquareLocation(((Foursquared) getApplication())
+                            .getLastKnownLocation()));
             Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
             return checkins;
         }

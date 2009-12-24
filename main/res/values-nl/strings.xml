@@ -87,7 +87,7 @@
     name="login_dialog_message">Wacht a.u.b. terwijl we inloggen op Foursquare...</string>
 
   <string
-    name="login_welcome_toast">Welkom bij %s!</string>
+    name="login_welcome_toast">Welkom bij Foursquare!</string>
   <string
     name="login_failed_login_toast">Kan niet inloggen. Controleer je telefoonnummer en wachtwoord.</string>
 

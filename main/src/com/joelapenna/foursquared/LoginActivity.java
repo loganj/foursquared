@@ -54,14 +54,14 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.login_activity);
 
         Preferences.logoutUser( //
-                ((Foursquared)getApplication()).getFoursquare(), //
+                ((Foursquared) getApplication()).getFoursquare(), //
                 PreferenceManager.getDefaultSharedPreferences(this).edit());
 
         // Set up the UI.
         ensureUi();
 
         // Re-task if the request was cancelled.
-        mLoginTask = (LoginTask)getLastNonConfigurationInstance();
+        mLoginTask = (LoginTask) getLastNonConfigurationInstance();
         if (mLoginTask != null && mLoginTask.isCancelled()) {
             if (DEBUG) Log.d(TAG, "LoginTask previously cancelled, trying again.");
             mLoginTask = new LoginTask().execute();
@@ -71,13 +71,13 @@ public class LoginActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        ((Foursquared)getApplication()).requestLocationUpdates();
+        ((Foursquared) getApplication()).requestLocationUpdates();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ((Foursquared)getApplication()).removeLocationUpdates();
+        ((Foursquared) getApplication()).removeLocationUpdates();
     }
 
     @Override
@@ -111,7 +111,7 @@ public class LoginActivity extends Activity {
     }
 
     private void ensureUi() {
-        final Button button = (Button)findViewById(R.id.button);
+        final Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,7 +119,7 @@ public class LoginActivity extends Activity {
             }
         });
 
-        mNewAccountTextView = (TextView)findViewById(R.id.newAccountTextView);
+        mNewAccountTextView = (TextView) findViewById(R.id.newAccountTextView);
         mNewAccountTextView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,8 +128,8 @@ public class LoginActivity extends Activity {
             }
         });
 
-        mPhoneUsernameEditText = ((EditText)findViewById(R.id.phoneEditText));
-        mPasswordEditText = ((EditText)findViewById(R.id.passwordEditText));
+        mPhoneUsernameEditText = ((EditText) findViewById(R.id.phoneEditText));
+        mPasswordEditText = ((EditText) findViewById(R.id.passwordEditText));
 
         TextWatcher fieldValidatorTextWatcher = new TextWatcher() {
             @Override
@@ -147,7 +147,8 @@ public class LoginActivity extends Activity {
             }
 
             private boolean phoneNumberEditTextFieldIsValid() {
-                // This can be either a phone number or username so we don't care too much about the
+                // This can be either a phone number or username so we don't
+                // care too much about the
                 // format.
                 return !TextUtils.isEmpty(mPhoneUsernameEditText.getText());
             }
@@ -179,7 +180,7 @@ public class LoginActivity extends Activity {
             SharedPreferences prefs = PreferenceManager
                     .getDefaultSharedPreferences(LoginActivity.this);
             Editor editor = prefs.edit();
-            Foursquared foursquared = (Foursquared)getApplication();
+            Foursquared foursquared = (Foursquared) getApplication();
             Foursquare foursquare = foursquared.getFoursquare();
             try {
                 String phoneNumber = mPhoneUsernameEditText.getText().toString();
@@ -215,14 +216,11 @@ public class LoginActivity extends Activity {
         @Override
         protected void onPostExecute(Boolean loggedIn) {
             if (DEBUG) Log.d(TAG, "onPostExecute(): " + loggedIn);
-            Foursquared foursquared = (Foursquared)getApplication();
+            Foursquared foursquared = (Foursquared) getApplication();
 
             if (loggedIn) {
                 sendBroadcast(new Intent(Foursquared.INTENT_ACTION_LOGGED_IN));
-                String city = foursquared.getUserCity().getName();
-                Toast.makeText(
-                        //
-                        LoginActivity.this, getString(R.string.login_welcome_toast, city),
+                Toast.makeText(LoginActivity.this, getString(R.string.login_welcome_toast),
                         Toast.LENGTH_LONG).show();
 
                 // Launch the service to update any widgets, etc.

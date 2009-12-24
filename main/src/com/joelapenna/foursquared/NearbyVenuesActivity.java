@@ -11,6 +11,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.location.BestLocationListener;
+import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
@@ -280,7 +281,8 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 // Foursquare requires a lat, lng for a venue search, so we have
                 // to pull it from the
                 // server if we cannot determine it locally.
-                City city = foursquare.user(null, false, false).getCity();
+                City city = foursquare.user(null, false, false,
+                        LocationUtils.createFoursquareLocation(location)).getCity();
                 geolat = String.valueOf(city.getGeolat());
                 geolong = String.valueOf(city.getGeolong());
             } else {

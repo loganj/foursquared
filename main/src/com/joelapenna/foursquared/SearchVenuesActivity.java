@@ -9,6 +9,7 @@ import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
 import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.util.MenuUtils;
@@ -411,7 +412,8 @@ public class SearchVenuesActivity extends TabActivity {
                 // Foursquare requires a lat, lng for a venue search, so we have
                 // to pull it from the
                 // server if we cannot determine it locally.
-                City city = foursquare.user(null, false, false).getCity();
+                City city = foursquare.user(null, false, false,
+                        LocationUtils.createFoursquareLocation(location)).getCity();
                 geolat = String.valueOf(city.getGeolat());
                 geolong = String.valueOf(city.getGeolong());
             } else {

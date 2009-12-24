@@ -46,12 +46,6 @@
   <PreferenceCategory
     android:title="@string/preferences_category_user_actions">
 
-    <com.joelapenna.foursquared.preferences.CityNamePreference
-      android:key="city_name"
-      android:persistent="true"
-      android:title="@string/preferences_city_name_title"
-      android:summary="@string/preferences_city_name_summary" />
-
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="logout"
       android:title="@string/preferences_logout_title"
