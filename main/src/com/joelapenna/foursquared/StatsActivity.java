@@ -4,6 +4,9 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquared.location.LocationUtils;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -41,16 +44,14 @@ public class StatsActivity extends Activity {
 
         setTitle("Foursquare Scoreboard");
 
-        WebView webView = (WebView)findViewById(R.id.webView);
+        WebView webView = (WebView) findViewById(R.id.webView);
         webView.setWebViewClient(new MyWebViewClient());
         webView.setWebChromeClient(new MyWebChromeClient());
 
-        String userId = ((Foursquared)getApplication()).getUserId();
-
-        // TODO(jlapenna): Send geo-coord parameters with this URL.
-        String url = "http://foursquare.com/iphone/me?view=all&scope=friends&uid=" + userId;
-        Log.d(TAG, url);
-        webView.loadUrl(url);
+        Foursquared foursquared = ((Foursquared) getApplication());
+        String userId = ((Foursquared) getApplication()).getUserId();
+        webView.loadUrl(Foursquare.createLeaderboardUrl(userId, LocationUtils
+                .createFoursquareLocation(foursquared.getLastKnownLocation())));
     }
 
     @Override

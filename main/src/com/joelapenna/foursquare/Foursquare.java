@@ -15,6 +15,9 @@ import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 
+import android.net.Uri;
+import android.text.TextUtils;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -112,10 +115,10 @@ public class Foursquare {
     }
 
     @V1
-    public Group<Checkin> checkins(Location location) throws FoursquareException,
-            FoursquareError, IOException {
-        return mFoursquareV1.checkins(location.mGeolat, location.mGeolong,
-                location.mGeohacc, location.mGeovacc, location.mGeoalt);
+    public Group<Checkin> checkins(Location location) throws FoursquareException, FoursquareError,
+            IOException {
+        return mFoursquareV1.checkins(location.mGeolat, location.mGeolong, location.mGeohacc,
+                location.mGeovacc, location.mGeoalt);
     }
 
     @V1
@@ -184,6 +187,31 @@ public class Foursquare {
 
     public static final FoursquareHttpApiV1 createHttpApi(String clientVersion, boolean useOAuth) {
         return createHttpApi(FOURSQUARE_API_DOMAIN, clientVersion, useOAuth);
+    }
+
+    public static final String createLeaderboardUrl(String userId, Location location) {
+        // TODO(jlapenna): Send geo-coord parameters with this URL.
+        String url = "http://foursquare.com/iphone/me?view=all&scope=friends&uid=" + userId;
+        Uri.Builder builder = new Uri.Builder() //
+                .scheme("http") //
+                .authority("foursquare.com") //
+                .appendPath("/iphone/me") //
+                .appendQueryParameter("view", "all")
+                .appendQueryParameter("scope", "friends")
+                .appendQueryParameter("uid", userId);
+        if (TextUtils.isEmpty(location.mGeolat)) {
+            builder.appendQueryParameter("geolat", location.mGeolat);
+        }
+        if (TextUtils.isEmpty(location.mGeolong)) {
+            builder.appendQueryParameter("geolong", location.mGeolong);
+        }
+        if (TextUtils.isEmpty(location.mGeohacc)) {
+            builder.appendQueryParameter("geohacc", location.mGeohacc);
+        }
+        if (TextUtils.isEmpty(location.mGeovacc)) {
+            builder.appendQueryParameter("geovacc", location.mGeovacc);
+        }
+        return builder.build().toString();
     }
 
     /**
