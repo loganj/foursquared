@@ -7,6 +7,7 @@ package com.joelapenna.foursquared.util;
 import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquared.FoursquaredSettings;
+import com.joelapenna.foursquared.error.LocationException;
 
 import android.content.Context;
 import android.util.Log;
@@ -30,6 +31,9 @@ public class NotificationsUtil {
 
         } else if (e instanceof IOException) {
             Toast.makeText(context, "Network unavailable", Toast.LENGTH_SHORT).show();
+
+        } else if (e instanceof LocationException) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
 
         } else if (e instanceof FoursquareCredentialsException) {
             Toast.makeText(context, "Authorization failed.", Toast.LENGTH_SHORT).show();
