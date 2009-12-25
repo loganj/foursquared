@@ -311,7 +311,6 @@ public class ShoutActivity extends Activity {
                     throw new FoursquareException(getResources().getString(
                             R.string.no_location_providers));
                 }
-                ((Foursquared) getApplication()).requestSwitchCity(location);
                 return ((Foursquared) getApplication()).getFoursquare().checkin(venueId, null,
                         LocationUtils.createFoursquareLocation(location), mShout, isPrivate,
                         mTellTwitter);

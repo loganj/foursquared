@@ -72,7 +72,6 @@ public class Foursquared extends Application {
     private Foursquare mFoursquare;
 
     private BestLocationListener mBestLocationListener = new BestLocationListener();
-    private BestLocationListener mCityLocationListener = new BestLocationListener();
 
     @Override
     public void onCreate() {
@@ -170,11 +169,6 @@ public class Foursquared extends Application {
         return mBestLocationListener.getLastKnownLocation();
     }
 
-    public void requestSwitchCity(Location location) {
-        mTaskHandler.sendMessage( //
-                mTaskHandler.obtainMessage(TaskHandler.MESSAGE_SWITCH_CITY, location));
-    }
-
     public void requestStartService() {
         mTaskHandler.sendMessage( //
                 mTaskHandler.obtainMessage(TaskHandler.MESSAGE_START_SERVICE));
@@ -263,18 +257,9 @@ public class Foursquared extends Application {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (INTENT_ACTION_LOGGED_IN.equals(intent.getAction())) {
-                // Watch for city changes.
-                mCityLocationListener
-                        .register((LocationManager) getSystemService(Context.LOCATION_SERVICE));
-
                 // Pull latest user info.
                 mTaskHandler.sendEmptyMessage(TaskHandler.MESSAGE_UPDATE_USER);
-
-            } else if (INTENT_ACTION_LOGGED_OUT.equals(intent.getAction())) {
-                mCityLocationListener
-                        .unregister((LocationManager) getSystemService(Context.LOCATION_SERVICE));
             }
-
         }
 
         public void register() {
