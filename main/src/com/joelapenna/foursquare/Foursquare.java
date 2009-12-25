@@ -191,24 +191,23 @@ public class Foursquare {
 
     public static final String createLeaderboardUrl(String userId, Location location) {
         // TODO(jlapenna): Send geo-coord parameters with this URL.
-        String url = "http://foursquare.com/iphone/me?view=all&scope=friends&uid=" + userId;
         Uri.Builder builder = new Uri.Builder() //
                 .scheme("http") //
                 .authority("foursquare.com") //
-                .appendPath("/iphone/me") //
+                .appendEncodedPath("/iphone/me") //
                 .appendQueryParameter("view", "all")
                 .appendQueryParameter("scope", "friends")
                 .appendQueryParameter("uid", userId);
-        if (TextUtils.isEmpty(location.mGeolat)) {
+        if (!TextUtils.isEmpty(location.mGeolat)) {
             builder.appendQueryParameter("geolat", location.mGeolat);
         }
-        if (TextUtils.isEmpty(location.mGeolong)) {
+        if (!TextUtils.isEmpty(location.mGeolong)) {
             builder.appendQueryParameter("geolong", location.mGeolong);
         }
-        if (TextUtils.isEmpty(location.mGeohacc)) {
+        if (!TextUtils.isEmpty(location.mGeohacc)) {
             builder.appendQueryParameter("geohacc", location.mGeohacc);
         }
-        if (TextUtils.isEmpty(location.mGeovacc)) {
+        if (!TextUtils.isEmpty(location.mGeovacc)) {
             builder.appendQueryParameter("geovacc", location.mGeovacc);
         }
         return builder.build().toString();
