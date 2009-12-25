@@ -150,7 +150,7 @@ public class ShoutActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        ((Foursquared) getApplication()).requestLocationUpdates();
+        ((Foursquared) getApplication()).requestLocationUpdates(false);
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.app.FoursquaredService;
+import com.joelapenna.foursquared.error.LocationException;
 import com.joelapenna.foursquared.location.BestLocationListener;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
@@ -144,15 +145,17 @@ public class Foursquared extends Application {
         return mRemoteResourceManager;
     }
 
-    public BestLocationListener requestLocationUpdates() {
-        mBestLocationListener
-                .register((LocationManager) getSystemService(Context.LOCATION_SERVICE));
+    public BestLocationListener requestLocationUpdates(boolean gps) {
+        mBestLocationListener.register(
+                (LocationManager) getSystemService(Context.LOCATION_SERVICE), gps);
         return mBestLocationListener;
     }
 
     public BestLocationListener requestLocationUpdates(Observer observer) {
         mBestLocationListener.addObserver(observer);
-        return this.requestLocationUpdates();
+        mBestLocationListener.register(
+                (LocationManager) getSystemService(Context.LOCATION_SERVICE), true);
+        return mBestLocationListener;
     }
 
     public void removeLocationUpdates() {
@@ -165,8 +168,12 @@ public class Foursquared extends Application {
         this.removeLocationUpdates();
     }
 
-    public Location getLastKnownLocation() {
-        return mBestLocationListener.getLastKnownLocation();
+    public Location getLastKnownLocation() throws LocationException {
+        Location location = mBestLocationListener.getLastKnownLocation();
+        if (location == null) {
+            throw new LocationException();
+        }
+        return location;
     }
 
     public void requestStartService() {
@@ -276,7 +283,6 @@ public class Foursquared extends Application {
 
     private class TaskHandler extends Handler {
 
-        private static final int MESSAGE_SWITCH_CITY = 0;
         private static final int MESSAGE_UPDATE_USER = 1;
         private static final int MESSAGE_START_SERVICE = 2;
 
@@ -302,6 +308,9 @@ public class Foursquared extends Application {
                         // TODO Auto-generated catch block
                     } catch (FoursquareException e) {
                         if (DEBUG) Log.d(TAG, "FoursquareException", e);
+                        // TODO Auto-generated catch block
+                    } catch (LocationException e) {
+                        if (DEBUG) Log.d(TAG, "LocationException", e);
                         // TODO Auto-generated catch block
                     } catch (IOException e) {
                         if (DEBUG) Log.d(TAG, "IOException", e);

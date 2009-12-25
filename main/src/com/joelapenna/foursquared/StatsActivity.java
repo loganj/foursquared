@@ -5,7 +5,9 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquared.error.LocationException;
 import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.util.NotificationsUtil;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -50,8 +52,16 @@ public class StatsActivity extends Activity {
 
         Foursquared foursquared = ((Foursquared) getApplication());
         String userId = ((Foursquared) getApplication()).getUserId();
-        webView.loadUrl(Foursquare.createLeaderboardUrl(userId, LocationUtils
-                .createFoursquareLocation(foursquared.getLastKnownLocation())));
+        String url;
+        try {
+            url = Foursquare.createLeaderboardUrl(userId, LocationUtils
+                    .createFoursquareLocation(foursquared.getLastKnownLocation()));
+            Log.d(TAG, url);
+            webView.loadUrl(url);
+        } catch (LocationException e) {
+            NotificationsUtil.ToastReasonForFailure(this, e);
+            finish();
+        }
     }
 
     @Override

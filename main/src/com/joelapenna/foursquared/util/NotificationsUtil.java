@@ -8,7 +8,6 @@ import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquared.FoursquaredSettings;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
@@ -23,10 +22,9 @@ public class NotificationsUtil {
     private static final String TAG = "NotificationsUtil";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    public static void ToastReasonForFailure(Activity activity, Exception e) {
+    public static void ToastReasonForFailure(Context context, Exception e) {
         if (DEBUG) Log.d(TAG, "Toasting for exception: ", e);
 
-        Context context = (Context)activity;
         if (e instanceof SocketException) {
             Toast.makeText(context, "Foursquare server not responding", Toast.LENGTH_SHORT).show();
 

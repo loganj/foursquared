@@ -9,7 +9,7 @@ import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.error.LocationException;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
 import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.util.MenuUtils;
@@ -124,7 +124,7 @@ public class SearchVenuesActivity extends TabActivity {
     @Override
     public void onResume() {
         super.onResume();
-        ((Foursquared) getApplication()).requestLocationUpdates();
+        ((Foursquared) getApplication()).requestLocationUpdates(true);
         if (mSearchHolder.results == null && mSearchTask == null) {
             mSearchTask = (SearchTask) new SearchTask().execute();
         }
@@ -403,24 +403,27 @@ public class SearchVenuesActivity extends TabActivity {
             }
         }
 
-        public Group<Group<Venue>> search() throws FoursquareException, IOException {
-            Location location = ((Foursquared) getApplication()).getLastKnownLocation();
+        public Group<Group<Venue>> search() throws FoursquareException, LocationException,
+                IOException {
             Foursquare foursquare = ((Foursquared) getApplication()).getFoursquare();
+            Location location;
             String geolat;
             String geolong;
-            if (location == null) {
-                // Foursquare requires a lat, lng for a venue search, so we have
-                // to pull it from the
-                // server if we cannot determine it locally.
-                City city = foursquare.user(null, false, false,
-                        LocationUtils.createFoursquareLocation(location)).getCity();
-                geolat = String.valueOf(city.getGeolat());
-                geolong = String.valueOf(city.getGeolong());
-            } else {
-                if (DEBUG) Log.d(TAG, "Searching with location: " + location);
+            try {
+                location = ((Foursquared) getApplication()).getLastKnownLocation();
                 geolat = String.valueOf(location.getLatitude());
                 geolong = String.valueOf(location.getLongitude());
+
+            } catch (LocationException e) {
+                // Foursquare requires a lat, lng for a venue search, so we have
+                // to pull it from the server if we cannot determine it locally.
+                // TODO(jlapenna): location parameter if we don't have location?
+                City city = foursquare.user(null, false, false, null).getCity();
+                geolat = String.valueOf(city.getGeolat());
+                geolong = String.valueOf(city.getGeolong());
             }
+            if (DEBUG) Log.d(TAG, "Searching with location: " + location);
+
             Group<Group<Venue>> groups = foursquare.venues(
                     new Foursquare.Location(geolat, geolong), mSearchHolder.query, 30);
             for (int i = 0; i < groups.size(); i++) {

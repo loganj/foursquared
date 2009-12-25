@@ -94,7 +94,8 @@ public class BestLocationListener extends Observable implements LocationListener
         boolean accuracyComparable = location.hasAccuracy() || mLastLocation.hasAccuracy();
         boolean locationIsMostAccurate = false;
         if (accuracyComparable) {
-            // If we have only one side of the accuracy, that one is more accurate.
+            // If we have only one side of the accuracy, that one is more
+            // accurate.
             if (location.hasAccuracy() && !mLastLocation.hasAccuracy()) {
                 locationIsMostAccurate = true;
             } else if (!location.hasAccuracy() && mLastLocation.hasAccuracy()) {
@@ -106,17 +107,18 @@ public class BestLocationListener extends Observable implements LocationListener
         }
 
         if (DEBUG) {
-            Log.d(TAG, "locationIsMostRecent:\t\t" + locationIsMostRecent);
-            Log.d(TAG, "locationUpdateDelta:\t\t" + locationUpdateDelta);
+            Log.d(TAG, "locationIsMostRecent:\t\t\t" + locationIsMostRecent);
+            Log.d(TAG, "locationUpdateDelta:\t\t\t" + locationUpdateDelta);
             Log.d(TAG, "lastLocationUpdateDelta:\t\t" + lastLocationUpdateDelta);
-            Log.d(TAG, "locationIsInTimeThreshold:\t" + locationIsInTimeThreshold);
+            Log.d(TAG, "locationIsInTimeThreshold:\t\t" + locationIsInTimeThreshold);
             Log.d(TAG, "lastLocationIsInTimeThreshold:\t" + lastLocationIsInTimeThreshold);
 
-            Log.d(TAG, "accuracyComparable:\t\t" + accuracyComparable);
+            Log.d(TAG, "accuracyComparable:\t\t\t" + accuracyComparable);
             Log.d(TAG, "locationIsMostAccurate:\t\t" + locationIsMostAccurate);
         }
 
-        // Update location if its more accurate and w/in time threshold or if the old location is
+        // Update location if its more accurate and w/in time threshold or if
+        // the old location is
         // too old and this update is newer.
         if (accuracyComparable && locationIsMostAccurate && locationIsInTimeThreshold) {
             onBestLocationChanged(location);
@@ -138,13 +140,14 @@ public class BestLocationListener extends Observable implements LocationListener
         return false;
     }
 
-    public void register(LocationManager locationManager) {
-        this.register(locationManager, BestLocationListener.LOCATION_UPDATE_MIN_TIME,
-                BestLocationListener.LOCATION_UPDATE_MIN_DISTANCE);
-    }
-
-    public void register(LocationManager locationManager, long updateMinTime, long updateMinDistance) {
+    public void register(LocationManager locationManager, boolean gps) {
         if (DEBUG) Log.d(TAG, "Registering this location listener: " + this.toString());
+        long updateMinTime = SLOW_LOCATION_UPDATE_MIN_TIME;
+        long updateMinDistance = SLOW_LOCATION_UPDATE_MIN_DISTANCE;
+        if (gps) {
+            updateMinTime = LOCATION_UPDATE_MIN_TIME;
+            updateMinDistance = LOCATION_UPDATE_MIN_DISTANCE;
+        }
         List<String> providers = locationManager.getProviders(true);
         int providersCount = providers.size();
         for (int i = 0; i < providersCount; i++) {
@@ -152,8 +155,11 @@ public class BestLocationListener extends Observable implements LocationListener
             if (locationManager.isProviderEnabled(providerName)) {
                 updateLocation(locationManager.getLastKnownLocation(providerName));
             }
-            locationManager.requestLocationUpdates(providerName, updateMinTime, updateMinDistance,
-                    this);
+            // Only register with GPS if we've explicitly allowed it.
+            if (gps || !LocationManager.GPS_PROVIDER.equals(providerName)) {
+                locationManager.requestLocationUpdates(providerName, updateMinTime,
+                        updateMinDistance, this);
+            }
         }
     }
 
