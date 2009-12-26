@@ -161,8 +161,12 @@ public class Foursquare {
     @V1
     public User user(String user, boolean mayor, boolean badges, Location location)
             throws FoursquareException, FoursquareError, IOException {
-        return mFoursquareV1.user(user, mayor, badges, location.mGeolat, location.mGeolong,
-                location.mGeohacc, location.mGeovacc, location.mGeoalt);
+        if (location != null) {
+            return mFoursquareV1.user(user, mayor, badges, location.mGeolat, location.mGeolong,
+                    location.mGeohacc, location.mGeovacc, location.mGeoalt);
+        } else {
+            return mFoursquareV1.user(user, mayor, badges, null, null, null, null, null);
+        }
     }
 
     @V1
