@@ -45,7 +45,6 @@ import java.util.Observable;
  */
 public class FriendsActivity extends LoadableListActivity {
     static final String TAG = "FriendsActivity";
-
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public static final String QUERY_NEARBY = null;
@@ -53,25 +52,17 @@ public class FriendsActivity extends LoadableListActivity {
     public static SearchResultsObservable searchResultsObservable;
 
     private static final int MENU_REFRESH = 1;
-
     private static final int MENU_SHOUT = 2;
-
     private static final int MENU_STATS = 3;
-
     private static final int MENU_MYINFO = 4;
-
     private static final int MENU_GROUP_SEARCH = 0;
 
     private SearchTask mSearchTask;
-
     private SearchHolder mSearchHolder = new SearchHolder();
 
     private LinearLayout mEmpty;
-
     private TextView mEmptyText;
-
     private ProgressBar mEmptyProgress;
-
     private CheckinListAdapter mListAdapter;
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
@@ -304,7 +295,6 @@ public class FriendsActivity extends LoadableListActivity {
 
     private static class SearchHolder {
         Group<Checkin> results;
-
         String query;
     }
 

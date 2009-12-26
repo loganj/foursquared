@@ -38,7 +38,8 @@ public class NotificationsUtil {
         } else if (e instanceof FoursquareCredentialsException) {
             Toast.makeText(context, "Authorization failed.", Toast.LENGTH_SHORT).show();
 
-        } else if (e instanceof FoursquareException /* FoursquareError is one of these */) {
+        } else if (e instanceof FoursquareException) {
+            // FoursquareError is one of these
             String message;
             int toastLength = Toast.LENGTH_SHORT;
             if (e.getMessage() == null) {
