@@ -298,19 +298,42 @@ public class Foursquared extends Application {
             switch (msg.what) {
                 case MESSAGE_UPDATE_USER:
                     try {
-                        User user = getFoursquare().user(null, false, false,
-                                LocationUtils.createFoursquareLocation(getLastKnownLocation()));
+                        // Update user info
+                        Log.d(TAG, "Updating user.");
+                        // Use location when requesting user information, if we
+                        // have it.
+                        Foursquare.Location location = null;
+                        try {
+                            location = LocationUtils
+                                    .createFoursquareLocation(getLastKnownLocation());
+                        } catch (LocationException e) {
+                            // Best effort...
+                        }
+                        User user = getFoursquare().user(null, false, false, location);
                         Editor editor = mPrefs.edit();
                         Preferences.storeUser(editor, user);
                         editor.commit();
+
+                        if (location == null) {
+                            // Pump the location listener, we don't have a
+                            // location in our listener yet.
+                            Log.d(TAG, "Priming Location from user city.");
+                            Location primeLocation = new Location("foursquare");
+                            // Very inaccurate, right?
+                            primeLocation.setAccuracy(10000);
+                            primeLocation.setTime(System.currentTimeMillis());
+                            primeLocation.setLatitude(Double
+                                    .parseDouble(user.getCity().getGeolat()));
+                            primeLocation.setLongitude(Double.parseDouble(user.getCity()
+                                    .getGeolong()));
+                            mBestLocationListener.updateLocation(primeLocation);
+                        }
+
                     } catch (FoursquareError e) {
                         if (DEBUG) Log.d(TAG, "FoursquareError", e);
                         // TODO Auto-generated catch block
                     } catch (FoursquareException e) {
                         if (DEBUG) Log.d(TAG, "FoursquareException", e);
-                        // TODO Auto-generated catch block
-                    } catch (LocationException e) {
-                        if (DEBUG) Log.d(TAG, "LocationException", e);
                         // TODO Auto-generated catch block
                     } catch (IOException e) {
                         if (DEBUG) Log.d(TAG, "IOException", e);
