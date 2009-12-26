@@ -188,8 +188,9 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     }
 
     public void putSearchResultsInAdapter(Group<Group<Venue>> searchResults) {
-        mListAdapter.clear();
+        Log.d(TAG, "putSearchResultsInAdapter");
         if (searchResults != null) {
+            mListAdapter.clear();
             int groupCount = searchResults.size();
             for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
                 Group<Venue> group = searchResults.get(groupsIndex);
@@ -200,9 +201,8 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                     mListAdapter.addSection(group.getType(), groupAdapter);
                 }
             }
-        } else {
-            mListAdapter.notifyDataSetChanged();
         }
+        mListAdapter.notifyDataSetInvalidated();
     }
 
     public void setSearchResults(Group<Group<Venue>> searchResults) {
@@ -255,7 +255,6 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                     NotificationsUtil.ToastReasonForFailure(NearbyVenuesActivity.this, mReason);
                 }
                 setSearchResults(groups);
-                putSearchResultsInAdapter(groups);
 
             } finally {
                 setProgressBarIndeterminateVisibility(false);

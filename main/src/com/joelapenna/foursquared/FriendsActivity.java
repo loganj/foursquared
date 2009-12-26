@@ -60,9 +60,6 @@ public class FriendsActivity extends LoadableListActivity {
     private SearchTask mSearchTask;
     private SearchHolder mSearchHolder = new SearchHolder();
 
-    private LinearLayout mEmpty;
-    private TextView mEmptyText;
-    private ProgressBar mEmptyProgress;
     private CheckinListAdapter mListAdapter;
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
@@ -172,10 +169,6 @@ public class FriendsActivity extends LoadableListActivity {
     }
 
     private void initListViewAdapter() {
-        mEmpty = (LinearLayout) findViewById(android.R.id.empty);
-        mEmptyText = (TextView) findViewById(R.id.emptyText);
-        mEmptyProgress = (ProgressBar) findViewById(R.id.emptyProgress);
-
         mListAdapter = new CheckinListAdapter(this, //
                 ((Foursquared) getApplication()).getRemoteResourceManager());
 
