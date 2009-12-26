@@ -196,24 +196,15 @@ public class FriendsActivity extends LoadableListActivity {
     }
 
     private void putSearchResultsInAdapter(Group<Checkin> searchResults) {
-        setEmptyView();
-        mListAdapter.setGroup(searchResults);
+        if (searchResults != null) {
+            mListAdapter.setGroup(searchResults);
+        }
     }
 
     private void setSearchResults(Group<Checkin> searchResults) {
         if (DEBUG) Log.d(TAG, "Setting search results.");
         mSearchHolder.results = searchResults;
         searchResultsObservable.notifyObservers();
-    }
-
-    private void ensureSearchResults() {
-        if (mListAdapter.getCount() > 0) {
-            mEmpty.setVisibility(LinearLayout.GONE);
-        } else {
-            mEmptyText.setText("No search results.");
-            mEmptyProgress.setVisibility(LinearLayout.GONE);
-            mEmpty.setVisibility(LinearLayout.VISIBLE);
-        }
     }
 
     private void executeSearchTask(String query) {
@@ -253,6 +244,7 @@ public class FriendsActivity extends LoadableListActivity {
             if (DEBUG) Log.d(TAG, "SearchTask: onPreExecute()");
             setProgressBarIndeterminateVisibility(true);
             ensureTitle(false);
+            setLoadingView();
         }
 
         @Override
@@ -270,15 +262,14 @@ public class FriendsActivity extends LoadableListActivity {
             try {
                 if (checkins == null) {
                     NotificationsUtil.ToastReasonForFailure(FriendsActivity.this, mReason);
-                } else {
-                    setSearchResults(checkins);
-                    putSearchResultsInAdapter(checkins);
                 }
+                setSearchResults(checkins);
+                putSearchResultsInAdapter(checkins);
 
             } finally {
                 setProgressBarIndeterminateVisibility(false);
                 ensureTitle(true);
-                ensureSearchResults();
+                setEmptyView();
             }
         }
 

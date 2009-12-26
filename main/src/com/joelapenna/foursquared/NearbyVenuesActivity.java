@@ -188,19 +188,21 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     }
 
     public void putSearchResultsInAdapter(Group<Group<Venue>> searchResults) {
-        setEmptyView();
         mListAdapter.clear();
-        int groupCount = searchResults.size();
-        for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
-            Group<Venue> group = searchResults.get(groupsIndex);
-            if (group.size() > 0) {
-                VenueListAdapter groupAdapter = new VenueListAdapter(this);
-                groupAdapter.setGroup(group);
-                if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
-                mListAdapter.addSection(group.getType(), groupAdapter);
+        if (searchResults != null) {
+            int groupCount = searchResults.size();
+            for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
+                Group<Venue> group = searchResults.get(groupsIndex);
+                if (group.size() > 0) {
+                    VenueListAdapter groupAdapter = new VenueListAdapter(this);
+                    groupAdapter.setGroup(group);
+                    if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
+                    mListAdapter.addSection(group.getType(), groupAdapter);
+                }
             }
+        } else {
+            mListAdapter.notifyDataSetChanged();
         }
-        mListAdapter.notifyDataSetInvalidated();
     }
 
     public void setSearchResults(Group<Group<Venue>> searchResults) {
@@ -233,6 +235,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
             if (DEBUG) Log.d(TAG, "SearchTask: onPreExecute()");
             setProgressBarIndeterminateVisibility(true);
             ensureTitle(false);
+            setLoadingView();
         }
 
         @Override
@@ -250,13 +253,14 @@ public class NearbyVenuesActivity extends LoadableListActivity {
             try {
                 if (groups == null) {
                     NotificationsUtil.ToastReasonForFailure(NearbyVenuesActivity.this, mReason);
-                } else {
-                    setSearchResults(groups);
                 }
+                setSearchResults(groups);
+                putSearchResultsInAdapter(groups);
 
             } finally {
                 setProgressBarIndeterminateVisibility(false);
                 ensureTitle(true);
+                setEmptyView();
             }
         }
 
