@@ -195,8 +195,8 @@ public class Foursquare {
                 .scheme("http") //
                 .authority("foursquare.com") //
                 .appendEncodedPath("/iphone/me") //
-                .appendQueryParameter("view", "all")
-                .appendQueryParameter("scope", "friends")
+                .appendQueryParameter("view", "all") //
+                .appendQueryParameter("scope", "friends") //
                 .appendQueryParameter("uid", userId);
         if (!TextUtils.isEmpty(location.mGeolat)) {
             builder.appendQueryParameter("geolat", location.mGeolat);

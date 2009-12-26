@@ -422,7 +422,6 @@ public class SearchVenuesActivity extends TabActivity {
                 geolat = String.valueOf(city.getGeolat());
                 geolong = String.valueOf(city.getGeolong());
             }
-            if (DEBUG) Log.d(TAG, "Searching with location: " + location);
 
             Group<Group<Venue>> groups = foursquare.venues(
                     new Foursquare.Location(geolat, geolong), mSearchHolder.query, 30);
