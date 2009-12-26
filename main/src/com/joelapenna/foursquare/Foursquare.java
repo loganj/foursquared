@@ -194,7 +194,6 @@ public class Foursquare {
     }
 
     public static final String createLeaderboardUrl(String userId, Location location) {
-        // TODO(jlapenna): Send geo-coord parameters with this URL.
         Uri.Builder builder = new Uri.Builder() //
                 .scheme("http") //
                 .authority("foursquare.com") //
