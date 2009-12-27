@@ -364,13 +364,11 @@ public class ShoutActivity extends Activity {
             displayMain(checkinResult);
             displayBadges(checkinResult.getBadges());
             displaySpecials(checkinResult.getSpecials());
-            
+
             // Only display the footer if we have a score or a mayor change.
-            boolean showedScores = displayScores(checkinResult.getScoring());
-            boolean showedMayor = displayMayor(checkinResult.getMayor());
-            if (showedScores || showedMayor) {
-                findViewById(R.id.footer).setVisibility(View.VISIBLE);
-            }
+            displayScores(checkinResult.getScoring());
+            displayMayor(checkinResult.getMayor());
+            findViewById(R.id.footer).setVisibility(View.VISIBLE);
         }
 
         private void displayMain(CheckinResult checkinResult) {
@@ -387,25 +385,21 @@ public class ShoutActivity extends Activity {
             ((TextView) findViewById(R.id.score_message)).setText(message);
         }
 
-        private boolean displayMayor(Mayor mayor) {
-            if (mayor != null && !MayorUtils.TYPE_NOCHANGE.equals(mayor.getType())) {
+        private void displayMayor(Mayor mayor) {
+            if (mayor != null) {
                 // We're the mayor. Yay!
                 ((TextView) findViewById(R.id.mayor_message)).setText(mayor.getMessage());
                 findViewById(R.id.mayor_message).setVisibility(View.VISIBLE);
                 findViewById(R.id.mayor_crown).setVisibility(View.VISIBLE);
-                return true;
             }
-            return false;
         }
 
-        private boolean displayBadges(Group<Badge> badges) {
+        private void displayBadges(Group<Badge> badges) {
             if (badges != null) {
                 mBadgeListAdapter.setGroup(badges);
                 mListAdapter.addSection(getResources().getString(R.string.checkin_badges),
                         mBadgeListAdapter);
-                return true;
             }
-            return false;
         }
 
         private boolean displayScores(Group<Score> scores) {
