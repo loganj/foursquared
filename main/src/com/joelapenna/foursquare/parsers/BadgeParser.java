@@ -34,8 +34,6 @@ public class BadgeParser extends AbstractParser<Badge> {
         Badge badge = new Badge();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
-
             String name = parser.getName();
             if ("description".equals(name)) {
                 badge.setDescription(parser.nextText());

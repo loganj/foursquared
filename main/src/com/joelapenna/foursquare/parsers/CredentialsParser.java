@@ -34,8 +34,6 @@ public class CredentialsParser extends AbstractParser<Credentials> {
         Credentials credentials = new Credentials();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
-
             String name = parser.getName();
             if ("oauth_token".equals(name)) {
                 credentials.setOauthToken(parser.nextText());

@@ -34,8 +34,6 @@ public class SettingsParser extends AbstractParser<Settings> {
         Settings settings = new Settings();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
-
             String name = parser.getName();
             if ("feeds_key".equals(name)) {
                 settings.setFeedsKey(parser.nextText());

@@ -34,8 +34,6 @@ public class CheckinResultParser extends AbstractParser<CheckinResult> {
         CheckinResult checkin_result = new CheckinResult();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
-
             String name = parser.getName();
             if ("badges".equals(name)) {
                 checkin_result.setBadges(new GroupParser(new BadgeParser()).parse(parser));

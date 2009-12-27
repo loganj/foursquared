@@ -34,8 +34,6 @@ public class StatsParser extends AbstractParser<Stats> {
         Stats stats = new Stats();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
-
             String name = parser.getName();
             if ("beenhere".equals(name)) {
                 stats.setBeenhere(new BeenhereParser().parse(parser));

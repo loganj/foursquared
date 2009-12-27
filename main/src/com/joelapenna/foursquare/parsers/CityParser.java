@@ -34,8 +34,6 @@ public class CityParser extends AbstractParser<City> {
         City city = new City();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
-
             String name = parser.getName();
             if ("geolat".equals(name)) {
                 city.setGeolat(parser.nextText());

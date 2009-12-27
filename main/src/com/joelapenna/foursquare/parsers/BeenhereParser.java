@@ -34,8 +34,6 @@ public class BeenhereParser extends AbstractParser<Beenhere> {
         Beenhere beenhere = new Beenhere();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
-
             String name = parser.getName();
             if ("friends".equals(name)) {
                 beenhere.setFriends(Boolean.valueOf(parser.nextText()));

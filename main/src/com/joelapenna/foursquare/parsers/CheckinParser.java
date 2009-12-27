@@ -34,8 +34,6 @@ public class CheckinParser extends AbstractParser<Checkin> {
         Checkin checkin = new Checkin();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
-
             String name = parser.getName();
             if ("created".equals(name)) {
                 checkin.setCreated(parser.nextText());

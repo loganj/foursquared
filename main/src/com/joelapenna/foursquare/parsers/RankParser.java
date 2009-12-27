@@ -34,8 +34,6 @@ public class RankParser extends AbstractParser<Rank> {
         Rank rank = new Rank();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
-
             String name = parser.getName();
             if ("city".equals(name)) {
                 rank.setCity(parser.nextText());

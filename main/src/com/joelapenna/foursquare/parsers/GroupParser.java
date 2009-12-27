@@ -39,7 +39,6 @@ public class GroupParser extends AbstractParser<Group> {
         group.setType(parser.getAttributeValue(null, "type"));
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
             FoursquareType item = this.mSubParser.parse(parser);
             if (DEBUG) LOG.log(Level.FINE, "adding item: " + item);
             group.add(item);

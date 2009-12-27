@@ -34,8 +34,6 @@ public class UserParser extends AbstractParser<User> {
         User user = new User();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
-
             String name = parser.getName();
             if ("badges".equals(name)) {
                 user.setBadges(new GroupParser(new BadgeParser()).parse(parser));

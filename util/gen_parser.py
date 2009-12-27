@@ -45,8 +45,6 @@ public class %(type_name)sParser extends AbstractParser<%(type_name)s> {
         %(type_name)s %(top_node_name)s = new %(type_name)s();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
-
             String name = parser.getName();
             %(stanzas)s
 

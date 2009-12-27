@@ -34,8 +34,6 @@ public class VenueParser extends AbstractParser<Venue> {
         Venue venue = new Venue();
 
         while (parser.nextTag() == XmlPullParser.START_TAG) {
-            if (DEBUG) LOG.log(Level.FINE, "Tag Name: " + String.valueOf(parser.getName()));
-
             String name = parser.getName();
             if ("address".equals(name)) {
                 venue.setAddress(parser.nextText());
