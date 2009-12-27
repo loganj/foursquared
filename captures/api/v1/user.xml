@@ -9,6 +9,8 @@
   <city>
     <id>23</id>
     <shortname>SF</shortname>
+    <geolat>40.7778</geolat>
+    <geolong>-73.8732</geolong>
   </city>
   <checkin>
     <venue>

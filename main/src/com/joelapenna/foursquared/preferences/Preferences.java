@@ -66,7 +66,7 @@ public class Preferences {
     }
 
     public static boolean loginUser(Foursquare foursquare, String login, String password,
-            Location location, Editor editor) throws FoursquareCredentialsException,
+            Foursquare.Location location, Editor editor) throws FoursquareCredentialsException,
             FoursquareException, IOException {
         if (DEBUG) Log.d(Preferences.TAG, "Trying to log in.");
 
@@ -77,8 +77,7 @@ public class Preferences {
             return false;
         }
 
-        User user = foursquare.user(null, false, false, LocationUtils
-                .createFoursquareLocation(location));
+        User user = foursquare.user(null, false, false, location);
         storeUser(editor, user);
         if (!editor.commit()) {
             if (DEBUG) Log.d(TAG, "storeUser commit failed");

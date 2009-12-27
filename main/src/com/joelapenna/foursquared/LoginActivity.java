@@ -6,6 +6,8 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquared.error.LocationException;
+import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
@@ -186,11 +188,12 @@ public class LoginActivity extends Activity {
                 String phoneNumber = mPhoneUsernameEditText.getText().toString();
                 String password = mPasswordEditText.getText().toString();
 
-                Location location = foursquared.getLastKnownLocation();
-                if (location == null) {
-                    if (DEBUG) Log.d(TAG, "unable to determine location");
-                    throw new FoursquareException(getResources().getString(
-                            R.string.no_location_providers));
+                Foursquare.Location location = null;
+                try {
+                    location = LocationUtils.createFoursquareLocation(foursquared.getLastKnownLocation());
+                } catch (LocationException e) {
+                    // best effort for a login. We can guess the location from
+                    // the user's current city setting.
                 }
 
                 boolean loggedIn = Preferences.loginUser(foursquare, phoneNumber, password,
