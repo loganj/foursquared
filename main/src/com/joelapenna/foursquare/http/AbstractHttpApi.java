@@ -50,7 +50,7 @@ abstract public class AbstractHttpApi implements HttpApi {
     protected static final boolean DEBUG = Foursquare.DEBUG;
 
     private static final String DEFAULT_CLIENT_VERSION = "com.joelapenna.foursquare";
-    private static final String CLIENT_VERSION_HEADER = "X_foursquare_client_version";
+    private static final String CLIENT_VERSION_HEADER = "User-Agent";
     private static final int TIMEOUT = 10;
 
     private final DefaultHttpClient mHttpClient;
