@@ -4,32 +4,39 @@
 <FrameLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
-  android:layout_height="wrap_content"
-  android:padding="4dip">
+  android:layout_height="fill_parent"
+  android:padding="6dip">
 
-  <LinearLayout
+  <ImageView
+    android:id="@+id/widgetHeader"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/widget_header"
+    android:scaleType="fitXY" />
+
+  <TextView
+    android:id="@+id/widgetNotLoggedInTextView"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:paddingTop="38dip"
-    android:orientation="vertical">
+    android:visibility="gone"
+    android:text="@string/friends_appwidget_not_logged_in" />
 
-    <TextView
-      android:id="@+id/widgetNotLoggedInTextView"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:visibility="gone"
-      android:background="@drawable/blue_fade"
-
-      android:text="@string/friends_appwidget_not_logged_in" />
+  <!-- Friends -->
+  <LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="38dip">
 
     <RelativeLayout
       android:id="@+id/widgetItem0"
-      android:layout_width="fill_parent"
+      android:layout_width="wrap_content"
       android:layout_height="50dip"
       android:layout_alignParentTop="true"
+      android:paddingTop="1dip"
       android:visibility="gone"
       style="@style/listItemStyle"
-      android:paddingTop="1dip"
       android:background="@drawable/blue_fade">
 
       <ImageView
@@ -519,29 +526,17 @@
 
     </RelativeLayout>
 
-
-    <TextView
-      android:id="@+id/widgetFooter"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      android:drawableLeft="@drawable/widget_refresh_icon"
-      android:drawablePadding="6dip"
-      android:background="@drawable/widget_footer" />
-
   </LinearLayout>
 
-  <!--  Listed last so it is layered "on top" -->
-  <RelativeLayout
+  <TextView
+    android:id="@+id/widgetFooter"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:drawableLeft="@drawable/widget_refresh_icon"
+    android:drawablePadding="6dip"
+    android:layout_gravity="bottom"
+    android:background="@drawable/widget_footer" />
 
-    <ImageView
-      android:id="@+id/widgetHeader"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:layout_alignParentTop="true"
-      android:background="@drawable/widget_header" />
-  </RelativeLayout>
 
 </FrameLayout>

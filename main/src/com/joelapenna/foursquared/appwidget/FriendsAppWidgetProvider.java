@@ -48,12 +48,11 @@ public class FriendsAppWidgetProvider extends AppWidgetProvider {
                     R.id.widgetItem1, R.id.photo1, R.id.user1, R.id.time1, R.id.location1
             }, {
                     R.id.widgetItem2, R.id.photo2, R.id.user2, R.id.time2, R.id.location2
-            },
-    /*
-     * For now, because we don't handle the footer correctly. { R.id.widgetItem3, R.id.photo3,
-     * R.id.user3, R.id.time3, R.id.location3 }, { R.id.widgetItem4, R.id.photo4, R.id.user4,
-     * R.id.time4, R.id.location4 }
-     */
+            }, {
+                    R.id.widgetItem3, R.id.photo3, R.id.user3, R.id.time3, R.id.location3
+            }, {
+                    R.id.widgetItem4, R.id.photo4, R.id.user4, R.id.time4, R.id.location4
+            }
     };
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
