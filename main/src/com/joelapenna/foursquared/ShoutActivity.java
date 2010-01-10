@@ -12,7 +12,6 @@ import com.joelapenna.foursquare.types.Mayor;
 import com.joelapenna.foursquare.types.Score;
 import com.joelapenna.foursquare.types.Special;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquare.util.MayorUtils;
 import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;

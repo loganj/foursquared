@@ -536,6 +536,7 @@
     android:drawableLeft="@drawable/widget_refresh_icon"
     android:drawablePadding="6dip"
     android:layout_gravity="bottom"
+    android:textColor="@android:color/white"
     android:background="@drawable/widget_footer" />
 
 
