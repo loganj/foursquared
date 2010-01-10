@@ -55,12 +55,22 @@
     <special>
       <id>2</id>
       <type>mayor</type>
-      <message>If you're the mayor, show the bartender and your first drink is free! (just beer and well drinks guys, let's be fair)</message>
+      <message>You're the mayor of this venue so you win!</message>
     </special>
 	<special>
       <id>3</id>
       <type>firstcheckin</type>
-      <message>if this is your first check in - you're buying !</message>
+      <message>If you checked in here instead, you'd be cooler.</message>
+      <venue>
+        <id>126</id>
+        <name>Some Other Venue</name>
+        <address>northwest highway</address>
+        <crossstreet/>
+        <city>Ridge</city>
+        <state>Michigan</state>
+        <zip>12345</zip>
+        <cityid>32</cityid>
+      </venue>
     </special>
   </specials>
 </checkin>
