@@ -5,7 +5,7 @@
 package com.joelapenna.foursquare.types;
 
 /**
- * Auto-generated: 2009-12-06 09:32:26.081491
+ * Auto-generated: 2010-01-09 17:54:53.266438
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
@@ -14,6 +14,7 @@ public class Special implements FoursquareType {
     private String mId;
     private String mMessage;
     private String mType;
+    private Venue mVenue;
 
     public Special() {
     }
@@ -40,6 +41,14 @@ public class Special implements FoursquareType {
 
     public void setType(String type) {
         mType = type;
+    }
+
+    public Venue getVenue() {
+        return mVenue;
+    }
+
+    public void setVenue(Venue venue) {
+        mVenue = venue;
     }
 
 }

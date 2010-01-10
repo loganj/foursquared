@@ -401,7 +401,7 @@ public class ShoutActivity extends Activity {
             }
         }
 
-        private boolean displayScores(Group<Score> scores) {
+        private boolean displayScores(final Group<Score> scores) {
             Resources res = getResources();
             int total = 0;
             if (scores != null) {
@@ -421,9 +421,19 @@ public class ShoutActivity extends Activity {
             return false;
         }
 
-        private boolean displaySpecials(Group<Special> specials) {
+        private boolean displaySpecials(final Group<Special> specials) {
+            Group<Special> localSpecials = new Group<Special>();
+            Group<Special> nearbySpecials = new Group<Special>();
             if (specials != null) {
-                mSpecialListAdapter.setGroup(specials);
+                for (int i = 0, size = specials.size(); i < size; i++) {
+                    Special special = specials.get(i);
+                    if (special.getVenue() == null) {
+                        localSpecials.add(special);
+                    } else {
+                        nearbySpecials.add(special);
+                    }
+                }
+                mSpecialListAdapter.setGroup(localSpecials);
                 mListAdapter.addSection(getResources().getString(R.string.checkin_specials),
                         mSpecialListAdapter);
                 return true;

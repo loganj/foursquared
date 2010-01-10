@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Auto-generated: 2009-12-06 10:00:38.341038
+ * Auto-generated: 2010-01-09 17:54:58.032420
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -43,6 +43,9 @@ public class SpecialParser extends AbstractParser<Special> {
 
             } else if ("type".equals(name)) {
                 special.setType(parser.nextText());
+
+            } else if ("venue".equals(name)) {
+                special.setVenue(new VenueParser().parse(parser));
 
             } else {
                 // Consume something we don't understand.
