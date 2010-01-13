@@ -97,7 +97,6 @@ public class Foursquared extends Application {
         if (FoursquaredSettings.USE_DUMPCATCHER) {
             Resources resources = getResources();
             new DumpcatcherHelper(Preferences.createUniqueId(mPrefs), resources);
-            DumpcatcherHelper.sendUsage("Started");
         }
 
         // Sometimes we want the application to do some work on behalf of the
