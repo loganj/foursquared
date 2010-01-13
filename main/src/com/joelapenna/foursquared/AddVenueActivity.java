@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.error.LocationException;
@@ -183,14 +184,13 @@ public class AddVenueActivity extends Activity {
             try {
                 Foursquared foursquared = (Foursquared) getApplication();
                 Foursquare foursquare = foursquared.getFoursquare();
-                Foursquare.Location location = null;
-                try {
-                    location = LocationUtils.createFoursquareLocation(foursquared
-                            .getLastKnownLocation());
-                } catch (LocationException e) {
-                    // best effort for a login. We can guess the location from
-                    // the user's current city setting.
+                Location location = foursquared.getLastKnownLocation();
+                if (location == null) {
+                    if (DEBUG) Log.d(TAG, "unable to determine location");
+                    throw new FoursquareException(getResources().getString(
+                            R.string.no_location_providers));
                 }
+
                 return foursquare.addVenue( //
                         mNameEditText.getText().toString(), //
                         mAddressEditText.getText().toString(), //
@@ -198,7 +198,8 @@ public class AddVenueActivity extends Activity {
                         mCityEditText.getText().toString(), //
                         mStateEditText.getText().toString(), //
                         mZipEditText.getText().toString(), //
-                        mPhoneEditText.getText().toString(), location);
+                        mPhoneEditText.getText().toString(), LocationUtils
+                                .createFoursquareLocation(location));
             } catch (Exception e) {
                 if (DEBUG) Log.d(TAG, "Exception doing add venue", e);
                 mReason = e;
