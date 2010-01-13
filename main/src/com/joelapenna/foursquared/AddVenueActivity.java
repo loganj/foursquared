@@ -4,8 +4,11 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
+import com.joelapenna.foursquared.error.LocationException;
+import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
 import android.app.Activity;
@@ -178,14 +181,24 @@ public class AddVenueActivity extends Activity {
         protected Venue doInBackground(Void... params) {
             // name, address, crossstreet, city, state, zip, cityid, phone
             try {
-                return ((Foursquared) getApplication()).getFoursquare().addVenue( //
+                Foursquared foursquared = (Foursquared) getApplication();
+                Foursquare foursquare = foursquared.getFoursquare();
+                Foursquare.Location location = null;
+                try {
+                    location = LocationUtils.createFoursquareLocation(foursquared
+                            .getLastKnownLocation());
+                } catch (LocationException e) {
+                    // best effort for a login. We can guess the location from
+                    // the user's current city setting.
+                }
+                return foursquare.addVenue( //
                         mNameEditText.getText().toString(), //
                         mAddressEditText.getText().toString(), //
                         mCrossstreetEditText.getText().toString(), //
                         mCityEditText.getText().toString(), //
                         mStateEditText.getText().toString(), //
                         mZipEditText.getText().toString(), //
-                        mPhoneEditText.getText().toString(), null);
+                        mPhoneEditText.getText().toString(), location);
             } catch (Exception e) {
                 if (DEBUG) Log.d(TAG, "Exception doing add venue", e);
                 mReason = e;
