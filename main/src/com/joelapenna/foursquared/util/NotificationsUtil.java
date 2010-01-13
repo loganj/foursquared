@@ -53,6 +53,7 @@ public class NotificationsUtil {
         } else {
             Toast.makeText(context, "A surprising new problem has occured. Try again!",
                     Toast.LENGTH_SHORT).show();
+            DumpcatcherHelper.sendException(e);
         }
     }
 }
