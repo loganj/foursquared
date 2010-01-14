@@ -34,6 +34,8 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     if url.path == '/v1/venue':
       path = '../captures/api/v1/venue.xml'
+    elif url.path == '/v1/addvenue':
+      path = '../captures/api/v1/venue.xml'
     elif url.path == '/v1/venues':
       path = '../captures/api/v1/venues.xml'
     elif url.path == '/v1/user':

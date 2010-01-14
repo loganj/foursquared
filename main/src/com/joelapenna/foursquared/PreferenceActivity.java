@@ -135,10 +135,6 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
             try {
                 Foursquared foursquared = (Foursquared) getApplication();
                 Location location = foursquared.getLastKnownLocation();
-                if (location == null) {
-                    if (DEBUG) Log.d(TAG, "unable to determine location");
-                    throw new FoursquareException("Unable to determine location.");
-                }
 
                 Foursquare foursquare = foursquared.getFoursquare();
                 return foursquare.user(null, false, false,

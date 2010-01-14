@@ -305,11 +305,6 @@ public class ShoutActivity extends Activity {
             boolean isPrivate = !mTellFriends;
             try {
                 Location location = ((Foursquared) getApplication()).getLastKnownLocation();
-                if (location == null) {
-                    if (DEBUG) Log.d(TAG, "unable to determine location");
-                    throw new FoursquareException(getResources().getString(
-                            R.string.no_location_providers));
-                }
                 return ((Foursquared) getApplication()).getFoursquare().checkin(venueId, null,
                         LocationUtils.createFoursquareLocation(location), mShout, isPrivate,
                         mTellTwitter);
