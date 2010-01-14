@@ -12,6 +12,9 @@ import com.joelapenna.foursquare.Foursquare.Location;
 public class LocationUtils {
 
     public static final Location createFoursquareLocation(android.location.Location location) {
+        if (location == null) {
+            return new Location(null, null, null, null, null);
+        }
         String geolat = null;
         if (location.getLatitude() != 0.0) {
             geolat = String.valueOf(location.getLatitude());

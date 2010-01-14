@@ -93,8 +93,8 @@ public class Foursquare {
     @V1
     public Tip addTip(String vid, String text, String type, Location location)
             throws FoursquareException, FoursquareError, IOException {
-        return mFoursquareV1.addtip(vid, text, type, location.mGeolat, location.mGeolong,
-                location.mGeohacc, location.mGeovacc, location.mGeoalt);
+        return mFoursquareV1.addtip(vid, text, type, location.geolat, location.geolong,
+                location.geohacc, location.geovacc, location.geoalt);
     }
 
     @V1
@@ -102,30 +102,30 @@ public class Foursquare {
             String state, String zip, String phone, Location location) throws FoursquareException,
             FoursquareError, IOException {
         return mFoursquareV1.addvenue(name, address, crossstreet, city, state, zip, phone,
-                location.mGeolat, location.mGeolong, location.mGeohacc, location.mGeovacc,
-                location.mGeoalt);
+                location.geolat, location.geolong, location.geohacc, location.geovacc,
+                location.geoalt);
     }
 
     @V1
     public CheckinResult checkin(String venueId, String venueName, Location location, String shout,
             boolean isPrivate, boolean twitter) throws FoursquareException, FoursquareError,
             IOException {
-        return mFoursquareV1.checkin(venueId, venueName, location.mGeolat, location.mGeolong,
-                location.mGeohacc, location.mGeovacc, location.mGeoalt, shout, isPrivate, twitter);
+        return mFoursquareV1.checkin(venueId, venueName, location.geolat, location.geolong,
+                location.geohacc, location.geovacc, location.geoalt, shout, isPrivate, twitter);
     }
 
     @V1
     public Group<Checkin> checkins(Location location) throws FoursquareException, FoursquareError,
             IOException {
-        return mFoursquareV1.checkins(location.mGeolat, location.mGeolong, location.mGeohacc,
-                location.mGeovacc, location.mGeoalt);
+        return mFoursquareV1.checkins(location.geolat, location.geolong, location.geohacc,
+                location.geovacc, location.geoalt);
     }
 
     @V1
     public Group<User> friends(String userId, Location location) throws FoursquareException,
             FoursquareError, IOException {
-        return mFoursquareV1.friends(userId, location.mGeolat, location.mGeolong,
-                location.mGeohacc, location.mGeovacc, location.mGeoalt);
+        return mFoursquareV1.friends(userId, location.geolat, location.geolong,
+                location.geohacc, location.geovacc, location.geoalt);
     }
 
     @V1
@@ -154,16 +154,16 @@ public class Foursquare {
     @V1
     public Group<Group<Tip>> tips(Location location, int limit) throws FoursquareException,
             FoursquareError, IOException {
-        return mFoursquareV1.tips(location.mGeolat, location.mGeolong, location.mGeohacc,
-                location.mGeovacc, location.mGeoalt, limit);
+        return mFoursquareV1.tips(location.geolat, location.geolong, location.geohacc,
+                location.geovacc, location.geoalt, limit);
     }
 
     @V1
     public User user(String user, boolean mayor, boolean badges, Location location)
             throws FoursquareException, FoursquareError, IOException {
         if (location != null) {
-            return mFoursquareV1.user(user, mayor, badges, location.mGeolat, location.mGeolong,
-                    location.mGeohacc, location.mGeovacc, location.mGeoalt);
+            return mFoursquareV1.user(user, mayor, badges, location.geolat, location.geolong,
+                    location.geohacc, location.geovacc, location.geoalt);
         } else {
             return mFoursquareV1.user(user, mayor, badges, null, null, null, null, null);
         }
@@ -172,15 +172,15 @@ public class Foursquare {
     @V1
     public Venue venue(String id, Location location) throws FoursquareException, FoursquareError,
             IOException {
-        return mFoursquareV1.venue(id, location.mGeolat, location.mGeolong, location.mGeohacc,
-                location.mGeovacc, location.mGeoalt);
+        return mFoursquareV1.venue(id, location.geolat, location.geolong, location.geohacc,
+                location.geovacc, location.geoalt);
     }
 
     @V1
     public Group<Group<Venue>> venues(Location location, String query, int limit)
             throws FoursquareException, FoursquareError, IOException {
-        return mFoursquareV1.venues(location.mGeolat, location.mGeolong, location.mGeohacc,
-                location.mGeovacc, location.mGeoalt, query, limit);
+        return mFoursquareV1.venues(location.geolat, location.geolong, location.geohacc,
+                location.geovacc, location.geoalt, query, limit);
     }
 
     public static final FoursquareHttpApiV1 createHttpApi(String domain, String clientVersion,
@@ -201,17 +201,17 @@ public class Foursquare {
                 .appendQueryParameter("view", "all") //
                 .appendQueryParameter("scope", "friends") //
                 .appendQueryParameter("uid", userId);
-        if (!TextUtils.isEmpty(location.mGeolat)) {
-            builder.appendQueryParameter("geolat", location.mGeolat);
+        if (!TextUtils.isEmpty(location.geolat)) {
+            builder.appendQueryParameter("geolat", location.geolat);
         }
-        if (!TextUtils.isEmpty(location.mGeolong)) {
-            builder.appendQueryParameter("geolong", location.mGeolong);
+        if (!TextUtils.isEmpty(location.geolong)) {
+            builder.appendQueryParameter("geolong", location.geolong);
         }
-        if (!TextUtils.isEmpty(location.mGeohacc)) {
-            builder.appendQueryParameter("geohacc", location.mGeohacc);
+        if (!TextUtils.isEmpty(location.geohacc)) {
+            builder.appendQueryParameter("geohacc", location.geohacc);
         }
-        if (!TextUtils.isEmpty(location.mGeovacc)) {
-            builder.appendQueryParameter("geovacc", location.mGeovacc);
+        if (!TextUtils.isEmpty(location.geovacc)) {
+            builder.appendQueryParameter("geovacc", location.geovacc);
         }
         return builder.build().toString();
     }
@@ -224,21 +224,22 @@ public class Foursquare {
     }
 
     public static class Location {
-        String mGeolat = null;
-        String mGeolong = null;
-        String mGeohacc = null;
-        String mGeovacc = null;
-        String mGeoalt = null;
+        String geolat = null;
+        String geolong = null;
+        String geohacc = null;
+        String geovacc = null;
+        String geoalt = null;
 
-        public Location(String geolat, String geolong, String geohacc, String geovacc, String geoalt) {
-            mGeolat = geolat;
-            mGeolong = geolong;
-            mGeohacc = geohacc;
-            mGeovacc = geovacc;
-            mGeoalt = geovacc;
+        public Location(final String geolat, final String geolong, final String geohacc,
+                final String geovacc, final String geoalt) {
+            this.geolat = geolat;
+            this.geolong = geolong;
+            this.geohacc = geohacc;
+            this.geovacc = geovacc;
+            this.geoalt = geovacc;
         }
 
-        public Location(String geolat, String geolong) {
+        public Location(final String geolat, final String geolong) {
             this(geolat, geolong, null, null, null);
         }
     }
