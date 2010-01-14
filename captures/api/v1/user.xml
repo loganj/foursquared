@@ -6,12 +6,6 @@
   <photo>http://playfoursquare.s3.amazonaws.com/userpix/9711_1245032443.jpg</photo>
   <twitter_name>jlapenna_testuser</twitter_name>
   <friendstatus>pendingyou</friendstatus>
-  <city>
-    <id>23</id>
-    <shortname>SF</shortname>
-    <geolat>40.7778</geolat>
-    <geolong>-73.8732</geolong>
-  </city>
   <checkin>
     <venue>
       <id>23035</id>

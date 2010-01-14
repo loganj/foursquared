@@ -9,7 +9,6 @@
   <phone>654245432</phone>
   <email>testuser2@joelapenna.com</email>
   <friendstatus>friend|pendingyou|pendingthem</friendstatus>
-  <city type="City"></city>
   <checkin type="Checkin"></checkin>
   <settings type="Settings"></settings>
   <badges type="Group">

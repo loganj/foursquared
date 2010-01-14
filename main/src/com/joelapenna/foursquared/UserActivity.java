@@ -361,11 +361,6 @@ public class UserActivity extends Activity {
 
             name.setText(fullName);
             ensureUserPhoto(user);
-
-            Checkin checkin = user.getCheckin();
-            if (checkin == null || TextUtils.isEmpty(checkin.getShout())) {
-                ((TextView)findViewById(R.id.secondLine)).setText(user.getCity().getName());
-            }
         }
     }
 }

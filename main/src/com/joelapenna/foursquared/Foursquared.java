@@ -321,10 +321,6 @@ public class Foursquared extends Application {
                             // Very inaccurate, right?
                             primeLocation.setAccuracy(10000);
                             primeLocation.setTime(System.currentTimeMillis());
-                            primeLocation.setLatitude(Double
-                                    .parseDouble(user.getCity().getGeolat()));
-                            primeLocation.setLongitude(Double.parseDouble(user.getCity()
-                                    .getGeolong()));
                             mBestLocationListener.updateLocation(primeLocation);
                         }
 

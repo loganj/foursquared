@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Auto-generated: 2009-11-22 20:22:15.986656
+ * Auto-generated: 2010-01-14 11:02:45.160349
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -40,9 +40,6 @@ public class UserParser extends AbstractParser<User> {
 
             } else if ("checkin".equals(name)) {
                 user.setCheckin(new CheckinParser().parse(parser));
-
-            } else if ("city".equals(name)) {
-                user.setCity(new CityParser().parse(parser));
 
             } else if ("created".equals(name)) {
                 user.setCreated(parser.nextText());
