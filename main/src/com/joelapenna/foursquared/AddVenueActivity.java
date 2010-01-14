@@ -180,16 +180,10 @@ public class AddVenueActivity extends Activity {
 
         @Override
         protected Venue doInBackground(Void... params) {
-            // name, address, crossstreet, city, state, zip, cityid, phone
             try {
                 Foursquared foursquared = (Foursquared) getApplication();
                 Foursquare foursquare = foursquared.getFoursquare();
                 Location location = foursquared.getLastKnownLocation();
-                if (location == null) {
-                    if (DEBUG) Log.d(TAG, "unable to determine location");
-                    throw new FoursquareException(getResources().getString(
-                            R.string.no_location_providers));
-                }
 
                 return foursquare.addVenue( //
                         mNameEditText.getText().toString(), //

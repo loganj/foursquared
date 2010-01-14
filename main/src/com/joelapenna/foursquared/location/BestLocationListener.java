@@ -63,7 +63,6 @@ public class BestLocationListener extends Observable implements LocationListener
     }
 
     synchronized public Location getLastKnownLocation() {
-        if (DEBUG) Log.d(TAG, "getLastKnownLocation: " + mLastLocation);
         return mLastLocation;
     }
 
