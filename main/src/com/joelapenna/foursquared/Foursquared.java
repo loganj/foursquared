@@ -84,7 +84,7 @@ public class Foursquared extends Application {
         try {
             PackageManager pm = getPackageManager();
             PackageInfo pi = pm.getPackageInfo(PACKAGE_NAME, 0);
-            mVersion = PACKAGE_NAME + " " + String.valueOf(pi.versionCode);
+            mVersion = PACKAGE_NAME + ":" + String.valueOf(pi.versionCode);
         } catch (NameNotFoundException e) {
             if (DEBUG) Log.d(TAG, "NameNotFoundException", e);
             throw new RuntimeException(e);
