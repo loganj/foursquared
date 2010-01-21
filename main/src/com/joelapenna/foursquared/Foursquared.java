@@ -263,8 +263,7 @@ public class Foursquared extends Application {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (INTENT_ACTION_LOGGED_IN.equals(intent.getAction())) {
-                // Pull latest user info.
-                mTaskHandler.sendEmptyMessage(TaskHandler.MESSAGE_UPDATE_USER);
+                requestUpdateUser() {
             }
         }
 
