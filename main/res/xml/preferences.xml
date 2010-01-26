@@ -20,14 +20,10 @@
       android:summaryOn="@string/preferences_share_summary_on"
       android:summaryOff="@string/preferences_share_summary_off"
       android:defaultValue="true" />
-    <CheckBoxPreference
-      android:key="twitter_checkin"
-      android:enabled="true"
-      android:persistent="false"
-      android:dependency="share_checkin"
-      android:title="@string/preferences_twitter_checkin_title"
-      android:summaryOn="@string/preferences_twitter_checkin_summary_on"
-      android:summaryOff="@string/preferences_twitter_checkin_summary_off" />
+   <com.joelapenna.foursquared.preferences.ClickPreference
+      android:key="advanced_settings"
+      android:title="@string/preferences_advanced_settings"
+      android:summary="@string/preferences_advanced_settings_summary"/>
   </PreferenceCategory>
 
   <PreferenceCategory

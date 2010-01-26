@@ -4,21 +4,19 @@
 
 package com.joelapenna.foursquared.preferences;
 
+import java.io.IOException;
+import java.util.UUID;
+
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.util.Log;
+
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
-import com.joelapenna.foursquared.location.LocationUtils;
-
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.location.Location;
-import android.util.Log;
-
-import java.io.IOException;
-import java.util.UUID;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -28,11 +26,13 @@ public class Preferences {
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     // Visible Preferences (sync with preferences.xml)
-    public static final String PREFERENCE_TWITTER_CHECKIN = "twitter_checkin";
     public static final String PREFERENCE_SHARE_CHECKIN = "share_checkin";
     public static final String PREFERENCE_IMMEDIATE_CHECKIN = "immediate_checkin";
 
     // Hacks for preference activity extra UI elements.
+    public static final String PREFERENCE_ADVANCED_SETTINS = "advanced_settings";
+    public static final String PREFERENCE_TWITTER_CHECKIN = "twitter_checkin";
+    public static final String PREFERENCE_FACEBOOK_CHECKIN = "facebook_checkin";
     public static final String PREFERENCE_FRIEND_REQUESTS = "friend_requests";
     public static final String PREFERENCE_FRIEND_ADD = "friend_add";
     public static final String PREFERENCE_CITY_NAME = "city_name";
@@ -127,6 +127,7 @@ public class Preferences {
         if (user != null && user.getId() != null) {
             editor.putString(PREFERENCE_ID, user.getId());
             editor.putBoolean(PREFERENCE_TWITTER_CHECKIN, user.getSettings().sendtotwitter());
+            editor.putBoolean(PREFERENCE_FACEBOOK_CHECKIN, user.getSettings().sendtofacebook());
             if (DEBUG) Log.d(TAG, "Setting user info");
         } else {
             if (Preferences.DEBUG) Log.d(Preferences.TAG, "Unable to lookup user.");

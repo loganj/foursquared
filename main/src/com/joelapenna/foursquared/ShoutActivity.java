@@ -4,22 +4,8 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.types.Badge;
-import com.joelapenna.foursquare.types.CheckinResult;
-import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.Mayor;
-import com.joelapenna.foursquare.types.Score;
-import com.joelapenna.foursquare.types.Special;
-import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquare.util.VenueUtils;
-import com.joelapenna.foursquared.location.LocationUtils;
-import com.joelapenna.foursquared.preferences.Preferences;
-import com.joelapenna.foursquared.util.NotificationsUtil;
-import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
-import com.joelapenna.foursquared.widget.ScoreListAdapter;
-import com.joelapenna.foursquared.widget.SeparatedListAdapter;
-import com.joelapenna.foursquared.widget.SpecialListAdapter;
+import java.util.Observable;
+import java.util.Observer;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -49,8 +35,21 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
-import java.util.Observable;
-import java.util.Observer;
+import com.joelapenna.foursquare.types.Badge;
+import com.joelapenna.foursquare.types.CheckinResult;
+import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Mayor;
+import com.joelapenna.foursquare.types.Score;
+import com.joelapenna.foursquare.types.Special;
+import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.util.VenueUtils;
+import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.preferences.Preferences;
+import com.joelapenna.foursquared.util.NotificationsUtil;
+import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
+import com.joelapenna.foursquared.widget.ScoreListAdapter;
+import com.joelapenna.foursquared.widget.SeparatedListAdapter;
+import com.joelapenna.foursquared.widget.SpecialListAdapter;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -75,6 +74,7 @@ public class ShoutActivity extends Activity {
     private boolean mIsShouting = true;
     private boolean mTellFriends = true;
     private boolean mTellTwitter = false;
+    private boolean mTellFacebook = false;
     private boolean mImmediateCheckin = true;
 
     private String mShout = null;
@@ -82,6 +82,7 @@ public class ShoutActivity extends Activity {
     private BadgeWithIconListAdapter mBadgeListAdapter;
     private Button mCheckinButton;
     private CheckBox mTwitterCheckBox;
+    private CheckBox mFacebookCheckBox;
     private CheckBox mFriendsCheckBox;
     private EditText mShoutEditText;
     private Venue mVenue;
@@ -112,6 +113,7 @@ public class ShoutActivity extends Activity {
                 .getDefaultSharedPreferences(ShoutActivity.this);
         mTellFriends = settings.getBoolean(Preferences.PREFERENCE_SHARE_CHECKIN, mTellFriends);
         mTellTwitter = settings.getBoolean(Preferences.PREFERENCE_TWITTER_CHECKIN, mTellTwitter);
+        mTellFacebook = settings.getBoolean(Preferences.PREFERENCE_FACEBOOK_CHECKIN, mTellFacebook);
         // Implies there is no UI.
         if (getIntent().hasExtra(EXTRA_IMMEDIATE_CHECKIN)) {
             mImmediateCheckin = getIntent().getBooleanExtra(EXTRA_IMMEDIATE_CHECKIN, true);
@@ -208,6 +210,7 @@ public class ShoutActivity extends Activity {
         mCheckinButton = (Button) findViewById(R.id.checkinButton);
         mFriendsCheckBox = (CheckBox) findViewById(R.id.tellFriendsCheckBox);
         mTwitterCheckBox = (CheckBox) findViewById(R.id.tellTwitterCheckBox);
+        mFacebookCheckBox = (CheckBox) findViewById(R.id.tellFacebookCheckBox);
         mShoutEditText = (EditText) findViewById(R.id.shoutEditText);
         mCheckinButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -229,15 +232,26 @@ public class ShoutActivity extends Activity {
                 mTwitterCheckBox.setEnabled(isChecked);
             }
         });
+        mFacebookCheckBox.setChecked(mTellFacebook);
+        mFacebookCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mTellFacebook = isChecked;
+                mFacebookCheckBox.setEnabled(isChecked);
+            }
+        });
         mFriendsCheckBox.setChecked(mTellFriends);
         mFriendsCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mTellFriends = isChecked;
                 mTwitterCheckBox.setEnabled(isChecked);
+                mFacebookCheckBox.setEnabled(isChecked);
                 if (!isChecked) {
                     mTellTwitter = false;
+                    mTellFacebook = false;
                     mTwitterCheckBox.setChecked(false);
+                    mFacebookCheckBox.setChecked(false);
                 }
             }
         });
@@ -307,7 +321,7 @@ public class ShoutActivity extends Activity {
                 Location location = ((Foursquared) getApplication()).getLastKnownLocation();
                 return ((Foursquared) getApplication()).getFoursquare().checkin(venueId, null,
                         LocationUtils.createFoursquareLocation(location), mShout, isPrivate,
-                        mTellTwitter);
+                        mTellTwitter, mTellFacebook);
             } catch (Exception e) {
                 Log.d(TAG, "Storing reason: ", e);
                 mReason = e;

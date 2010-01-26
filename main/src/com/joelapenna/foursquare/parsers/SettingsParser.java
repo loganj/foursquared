@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Auto-generated: 2009-11-22 20:21:11.006171
+ * Auto-generated: 2010-01-25 20:47:41.781214
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  * @param <T>
@@ -40,6 +40,9 @@ public class SettingsParser extends AbstractParser<Settings> {
 
             } else if ("pings".equals(name)) {
                 settings.setPings(parser.nextText());
+
+            } else if ("sendtofacebook".equals(name)) {
+                settings.setSendtofacebook(Boolean.valueOf(parser.nextText()));
 
             } else if ("sendtotwitter".equals(name)) {
                 settings.setSendtotwitter(Boolean.valueOf(parser.nextText()));

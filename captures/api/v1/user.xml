@@ -19,6 +19,7 @@
   </checkin>
   <settings>
     <sendtotwitter type="boolean"></sendtotwitter>
+    <sendtofacebook type="boolean"></sendtofacebook>
     <feeds_key>127e89691d51e7ce94c8dea27fddbe3d</feeds_key>
   </settings>
   <badges>

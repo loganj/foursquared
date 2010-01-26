@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <settings>
   <sendtotwitter type="boolean"></sendtotwitter>
+  <sendtofacebook type="boolean"></sendtofacebook>
   <feeds_key>127e89691d51e7ce94c8dea27fddbe3d</feeds_key>
   <pings>127e89691d51e7ce94c8dea27fddbe3d</pings>
 </settings>

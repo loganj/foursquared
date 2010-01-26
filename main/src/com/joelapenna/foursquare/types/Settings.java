@@ -5,7 +5,7 @@
 package com.joelapenna.foursquare.types;
 
 /**
- * Auto-generated: 2009-11-22 20:21:10.921466
+ * Auto-generated: 2010-01-25 20:40:14.399949
  *
  * @author Joe LaPenna (joe@joelapenna.com)
  */
@@ -13,6 +13,7 @@ public class Settings implements FoursquareType {
 
     private String mFeedsKey;
     private String mPings;
+    private boolean mSendtofacebook;
     private boolean mSendtotwitter;
 
     public Settings() {
@@ -32,6 +33,14 @@ public class Settings implements FoursquareType {
 
     public void setPings(String pings) {
         mPings = pings;
+    }
+
+    public boolean sendtofacebook() {
+        return mSendtofacebook;
+    }
+
+    public void setSendtofacebook(boolean sendtofacebook) {
+        mSendtofacebook = sendtofacebook;
     }
 
     public boolean sendtotwitter() {

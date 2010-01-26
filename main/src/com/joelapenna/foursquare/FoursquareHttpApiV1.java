@@ -4,6 +4,17 @@
 
 package com.joelapenna.foursquare;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
 import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
@@ -27,17 +38,6 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
-
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -212,7 +212,8 @@ class FoursquareHttpApiV1 {
      * /checkin?vid=1234&venue=Noc%20Noc&shout=Come%20here&private=0&twitter=1
      */
     CheckinResult checkin(String vid, String venue, String geolat, String geolong, String geohacc,
-            String geovacc, String geoalt, String shout, boolean isPrivate, boolean twitter)
+            String geovacc, String geoalt, String shout, boolean isPrivate, boolean twitter,
+            boolean facebook)
             throws FoursquareException, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_CHECKIN), //
                 new BasicNameValuePair("vid", vid), //
@@ -224,7 +225,8 @@ class FoursquareHttpApiV1 {
                 new BasicNameValuePair("geoalt", geoalt), //
                 new BasicNameValuePair("shout", shout), //
                 new BasicNameValuePair("private", (isPrivate) ? "1" : "0"), //
-                new BasicNameValuePair("twitter", (twitter) ? "1" : "0"));
+                new BasicNameValuePair("twitter", (twitter) ? "1" : "0"), //
+                new BasicNameValuePair("facebook", (facebook) ? "1" : "0"));
         return (CheckinResult) mHttpApi.doHttpRequest(httpPost, new CheckinResultParser());
     }
 

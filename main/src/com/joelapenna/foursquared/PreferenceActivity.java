@@ -4,12 +4,6 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquared.location.LocationUtils;
-import com.joelapenna.foursquared.preferences.Preferences;
-import com.joelapenna.foursquared.util.NotificationsUtil;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,13 +13,17 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.util.Log;
+
+import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.types.Settings;
+import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.preferences.Preferences;
+import com.joelapenna.foursquared.util.NotificationsUtil;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -37,7 +35,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
 
     private SharedPreferences mPrefs;
 
-    private CheckBoxPreference mTwitterCheckinPreference;
+    private Preference mAdvanceSettingsPreference;
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
@@ -56,22 +54,14 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Get a reference to the checkbox preference
-        mTwitterCheckinPreference = (CheckBoxPreference) getPreferenceScreen().findPreference(
-                Preferences.PREFERENCE_TWITTER_CHECKIN);
-        mTwitterCheckinPreference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+        mAdvanceSettingsPreference = getPreferenceScreen().findPreference(
+                Preferences.PREFERENCE_ADVANCED_SETTINS);
 
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                startActivity(new Intent( //
-                        Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_PREFERENCES)));
-                return true;
-            }
-        });
-        mTwitterCheckinPreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+        mAdvanceSettingsPreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                ((Foursquared)getApplication()).requestUpdateUser();
+                ((Foursquared) getApplication()).requestUpdateUser();
                 return false;
             }
         });
@@ -86,7 +76,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     @Override
     public void onResume() {
         super.onResume();
-        new TwitterTask().execute();
+        new UpdateSettingsTask().execute();
     }
 
     @Override
@@ -110,6 +100,9 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                     | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             sendBroadcast(new Intent(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
+        } else if (Preferences.PREFERENCE_ADVANCED_SETTINS.equals(key)) {
+            startActivity(new Intent( //
+                    Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_PREFERENCES)));
         } else if (Preferences.PREFERENCE_FRIEND_ADD.equals(key)) {
             startActivity(new Intent( //
                     Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_MOBILE_ADDFRIENDS)));
@@ -122,15 +115,15 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         return true;
     }
 
-    private class TwitterTask extends AsyncTask<Void, Void, Boolean> {
-        private static final String TAG = "TwitterTask";
+    private class UpdateSettingsTask extends AsyncTask<Void, Void, Settings> {
+        private static final String TAG = "UpdateSettingsTask";
 
         private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
         private Exception mReason;
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Settings doInBackground(Void... params) {
             if (DEBUG) Log.d(TAG, "doInBackground()");
             try {
                 Foursquared foursquared = (Foursquared) getApplication();
@@ -138,7 +131,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
 
                 Foursquare foursquare = foursquared.getFoursquare();
                 return foursquare.user(null, false, false,
-                        LocationUtils.createFoursquareLocation(location)).getSettings().sendtotwitter();
+                        LocationUtils.createFoursquareLocation(location)).getSettings();
 
             } catch (Exception e) {
                 mReason = e;
@@ -147,11 +140,9 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         }
 
         @Override
-        protected void onPostExecute(Boolean sendToTwitter) {
-            if (sendToTwitter == null) {
+        protected void onPostExecute(Settings settings) {
+            if (settings == null) {
                 NotificationsUtil.ToastReasonForFailure(PreferenceActivity.this, mReason);
-            } else {
-                mTwitterCheckinPreference.setChecked(sendToTwitter);
             }
         }
     }

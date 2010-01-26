@@ -164,6 +164,8 @@
     name="tell_my_friends">Tell my Friends</string>
   <string
     name="tell_twitter">Tell Twitter</string>
+  <string
+    name="tell_facebook">Tell Facebook</string>
     
   <string
     name="checkin_score">Your Check-in score</string>
@@ -217,6 +219,10 @@
     name="preferences_share_summary_on">By default, tell my friends when I check-in.</string>
    <string
     name="preferences_share_summary_off">By default, don't tell my friends when I check-in.</string>
+   <string
+    name="preferences_advanced_settings">Advanced Settings</string>
+   <string
+    name="preferences_advanced_settings_summary">Modify advanced settings with foursquare.com.</string>
    <string
     name="preferences_twitter_checkin_title">Tell Twitter</string>
    <string
