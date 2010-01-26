@@ -20,12 +20,14 @@
       android:summaryOn="@string/preferences_share_summary_on"
       android:summaryOff="@string/preferences_share_summary_off"
       android:defaultValue="true" />
-   <com.joelapenna.foursquared.preferences.ClickPreference
-      android:key="advanced_settings"
-      android:title="@string/preferences_advanced_settings"
-      android:summary="@string/preferences_advanced_settings_summary"/>
   </PreferenceCategory>
-
+  <PreferenceCategory
+    android:title="@string/preferences_additional_settings">
+     <com.joelapenna.foursquared.preferences.ClickPreference
+      android:key="advanced_settings"
+      android:title="@string/preferences_additional_settings"
+      android:summary="@string/preferences_additional_settings_summary"/>
+  </PreferenceCategory>
   <PreferenceCategory
     android:title="@string/preferences_category_friends">
     <com.joelapenna.foursquared.preferences.ClickPreference

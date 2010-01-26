@@ -4,8 +4,10 @@
 
 package com.joelapenna.foursquared.util;
 
-import java.io.IOException;
-import java.util.Observable;
+import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquared.Foursquared;
+import com.joelapenna.foursquared.R;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,10 +17,8 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.types.User;
-import com.joelapenna.foursquared.Foursquared;
-import com.joelapenna.foursquared.R;
+import java.io.IOException;
+import java.util.Observable;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)

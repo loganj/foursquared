@@ -4,19 +4,19 @@
 
 package com.joelapenna.foursquared.preferences;
 
-import java.io.IOException;
-import java.util.UUID;
-
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.util.Log;
-
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
+
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.util.Log;
+
+import java.io.IOException;
+import java.util.UUID;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)

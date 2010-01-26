@@ -4,9 +4,16 @@
 
 package com.joelapenna.foursquared;
 
-import java.io.IOException;
-import java.util.Observable;
-import java.util.Observer;
+import com.joelapenna.foursquare.types.Badge;
+import com.joelapenna.foursquare.types.Checkin;
+import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.util.NotificationsUtil;
+import com.joelapenna.foursquared.util.StringFormatters;
+import com.joelapenna.foursquared.util.UserUtils;
+import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
+import com.joelapenna.foursquared.widget.VenueView;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -33,16 +40,9 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.joelapenna.foursquare.types.Badge;
-import com.joelapenna.foursquare.types.Checkin;
-import com.joelapenna.foursquare.types.User;
-import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquared.location.LocationUtils;
-import com.joelapenna.foursquared.util.NotificationsUtil;
-import com.joelapenna.foursquared.util.StringFormatters;
-import com.joelapenna.foursquared.util.UserUtils;
-import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
-import com.joelapenna.foursquared.widget.VenueView;
+import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)

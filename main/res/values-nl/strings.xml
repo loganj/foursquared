@@ -190,6 +190,10 @@
    <string
     name="preferences_share_summary_off">By default, don't tell my friends when I check-in.</string>
    <string
+    name="preferences_additional_settings">Additional Settings</string>
+   <string
+    name="preferences_additional_settings_summary">Modify additional settings with foursquare.com.</string>
+   <string
     name="preferences_twitter_checkin_title">Tell Twitter</string>
    <string
     name="preferences_twitter_checkin_summary_on">By default, tweet my checkins.</string>

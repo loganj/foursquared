@@ -4,11 +4,18 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.preferences.Preferences;
+import com.joelapenna.foursquared.util.NotificationsUtil;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -18,12 +25,6 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.util.Log;
-
-import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.types.Settings;
-import com.joelapenna.foursquared.location.LocationUtils;
-import com.joelapenna.foursquared.preferences.Preferences;
-import com.joelapenna.foursquared.util.NotificationsUtil;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -76,7 +77,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     @Override
     public void onResume() {
         super.onResume();
-        new UpdateSettingsTask().execute();
+        new UpdateUserTask().execute();
     }
 
     @Override
@@ -115,23 +116,23 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         return true;
     }
 
-    private class UpdateSettingsTask extends AsyncTask<Void, Void, Settings> {
-        private static final String TAG = "UpdateSettingsTask";
+    private class UpdateUserTask extends AsyncTask<Void, Void, User> {
+        private static final String TAG = "UpdateUserTask";
 
         private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
         private Exception mReason;
 
         @Override
-        protected Settings doInBackground(Void... params) {
+        protected User doInBackground(Void... params) {
             if (DEBUG) Log.d(TAG, "doInBackground()");
             try {
                 Foursquared foursquared = (Foursquared) getApplication();
                 Location location = foursquared.getLastKnownLocation();
 
                 Foursquare foursquare = foursquared.getFoursquare();
-                return foursquare.user(null, false, false,
-                        LocationUtils.createFoursquareLocation(location)).getSettings();
+                return foursquare.user(null, false, false, LocationUtils
+                        .createFoursquareLocation(location));
 
             } catch (Exception e) {
                 mReason = e;
@@ -140,9 +141,18 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         }
 
         @Override
-        protected void onPostExecute(Settings settings) {
-            if (settings == null) {
+        protected void onPostExecute(User user) {
+            if (user == null) {
                 NotificationsUtil.ToastReasonForFailure(PreferenceActivity.this, mReason);
+            } else {
+                SharedPreferences prefs = PreferenceManager
+                        .getDefaultSharedPreferences(PreferenceActivity.this);
+                Editor editor = prefs.edit();
+                Preferences.storeUser(editor, user);
+                if (!editor.commit()) {
+                    if (DEBUG) Log.d(TAG, "storeUser commit failed");
+
+                }
             }
         }
     }

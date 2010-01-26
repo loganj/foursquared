@@ -4,8 +4,24 @@
 
 package com.joelapenna.foursquared;
 
-import java.util.Observable;
-import java.util.Observer;
+import com.joelapenna.foursquare.types.Badge;
+import com.joelapenna.foursquare.types.CheckinResult;
+import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Mayor;
+import com.joelapenna.foursquare.types.Score;
+import com.joelapenna.foursquare.types.Special;
+import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquare.util.VenueUtils;
+import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.preferences.Preferences;
+import com.joelapenna.foursquared.util.NotificationsUtil;
+import com.joelapenna.foursquared.util.UserUtils;
+import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
+import com.joelapenna.foursquared.widget.ScoreListAdapter;
+import com.joelapenna.foursquared.widget.SeparatedListAdapter;
+import com.joelapenna.foursquared.widget.SpecialListAdapter;
+import com.joelapenna.foursquared.widget.VenueListAdapter;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -37,24 +53,8 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
-import com.joelapenna.foursquare.types.Badge;
-import com.joelapenna.foursquare.types.CheckinResult;
-import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.Mayor;
-import com.joelapenna.foursquare.types.Score;
-import com.joelapenna.foursquare.types.Special;
-import com.joelapenna.foursquare.types.User;
-import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquare.util.VenueUtils;
-import com.joelapenna.foursquared.location.LocationUtils;
-import com.joelapenna.foursquared.preferences.Preferences;
-import com.joelapenna.foursquared.util.NotificationsUtil;
-import com.joelapenna.foursquared.util.UserUtils;
-import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
-import com.joelapenna.foursquared.widget.ScoreListAdapter;
-import com.joelapenna.foursquared.widget.SeparatedListAdapter;
-import com.joelapenna.foursquared.widget.SpecialListAdapter;
-import com.joelapenna.foursquared.widget.VenueListAdapter;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
