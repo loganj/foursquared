@@ -30,7 +30,7 @@
     android:layout_alignParentTop="true"
     android:layout_alignWithParentIfMissing="true"
     android:paddingLeft="7dip"
-
+    android:textColor="@color/black_end"
     android:textAppearance="@android:style/TextAppearance.Medium" />
 
   <TextView
@@ -42,7 +42,7 @@
     android:layout_alignParentRight="true"
     android:layout_below="@id/venueName"
     android:paddingLeft="7dip"
-
+    android:textColor="@color/black_end"
     android:textAppearance="@android:style/TextAppearance.Small" />
 
   <TextView
@@ -54,7 +54,7 @@
     android:layout_alignParentRight="true"
     android:layout_below="@id/venueLocationLine1"
     android:paddingLeft="7dip"
-
+    android:textColor="@color/black_end"
     android:textAppearance="@android:style/TextAppearance.Small" />
 
 </RelativeLayout>

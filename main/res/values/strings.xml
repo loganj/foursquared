@@ -178,6 +178,8 @@
   <string
     name="checkin_specials">Specials</string>
   <string
+    name="checkin_specials_nearby">Nearby Venues that have Specials</string>
+  <string
     name="c">Checked in @ </string>
   <string
     name="checkin_title_shouted">Shouted!</string>
