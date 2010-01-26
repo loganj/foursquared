@@ -43,11 +43,13 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Mayor;
 import com.joelapenna.foursquare.types.Score;
 import com.joelapenna.foursquare.types.Special;
+import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
+import com.joelapenna.foursquared.util.UserUtils;
 import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
 import com.joelapenna.foursquared.widget.ScoreListAdapter;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
@@ -403,9 +405,27 @@ public class ShoutActivity extends Activity {
         private void displayMayor(Mayor mayor) {
             if (mayor != null) {
                 // We're the mayor. Yay!
+                // TODO - Yay above is not true and there could be two mayor
+                // section sent
                 ((TextView) findViewById(R.id.mayor_message)).setText(mayor.getMessage());
                 findViewById(R.id.mayor_message).setVisibility(View.VISIBLE);
                 findViewById(R.id.mayor_crown).setVisibility(View.VISIBLE);
+                findViewById(R.id.photo).setVisibility(View.VISIBLE);
+                User mayorUser = mayor.getUser();
+                if (mayorUser == null) {
+                    // Section user was not returned with mayor - we're we
+                    try {
+                        Location location = ((Foursquared) getApplication()).getLastKnownLocation();
+                        mayorUser = ((Foursquared) getApplication()).getFoursquare().user(null,
+                                false, false, LocationUtils.createFoursquareLocation(location));
+
+                    } catch (Exception e) {
+                        Log.d(TAG, "Storing reason: ", e);
+                        // mReason = e;
+                    }
+
+                }
+                UserUtils.ensureUserPhoto(ShoutActivity.this, mayorUser, DEBUG, TAG);
             }
         }
 
