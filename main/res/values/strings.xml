@@ -257,5 +257,7 @@
     name="preferences_logout_title">Logout</string>
    <string
     name="preferences_logout_summary">Sign out of Foursquare.</string>
+   <string
+    name="search_description">Venues and friends</string>
 
 </resources>

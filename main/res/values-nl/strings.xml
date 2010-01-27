@@ -228,4 +228,9 @@
 
   -->
 
+  <!-- Added 27/01/2010
+    <string
+    name="add_venue_error_toast_venue_null">Unable to add venue!</string>
+  -->
+
 </resources>
