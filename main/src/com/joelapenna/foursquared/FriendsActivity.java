@@ -267,7 +267,7 @@ public class FriendsActivity extends LoadableListActivity {
             Group<Checkin> checkins;
             checkins = foursquare.checkins(LocationUtils
                     .createFoursquareLocation(((Foursquared) getApplication())
-                            .getLastKnownLocationOrNull()));
+                            .getLastKnownLocation()));
             Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
             return checkins;
         }

@@ -169,11 +169,11 @@ public class Foursquared extends Application {
         this.removeLocationUpdates();
     }
 
-    public Location getLastKnownLocationOrNull() {
+    public Location getLastKnownLocation() {
         return mBestLocationListener.getLastKnownLocation();
     }
 
-    public Location getLastKnownLocation() throws LocationException {
+    public Location getLastKnownLocationOrThrow() throws LocationException {
         Location location = mBestLocationListener.getLastKnownLocation();
         if (location == null) {
             throw new LocationException();
@@ -307,7 +307,7 @@ public class Foursquared extends Application {
                         // Use location when requesting user information, if we
                         // have it.
                         Foursquare.Location location = LocationUtils
-                                .createFoursquareLocation(getLastKnownLocationOrNull());
+                                .createFoursquareLocation(getLastKnownLocation());
                         User user = getFoursquare().user(null, false, false, location);
                         Editor editor = mPrefs.edit();
                         Preferences.storeUser(editor, user);

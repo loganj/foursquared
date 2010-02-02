@@ -329,7 +329,7 @@ public class ShoutActivity extends Activity {
             }
             boolean isPrivate = !mTellFriends;
             Foursquared foursquared = (Foursquared) getApplication();
-            Location location = foursquared.getLastKnownLocationOrNull();
+            Location location = foursquared.getLastKnownLocation();
             try {
                 return foursquared.getFoursquare().checkin(venueId, null,
                         LocationUtils.createFoursquareLocation(location), mShout, isPrivate,
@@ -418,7 +418,7 @@ public class ShoutActivity extends Activity {
                 if (mayorUser == null) {
                     // Section user was not returned with mayor - we're we
                     try {
-                        Location location = ((Foursquared) getApplication()).getLastKnownLocationOrNull();
+                        Location location = ((Foursquared) getApplication()).getLastKnownLocation();
                         mayorUser = ((Foursquared) getApplication()).getFoursquare().user(null,
                                 false, false, LocationUtils.createFoursquareLocation(location));
 

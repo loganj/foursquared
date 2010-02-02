@@ -209,7 +209,7 @@ public class UserActivity extends Activity {
                 return ((Foursquared) getApplication()).getFoursquare().user(
                     mUserId, false, true,
                     LocationUtils.createFoursquareLocation(((Foursquared) getApplication())
-                                .getLastKnownLocationOrNull()));
+                                .getLastKnownLocation()));
             } catch (Exception e) {
                 mReason = e;
             }

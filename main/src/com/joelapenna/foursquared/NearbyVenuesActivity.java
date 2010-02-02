@@ -265,7 +265,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         public Group<Group<Venue>> search() throws FoursquareException, LocationException,
                 IOException {
             Foursquare foursquare = ((Foursquared) getApplication()).getFoursquare();
-            Location location = ((Foursquared) getApplication()).getLastKnownLocation();
+            Location location = ((Foursquared) getApplication()).getLastKnownLocationOrThrow();
 
             Group<Group<Venue>> groups = foursquare.venues(LocationUtils
                     .createFoursquareLocation(location), mSearchHolder.query, 30);

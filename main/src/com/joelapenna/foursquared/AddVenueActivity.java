@@ -183,7 +183,7 @@ public class AddVenueActivity extends Activity {
             try {
                 Foursquared foursquared = (Foursquared) getApplication();
                 Foursquare foursquare = foursquared.getFoursquare();
-                Location location = foursquared.getLastKnownLocation();
+                Location location = foursquared.getLastKnownLocationOrThrow();
 
                 return foursquare.addVenue( //
                         mNameEditText.getText().toString(), //
@@ -239,7 +239,7 @@ public class AddVenueActivity extends Activity {
 
             try {
                 stateHolder.location = ((Foursquared)
-                        getApplication()).getLastKnownLocation();
+                        getApplication()).getLastKnownLocationOrThrow();
                 if (DEBUG) Log.d(TAG, stateHolder.location.toString());
 
                 Geocoder geocoder = new Geocoder(AddVenueActivity.this);

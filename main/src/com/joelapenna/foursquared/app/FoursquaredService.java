@@ -52,7 +52,7 @@ public class FoursquaredService extends Service {
             if (DEBUG) Log.d(TAG, "User settings are ready, starting normal widget update.");
             try {
                 checkins = foursquared.getFoursquare().checkins(
-                        LocationUtils.createFoursquareLocation(foursquared.getLastKnownLocationOrNull()));
+                        LocationUtils.createFoursquareLocation(foursquared.getLastKnownLocation()));
             } catch (Exception e) {
                 if (DEBUG) Log.d(TAG, "Exception: Skipping widget update.", e);
                 return;
