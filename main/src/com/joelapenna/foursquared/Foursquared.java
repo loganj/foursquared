@@ -93,11 +93,13 @@ public class Foursquared extends Application {
         // Setup Prefs (to load dumpcatcher)
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Setup Dumpcatcher
-        if (FoursquaredSettings.USE_DUMPCATCHER) {
-            Resources resources = getResources();
-            new DumpcatcherHelper(Preferences.createUniqueId(mPrefs), resources);
-        }
+        // Setup Dumpcatcher - We've outgrown this infrastructure but we'll
+        // leave its calls in place for the day that someone pays for some
+        // appengine quota.
+        //if (FoursquaredSettings.USE_DUMPCATCHER) {
+        //    Resources resources = getResources();
+        //    new DumpcatcherHelper(Preferences.createUniqueId(mPrefs), resources);
+        //}
 
         // Sometimes we want the application to do some work on behalf of the
         // Activity. Lets do that
