@@ -169,6 +169,10 @@ public class Foursquared extends Application {
         this.removeLocationUpdates();
     }
 
+    public Location getLastKnownLocationOrNull() {
+        return mBestLocationListener.getLastKnownLocation();
+    }
+
     public Location getLastKnownLocation() throws LocationException {
         Location location = mBestLocationListener.getLastKnownLocation();
         if (location == null) {
@@ -302,13 +306,8 @@ public class Foursquared extends Application {
                         Log.d(TAG, "Updating user.");
                         // Use location when requesting user information, if we
                         // have it.
-                        Foursquare.Location location = null;
-                        try {
-                            location = LocationUtils
-                                    .createFoursquareLocation(getLastKnownLocation());
-                        } catch (LocationException e) {
-                            // Best effort...
-                        }
+                        Foursquare.Location location = LocationUtils
+                                .createFoursquareLocation(getLastKnownLocationOrNull());
                         User user = getFoursquare().user(null, false, false, location);
                         Editor editor = mPrefs.edit();
                         Preferences.storeUser(editor, user);
@@ -320,7 +319,6 @@ public class Foursquared extends Application {
                             Log.d(TAG, "Priming Location from user city.");
                             Location primeLocation = new Location("foursquare");
                             // Very inaccurate, right?
-                            primeLocation.setAccuracy(10000);
                             primeLocation.setTime(System.currentTimeMillis());
                             mBestLocationListener.updateLocation(primeLocation);
                         }

@@ -128,7 +128,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
             if (DEBUG) Log.d(TAG, "doInBackground()");
             try {
                 Foursquared foursquared = (Foursquared) getApplication();
-                Location location = foursquared.getLastKnownLocation();
+                Location location = foursquared.getLastKnownLocationOrNull();
 
                 Foursquare foursquare = foursquared.getFoursquare();
                 return foursquare.user(null, false, false, LocationUtils

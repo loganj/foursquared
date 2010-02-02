@@ -238,7 +238,8 @@ public class AddVenueActivity extends Activity {
             StateHolder stateHolder = new StateHolder();
 
             try {
-                stateHolder.location = ((Foursquared) getApplication()).getLastKnownLocation();
+                stateHolder.location = ((Foursquared)
+                        getApplication()).getLastKnownLocation();
                 if (DEBUG) Log.d(TAG, stateHolder.location.toString());
 
                 Geocoder geocoder = new Geocoder(AddVenueActivity.this);

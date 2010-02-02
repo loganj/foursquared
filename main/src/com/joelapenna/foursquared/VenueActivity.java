@@ -318,7 +318,7 @@ public class VenueActivity extends TabActivity {
                 return ((Foursquared) getApplication()).getFoursquare().venue(
                         params[0],
                         LocationUtils.createFoursquareLocation(((Foursquared) getApplication())
-                                .getLastKnownLocation()));
+                                .getLastKnownLocationOrNull()));
             } catch (Exception e) {
                 mReason = e;
             }
@@ -368,7 +368,7 @@ public class VenueActivity extends TabActivity {
                         tip,
                         type,
                         LocationUtils.createFoursquareLocation(((Foursquared) getApplication())
-                                .getLastKnownLocation()));
+                                .getLastKnownLocationOrNull()));
             } catch (Exception e) {
                 mReason = e;
             }
