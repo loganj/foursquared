@@ -47,6 +47,8 @@
     name="myinfo_label">My Info</string>
    <string
     name="feedback_label">Send Feedback</string>
+   <string
+    name="send_feedback_preference_summary">Send feedback by email.</string>
   <string
     name="feedback_subject">Foursquare for Android Feedback</string>
   <string
@@ -221,6 +223,8 @@
     name="preferences_share_summary_on">By default, tell my friends when I check-in.</string>
    <string
     name="preferences_share_summary_off">By default, don't tell my friends when I check-in.</string>
+   <string
+    name="preferences_other_settings">Other Settings</string>
    <string
     name="preferences_additional_settings">Additional Settings</string>
    <string
