@@ -120,7 +120,6 @@ public class FriendsActivity extends LoadableListActivity {
         menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
                 .setIcon(drawable.ic_menu_myinfo);
 
-        MenuUtils.addSendFeedbackToMenu((Foursquared) getApplication(), this, menu);
         MenuUtils.addPreferencesToMenu(this, menu);
 
         return true;

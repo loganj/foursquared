@@ -159,8 +159,6 @@ public class SearchVenuesActivity extends TabActivity {
         menu.add(MENU_GROUP_SEARCH, MENU_ADD_VENUE, Menu.NONE, R.string.add_venue_label) //
                 .setIcon(android.R.drawable.ic_menu_add);
 
-        MenuUtils.addSendFeedbackToMenu((Foursquared) getApplication(), this, menu);
-
         return true;
     }
 
