@@ -30,7 +30,7 @@ public class Preferences {
     public static final String PREFERENCE_IMMEDIATE_CHECKIN = "immediate_checkin";
 
     // Hacks for preference activity extra UI elements.
-    public static final String PREFERENCE_ADVANCED_SETTINS = "advanced_settings";
+    public static final String PREFERENCE_ADVANCED_SETTINGS = "advanced_settings";
     public static final String PREFERENCE_TWITTER_CHECKIN = "twitter_checkin";
     public static final String PREFERENCE_FACEBOOK_CHECKIN = "facebook_checkin";
     public static final String PREFERENCE_FRIEND_REQUESTS = "friend_requests";
