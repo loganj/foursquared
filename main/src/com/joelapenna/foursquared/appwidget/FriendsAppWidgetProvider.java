@@ -38,7 +38,7 @@ import java.util.Date;
  * @author Joe LaPenna (joe@joelapenna.com)
  */
 public class FriendsAppWidgetProvider extends AppWidgetProvider {
-    private static final String TAG = "SpecialDealsAppWidgetProvider";
+    private static final String TAG = "FriendsAppWidgetProvider";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private static final int[][] WIDGET_VIEW_IDS = {
