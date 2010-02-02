@@ -166,4 +166,21 @@ public class BestLocationListener extends Observable implements LocationListener
         if (DEBUG) Log.d(TAG, "Unregistering this location listener: " + this.toString());
         locationManager.removeUpdates(this);
     }
+
+    /**
+     * Updates the current location with the last known location without
+     * registering any location listeners.
+     * 
+     * @param locationManager the LocationManager instance from which to
+     *            retrieve the latest known location
+     */
+    synchronized public void updateLastKnownLocation(LocationManager locationManager) {
+        List<String> providers = locationManager.getProviders(true);
+        for (int i = 0, providersCount = providers.size(); i < providersCount; i++) {
+            String providerName = providers.get(i);
+            if (locationManager.isProviderEnabled(providerName)) {
+                updateLocation(locationManager.getLastKnownLocation(providerName));
+            }
+        }
+    }
 }
