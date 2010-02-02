@@ -115,6 +115,5 @@
   <string name="venues_search_hint">Type a venue name or tag</string>
   <string name="venues_search_label">Venue Search</string>
   <string name="zip_code">Zip Code</string>
-   <string
-    name="search_description">Venues and friends</string>
+  <string name="search_description">Venues and friends</string>
 </resources>

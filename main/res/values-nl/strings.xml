@@ -53,9 +53,4 @@
   <!-- No reasonable translation <string name="login_get_started">Get Started</string> -->
   <!-- No reasonable translation <string name="login_get_started_more">Got a foursquare account? We just need your phone# and password</string> -->
   <!-- No reasonable translation <string name="shout_action_label">Shout!</string> -->
-  <!-- Added 27/01/2010
-    <string
-    name="add_venue_error_toast_venue_null">Unable to add venue!</string>
-  -->
-
 </resources>
