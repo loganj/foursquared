@@ -26,7 +26,7 @@ public class BestLocationListener extends Observable implements LocationListener
     public static final float REQUESTED_FIRST_SEARCH_ACCURACY_IN_METERS = 100.0f;
     public static final int REQUESTED_FIRST_SEARCH_MAX_DELTA_THRESHOLD = 1000 * 60 * 5;
 
-    private static final long LOCATION_UPDATE_MAX_DELTA_THRESHOLD = 1000 * 60 * 5;
+    public static final long LOCATION_UPDATE_MAX_DELTA_THRESHOLD = 1000 * 60 * 5;
 
     private Location mLastLocation;
 
