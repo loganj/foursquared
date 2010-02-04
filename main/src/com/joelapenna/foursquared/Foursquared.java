@@ -13,7 +13,6 @@ import com.joelapenna.foursquared.error.LocationException;
 import com.joelapenna.foursquared.location.BestLocationListener;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
-import com.joelapenna.foursquared.util.DumpcatcherHelper;
 import com.joelapenna.foursquared.util.JavaLoggingHandler;
 import com.joelapenna.foursquared.util.NullDiskCache;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
@@ -29,7 +28,6 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Handler;
@@ -80,15 +78,7 @@ public class Foursquared extends Application {
         Log.i(TAG, "Using Dumpcatcher:\t" + FoursquaredSettings.USE_DUMPCATCHER);
         Log.i(TAG, "Using Debug Log:\t" + DEBUG);
 
-        // Get a version number for the app.
-        try {
-            PackageManager pm = getPackageManager();
-            PackageInfo pi = pm.getPackageInfo(PACKAGE_NAME, 0);
-            mVersion = PACKAGE_NAME + ":" + String.valueOf(pi.versionCode);
-        } catch (NameNotFoundException e) {
-            if (DEBUG) Log.d(TAG, "NameNotFoundException", e);
-            throw new RuntimeException(e);
-        }
+        mVersion = getVersionString(this);
 
         // Setup Prefs (to load dumpcatcher)
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -96,10 +86,10 @@ public class Foursquared extends Application {
         // Setup Dumpcatcher - We've outgrown this infrastructure but we'll
         // leave its calls in place for the day that someone pays for some
         // appengine quota.
-        //if (FoursquaredSettings.USE_DUMPCATCHER) {
-        //    Resources resources = getResources();
-        //    new DumpcatcherHelper(Preferences.createUniqueId(mPrefs), resources);
-        //}
+        // if (FoursquaredSettings.USE_DUMPCATCHER) {
+        // Resources resources = getResources();
+        // new DumpcatcherHelper(Preferences.createUniqueId(mPrefs), resources);
+        // }
 
         // Sometimes we want the application to do some work on behalf of the
         // Activity. Lets do that
@@ -207,6 +197,41 @@ public class Foursquared extends Application {
             sendBroadcast(new Intent(INTENT_ACTION_LOGGED_IN));
         } else {
             sendBroadcast(new Intent(INTENT_ACTION_LOGGED_OUT));
+        }
+    }
+
+    /**
+     * Provides static access to a Foursquare instance. This instance is
+     * initiated without user credentials.
+     * 
+     * @param context the context to use when constructing the Foursquare
+     *            instance
+     * @return the Foursquare instace
+     */
+    public static Foursquare createFoursquare(Context context) {
+        String version = getVersionString(context);
+        if (FoursquaredSettings.USE_DEBUG_SERVER) {
+            return new Foursquare(Foursquare.createHttpApi("10.0.2.2:8080", version, false));
+        } else {
+            return new Foursquare(Foursquare.createHttpApi(version, false));
+        }
+    }
+
+    /**
+     * Constructs the version string of the application.
+     * 
+     * @param context the context to use for getting package info
+     * @return the versions string of the application
+     */
+    private static String getVersionString(Context context) {
+        // Get a version string for the app.
+        try {
+            PackageManager pm = context.getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(PACKAGE_NAME, 0);
+            return PACKAGE_NAME + ":" + String.valueOf(pi.versionCode);
+        } catch (NameNotFoundException e) {
+            if (DEBUG) Log.d(TAG, "Could not retrieve package info", e);
+            throw new RuntimeException(e);
         }
     }
 
