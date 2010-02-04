@@ -93,11 +93,13 @@ public class Foursquared extends Application {
         // Setup Prefs (to load dumpcatcher)
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Setup Dumpcatcher
-        if (FoursquaredSettings.USE_DUMPCATCHER) {
-            Resources resources = getResources();
-            new DumpcatcherHelper(Preferences.createUniqueId(mPrefs), resources);
-        }
+        // Setup Dumpcatcher - We've outgrown this infrastructure but we'll
+        // leave its calls in place for the day that someone pays for some
+        // appengine quota.
+        //if (FoursquaredSettings.USE_DUMPCATCHER) {
+        //    Resources resources = getResources();
+        //    new DumpcatcherHelper(Preferences.createUniqueId(mPrefs), resources);
+        //}
 
         // Sometimes we want the application to do some work on behalf of the
         // Activity. Lets do that
@@ -167,7 +169,11 @@ public class Foursquared extends Application {
         this.removeLocationUpdates();
     }
 
-    public Location getLastKnownLocation() throws LocationException {
+    public Location getLastKnownLocation() {
+        return mBestLocationListener.getLastKnownLocation();
+    }
+
+    public Location getLastKnownLocationOrThrow() throws LocationException {
         Location location = mBestLocationListener.getLastKnownLocation();
         if (location == null) {
             throw new LocationException();
@@ -300,13 +306,8 @@ public class Foursquared extends Application {
                         Log.d(TAG, "Updating user.");
                         // Use location when requesting user information, if we
                         // have it.
-                        Foursquare.Location location = null;
-                        try {
-                            location = LocationUtils
-                                    .createFoursquareLocation(getLastKnownLocation());
-                        } catch (LocationException e) {
-                            // Best effort...
-                        }
+                        Foursquare.Location location = LocationUtils
+                                .createFoursquareLocation(getLastKnownLocation());
                         User user = getFoursquare().user(null, false, false, location);
                         Editor editor = mPrefs.edit();
                         Preferences.storeUser(editor, user);
@@ -318,7 +319,6 @@ public class Foursquared extends Application {
                             Log.d(TAG, "Priming Location from user city.");
                             Location primeLocation = new Location("foursquare");
                             // Very inaccurate, right?
-                            primeLocation.setAccuracy(10000);
                             primeLocation.setTime(System.currentTimeMillis());
                             mBestLocationListener.updateLocation(primeLocation);
                         }

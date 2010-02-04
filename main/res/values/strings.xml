@@ -1,263 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string
-    name="app_name">Foursquare</string>
-  <string
-    name="add_venue_activity_label">Add a New Venue</string>
-  <string
-    name="checkins_activity_label">Foursquare Friends</string>
-  <string
-    name="preference_activity_label">Foursquare Preferences</string>
-  <string
-    name="shout_activity_label">Foursquare Checkin</string>
-  <string
-    name="shout_no_venue_activity_label">Foursquare Shout</string>
-  <string
-    name="tips_activity_label">foursquare Venue Tips</string>
-  <string
-    name="venue_checkin_activity_label">Foursquare Venue Check-In</string>
-  <string
-    name="venue_info_activity_label">Foursquare Venue</string>
-  <string
-    name="venue_search_activity_label">Foursquare Venues</string>
-  <string
-    name="venue_tips_activity_label">Foursquare Tips</string>
-  <string
-    name="venue_info_tab">Tips</string>
-  <string
-    name="venue_checkins_tab">Checkins</string>
-
-  <string
-    name="preferences_label">Preferences</string>
-  <string
-    name="login_label">Log-in</string>
-
-  <string
-    name="add_venue_label">Add Venue</string>
-
-  <string
-    name="add_venue_error_toast_venue_null">Unable to add venue!</string>
-
-  <string
-    name="refresh_address_label">Refresh Address</string>
-
-  <string
-    name="checkins_label">Friends</string>
-  <string
-    name="myinfo_label">My Info</string>
-   <string
-    name="feedback_label">Send Feedback</string>
-  <string
-    name="feedback_subject">Foursquare for Android Feedback</string>
-  <string
-    name="feedback_error">Couldn't find configured email client.</string>
-   <string
-    name="feedback_more">If you are reporting problem please answer the questions below:</string>
-   <string
-    name="feedback_question_how_to_reproduce">What steps will reproduce the problem?</string>
-    <string
-    name="feedback_question_expected_output">What is the expected output? What do you see instead?</string>
-   <string
-    name="feedback_question_additional_information">Please provide any additional information below.</string>
-  <string
-    name="nearby_label">Nearby</string>
-  <string
-    name="refresh_label">Refresh</string>
-  <string
-    name="search_label">Search</string>
-  <string
-    name="stats_label">Leaderboard</string>
-  <string
-    name="shout_action_label">Shout!</string>
-  <string
-    name="checkin_action_label">Check-in!</string>
-  <string
-    name="map_label">Map</string>
-  <string
-    name="search_venues_label">Venues</string>
-
-  <string
-    name="venues_search_label">Venue Search</string>
-  <string
-    name="venues_search_hint">Type a venue name or tag</string>
-
-  <string
-    name="tip_add_spinner_prompt">Select a List</string>
-  <string
-    name="tip_says">%s says</string>
-
-  <string
-    name="friendsactivity_title_finished">Foursquare Friends</string>
-  <string
-    name="friendsactivity_title_searching">Foursquare - Searching for Friends</string>
-
-  <string
-    name="login_dialog_title">Logging in...</string>
-  <string
-    name="login_get_started">Get Started</string>
-   <string
-    name="login_get_started_more">Got foursquare account? We just need your phone# and password</string>
-  <string
-    name="login_dialog_message">Please wait while logging into Foursquare...</string>
-
-  <string
-    name="login_welcome_toast">Welcome to Foursquare!</string>
-  <string
-    name="login_failed_login_toast">Unable to log in. Please check your phone number and password.</string>
-
-  <string
-    name="search_already_in_progress_toast">A search is already in progress.</string>
-  <string
-    name="no_search_results">No search results.</string>
-  <string
-    name="title_search_finished_noquery">Nearby - Foursquare</string>
-  <string
-    name="title_search_finished">%s - Foursquare</string>
-  <string
-    name="title_search_inprogress_noquery">Searching Nearby - Foursquare</string>
-  <string
-    name="title_search_inprogress">Searching "%s" - Foursquare</string>
-
-  <string
-    name="no_checkins_be_the_first">No checkins here yet, be the first!</string>
-  <string
-    name="no_tips_be_the_first">No tips here yet, be the first to add one!</string>
-  <string
-    name="no_friend_checkins">No recent friend checkins. Find cooler friends!</string>
-  <string
-    name="no_nearby_venues">No nearby venues!</string>
-
-  <string
-    name="loading">Loading...</string>
-
-  <string
-    name="preferences_updating_city_toast">Updating your city.</string>
-  <string
-    name="preferences_welcome_city_toast">Welcome to %s!</string>
-  <string
-    name="preferences_unable_to_find_city_toast">Unable to update your city.</string>
-
-  <string
-    name="last_seen_header">Last Seen</string>
-  <string
-    name="badges_header">Badges</string>
-
-  <string
-    name="mayor_header">Mayor</string>
-
-  <string
-    name="venue_name">Venue Name</string>
-  <string
-    name="address">Address</string>
-  <string
-    name="cross_street">Cross Street</string>
-  <string
-    name="city">City</string>
-  <string
-    name="state">State</string>
-  <string
-    name="zip_code">Zip Code</string>
-
-  <string
-    name="need_an_account">Need an account?</string>
-  <string
-    name="tell_my_friends">Tell my Friends</string>
-  <string
-    name="tell_twitter">Tell Twitter</string>
-  <string
-    name="tell_facebook">Tell Facebook</string>
-    
-  <string
-    name="checkin_score">Your Check-in score</string>
-  <string
-    name="checkin_totals">Total:</string>
-  <string
-    name="checkin_points">Points</string>
-  <string
-    name="checkin_badges">You\'ve just unlocked</string>
-  <string
-    name="checkin_specials">Specials</string>
-  <string
-    name="checkin_specials_nearby">Nearby Venues that have Specials</string>
-  <string
-    name="c">Checked in @ </string>
-  <string
-    name="checkin_title_shouted">Shouted!</string>
-  <!--
-    The whitespace is a layout hack to make sure the dialog box doesn't bounce in size so quickly.
-  -->
-  <string
-    name="shout_hint">Shout, shout, let it all out...                              </string>
-
-  <string
-    name="phone_number">Phone Number</string>
-  <string
-    name="phone_number_or_email">Phone or Email</string>
-  <string
-    name="password">Password</string>
-
-  <string
-    name="add_a_tip">Add a Tip</string>
-
-  <string
-    name="call">Call</string>
-
-  <string
-    name="friends_appwidget_3x3_label">Foursquare Friends (3x3)</string>
-  <string
-    name="friends_appwidget_footer_text">Last Updated %s</string>
-  <string
-    name="friends_appwidget_not_logged_in">Please log in.</string>
-
-  <string
-    name="no_location_providers">Unable to determine location. Please Enable GPS or Network Location</string>
-  
-  <!--Strings for the preferences -->
-   <string
-    name="preferences_category_checkin_defaults">Check-in Defaults</string>
-  <string
-    name="preferences_share_checkin_title">Tell my friends</string>
-  <string
-    name="preferences_share_summary_on">By default, tell my friends when I check-in.</string>
-   <string
-    name="preferences_share_summary_off">By default, don't tell my friends when I check-in.</string>
-   <string
-    name="preferences_additional_settings">Additional Settings</string>
-   <string
-    name="preferences_additional_settings_summary">Modify additional settings with foursquare.com.</string>
-   <string
-    name="preferences_twitter_checkin_title">Tell Twitter</string>
-   <string
-    name="preferences_twitter_checkin_summary_on">By default, tweet my checkins.</string>
-   <string
-    name="preferences_twitter_checkin_summary_off">By default, don't tweet my checkins.</string>
-    <string
-    name="preferences_immediate_checkin_title">Checkin without prompt</string>
-   <string
-    name="preferences_immediate_checkin_summary_on">Checkin without confirmation when using \'Quick Checkin\'.</string>
-   <string
-    name="preferences_immediate_checkin_summary_off">Prompt for a shout when using \'Quick Checkin\'.</string>
-    <string
-    name="preferences_category_friends">Friends</string>
-   <string
-    name="preferences_friend_add_title">Add Friends</string>
-   <string
-    name="preferences_friend_add_summary">Add Friends with foursquare.com.</string>
-  <string
-    name="preferences_friend_requests_title">Friend Requests</string>
-   <string
-    name="preferences_friend_requests_summary">Manage friends with foursquare.com.</string>
-   <string
-    name="preferences_category_user_actions">User Actions</string>
-   <string
-    name="preferences_city_name_title">Update City</string>
-   <string
-    name="preferences_city_name_summary">Update your foursquare city."</string>
-  <string
-    name="preferences_logout_title">Logout</string>
-   <string
-    name="preferences_logout_summary">Sign out of Foursquare.</string>
+  <string name="add_a_tip">Add a Tip</string>
+  <string name="add_venue_activity_label">Add a New Venue</string>
+  <string name="add_venue_error_toast_venue_null">Unable to add venue!</string>
+  <string name="add_venue_label">Add Venue</string>
+  <string name="address">Address</string>
+  <string name="app_name">Foursquare</string>
+  <string name="badges_header">Badges</string>
+  <string name="call">Call</string>
+  <string name="checkin_action_label">Check-in!</string>
+  <string name="checkin_badges">You\'ve just unlocked</string>
+  <string name="checkin_points">Points</string>
+  <string name="checkin_score">Your Check-in score</string>
+  <string name="checkin_specials">Specials</string>
+  <string name="checkin_specials_nearby">Nearby Venues that have Specials</string>
+  <string name="checkin_title_shouted">Shouted!</string>
+  <string name="checkin_totals">Total:</string>
+  <string name="checkins_activity_label">Foursquare Friends</string>
+  <string name="checkins_label">Friends</string>
+  <string name="city">City</string>
+  <string name="cross_street">Cross Street</string>
+  <string name="feedback_error">Couldn't find configured email client.</string>
+  <string name="feedback_label">Send Feedback</string>
+  <string name="feedback_more">If you are reporting problem please answer the questions below:</string>
+  <string name="feedback_question_additional_information">Please provide any additional information below.</string>
+  <string name="feedback_question_expected_output">What is the expected output? What do you see instead?</string>
+  <string name="feedback_question_how_to_reproduce">What steps will reproduce the problem?</string>
+  <string name="feedback_subject">Foursquare for Android Feedback</string>
+  <string name="friends_appwidget_3x3_label">Foursquare Friends (3x3)</string>
+  <string name="friends_appwidget_footer_text">Last Updated %s</string>
+  <string name="friends_appwidget_not_logged_in">Please log in.</string>
+  <string name="friendsactivity_title_finished">Foursquare Friends</string>
+  <string name="friendsactivity_title_searching">Foursquare - Searching for Friends</string>
+  <string name="last_seen_header">Last Seen</string>
+  <string name="loading">Loading...</string>
+  <string name="login_dialog_message">Please wait while logging into Foursquare...</string>
+  <string name="login_dialog_title">Logging in...</string>
+  <string name="login_failed_login_toast">Unable to log in. Please check your phone number and password.</string>
+  <string name="login_get_started">Get Started</string>
+  <string name="login_get_started_more">Got foursquare account? We just need your phone# and password</string>
+  <string name="login_label">Log-in</string>
+  <string name="login_welcome_toast">Welcome to Foursquare!</string>
+  <string name="map_label">Map</string>
+  <string name="mayor_header">Mayor</string>
+  <string name="myinfo_label">My Info</string>
+  <string name="nearby_label">Nearby</string>
+  <string name="need_an_account">Need an account?</string>
+  <string name="no_checkins_be_the_first">No checkins here yet, be the first!</string>
+  <string name="no_friend_checkins">No recent friend checkins. Find cooler friends!</string>
+  <string name="no_location_providers">Unable to determine location. Please Enable GPS or Network Location</string>
+  <string name="no_nearby_venues">No nearby venues!</string>
+  <string name="no_search_results">No search results.</string>
+  <string name="no_tips_be_the_first">No tips here yet, be the first to add one!</string>
+  <string name="password">Password</string>
+  <string name="phone_number">Phone Number</string>
+  <string name="phone_number_or_email">Phone or Email</string>
+  <string name="preference_activity_label">Foursquare Preferences</string>
+  <string name="preferences_additional_settings">Additional Settings</string>
+  <string name="preferences_additional_settings_summary">Modify additional settings with foursquare.com.</string>
+  <string name="preferences_category_checkin_defaults">Check-in Defaults</string>
+  <string name="preferences_category_friends">Friends</string>
+  <string name="preferences_category_user_actions">User Actions</string>
+  <string name="preferences_city_name_summary">Update your foursquare city."</string>
+  <string name="preferences_city_name_title">Update City</string>
+  <string name="preferences_friend_add_summary">Add Friends with foursquare.com.</string>
+  <string name="preferences_friend_add_title">Add Friends</string>
+  <string name="preferences_friend_requests_summary">Manage friends with foursquare.com.</string>
+  <string name="preferences_friend_requests_title">Friend Requests</string>
+  <string name="preferences_immediate_checkin_summary_off">Prompt for a shout when using \'Quick Checkin\'.</string>
+  <string name="preferences_immediate_checkin_summary_on">Checkin without confirmation when using \'Quick Checkin\'.</string>
+  <string name="preferences_immediate_checkin_title">Checkin without prompt</string>
+  <string name="preferences_label">Preferences</string>
+  <string name="preferences_logout_summary">Sign out of Foursquare.</string>
+  <string name="preferences_logout_title">Logout</string>
+  <string name="preferences_other_settings">Other Settings</string>
+  <string name="preferences_share_checkin_title">Tell my friends</string>
+  <string name="preferences_share_summary_off">By default, don't tell my friends when I check-in.</string>
+  <string name="preferences_share_summary_on">By default, tell my friends when I check-in.</string>
+  <string name="preferences_twitter_checkin_summary_off">By default, don't tweet my checkins.</string>
+  <string name="preferences_twitter_checkin_summary_on">By default, tweet my checkins.</string>
+  <string name="preferences_twitter_checkin_title">Tell Twitter</string>
+  <string name="preferences_unable_to_find_city_toast">Unable to update your city.</string>
+  <string name="preferences_updating_city_toast">Updating your city.</string>
+  <string name="preferences_welcome_city_toast">Welcome to %s!</string>
+  <string name="refresh_address_label">Refresh Address</string>
+  <string name="refresh_label">Refresh</string>
+  <string name="search_already_in_progress_toast">A search is already in progress.</string>
+  <string name="search_label">Search</string>
+  <string name="search_venues_label">Venues</string>
+  <string name="send_feedback_preference_summary">Send feedback by email.</string>
+  <string name="shout_action_label">Shout!</string>
+  <string name="shout_activity_label">Foursquare Checkin</string>
+  <string name="shout_hint">Shout, shout, let it all out...                              </string> <!-- The whitespace is a layout hack to make sure the dialog box doesn't bounce in size so quickly.  -->
+  <string name="shout_no_venue_activity_label">Foursquare Shout</string>
+  <string name="state">State</string>
+  <string name="stats_label">Leaderboard</string>
+  <string name="tell_facebook">Tell Facebook</string>
+  <string name="tell_my_friends">Tell my Friends</string>
+  <string name="tell_twitter">Tell Twitter</string>
+  <string name="tip_add_spinner_prompt">Select a List</string>
+  <string name="tip_says">%s says</string>
+  <string name="tips_activity_label">foursquare Venue Tips</string>
+  <string name="title_search_finished">%s - Foursquare</string>
+  <string name="title_search_finished_noquery">Nearby - Foursquare</string>
+  <string name="title_search_inprogress">Searching "%s" - Foursquare</string>
+  <string name="title_search_inprogress_noquery">Searching Nearby - Foursquare</string>
+  <string name="venue_checkin_activity_label">Foursquare Venue Check-In</string>
+  <string name="venue_checkins_tab">Checkins</string>
+  <string name="venue_info_activity_label">Foursquare Venue</string>
+  <string name="venue_info_tab">Tips</string>
+  <string name="venue_name">Venue Name</string>
+  <string name="venue_search_activity_label">Foursquare Venues</string>
+  <string name="venue_tips_activity_label">Foursquare Tips</string>
+  <string name="venues_search_hint">Type a venue name or tag</string>
+  <string name="venues_search_label">Venue Search</string>
+  <string name="zip_code">Zip Code</string>
    <string
     name="search_description">Venues and friends</string>
-
 </resources>

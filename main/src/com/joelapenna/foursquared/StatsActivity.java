@@ -54,7 +54,7 @@ public class StatsActivity extends Activity {
         String userId = ((Foursquared) getApplication()).getUserId();
         try {
             String url = Foursquare.createLeaderboardUrl(userId, LocationUtils
-                    .createFoursquareLocation(foursquared.getLastKnownLocation()));
+                    .createFoursquareLocation(foursquared.getLastKnownLocationOrThrow()));
             Log.d(TAG, url);
             webView.loadUrl(url);
         } catch (LocationException e) {

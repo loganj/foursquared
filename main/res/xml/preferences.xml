@@ -22,18 +22,11 @@
       android:defaultValue="true" />
   </PreferenceCategory>
   <PreferenceCategory
-    android:title="@string/preferences_additional_settings">
-     <com.joelapenna.foursquared.preferences.ClickPreference
-      android:key="advanced_settings"
-      android:title="@string/preferences_additional_settings"
-      android:summary="@string/preferences_additional_settings_summary"/>
-  </PreferenceCategory>
-  <PreferenceCategory
     android:title="@string/preferences_category_friends">
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="friend_add"
       android:title="@string/preferences_friend_add_title"
-      android:summary="@string/preferences_friend_add_summary"/>
+      android:summary="@string/preferences_friend_add_summary" />
 
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="friend_requests"
@@ -42,8 +35,15 @@
   </PreferenceCategory>
 
   <PreferenceCategory
-    android:title="@string/preferences_category_user_actions">
-
+    android:title="@string/preferences_other_settings">
+    <com.joelapenna.foursquared.preferences.ClickPreference
+      android:key="advanced_settings"
+      android:title="@string/preferences_additional_settings"
+      android:summary="@string/preferences_additional_settings_summary" />
+    <com.joelapenna.foursquared.preferences.ClickPreference
+      android:key="send_feedback"
+      android:title="@string/feedback_label"
+      android:summary="@string/send_feedback_preference_summary" />
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="logout"
       android:title="@string/preferences_logout_title"

@@ -189,12 +189,8 @@ public class LoginActivity extends Activity {
                 String password = mPasswordEditText.getText().toString();
 
                 Foursquare.Location location = null;
-                try {
-                    location = LocationUtils.createFoursquareLocation(foursquared.getLastKnownLocation());
-                } catch (LocationException e) {
-                    // best effort for a login. We can guess the location from
-                    // the user's current city setting.
-                }
+                location = LocationUtils.createFoursquareLocation(
+                    foursquared.getLastKnownLocation());
 
                 boolean loggedIn = Preferences.loginUser(foursquare, phoneNumber, password,
                         location, editor);

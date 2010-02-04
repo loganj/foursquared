@@ -47,49 +47,40 @@ public class FoursquaredService extends Service {
     private void updateWidgets() {
         if (DEBUG) Log.d(TAG, "updateWidgets");
         Group<Checkin> checkins = null;
-        try {
-            Foursquared foursquared = ((Foursquared)getApplication());
-            if (foursquared.isReady()) {
-                if (DEBUG) Log.d(TAG, "User settings are ready, starting normal widget update.");
-                try {
-                    checkins = foursquared.getFoursquare().checkins(
-                            LocationUtils.createFoursquareLocation(foursquared.getLastKnownLocation()));
-                } catch (LocationException e) {
-                    if (DEBUG) Log.d(TAG, "LocationException: Skipping widget update.", e);
-                    return;
-                }
-                Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
+        Foursquared foursquared = ((Foursquared) getApplication());
+        if (foursquared.isReady()) {
+            if (DEBUG) Log.d(TAG, "User settings are ready, starting normal widget update.");
+            try {
+                checkins = foursquared.getFoursquare().checkins(
+                        LocationUtils.createFoursquareLocation(foursquared.getLastKnownLocation()));
+            } catch (Exception e) {
+                if (DEBUG) Log.d(TAG, "Exception: Skipping widget update.", e);
+                return;
+            }
+            Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
 
-                // Request the user photos for the checkins... At the moment, this is async. It is
-                // likely this means that the first update of the widget will never show user photos
-                // as the photos will still be downloading when the getInputStream call is made in
-                // SpecialDealsAppWidgetProvider.
-                for (int i = 0; i < checkins.size(); i++) {
-                    Uri photoUri = Uri.parse((checkins.get(i)).getUser().getPhoto());
-                    if (!foursquared.getRemoteResourceManager().exists(photoUri)) {
-                        foursquared.getRemoteResourceManager().request(photoUri);
-                    }
+            // Request the user photos for the checkins... At the moment, this
+            // is async. It is
+            // likely this means that the first update of the widget will never
+            // show user photos
+            // as the photos will still be downloading when the getInputStream
+            // call is made in
+            // SpecialDealsAppWidgetProvider.
+            for (int i = 0; i < checkins.size(); i++) {
+                Uri photoUri = Uri.parse((checkins.get(i)).getUser().getPhoto());
+                if (!foursquared.getRemoteResourceManager().exists(photoUri)) {
+                    foursquared.getRemoteResourceManager().request(photoUri);
                 }
             }
+        }
 
-            AppWidgetManager am = AppWidgetManager.getInstance(this);
-            int[] appWidgetIds = am.getAppWidgetIds(new ComponentName(this,
-                    FriendsAppWidgetProvider.class));
+        AppWidgetManager am = AppWidgetManager.getInstance(this);
+        int[] appWidgetIds = am.getAppWidgetIds(new ComponentName(this,
+                FriendsAppWidgetProvider.class));
 
-            for (int i = 0; i < appWidgetIds.length; i++) {
-                FriendsAppWidgetProvider.updateAppWidget((Context)this, foursquared
-                        .getRemoteResourceManager(), am, appWidgetIds[i], checkins);
-            }
-
-        } catch (FoursquareError e) {
-            // TODO Auto-generated catch block
-            if (DEBUG) Log.d(TAG, "FoursquareError", e);
-        } catch (FoursquareException e) {
-            // TODO Auto-generated catch block
-            if (DEBUG) Log.d(TAG, "FoursquareException", e);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            if (DEBUG) Log.d(TAG, "IOException", e);
+        for (int i = 0; i < appWidgetIds.length; i++) {
+            FriendsAppWidgetProvider.updateAppWidget((Context) this, foursquared
+                    .getRemoteResourceManager(), am, appWidgetIds[i], checkins);
         }
     }
 

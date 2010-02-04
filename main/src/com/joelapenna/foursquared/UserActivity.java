@@ -207,10 +207,8 @@ public class UserActivity extends Activity {
         protected User doInBackground(Void... params) {
             try {
                 return ((Foursquared) getApplication()).getFoursquare().user(
-                        mUserId,
-                        false,
-                        true,
-                        LocationUtils.createFoursquareLocation(((Foursquared) getApplication())
+                    mUserId, false, true,
+                    LocationUtils.createFoursquareLocation(((Foursquared) getApplication())
                                 .getLastKnownLocation()));
             } catch (Exception e) {
                 mReason = e;

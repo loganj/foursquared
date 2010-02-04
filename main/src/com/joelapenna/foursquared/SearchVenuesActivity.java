@@ -159,8 +159,6 @@ public class SearchVenuesActivity extends TabActivity {
         menu.add(MENU_GROUP_SEARCH, MENU_ADD_VENUE, Menu.NONE, R.string.add_venue_label) //
                 .setIcon(android.R.drawable.ic_menu_add);
 
-        MenuUtils.addSendFeedbackToMenu((Foursquared) getApplication(), this, menu);
-
         return true;
     }
 
@@ -406,7 +404,7 @@ public class SearchVenuesActivity extends TabActivity {
         public Group<Group<Venue>> search() throws FoursquareException, LocationException,
                 IOException {
             Foursquare foursquare = ((Foursquared) getApplication()).getFoursquare();
-            Location location = ((Foursquared) getApplication()).getLastKnownLocation();
+            Location location = ((Foursquared) getApplication()).getLastKnownLocationOrThrow();
 
             Group<Group<Venue>> groups = foursquare.venues(LocationUtils
                     .createFoursquareLocation(location), mSearchHolder.query, 30);

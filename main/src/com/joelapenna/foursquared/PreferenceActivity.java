@@ -8,6 +8,7 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
+import com.joelapenna.foursquared.util.FeedbackUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
 import android.content.BroadcastReceiver;
@@ -36,8 +37,6 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
 
     private SharedPreferences mPrefs;
 
-    private Preference mAdvanceSettingsPreference;
-
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -54,12 +53,9 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         this.addPreferencesFromResource(R.xml.preferences);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get a reference to the checkbox preference
-        mAdvanceSettingsPreference = getPreferenceScreen().findPreference(
-                Preferences.PREFERENCE_ADVANCED_SETTINS);
-
-        mAdvanceSettingsPreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-
+        Preference advanceSettingsPreference = getPreferenceScreen().findPreference(
+                Preferences.PREFERENCE_ADVANCED_SETTINGS);
+        advanceSettingsPreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 ((Foursquared) getApplication()).requestUpdateUser();
@@ -101,9 +97,13 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                     | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             sendBroadcast(new Intent(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
-        } else if (Preferences.PREFERENCE_ADVANCED_SETTINS.equals(key)) {
+        } else if (Preferences.PREFERENCE_ADVANCED_SETTINGS.equals(key)) {
             startActivity(new Intent( //
                     Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_PREFERENCES)));
+
+        } else if (Preferences.PREFERENCE_SEND_FEEDBACK.equals(key)) {
+            FeedbackUtils.SendFeedBack(this, (Foursquared) getApplication());
+
         } else if (Preferences.PREFERENCE_FRIEND_ADD.equals(key)) {
             startActivity(new Intent( //
                     Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_MOBILE_ADDFRIENDS)));

@@ -29,10 +29,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -120,7 +117,6 @@ public class FriendsActivity extends LoadableListActivity {
         menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
                 .setIcon(drawable.ic_menu_myinfo);
 
-        MenuUtils.addSendFeedbackToMenu((Foursquared) getApplication(), this, menu);
         MenuUtils.addPreferencesToMenu(this, menu);
 
         return true;
@@ -266,7 +262,7 @@ public class FriendsActivity extends LoadableListActivity {
             }
         }
 
-        Group<Checkin> search() throws FoursquareException, LocationException, IOException {
+        Group<Checkin> search() throws FoursquareException, IOException {
             Foursquare foursquare = ((Foursquared) getApplication()).getFoursquare();
             Group<Checkin> checkins;
             checkins = foursquare.checkins(LocationUtils

@@ -4,6 +4,7 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Badge;
 import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.Group;
@@ -13,6 +14,7 @@ import com.joelapenna.foursquare.types.Special;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
+import com.joelapenna.foursquared.error.LocationException;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
@@ -326,9 +328,10 @@ public class ShoutActivity extends Activity {
                 venueId = mVenue.getId();
             }
             boolean isPrivate = !mTellFriends;
+            Foursquared foursquared = (Foursquared) getApplication();
+            Location location = foursquared.getLastKnownLocation();
             try {
-                Location location = ((Foursquared) getApplication()).getLastKnownLocation();
-                return ((Foursquared) getApplication()).getFoursquare().checkin(venueId, null,
+                return foursquared.getFoursquare().checkin(venueId, null,
                         LocationUtils.createFoursquareLocation(location), mShout, isPrivate,
                         mTellTwitter, mTellFacebook);
             } catch (Exception e) {

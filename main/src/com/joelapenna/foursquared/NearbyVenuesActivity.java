@@ -50,7 +50,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     static final String TAG = "NearbyVenuesActivity";
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    public static final long DELAY_TIME_IN_MS = 2000;
+    public static final long DELAY_TIME_IN_MS = 4000;
 
     private static final int MENU_REFRESH = 0;
     private static final int MENU_ADD_VENUE = 1;
@@ -150,7 +150,6 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
                 .setIcon(R.drawable.ic_menu_myinfo);
 
-        MenuUtils.addSendFeedbackToMenu((Foursquared) getApplication(), this, menu);
         MenuUtils.addPreferencesToMenu(this, menu);
 
         return true;
@@ -266,7 +265,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         public Group<Group<Venue>> search() throws FoursquareException, LocationException,
                 IOException {
             Foursquare foursquare = ((Foursquared) getApplication()).getFoursquare();
-            Location location = ((Foursquared) getApplication()).getLastKnownLocation();
+            Location location = ((Foursquared) getApplication()).getLastKnownLocationOrThrow();
 
             Group<Group<Venue>> groups = foursquare.venues(LocationUtils
                     .createFoursquareLocation(location), mSearchHolder.query, 30);
