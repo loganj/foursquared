@@ -36,14 +36,6 @@
             android:layout_marginRight="5dip"
             android:textColor="@android:color/primary_text_light"
             android:text="@string/tell_facebook" />
-        <Button
-            android:id="@+id/checkinButton"
-            android:layout_marginLeft="5dip"
-            android:layout_marginRight="5dip"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="@android:style/TextAppearance.Large"
-            android:text="@string/checkin_action_label" />
         <EditText
             android:id="@+id/shoutEditText"
             android:layout_width="fill_parent"
@@ -54,5 +46,13 @@
             android:imeOptions="actionDone"
             android:lines="2"
             android:hint="@string/shout_hint" />
+        <Button
+            android:id="@+id/checkinButton"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:text="@string/checkin_action_label" />
     </LinearLayout>
 </ScrollView>
