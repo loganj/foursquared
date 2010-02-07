@@ -28,4 +28,8 @@
         name="black_start">#333333</color>
     <color
         name="black_end">#181818</color>
+     <color
+        name="grey_start">#CBCBCB</color>
+    <color
+        name="grey_end">#8C9DAE</color>
 </resources>

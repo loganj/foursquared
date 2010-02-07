@@ -10,7 +10,6 @@ import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.R.drawable;
 import com.joelapenna.foursquared.app.LoadableListActivity;
-import com.joelapenna.foursquared.error.LocationException;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.util.MenuUtils;
@@ -113,7 +112,7 @@ public class FriendsActivity extends LoadableListActivity {
         menu.add(Menu.NONE, MENU_SHOUT, Menu.NONE, R.string.shout_action_label) //
                 .setIcon(R.drawable.ic_menu_shout);
         menu.add(Menu.NONE, MENU_STATS, Menu.NONE, R.string.stats_label) //
-                .setIcon(android.R.drawable.ic_menu_recent_history);
+                .setIcon(android.R.drawable.ic_menu_sort_by_size);
         menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
                 .setIcon(drawable.ic_menu_myinfo);
 

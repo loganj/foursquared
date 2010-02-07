@@ -4,7 +4,6 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Badge;
 import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.Group;
@@ -14,7 +13,6 @@ import com.joelapenna.foursquare.types.Special;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
-import com.joelapenna.foursquared.error.LocationException;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
@@ -202,7 +200,7 @@ public class ShoutActivity extends Activity {
     }
 
     private void initListViewAdapters() {
-        mListAdapter = new SeparatedListAdapter(this, R.layout.list_header);
+        mListAdapter = new SeparatedListAdapter(this, R.layout.list_header_purple);
         ListView result_list = ((ListView) findViewById(R.id.result_list));
         result_list.setAdapter(mListAdapter);
         result_list.setOnItemClickListener(onCheckinItemClick);
