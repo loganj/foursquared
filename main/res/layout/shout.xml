@@ -3,7 +3,6 @@
     android:id="@+id/layout_root"
     android:layout_height="fill_parent"
     android:layout_width="fill_parent"
-    android:orientation="vertical"
     android:background="@color/white"
 >
     <include

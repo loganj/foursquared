@@ -124,6 +124,10 @@
     <item
       name="android:layout_width">fill_parent</item>
     <item
+      name="android:paddingTop">2dip</item>
+    <item
+      name="android:paddingBottom">3dip</item>
+    <item
       name="android:paddingLeft">5dip</item>
     <item
       name="android:background">@drawable/purple_gradient</item>
