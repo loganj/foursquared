@@ -1,0 +1,39 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <title>foursquare checkin history for Joe L.</title>
+      <description>foursquare checkin history for Joe L.</description>
+      <link>http://foursquare.com/user/jlapenna</link>
+      <atom:link
+          href="http://feeds.foursquare.com/history/12345abcde.rss"
+          type="application/rss+xml" rel="self" />
+      <item>
+        <title>San Francisco International Airport (SFO)</title>
+        <description>@ San Francisco International Airport (SFO)</description>
+        <link>http://foursquare.com/venue/12238</link>
+        <pubDate>Tue, 16 Feb 10 05:09:36 +0000</pubDate>
+        <guid isPermaLink="false">mCpV75xxKgMAMG06UpYeOg==</guid>
+      </item>
+      <item>
+        <title>Saro Japanese Restaurant in Concourse A</title>
+        <description>@ Saro Japanese Restaurant in Concourse A</description>
+        <link>http://foursquare.com/venue/1137243</link>
+        <pubDate>Mon, 15 Feb 10 21:29:26 +0000</pubDate>
+        <guid isPermaLink="false">7hpKeDQn2OPP2Z3+cknNQw==</guid>
+      </item>
+      <item>
+        <title>Detroit Metropolitan Wayne County Airport (DTW)</title>
+        <description>@ Detroit Metropolitan Wayne County Airport (DTW)</description>
+        <link>http://foursquare.com/venue/38236</link>
+        <pubDate>Mon, 15 Feb 10 21:06:18 +0000</pubDate>
+        <guid isPermaLink="false">rZ6Dc2+MQoItQolvcJsbNg==</guid>
+      </item>
+      <item>
+        <title>Kabin KKKKAAAAAHHHHHHNNNNNNNN</title>
+        <description>@ Kabin KKKKAAAAAHHHHHHNNNNNNNN</description>
+        <link>http://foursquare.com/venue/1062861</link>
+        <pubDate>Fri, 12 Feb 10 00:23:38 +0000</pubDate>
+        <guid isPermaLink="false">0Jj1z2y+/wi10nwWFY9bNw==</guid>
+      </item>
+    </channel>
+</rss>
+ 
