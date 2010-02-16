@@ -52,6 +52,8 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
       path = '../captures/api/v1/tips.xml'
     elif url.path == '/v1/checkin':
       path = '../captures/api/v1/checkin.xml'
+    elif url.path == '/history/12345.rss':
+      path = '../captures/api/v1/feed.xml'
 
     if path is None:
       self.send_error(404)
