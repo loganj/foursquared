@@ -4,17 +4,6 @@
 
 package com.joelapenna.foursquare;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
 import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
@@ -38,6 +27,17 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
+
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -216,8 +216,7 @@ class FoursquareHttpApiV1 {
      */
     CheckinResult checkin(String vid, String venue, String geolat, String geolong, String geohacc,
             String geovacc, String geoalt, String shout, boolean isPrivate, boolean twitter,
-            boolean facebook)
-            throws FoursquareException, FoursquareError, IOException {
+            boolean facebook) throws FoursquareException, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_CHECKIN), //
                 new BasicNameValuePair("vid", vid), //
                 new BasicNameValuePair("venue", venue), //
@@ -351,7 +350,7 @@ class FoursquareHttpApiV1 {
                 new BasicNameValuePair("uid", uid));
         return (User) mHttpApi.doHttpRequest(httpPost, new UserParser());
     }
- 
+
     /*
      * /friend/sendrequest?uid=9937
      */
@@ -361,35 +360,35 @@ class FoursquareHttpApiV1 {
                 new BasicNameValuePair("uid", uid));
         return (User) mHttpApi.doHttpRequest(httpPost, new UserParser());
     }
-    
+
     /**
      * /findfriends/byname?q=john doe, mary smith
      */
     @SuppressWarnings("unchecked")
-    public Group<User> addFriendsByName(String text) throws FoursquareException, FoursquareCredentialsException,
-        FoursquareError, IOException {
+    public Group<User> addFriendsByName(String text) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_ADD_FRIENDS_BY_NAME), //
-            new BasicNameValuePair("q", text));
+                new BasicNameValuePair("q", text));
         return (Group<User>) mHttpApi.doHttpRequest(httpGet, new GroupParser(new UserParser()));
     }
-    
+
     /**
      * /findfriends/byphone?q=555-5555,555-5556
      */
     @SuppressWarnings("unchecked")
-    public Group<User> addFriendsByPhone(String text) throws FoursquareException, FoursquareCredentialsException,
-        FoursquareError, IOException {
+    public Group<User> addFriendsByPhone(String text) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_ADD_FRIENDS_BY_PHONE), //
                 new BasicNameValuePair("q", text));
         return (Group<User>) mHttpApi.doHttpRequest(httpPost, new GroupParser(new UserParser()));
     }
-    
+
     /**
      * /findfriends/bytwitter?q=yourtwittername
      */
     @SuppressWarnings("unchecked")
-    public Group<User> addFriendsByTwitter(String text) throws FoursquareException, FoursquareCredentialsException,
-        FoursquareError, IOException {
+    public Group<User> addFriendsByTwitter(String text) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_ADD_FRIENDS_BY_TWITTER), //
                 new BasicNameValuePair("q", text));
         return (Group<User>) mHttpApi.doHttpRequest(httpGet, new GroupParser(new UserParser()));
