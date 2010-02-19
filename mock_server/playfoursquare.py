@@ -4,6 +4,7 @@
 
 import logging
 import shutil
+import sys
 import urlparse
 
 import SimpleHTTPServer
@@ -68,7 +69,11 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 
 def main():
-  server_address = ('0.0.0.0', 8080)
+  if len(sys.argv) > 1:
+    port = int(sys.argv[1])
+  else:
+    port = 8080
+  server_address = ('0.0.0.0', port)
   httpd = BaseHTTPServer.HTTPServer(server_address, RequestHandler)
 
   sa = httpd.socket.getsockname()
