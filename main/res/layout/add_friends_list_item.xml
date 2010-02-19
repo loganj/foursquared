@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2009 Joe LaPenna -->
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/addFriendListItemBackground"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:orientation="horizontal"
+  android:gravity="center_vertical"
+  android:paddingRight="12dip"
+  > 
+    <TextView
+      android:id="@+id/addFriendListItemName"
+      android:layout_width="0dip"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:textColor="@color/black_end"
+      android:textAppearance="@android:style/TextAppearance.Small" 
+      android:singleLine="true"
+      android:ellipsize="marquee"
+      android:layout_gravity="center_vertical" 
+      android:paddingLeft="5dip" />
+<!-- 
+  <ImageView
+    android:id="@+id/addFriendListItemAddButton"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    android:layout_gravity="right"
+    android:gravity="center_vertical"
+    android:src="@drawable/recent_checkins_tab_unselected" />
+ -->
+ 
+  <Button
+    android:id="@+id/addFriendListItemAddButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textAppearance="@android:style/TextAppearance.Small" 
+    android:text="Add" />
+    
+  <Button
+    android:id="@+id/addFriendListItemInfoButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textAppearance="@android:style/TextAppearance.Small" 
+    android:text="Info" />
+    
+    <!-- 
+    android:text="@string/add_friends_by_address_book"
+     -->
+    
+</LinearLayout>

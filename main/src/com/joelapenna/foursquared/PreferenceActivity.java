@@ -105,13 +105,10 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
             FeedbackUtils.SendFeedBack(this, (Foursquared) getApplication());
 
         } else if (Preferences.PREFERENCE_FRIEND_ADD.equals(key)) {
-            startActivity(new Intent( //
-                    Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_MOBILE_ADDFRIENDS)));
+        	startActivity(new Intent(this, AddFriendsActivity.class));
 
         } else if (Preferences.PREFERENCE_FRIEND_REQUESTS.equals(key)) {
-            startActivity(new Intent( //
-                    Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_MOBILE_FRIENDS)));
-
+        	startActivity(new Intent(this, FriendRequestsActivity.class));
         }
         return true;
     }
