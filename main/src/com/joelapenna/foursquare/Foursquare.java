@@ -186,6 +186,24 @@ public class Foursquare {
         return mFoursquareV1.venues(location.geolat, location.geolong, location.geohacc,
                 location.geovacc, location.geoalt, query, limit);
     }
+    
+    @V1
+    public Group<User> addFriendsByName(String text) 
+    	throws FoursquareException, FoursquareError, IOException {
+    	return mFoursquareV1.addFriendsByName(text);
+    }
+    
+    @V1
+    public Group<User> addFriendsByPhone(String text) 
+    	throws FoursquareException, FoursquareError, IOException {
+    	return mFoursquareV1.addFriendsByPhone(text);
+    }
+    
+    @V1
+    public Group<User> addFriendsByTwitter(String text) 
+    	throws FoursquareException, FoursquareError, IOException {
+    	return mFoursquareV1.addFriendsByTwitter(text);
+    }
 
     public static final FoursquareHttpApiV1 createHttpApi(String domain, String clientVersion,
             boolean useOAuth) {

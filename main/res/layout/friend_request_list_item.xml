@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2009 Joe LaPenna -->
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/addFriendListItemBackground"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:orientation="horizontal"
+  android:gravity="center_vertical"
+  android:paddingRight="12dip"
+  > 
+  <TextView
+    android:id="@+id/addFriendListItemName"
+    android:layout_width="0dip"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:textColor="@color/black_end"
+    android:textAppearance="@android:style/TextAppearance.Small" 
+    android:singleLine="true"
+    android:ellipsize="marquee"
+    android:layout_gravity="center_vertical" 
+    android:paddingLeft="5dip" />
+ 
+  <Button
+    android:id="@+id/friendRequestInfoButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textAppearance="@android:style/TextAppearance.Small" 
+    android:text="Info" />
+    
+  <Button
+    android:id="@+id/friendRequestApproveButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textAppearance="@android:style/TextAppearance.Small" 
+    android:text="Approve" />
+    
+  <Button
+    android:id="@+id/friendRequestDenyButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textAppearance="@android:style/TextAppearance.Small" 
+    android:text="Deny" />
+    
+</LinearLayout>

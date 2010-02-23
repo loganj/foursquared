@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="add_a_tip">Add a Tip</string>
+  <string name="add_friends_activity_label">Foursquare Add Friends</string>
   <string name="add_venue_activity_label">Add a New Venue</string>
   <string name="add_venue_error_toast_venue_null">Unable to add venue!</string>
   <string name="add_venue_label">Add Venue</string>
@@ -63,9 +64,9 @@
   <string name="preferences_category_user_actions">User Actions</string>
   <string name="preferences_city_name_summary">Update your foursquare city."</string>
   <string name="preferences_city_name_title">Update City</string>
-  <string name="preferences_friend_add_summary">Add Friends with foursquare.com.</string>
+  <string name="preferences_friend_add_summary">Find others who are also on Foursquare.</string>
   <string name="preferences_friend_add_title">Add Friends</string>
-  <string name="preferences_friend_requests_summary">Manage friends with foursquare.com.</string>
+  <string name="preferences_friend_requests_summary">Manage pending friend requests.</string>
   <string name="preferences_friend_requests_title">Friend Requests</string>
   <string name="preferences_immediate_checkin_summary_off">Prompt for a shout when using \'Quick Checkin\'.</string>
   <string name="preferences_immediate_checkin_summary_on">Checkin without confirmation when using \'Quick Checkin\'.</string>
@@ -116,4 +117,24 @@
   <string name="venues_search_label">Venue Search</string>
   <string name="zip_code">Zip Code</string>
   <string name="search_description">Venues and friends</string>
+  <string name="add_friends_instructions">Foursquare is more fun when you connect with your friends. Your friends can see the email address and phone number you gave us when you signed up, so choose wisely.</string>
+  <string name="add_friends_by_name_btn_label">Find by name</string>
+  <string name="add_friends_by_phonenumber_btn_label">Find using phone number</string>
+  <string name="add_friends_by_twitter_btn_label">Find Twitter friends</string>
+  <string name="add_friends_by_name_instructions">Find a friend using their name</string>
+  <string name="add_friends_by_name_hint">Enter a name (first and/or last)</string>
+  <string name="add_friends_by_phonenumber_instructions">Find a friend using a phone number</string>
+  <string name="add_friends_by_phonenumber_hint">Enter a phone number</string>
+  <string name="add_friends_by_twitter_instructions">Find a friend by Twitter handle</string>
+  <string name="add_friends_by_twitter_hint">Enter your Twitter name</string> 
+  <string name="add_friends_by_addressbook_instructions">Find friends from address book</string>
+  <string name="add_friends_by_addressbook_additional_instructions">We\'re scanning your list of contacts in hopes of finding you some foursquare friends. This may take a few seconds so thanks for your patience!</string>
+  <string name="add_friends_progress_bar_message_find">Searching for friends...</string> 
+  <string name="add_friends_progress_bar_message_send_request">Sending friend invitation...</string>
+  <string name="add_friends_by_address_book">Scan my address book</string>
+  <string name="add_friends_by_facebook">Find Facebook friends</string>
+  <string name="add_friends_request_sent_ok">Friend request sent ok!</string>
+  <string name="add_friends_no_matches">No matches found.</string>
+  <string name="friend_requests_activity_label">Foursquare Friend Requests</string>
+  <string name="friend_requests_decision_sent_ok">Decision sent ok!</string>
 </resources>

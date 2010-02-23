@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical" 
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:paddingBottom="8dip"
+  >
+  
+  <TextView
+    android:id="@+id/addFriendInstructionsTextView"
+    style="@style/listSeparatorTextViewStyle" />
+      
+  <LinearLayout
+    android:orientation="vertical" 
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="8dip"
+    android:paddingRight="8dip"
+    android:paddingTop="8dip"
+    android:paddingBottom="20dip" >
+  
+    <TextView
+      android:id="@+id/addFriendInstructionsAdditionalTextView"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content" />
+  
+    <EditText
+      android:id="@+id/addFriendInputEditText"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:inputType="textCapWords"
+      android:imeOptions="actionNext"
+      android:hint="@string/add_friends_by_name_hint" />
+     
+    <Button
+      android:id="@+id/addFriendSearchButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical"
+      android:layout_gravity="right" 
+      android:text="   Search   " />
+      
+  </LinearLayout>
+
+  <TextView
+    android:id="@+id/addFriendResultsMatchesTitleTextView"
+    android:text="Matches"  
+    android:visibility="gone"
+    style="@style/listSeparatorTextViewStyle" />
+    
+  <LinearLayout
+    android:orientation="vertical" 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="8dip"
+    android:paddingRight="8dip"
+    android:paddingTop="8dip"
+    >
+   
+    <ListView
+      android:id="@+id/addFriendResultsListView"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:dividerHeight="1dip" 
+      android:drawSelectorOnTop="false"
+      android:scrollbars="vertical" />
+    
+  </LinearLayout>
+  
+</LinearLayout>
