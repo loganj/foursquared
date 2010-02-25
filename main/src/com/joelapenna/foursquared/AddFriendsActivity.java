@@ -44,7 +44,7 @@ public class AddFriendsActivity extends Activity {
         Button btnAddFriendsByAddressBook = (Button) findViewById(R.id.findFriendsByAddressBook);
         btnAddFriendsByAddressBook.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View arg0) {
+            public void onClick(View v) {
                 Intent intent = new Intent(AddFriendsActivity.this,
                         AddFriendsByUserInputActivity.class);
                 intent.putExtra(AddFriendsByUserInputActivity.INPUT_TYPE,
@@ -56,7 +56,7 @@ public class AddFriendsActivity extends Activity {
         Button btnAddFriendsByTwitter = (Button) findViewById(R.id.findFriendsByTwitter);
         btnAddFriendsByTwitter.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View arg0) {
+            public void onClick(View v) {
                 Intent intent = new Intent(AddFriendsActivity.this,
                         AddFriendsByUserInputActivity.class);
                 intent.putExtra(AddFriendsByUserInputActivity.INPUT_TYPE,
@@ -68,7 +68,7 @@ public class AddFriendsActivity extends Activity {
         Button btnAddFriendsByName = (Button) findViewById(R.id.findFriendsByName);
         btnAddFriendsByName.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View arg0) {
+            public void onClick(View v) {
                 Intent intent = new Intent(AddFriendsActivity.this,
                         AddFriendsByUserInputActivity.class);
                 intent.putExtra(AddFriendsByUserInputActivity.INPUT_TYPE,
@@ -80,7 +80,7 @@ public class AddFriendsActivity extends Activity {
         Button btnAddFriendsByPhoneNumber = (Button) findViewById(R.id.findFriendsByPhoneNumber);
         btnAddFriendsByPhoneNumber.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View arg0) {
+            public void onClick(View v) {
                 Intent intent = new Intent(AddFriendsActivity.this,
                         AddFriendsByUserInputActivity.class);
                 intent.putExtra(AddFriendsByUserInputActivity.INPUT_TYPE,

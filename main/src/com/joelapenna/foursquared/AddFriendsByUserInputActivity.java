@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -118,7 +119,7 @@ public class AddFriendsByUserInputActivity extends Activity {
 
         mBtnSearch.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View arg0) {
+            public void onClick(View v) {
                 startSearch(mEditInput.getText().toString());
             }
         });
@@ -140,11 +141,13 @@ public class AddFriendsByUserInputActivity extends Activity {
                         R.string.add_friends_by_phonenumber_instructions));
                 mEditInput.setHint(getResources().getString(
                         R.string.add_friends_by_phonenumber_hint));
+                mEditInput.setInputType(InputType.TYPE_CLASS_PHONE);
                 break;
             case INPUT_TYPE_TWITTERNAME:
                 mTextViewInstructions.setText(getResources().getString(
                         R.string.add_friends_by_twitter_instructions));
                 mEditInput.setHint(getResources().getString(R.string.add_friends_by_twitter_hint));
+                mEditInput.setInputType(InputType.TYPE_CLASS_TEXT);
                 break;
             case INPUT_TYPE_ADDRESSBOOK:
                 mTextViewInstructions.setText(getResources().getString(
@@ -158,6 +161,7 @@ public class AddFriendsByUserInputActivity extends Activity {
                 mTextViewInstructions.setText(getResources().getString(
                         R.string.add_friends_by_name_instructions));
                 mEditInput.setHint(getResources().getString(R.string.add_friends_by_name_hint));
+                mEditInput.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
                 break;
         }
 
