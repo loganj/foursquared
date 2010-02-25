@@ -1,5 +1,5 @@
 /**
- * Copyright 2008 Joe LaPenna
+ * Copyright 2010 Mark Wyszomierski
  */
 
 package com.joelapenna.foursquared.widget;
@@ -95,6 +95,11 @@ public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> {
             }
         }
     };
+    
+    public void removeItem(int position) throws IndexOutOfBoundsException {
+        group.remove(position);
+        notifyDataSetInvalidated();
+    }
 
     static class ViewHolder {
         LinearLayout main;

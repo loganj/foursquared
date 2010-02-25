@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- Copyright 2010 Mark Wyszomierski -->
+ 
 <LinearLayout 
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical" 
@@ -30,7 +33,7 @@
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:inputType="textCapWords"
-      android:imeOptions="actionNext"
+      android:imeOptions="actionSearch"
       android:hint="@string/add_friends_by_name_hint" />
      
     <Button

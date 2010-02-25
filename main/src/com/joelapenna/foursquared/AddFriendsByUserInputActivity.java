@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Joe LaPenna
+ * Copyright 2010 Mark Wyszomierski
  */
 
 package com.joelapenna.foursquared;
@@ -24,14 +24,18 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.TextView.OnEditorActionListener;
 
 /**
  * Lets the user search for friends via first+last name, phone number, or
@@ -115,15 +119,18 @@ public class AddFriendsByUserInputActivity extends Activity {
         mBtnSearch.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                mEditInput.setEnabled(false);
-                mBtnSearch.setEnabled(false);
-                startProgressBar(getResources().getString(R.string.add_friends_activity_label),
-                        getResources().getString(R.string.add_friends_progress_bar_message_find));
-                mStateHolder.startTaskFindFriends(AddFriendsByUserInputActivity.this, mEditInput
-                        .getText().toString());
+                startSearch(mEditInput.getText().toString());
             }
         });
         mEditInput.addTextChangedListener(mNamesFieldWatcher);
+        mEditInput.setOnEditorActionListener(new OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_NULL) {
+                    startSearch(mEditInput.getText().toString());
+                }
+                return false;
+            }
+        });
         mBtnSearch.setEnabled(false);
 
         mInputType = getIntent().getIntExtra(INPUT_TYPE, INPUT_TYPE_USERNAMES);
@@ -170,11 +177,7 @@ public class AddFriendsByUserInputActivity extends Activity {
             // If we are scanning the address book, we should kick it off
             // immediately.
             if (mInputType == INPUT_TYPE_ADDRESSBOOK) {
-                mEditInput.setEnabled(false);
-                mBtnSearch.setEnabled(false);
-                startProgressBar(getResources().getString(R.string.add_friends_activity_label),
-                        getResources().getString(R.string.add_friends_progress_bar_message_find));
-                mStateHolder.startTaskFindFriends(AddFriendsByUserInputActivity.this, "");
+                startSearch("");
             }
         }
     }
@@ -226,6 +229,17 @@ public class AddFriendsByUserInputActivity extends Activity {
         intent.putExtra(UserActivity.EXTRA_USER, user.getId());
         intent.setData(Uri.parse("http://foursquare.com/user/" + user.getId()));
         startActivity(intent);
+    }
+    
+    private void startSearch(String input) {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mEditInput.getWindowToken(), 0);
+    
+        mEditInput.setEnabled(false);
+        mBtnSearch.setEnabled(false);
+        startProgressBar(getResources().getString(R.string.add_friends_activity_label),
+                getResources().getString(R.string.add_friends_progress_bar_message_find));
+        mStateHolder.startTaskFindFriends(AddFriendsByUserInputActivity.this, input);
     }
 
     private void startProgressBar(String title, String message) {
@@ -331,16 +345,16 @@ public class AddFriendsByUserInputActivity extends Activity {
                 Group<User> users = null;
                 switch (mActivity.mInputType) {
                     case INPUT_TYPE_PHONENUMBERS:
-                        users = foursquare.addFriendsByPhone(params[0]);
+                        users = foursquare.findFriendsByPhone(params[0]);
                         break;
                     case INPUT_TYPE_TWITTERNAME:
-                        users = foursquare.addFriendsByTwitter(params[0]);
+                        users = foursquare.findFriendsByTwitter(params[0]);
                         break;
                     case INPUT_TYPE_ADDRESSBOOK:
                         AddressBookUtils addr = AddressBookUtils.addressBookUtils();
                         String addresses = addr.getAllContactsPhoneNumbers(mActivity);
                         if (addresses != null && addresses.length() > 0) {
-                            users = foursquare.addFriendsByPhone(addresses);
+                            users = foursquare.findFriendsByPhone(addresses);
                         } else {
                             // No contacts in their contacts book, just say no
                             // matches by supplying an empty group.
@@ -348,7 +362,7 @@ public class AddFriendsByUserInputActivity extends Activity {
                         }
                         break;
                     default:
-                        users = foursquare.addFriendsByName(params[0]);
+                        users = foursquare.findFriendsByName(params[0]);
                         break;
                 }
                 return users;
