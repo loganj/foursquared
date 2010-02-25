@@ -49,9 +49,4 @@ abstract class BaseGroupAdapter<T extends FoursquareType> extends BaseAdapter {
         group = g;
         notifyDataSetInvalidated();
     }
-    /*
-    public void removeItem(int position) throws IndexOutOfBoundsException {
-        group.remove(position);
-        notifyDataSetInvalidated();
-    }*/
 }
