@@ -1,3 +1,6 @@
+/**
+ * Copyright 2010 Mark Wyszomierski
+ */
 
 package com.joelapenna.foursquared.util;
 

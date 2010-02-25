@@ -63,9 +63,9 @@ class FoursquareHttpApiV1 {
     private static final String URL_API_FRIEND_DENY = "/friend/deny";
     private static final String URL_API_FRIEND_SENDREQUEST = "/friend/sendrequest";
     private static final String URL_API_FRIENDS = "/friends";
-    private static final String URL_API_ADD_FRIENDS_BY_NAME = "/findfriends/byname";
-    private static final String URL_API_ADD_FRIENDS_BY_PHONE = "/findfriends/byphone";
-    private static final String URL_API_ADD_FRIENDS_BY_TWITTER = "/findfriends/bytwitter";
+    private static final String URL_API_FIND_FRIENDS_BY_NAME = "/findfriends/byname";
+    private static final String URL_API_FIND_FRIENDS_BY_PHONE = "/findfriends/byphone";
+    private static final String URL_API_FIND_FRIENDS_BY_TWITTER = "/findfriends/bytwitter";
 
     private final DefaultHttpClient mHttpClient = AbstractHttpApi.createHttpClient();
     private HttpApi mHttpApi;
@@ -365,9 +365,9 @@ class FoursquareHttpApiV1 {
      * /findfriends/byname?q=john doe, mary smith
      */
     @SuppressWarnings("unchecked")
-    public Group<User> addFriendsByName(String text) throws FoursquareException,
+    public Group<User> findFriendsByName(String text) throws FoursquareException,
             FoursquareCredentialsException, FoursquareError, IOException {
-        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_ADD_FRIENDS_BY_NAME), //
+        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_FIND_FRIENDS_BY_NAME), //
                 new BasicNameValuePair("q", text));
         return (Group<User>) mHttpApi.doHttpRequest(httpGet, new GroupParser(new UserParser()));
     }
@@ -376,9 +376,9 @@ class FoursquareHttpApiV1 {
      * /findfriends/byphone?q=555-5555,555-5556
      */
     @SuppressWarnings("unchecked")
-    public Group<User> addFriendsByPhone(String text) throws FoursquareException,
+    public Group<User> findFriendsByPhone(String text) throws FoursquareException,
             FoursquareCredentialsException, FoursquareError, IOException {
-        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_ADD_FRIENDS_BY_PHONE), //
+        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_FIND_FRIENDS_BY_PHONE), //
                 new BasicNameValuePair("q", text));
         return (Group<User>) mHttpApi.doHttpRequest(httpPost, new GroupParser(new UserParser()));
     }
@@ -387,9 +387,9 @@ class FoursquareHttpApiV1 {
      * /findfriends/bytwitter?q=yourtwittername
      */
     @SuppressWarnings("unchecked")
-    public Group<User> addFriendsByTwitter(String text) throws FoursquareException,
+    public Group<User> findFriendsByTwitter(String text) throws FoursquareException,
             FoursquareCredentialsException, FoursquareError, IOException {
-        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_ADD_FRIENDS_BY_TWITTER), //
+        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_FIND_FRIENDS_BY_TWITTER), //
                 new BasicNameValuePair("q", text));
         return (Group<User>) mHttpApi.doHttpRequest(httpGet, new GroupParser(new UserParser()));
     }

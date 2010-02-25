@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Joe LaPenna
+ * Copyright 2010 Mark Wyszomierski
  */
 
 package com.joelapenna.foursquared;

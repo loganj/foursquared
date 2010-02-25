@@ -188,21 +188,21 @@ public class Foursquare {
     }
     
     @V1
-    public Group<User> addFriendsByName(String text) 
+    public Group<User> findFriendsByName(String text) 
     	throws FoursquareException, FoursquareError, IOException {
-    	return mFoursquareV1.addFriendsByName(text);
+    	return mFoursquareV1.findFriendsByName(text);
     }
     
     @V1
-    public Group<User> addFriendsByPhone(String text) 
+    public Group<User> findFriendsByPhone(String text) 
     	throws FoursquareException, FoursquareError, IOException {
-    	return mFoursquareV1.addFriendsByPhone(text);
+    	return mFoursquareV1.findFriendsByPhone(text);
     }
     
     @V1
-    public Group<User> addFriendsByTwitter(String text) 
+    public Group<User> findFriendsByTwitter(String text) 
     	throws FoursquareException, FoursquareError, IOException {
-    	return mFoursquareV1.addFriendsByTwitter(text);
+    	return mFoursquareV1.findFriendsByTwitter(text);
     }
 
     public static final FoursquareHttpApiV1 createHttpApi(String domain, String clientVersion,

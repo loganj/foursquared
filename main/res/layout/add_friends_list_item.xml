@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright 2009 Joe LaPenna -->
+
+<!-- Copyright 2010 Mark Wyszomierski -->
+
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@+id/addFriendListItemBackground"
