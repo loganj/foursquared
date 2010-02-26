@@ -65,26 +65,14 @@ public class AddFriendsActivity extends Activity {
             }
         });
 
-        Button btnAddFriendsByName = (Button) findViewById(R.id.findFriendsByName);
+        Button btnAddFriendsByName = (Button) findViewById(R.id.findFriendsByNameOrPhoneNumber);
         btnAddFriendsByName.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AddFriendsActivity.this,
                         AddFriendsByUserInputActivity.class);
                 intent.putExtra(AddFriendsByUserInputActivity.INPUT_TYPE,
-                        AddFriendsByUserInputActivity.INPUT_TYPE_USERNAMES);
-                startActivity(intent);
-            }
-        });
-
-        Button btnAddFriendsByPhoneNumber = (Button) findViewById(R.id.findFriendsByPhoneNumber);
-        btnAddFriendsByPhoneNumber.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AddFriendsActivity.this,
-                        AddFriendsByUserInputActivity.class);
-                intent.putExtra(AddFriendsByUserInputActivity.INPUT_TYPE,
-                        AddFriendsByUserInputActivity.INPUT_TYPE_PHONENUMBERS);
+                        AddFriendsByUserInputActivity.INPUT_TYPE_NAME_OR_PHONE); 
                 startActivity(intent);
             }
         });

@@ -34,7 +34,7 @@
       android:layout_height="wrap_content"
       android:inputType="textCapWords"
       android:imeOptions="actionSearch"
-      android:hint="@string/add_friends_by_name_hint" />
+      android:hint="@string/add_friends_by_name_or_phone_hint" />
      
     <Button
       android:id="@+id/addFriendSearchButton"

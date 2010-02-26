@@ -61,10 +61,9 @@ public class AddFriendsByUserInputActivity extends Activity {
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     public static final String INPUT_TYPE = "com.joelapenna.foursquared.AddFriendsByUserInputActivity.INPUT_TYPE";
-    public static final int INPUT_TYPE_USERNAMES = 0;
-    public static final int INPUT_TYPE_PHONENUMBERS = 1;
-    public static final int INPUT_TYPE_TWITTERNAME = 2;
-    public static final int INPUT_TYPE_ADDRESSBOOK = 3;
+    public static final int INPUT_TYPE_NAME_OR_PHONE = 0;
+    public static final int INPUT_TYPE_TWITTERNAME = 1;
+    public static final int INPUT_TYPE_ADDRESSBOOK = 2;
 
     private TextView mTextViewInstructions;
     private TextView mTextViewAdditionalInstructions;
@@ -134,15 +133,8 @@ public class AddFriendsByUserInputActivity extends Activity {
         });
         mBtnSearch.setEnabled(false);
 
-        mInputType = getIntent().getIntExtra(INPUT_TYPE, INPUT_TYPE_USERNAMES);
+        mInputType = getIntent().getIntExtra(INPUT_TYPE, INPUT_TYPE_NAME_OR_PHONE);
         switch (mInputType) {
-            case INPUT_TYPE_PHONENUMBERS:
-                mTextViewInstructions.setText(getResources().getString(
-                        R.string.add_friends_by_phonenumber_instructions));
-                mEditInput.setHint(getResources().getString(
-                        R.string.add_friends_by_phonenumber_hint));
-                mEditInput.setInputType(InputType.TYPE_CLASS_PHONE);
-                break;
             case INPUT_TYPE_TWITTERNAME:
                 mTextViewInstructions.setText(getResources().getString(
                         R.string.add_friends_by_twitter_instructions));
@@ -159,8 +151,8 @@ public class AddFriendsByUserInputActivity extends Activity {
                 break;
             default:
                 mTextViewInstructions.setText(getResources().getString(
-                        R.string.add_friends_by_name_instructions));
-                mEditInput.setHint(getResources().getString(R.string.add_friends_by_name_hint));
+                        R.string.add_friends_by_name_or_phone_instructions));
+                mEditInput.setHint(getResources().getString(R.string.add_friends_by_name_or_phone_hint));
                 mEditInput.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
                 break;
         }
@@ -348,9 +340,6 @@ public class AddFriendsByUserInputActivity extends Activity {
 
                 Group<User> users = null;
                 switch (mActivity.mInputType) {
-                    case INPUT_TYPE_PHONENUMBERS:
-                        users = foursquare.findFriendsByPhone(params[0]);
-                        break;
                     case INPUT_TYPE_TWITTERNAME:
                         users = foursquare.findFriendsByTwitter(params[0]);
                         break;
@@ -366,7 +355,10 @@ public class AddFriendsByUserInputActivity extends Activity {
                         }
                         break;
                     default:
-                        users = foursquare.findFriendsByName(params[0]);
+                        // Combine searches for name/phone, results returned in one list.
+                        users = new Group<User>();
+                        users.addAll(foursquare.findFriendsByPhone(params[0]));
+                        users.addAll(foursquare.findFriendsByName(params[0]));
                         break;
                 }
                 return users;

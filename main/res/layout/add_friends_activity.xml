@@ -29,7 +29,7 @@
         android:id="@+id/findFriendsByAddressBook"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/add_friends_by_address_book" />
+        android:text="@string/add_friends_by_address_book_btn_label" />
       
       <Button
         android:id="@+id/findFriendsByTwitter"
@@ -38,17 +38,11 @@
         android:text="@string/add_friends_by_twitter_btn_label" />
          
       <Button
-        android:id="@+id/findFriendsByName"
+        android:id="@+id/findFriendsByNameOrPhoneNumber"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/add_friends_by_name_btn_label" />
+        android:text="@string/add_friends_by_name_or_phone_btn_label" />
       
-      <Button
-        android:id="@+id/findFriendsByPhoneNumber"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/add_friends_by_phonenumber_btn_label" />
-        
     </LinearLayout>
   </ScrollView>
 </LinearLayout>
