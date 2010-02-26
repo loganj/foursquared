@@ -74,7 +74,8 @@ abstract public class AbstractHttpApi implements HttpApi {
         if (DEBUG) LOG.log(Level.FINE, "executed HttpRequest for: "
                 + httpRequest.getURI().toString());
 
-        switch (response.getStatusLine().getStatusCode()) {
+        int statusCode = response.getStatusLine().getStatusCode();
+        switch (statusCode) {
             case 200:
                 InputStream is = response.getEntity().getContent();
                 try {
@@ -101,7 +102,7 @@ abstract public class AbstractHttpApi implements HttpApi {
                 if (DEBUG) LOG.log(Level.FINE, "Default case for status code reached: "
                         + response.getStatusLine().toString());
                 response.getEntity().consumeContent();
-                throw new IOException("Unknown HTTP status: " + response.getStatusLine());
+                throw new FoursquareException("Error connecting to Foursquare: " + statusCode + ". Try again later.");
         }
     }
 
