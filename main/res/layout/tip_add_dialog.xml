@@ -23,5 +23,6 @@
     android:layout_height="wrap_content"
     android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
     android:imeOptions=""
-    android:lines="3" />
+    android:lines="3"
+    android:gravity="top" />
 </LinearLayout>
