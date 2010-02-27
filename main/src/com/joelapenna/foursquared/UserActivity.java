@@ -37,6 +37,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -82,6 +83,14 @@ public class UserActivity extends Activity {
         registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         mVenueView = (VenueView)findViewById(R.id.venue);
+        
+        ImageView userPhoto = (ImageView)findViewById(R.id.photo);
+        userPhoto.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showUserPhotoLarge();
+            }
+        });
 
         initGridViewAdapter();
 
@@ -303,5 +312,27 @@ public class UserActivity extends Activity {
             name.setText(fullName);
             UserUtils.ensureUserPhoto(UserActivity.this, user, DEBUG, TAG);
         }
+    }
+    
+    private void showUserPhotoLarge() {
+        if (mUser == null) {
+            return;
+        }
+        String photoUrl = mUser.getPhoto();
+        if (photoUrl == null) {
+            return;
+        }
+        
+        // If "_thumbs" exists, remove it to get the url of the full-size image.
+        photoUrl = photoUrl.replace("_thumbs", "");
+        
+        Intent intent = new Intent();
+        intent.setClass(this, FetchImageForViewIntent.class);
+        intent.putExtra(FetchImageForViewIntent.IMAGE_URL, photoUrl);
+        intent.putExtra(FetchImageForViewIntent.PROGRESS_BAR_TITLE, getResources().getString(
+                R.string.user_activity_fetch_full_image_title));
+        intent.putExtra(FetchImageForViewIntent.PROGRESS_BAR_MESSAGE, getResources().getString(
+                R.string.user_activity_fetch_full_image_message));
+        startActivity(intent);
     }
 }

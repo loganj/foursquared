@@ -145,5 +145,21 @@
       name="android:textColor">@android:color/white</item>
   </style>
   
+ 
+  <!-- Provides a transparent background for an activity. Without inheriting from this
+       base theme style, 1.5 makes the background solid black instead of transparent.
+   -->
+  <style name="ThemeTransparentDialogBase" parent="@android:style/Theme.Black">
+  </style> 
+  <style name="ThemeTransparentDialogBase.TransparentDialog">
+    <item name="android:windowBackground">@android:color/transparent</item>
+    <item name="android:windowFrame">@null</item>
+    <item name="android:windowContentOverlay">@null</item>
+    <item name="android:windowIsFloating">true</item>
+    <item name="android:backgroundDimEnabled">true</item>
+    <item name="android:windowIsTranslucent">true</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+   </style>
+  
 </resources>
-

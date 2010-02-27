@@ -281,6 +281,11 @@
       android:name=".FriendRequestsActivity"
       android:label="@string/friend_requests_activity_label">
     </activity>
+    
+    <activity
+      android:name=".FetchImageForViewIntent"
+      android:theme="@style/ThemeTransparentDialogBase.TransparentDialog">
+    </activity> 
 
     <receiver
       android:name=".appwidget.FriendsAppWidgetProvider"
