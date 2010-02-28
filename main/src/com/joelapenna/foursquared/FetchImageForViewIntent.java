@@ -58,11 +58,11 @@ public class FetchImageForViewIntent extends Activity {
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
     private static final String TEMP_FILE_NAME = "tmp_fsq.jpg";
 
-    public static final String IMAGE_URL = "com.joelapenna.foursquared.FetchImageForViewIntent.IMAGE_URL";
-    public static final String CONNECTION_TIMEOUT_IN_SECONDS = "com.joelapenna.foursquared.FetchImageForViewIntent.CONNECTION_TIMEOUT_IN_SECONDS";
-    public static final String READ_TIMEOUT_IN_SECONDS = "com.joelapenna.foursquared.FetchImageForViewIntent.READ_TIMEOUT_IN_SECONDS";
-    public static final String PROGRESS_BAR_TITLE = "com.joelapenna.foursquared.FetchImageForViewIntent.PROGRESS_BAR_TITLE";
-    public static final String PROGRESS_BAR_MESSAGE = "com.joelapenna.foursquared.FetchImageForViewIntent.PROGRESS_BAR_MESSAGE";
+    public static final String IMAGE_URL = Foursquared.PACKAGE_NAME + ".FetchImageForViewIntent.IMAGE_URL";
+    public static final String CONNECTION_TIMEOUT_IN_SECONDS = Foursquared.PACKAGE_NAME + ".FetchImageForViewIntent.CONNECTION_TIMEOUT_IN_SECONDS";
+    public static final String READ_TIMEOUT_IN_SECONDS = Foursquared.PACKAGE_NAME + ".FetchImageForViewIntent.READ_TIMEOUT_IN_SECONDS";
+    public static final String PROGRESS_BAR_TITLE = Foursquared.PACKAGE_NAME + ".FetchImageForViewIntent.PROGRESS_BAR_TITLE";
+    public static final String PROGRESS_BAR_MESSAGE = Foursquared.PACKAGE_NAME + ".FetchImageForViewIntent.PROGRESS_BAR_MESSAGE";
 
     private StateHolder mStateHolder;
     private ProgressDialog mDlgProgress;
