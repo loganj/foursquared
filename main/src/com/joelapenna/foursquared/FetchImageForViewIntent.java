@@ -286,6 +286,12 @@ public class FetchImageForViewIntent extends Activity {
         bmp = BitmapFactory.decodeStream(bis);
         bis.close();
         is.close();
+        
+        // Sometimes no exception gets thrown but bmp is null, throw up to user.
+        if (bmp == null) {
+            throw new Exception("Error fetching image, please try again.");
+        }
+        
         return bmp;
     }
 
