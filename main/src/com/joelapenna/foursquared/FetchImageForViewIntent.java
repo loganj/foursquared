@@ -13,8 +13,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,7 +24,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -56,13 +53,18 @@ import java.net.URLConnection;
 public class FetchImageForViewIntent extends Activity {
     private static final String TAG = "FetchImageForViewIntent";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
-    private static final String TEMP_FILE_NAME = "tmp_fsq.jpg";
+    private static final String TEMP_FILE_NAME = "tmp_fsq";
 
-    public static final String IMAGE_URL = Foursquared.PACKAGE_NAME + ".FetchImageForViewIntent.IMAGE_URL";
-    public static final String CONNECTION_TIMEOUT_IN_SECONDS = Foursquared.PACKAGE_NAME + ".FetchImageForViewIntent.CONNECTION_TIMEOUT_IN_SECONDS";
-    public static final String READ_TIMEOUT_IN_SECONDS = Foursquared.PACKAGE_NAME + ".FetchImageForViewIntent.READ_TIMEOUT_IN_SECONDS";
-    public static final String PROGRESS_BAR_TITLE = Foursquared.PACKAGE_NAME + ".FetchImageForViewIntent.PROGRESS_BAR_TITLE";
-    public static final String PROGRESS_BAR_MESSAGE = Foursquared.PACKAGE_NAME + ".FetchImageForViewIntent.PROGRESS_BAR_MESSAGE";
+    public static final String IMAGE_URL = Foursquared.PACKAGE_NAME
+            + ".FetchImageForViewIntent.IMAGE_URL";
+    public static final String CONNECTION_TIMEOUT_IN_SECONDS = Foursquared.PACKAGE_NAME
+            + ".FetchImageForViewIntent.CONNECTION_TIMEOUT_IN_SECONDS";
+    public static final String READ_TIMEOUT_IN_SECONDS = Foursquared.PACKAGE_NAME
+            + ".FetchImageForViewIntent.READ_TIMEOUT_IN_SECONDS";
+    public static final String PROGRESS_BAR_TITLE = Foursquared.PACKAGE_NAME
+            + ".FetchImageForViewIntent.PROGRESS_BAR_TITLE";
+    public static final String PROGRESS_BAR_MESSAGE = Foursquared.PACKAGE_NAME
+            + ".FetchImageForViewIntent.PROGRESS_BAR_MESSAGE";
 
     private StateHolder mStateHolder;
     private ProgressDialog mDlgProgress;
@@ -91,21 +93,41 @@ public class FetchImageForViewIntent extends Activity {
             if (getIntent().getExtras().containsKey(IMAGE_URL)) {
                 url = getIntent().getExtras().getString(IMAGE_URL);
             } else {
-                throw new IllegalStateException(
-                        "FetchImageForViewIntent requires intent extras parameter 'IMAGE_URL'.");
+                Log.e(TAG, "FetchImageForViewIntent requires intent extras parameter 'IMAGE_URL'.");
+                finish();
+                return;
             }
 
             if (DEBUG) Log.d(TAG, "Fetching image: " + url);
 
+            // Grab the extension of the file that should be present at the end
+            // of the url. We can do a better job of this, and could even check 
+            // that the extension is of an expected type.
+            int posdot = url.lastIndexOf(".");
+            if (posdot < 0) {
+                Log.e(TAG, "FetchImageForViewIntent requires a url to an image resource with a file extension in its name.");
+                finish();
+                return;
+            }
+
+            String progressBarTitle = getIntent().getStringExtra(PROGRESS_BAR_TITLE);
+            if (progressBarTitle == null) {
+                progressBarTitle = "Fetching Image";
+            }
+            String progressBarMessage = getIntent().getStringExtra(PROGRESS_BAR_MESSAGE);
+            if (progressBarMessage == null) {
+                progressBarMessage = "Fetching image...";
+            }
+            
             mStateHolder = new StateHolder();
             mStateHolder.startTask(
                 FetchImageForViewIntent.this, 
                 url, 
-                getIntent().getStringExtra(PROGRESS_BAR_TITLE), 
-                getIntent().getStringExtra(PROGRESS_BAR_MESSAGE),
+                url.substring(posdot),
+                progressBarTitle, 
+                progressBarMessage, 
                 getIntent().getIntExtra(CONNECTION_TIMEOUT_IN_SECONDS, 20), 
                 getIntent().getIntExtra(READ_TIMEOUT_IN_SECONDS, 20));
-            startProgressBar(mStateHolder.getProgressTitle(), mStateHolder.getProgressMessage());
         }
     }
 
@@ -142,38 +164,37 @@ public class FetchImageForViewIntent extends Activity {
         }
         mDlgProgress.setTitle(title);
         mDlgProgress.setMessage(message);
-        mDlgProgress.show();
     }
 
     private void stopProgressBar() {
-        if (mDlgProgress != null) {
+        if (mDlgProgress != null && mDlgProgress.isShowing()) {
             mDlgProgress.dismiss();
-            mDlgProgress = null;
         }
+        mDlgProgress = null;
     }
 
-    private void onFetchImageTaskComplete(Bitmap bmp, String path, Exception ex) {
+    private void onFetchImageTaskComplete(Boolean result, String path, String extension,
+            Exception ex) {
         try {
             // If successful, start an intent to view the image.
-            if (bmp != null) {
+            if (result.equals(Boolean.TRUE)) {
                 // If the image can't be loaded or an intent can't be found to
-                // view it,
-                // launchViewIntent() will create a toast with an error message.
-                launchViewIntent(path);
+                // view it, launchViewIntent() will create a toast with an error
+                // message.
+                launchViewIntent(path, extension);
             } else {
                 NotificationsUtil.ToastReasonForFailure(FetchImageForViewIntent.this, ex);
             }
         } finally {
             // Whether download worked or not, we finish ourselves now. If an
-            // error
-            // occurred, the toast should remain to the calling activity.
+            // error occurred, the toast should remain to the calling activity.
             mStateHolder.setIsRunning(false);
             stopProgressBar();
             finish();
         }
     }
 
-    private boolean launchViewIntent(String outputPath) {
+    private boolean launchViewIntent(String outputPath, String extension) {
         // Try to open the file now to create the uri we'll hand to the intent.
         Uri uri = null;
         try {
@@ -181,16 +202,16 @@ public class FetchImageForViewIntent extends Activity {
             uri = Uri.fromFile(file);
         } catch (Exception ex) {
             Log.e(TAG, "Error opening downloaded image from temp location: ", ex);
-            Toast.makeText(this, "There was an error opening the image.", Toast.LENGTH_SHORT);
+            Toast.makeText(this, "No application could be found to diplay the full image.",
+                    Toast.LENGTH_SHORT);
             return false;
         }
 
         // Try to start an intent to view the image. It's possible that the user
-        // may not
-        // have any intents to handle the request.
+        // may not have any intents to handle the request.
         try {
             Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
-            intent.setDataAndType(uri, "image/jpg");
+            intent.setDataAndType(uri, "image/" + extension);
             startActivity(intent);
         } catch (Exception ex) {
             Log.e(TAG, "Error starting intent to view image: ", ex);
@@ -204,19 +225,21 @@ public class FetchImageForViewIntent extends Activity {
     /**
      * Handles fetching the image from the net and saving it to disk in a task.
      */
-    private static class FetchImageTask extends AsyncTask<Void, Void, Bitmap> {
+    private static class FetchImageTask extends AsyncTask<Void, Void, Boolean> {
 
         private FetchImageForViewIntent mActivity;
         private final String mUrl;
+        private String mExtension;
         private final String mOutputPath;
         private final int mConnectionTimeoutInSeconds;
         private final int mReadTimeoutInSeconds;
         private Exception mReason;
 
-        public FetchImageTask(FetchImageForViewIntent activity, String url,
+        public FetchImageTask(FetchImageForViewIntent activity, String url, String extension,
                 int connectionTimeoutInSeconds, int readTimeoutInSeconds) {
             mActivity = activity;
             mUrl = url;
+            mExtension = extension;
             mOutputPath = Environment.getExternalStorageDirectory() + "/" + TEMP_FILE_NAME;
             mConnectionTimeoutInSeconds = connectionTimeoutInSeconds;
             mReadTimeoutInSeconds = readTimeoutInSeconds;
@@ -227,72 +250,73 @@ public class FetchImageForViewIntent extends Activity {
         }
 
         @Override
-        protected Bitmap doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) {
             try {
-                Bitmap bmp = getImageBitmap(mUrl, mConnectionTimeoutInSeconds,
-                        mReadTimeoutInSeconds);
-
-                // Try to save the image to a temporary file on disk. We always
-                // save it as a jpeg.
-                try {
-                    OutputStream out = new FileOutputStream(mOutputPath);
-                    bmp.compress(Bitmap.CompressFormat.JPEG, 90, out);
-                    out.flush();
-                    out.close();
-                } catch (Exception ex) {
-                    Log.e(TAG, "Error saving downloaded image: ", ex);
-                    mReason = new FoursquareException(
-                            "There was an error saving the image, make sure you have an sdcard installed.");
-                    return null;
-                }
-
-                return bmp;
+                saveImage(mUrl, mOutputPath, mConnectionTimeoutInSeconds, mReadTimeoutInSeconds);
+                return Boolean.TRUE;
 
             } catch (Exception e) {
-                // Error downloading image.
                 if (DEBUG) Log.d(TAG, "FetchImageTask: Exception while fetching image.", e);
                 mReason = e;
             }
-            return null;
+            return Boolean.FALSE;
         }
 
         @Override
-        protected void onPostExecute(Bitmap bmp) {
+        protected void onPostExecute(Boolean result) {
             if (DEBUG) Log.d(TAG, "FetchImageTask: onPostExecute()");
             if (mActivity != null) {
-                mActivity.onFetchImageTaskComplete(bmp, mOutputPath, mReason);
+                mActivity.onFetchImageTaskComplete(result, mOutputPath, mExtension, mReason);
             }
         }
 
         @Override
         protected void onCancelled() {
             if (mActivity != null) {
-                mActivity.onFetchImageTaskComplete(null, mOutputPath, new Exception(
+                mActivity.onFetchImageTaskComplete(null, null, null, new Exception(
                         "Fetch image from url cancelled."));
             }
         }
     }
 
-    /** Returns a bitmap from the given url. */
-    private static Bitmap getImageBitmap(String url, int connectionTimeoutInSeconds,
+    public static void saveImage(String urlImage, String savePath, int connectionTimeoutInSeconds,
             int readTimeoutInSeconds) throws Exception {
-        Bitmap bmp = null;
-        URLConnection conn = (new URL(url)).openConnection();
+        URL url = new URL(urlImage);
+        URLConnection conn = url.openConnection();
         conn.setConnectTimeout(connectionTimeoutInSeconds * 1000);
         conn.setReadTimeout(readTimeoutInSeconds * 1000);
-        conn.connect();
-        InputStream is = conn.getInputStream();
-        BufferedInputStream bis = new BufferedInputStream(is, 8192);
-        bmp = BitmapFactory.decodeStream(bis);
-        bis.close();
-        is.close();
-        
-        // Sometimes no exception gets thrown but bmp is null, throw up to user.
-        if (bmp == null) {
-            throw new Exception("Error fetching image, please try again.");
+        int contentLength = conn.getContentLength();
+        InputStream raw = conn.getInputStream();
+        InputStream in = new BufferedInputStream(raw);
+        byte[] data = new byte[contentLength];
+        int bytesRead = 0;
+        int offset = 0;
+        while (offset < contentLength) {
+            bytesRead = in.read(data, offset, data.length - offset);
+            if (bytesRead == -1) {
+                break;
+            }
+            offset += bytesRead;
         }
-        
-        return bmp;
+        in.close();
+
+        if (offset != contentLength) {
+            Log.e(TAG, "Error fetching image, only read " + offset + " bytes of " + contentLength
+                    + " total.");
+            throw new FoursquareException("Error fetching full image, please try again.");
+        }
+
+        // This will fail if the user has no sdcard present, catch it specifically
+        // to alert user.
+        try {
+            FileOutputStream out = new FileOutputStream(savePath);
+            out.write(data);
+            out.flush();
+            out.close();
+        } catch (Exception ex) {
+            Log.e(TAG, "Error saving fetched image to disk.", ex);
+            throw new FoursquareException("Error opening fetched image, make sure an sdcard is present.");
+        }
     }
 
     /** Maintains state between rotations. */
@@ -306,15 +330,14 @@ public class FetchImageForViewIntent extends Activity {
             mIsRunning = false;
         }
 
-        public void startTask(FetchImageForViewIntent activity, String url,
+        public void startTask(FetchImageForViewIntent activity, String url, String extension,
                 String progressBarTitle, String progressBarMessage, int connectionTimeoutInSeconds,
                 int readTimeoutInSeconds) {
             mIsRunning = true;
-            mProgressTitle = progressBarTitle == null ? "Fetch Image" : progressBarTitle;
-            mProgressMessage = progressBarMessage == null ? "Fetching image..."
-                    : progressBarMessage;
-            mTaskFetchImage = new FetchImageTask(activity, url, connectionTimeoutInSeconds,
-                    readTimeoutInSeconds);
+            mProgressTitle = progressBarTitle;
+            mProgressMessage = progressBarMessage;
+            mTaskFetchImage = new FetchImageTask(activity, url, extension,
+                    connectionTimeoutInSeconds, readTimeoutInSeconds);
             mTaskFetchImage.execute();
         }
 
