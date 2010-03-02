@@ -378,6 +378,9 @@ public class ShoutActivity extends Activity {
         @Override
         public void update(Observable observable, Object data) {
             if (DEBUG) Log.d(TAG, "CheckinResult was observed.");
+
+            mListAdapter = new SeparatedListAdapter(ShoutActivity.this);
+            
             CheckinResult checkinResult = (CheckinResult) data;
             displayMain(checkinResult);
             displayBadges(checkinResult.getBadges());
@@ -387,6 +390,9 @@ public class ShoutActivity extends Activity {
             displayScores(checkinResult.getScoring());
             displayMayor(checkinResult.getMayor());
             findViewById(R.id.footer).setVisibility(View.VISIBLE);
+            
+            ListView result_list = ((ListView) findViewById(R.id.result_list));
+            result_list.setAdapter(mListAdapter);
         }
 
         private void displayMain(CheckinResult checkinResult) {

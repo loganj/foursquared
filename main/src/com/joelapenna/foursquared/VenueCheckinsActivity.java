@@ -104,6 +104,8 @@ public class VenueCheckinsActivity extends LoadableListActivity {
             VenueActivity parent = (VenueActivity)getParent();
             Venue venue = parent.venueObservable.getVenue();
 
+            mListAdapter = new SeparatedListAdapter(VenueCheckinsActivity.this);
+
             boolean hasMayor = venue.getStats() != null && venue.getStats().getMayor() != null;
             if (hasMayor) {
                 if (DEBUG) Log.d(TAG, "Found mayor, pushing to adapter.");
@@ -117,10 +119,10 @@ public class VenueCheckinsActivity extends LoadableListActivity {
                 Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
                 putCheckinsInAdapter(checkins);
             }
+            
+            getListView().setAdapter(mListAdapter);
 
-            if (hasMayor || hasCheckins) {
-                mListAdapter.notifyDataSetInvalidated();
-            } else {
+            if (!hasMayor && !hasCheckins) {
                 if (DEBUG) Log.d(TAG, "No data. Setting empty");
                 setEmptyView();
             }

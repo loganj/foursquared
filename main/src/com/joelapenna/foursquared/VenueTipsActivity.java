@@ -136,6 +136,7 @@ public class VenueTipsActivity extends LoadableListActivity {
             mainAdapter.addSection(group.getType(), groupAdapter);
         }
         mainAdapter.notifyDataSetInvalidated();
+        getListView().setAdapter(mainAdapter);
     }
 
     private final class VenueObserver implements Observer {

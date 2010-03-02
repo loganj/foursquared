@@ -188,8 +188,9 @@ public class NearbyVenuesActivity extends LoadableListActivity {
 
     public void putSearchResultsInAdapter(Group<Group<Venue>> searchResults) {
         Log.d(TAG, "putSearchResultsInAdapter");
+
+        mListAdapter = new SeparatedListAdapter(this);
         if (searchResults != null) {
-            mListAdapter.clear();
             int groupCount = searchResults.size();
             for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
                 Group<Venue> group = searchResults.get(groupsIndex);
@@ -201,7 +202,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 }
             }
         }
-        mListAdapter.notifyDataSetInvalidated();
+        mListView.setAdapter(mListAdapter);
     }
 
     public void setSearchResults(Group<Group<Venue>> searchResults) {

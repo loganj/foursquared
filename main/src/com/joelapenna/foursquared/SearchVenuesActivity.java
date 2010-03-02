@@ -210,7 +210,7 @@ public class SearchVenuesActivity extends TabActivity {
     }
 
     public void putSearchResultsInAdapter(Group<Group<Venue>> searchResults) {
-        mListAdapter.clear();
+        mListAdapter = new SeparatedListAdapter(this);
         int groupCount = searchResults.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
             Group<Venue> group = searchResults.get(groupsIndex);
@@ -221,7 +221,7 @@ public class SearchVenuesActivity extends TabActivity {
                 mListAdapter.addSection(group.getType(), groupAdapter);
             }
         }
-        mListAdapter.notifyDataSetInvalidated();
+        mListView.setAdapter(mListAdapter);
     }
 
     public void setSearchResults(Group<Group<Venue>> searchResults) {
