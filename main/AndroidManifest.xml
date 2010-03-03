@@ -275,11 +275,19 @@
     <activity
       android:name=".AddFriendsByUserInputActivity"
       android:label="@string/add_friends_activity_label">
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
     </activity>
     
     <activity
       android:name=".FriendRequestsActivity"
       android:label="@string/friend_requests_activity_label">
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
     </activity>
     
     <activity

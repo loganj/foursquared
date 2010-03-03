@@ -5,10 +5,7 @@
 package com.joelapenna.foursquared;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,20 +23,12 @@ public class AddFriendsActivity extends Activity {
     private static final String TAG = "AddFriendsActivity";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (DEBUG) Log.d(TAG, "onReceive: " + intent);
-            finish();
-        }
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.d(TAG, "onCreate()");
         setContentView(R.layout.add_friends_activity);
-        registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         Button btnAddFriendsByAddressBook = (Button) findViewById(R.id.findFriendsByAddressBook);
         btnAddFriendsByAddressBook.setOnClickListener(new OnClickListener() {
@@ -76,11 +65,5 @@ public class AddFriendsActivity extends Activity {
                 startActivity(intent);
             }
         });
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(mLoggedOutReceiver);
     }
 }
