@@ -534,7 +534,7 @@ public class AddFriendsByUserInputActivity extends Activity {
             }
     
             @Override
-            public void onBtnClickInfo(User user) {
+            public void onPhotoClick(User user) {
                 userInfo(user);
             }
     };

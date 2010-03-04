@@ -38,14 +38,15 @@ public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> {
 
     private static final String TAG = "";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
-    
+
     private LayoutInflater mInflater;
     private int mLayoutToInflate;
     private ButtonRowClickHandler mClickListener;
     private RemoteResourceManager mRrm;
     private Handler mHandler = new Handler();
 
-    public FriendSearchAddFriendAdapter(Context context, ButtonRowClickHandler clickListener, RemoteResourceManager rrm) {
+    public FriendSearchAddFriendAdapter(Context context, ButtonRowClickHandler clickListener,
+            RemoteResourceManager rrm) {
         super(context);
         mInflater = LayoutInflater.from(context);
         mLayoutToInflate = R.layout.add_friends_list_item;
@@ -80,12 +81,11 @@ public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> {
             holder.photo = (ImageView) convertView.findViewById(R.id.addFriendListItemPhoto);
             holder.name = (TextView) convertView.findViewById(R.id.addFriendListItemName);
             holder.add = (Button) convertView.findViewById(R.id.addFriendListItemAddButton);
-            holder.info = (Button) convertView.findViewById(R.id.addFriendListItemInfoButton);
 
             convertView.setTag(holder);
 
+            holder.photo.setOnClickListener(mOnClickListenerInfo);
             holder.add.setOnClickListener(mOnClickListenerAdd);
-            holder.info.setOnClickListener(mOnClickListenerInfo);
         } else {
             // Get the ViewHolder back to get fast access to the TextView
             // and the ImageView.
@@ -93,7 +93,7 @@ public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> {
         }
 
         User user = (User) getItem(position);
-        
+
         final Uri photoUri = Uri.parse(user.getPhoto());
         try {
             Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photoUri));
@@ -105,11 +105,11 @@ public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> {
                 holder.photo.setImageResource(R.drawable.blank_girl);
             }
         }
-        
+
+        holder.photo.setTag(new Integer(position));
         holder.name.setText(user.getFirstname() + " "
                 + (user.getLastname() != null ? user.getLastname() : ""));
         holder.add.setTag(new Integer(position));
-        holder.info.setTag(new Integer(position));
 
         return convertView;
     }
@@ -127,16 +127,15 @@ public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> {
         public void onClick(View v) {
             if (mClickListener != null) {
                 Integer position = (Integer) v.getTag();
-                mClickListener.onBtnClickInfo((User) getItem(position));
+                mClickListener.onPhotoClick((User) getItem(position));
             }
         }
     };
-    
+
     public void removeItem(int position) throws IndexOutOfBoundsException {
         group.remove(position);
         notifyDataSetInvalidated();
     }
-    
 
     @Override
     public void setGroup(Group<User> g) {
@@ -167,12 +166,11 @@ public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> {
         ImageView photo;
         TextView name;
         Button add;
-        Button info;
     }
 
     public interface ButtonRowClickHandler {
         public void onBtnClickAdd(User user);
 
-        public void onBtnClickInfo(User user);
+        public void onPhotoClick(User user);
     }
 }

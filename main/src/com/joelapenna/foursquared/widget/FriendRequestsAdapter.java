@@ -4,17 +4,31 @@
 
 package com.joelapenna.foursquared.widget;
 
+import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.util.RemoteResourceManager;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * @date February 15, 2010
@@ -22,15 +36,24 @@ import android.widget.TextView;
  */
 public class FriendRequestsAdapter extends BaseGroupAdapter<User> {
 
+    private static final String TAG = "FriendRequestsAdapter";
+    private static final boolean DEBUG = FoursquaredSettings.DEBUG;
+
     private LayoutInflater mInflater;
     private int mLayoutToInflate;
     private ButtonRowClickHandler mClickListener;
+    private RemoteResourceManager mRrm;
+    private Handler mHandler = new Handler();
 
-    public FriendRequestsAdapter(Context context, ButtonRowClickHandler clickListener) {
+    public FriendRequestsAdapter(Context context, ButtonRowClickHandler clickListener,
+            RemoteResourceManager rrm) {
         super(context);
         mInflater = LayoutInflater.from(context);
         mLayoutToInflate = R.layout.friend_request_list_item;
         mClickListener = clickListener;
+        mRrm = rrm;
+
+        mRrm.addObserver(new RemoteResourceManagerObserver());
     }
 
     public FriendRequestsAdapter(Context context, int layoutResource) {
@@ -54,17 +77,17 @@ public class FriendRequestsAdapter extends BaseGroupAdapter<User> {
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.main = (LinearLayout) convertView.findViewById(R.id.addFriendListItemBackground);
-            holder.name = (TextView) convertView.findViewById(R.id.addFriendListItemName);
-            holder.info = (Button) convertView.findViewById(R.id.friendRequestInfoButton);
-            holder.approve = (Button) convertView.findViewById(R.id.friendRequestApproveButton);
-            holder.deny = (Button) convertView.findViewById(R.id.friendRequestDenyButton);
+            holder.main = (LinearLayout) convertView.findViewById(R.id.friendRequestListItemBackground);
+            holder.photo = (ImageView) convertView.findViewById(R.id.friendRequestListItemPhoto);
+            holder.name = (TextView) convertView.findViewById(R.id.friendRequestListItemName);
+            holder.add = (Button) convertView.findViewById(R.id.friendRequestApproveButton);
+            holder.ignore = (Button) convertView.findViewById(R.id.friendRequestDenyButton);
 
             convertView.setTag(holder);
 
-            holder.info.setOnClickListener(mOnClickListenerInfo);
-            holder.approve.setOnClickListener(mOnClickListenerApprove);
-            holder.deny.setOnClickListener(mOnClickListenerDeny);
+            holder.photo.setOnClickListener(mOnClickListenerInfo);
+            holder.add.setOnClickListener(mOnClickListenerApprove);
+            holder.ignore.setOnClickListener(mOnClickListenerDeny);
         } else {
             // Get the ViewHolder back to get fast access to the TextView
             // and the ImageView.
@@ -72,11 +95,24 @@ public class FriendRequestsAdapter extends BaseGroupAdapter<User> {
         }
 
         User user = (User) getItem(position);
+
+        final Uri photoUri = Uri.parse(user.getPhoto());
+        try {
+            Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photoUri));
+            holder.photo.setImageBitmap(bitmap);
+        } catch (IOException e) {
+            if (Foursquare.MALE.equals(user.getGender())) {
+                holder.photo.setImageResource(R.drawable.blank_boy);
+            } else {
+                holder.photo.setImageResource(R.drawable.blank_girl);
+            }
+        }
+
         holder.name.setText(user.getFirstname() + " "
                 + (user.getLastname() != null ? user.getLastname() : ""));
-        holder.info.setTag(new Integer(position));
-        holder.approve.setTag(new Integer(position));
-        holder.deny.setTag(new Integer(position));
+        holder.photo.setTag(new Integer(position));
+        holder.add.setTag(new Integer(position));
+        holder.ignore.setTag(new Integer(position));
 
         return convertView;
     }
@@ -85,7 +121,7 @@ public class FriendRequestsAdapter extends BaseGroupAdapter<User> {
         @Override
         public void onClick(View v) {
             Integer position = (Integer) v.getTag();
-            mClickListener.onBtnClickInfo((User) getItem(position));
+            mClickListener.onPhotoClick((User) getItem(position));
         }
     };
 
@@ -93,7 +129,7 @@ public class FriendRequestsAdapter extends BaseGroupAdapter<User> {
         @Override
         public void onClick(View v) {
             Integer position = (Integer) v.getTag();
-            mClickListener.onBtnClickApprove((User) getItem(position));
+            mClickListener.onBtnClickAdd((User) getItem(position));
         }
     };
 
@@ -102,7 +138,7 @@ public class FriendRequestsAdapter extends BaseGroupAdapter<User> {
         public void onClick(View v) {
             if (mClickListener != null) {
                 Integer position = (Integer) v.getTag();
-                mClickListener.onBtnClickDeny((User) getItem(position));
+                mClickListener.onBtnClickIgnore((User) getItem(position));
             }
         }
     };
@@ -111,20 +147,44 @@ public class FriendRequestsAdapter extends BaseGroupAdapter<User> {
         group.remove(position);
         notifyDataSetInvalidated();
     }
-    
+
+    @Override
+    public void setGroup(Group<User> g) {
+        super.setGroup(g);
+        for (int i = 0; i < g.size(); i++) {
+            Uri photoUri = Uri.parse(g.get(i).getPhoto());
+            if (!mRrm.exists(photoUri)) {
+                mRrm.request(photoUri);
+            }
+        }
+    }
+
+    private class RemoteResourceManagerObserver implements Observer {
+        @Override
+        public void update(Observable observable, Object data) {
+            if (DEBUG) Log.d(TAG, "Fetcher got: " + data);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    notifyDataSetChanged();
+                }
+            });
+        }
+    }
+
     static class ViewHolder {
         LinearLayout main;
+        ImageView photo;
         TextView name;
-        Button info;
-        Button approve;
-        Button deny;
+        Button add;
+        Button ignore;
     }
 
     public interface ButtonRowClickHandler {
-        public void onBtnClickInfo(User user);
+        public void onPhotoClick(User user);
 
-        public void onBtnClickApprove(User user);
+        public void onBtnClickAdd(User user);
 
-        public void onBtnClickDeny(User user);
+        public void onBtnClickIgnore(User user);
     }
 }

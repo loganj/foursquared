@@ -56,23 +56,8 @@ public class FriendRequestsActivity extends ListActivity {
         setContentView(R.layout.friend_requests_activity);
         registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
-        mListAdapter = new FriendRequestsAdapter(this,
-                new FriendRequestsAdapter.ButtonRowClickHandler() {
-                    @Override
-                    public void onBtnClickDeny(User user) {
-                        denyFriendRequest(user);
-                    }
-
-                    @Override
-                    public void onBtnClickApprove(User user) {
-                        approveFriendRequest(user);
-                    }
-
-                    @Override
-                    public void onBtnClickInfo(User user) {
-                        infoFriendRequest(user);
-                    }
-                });
+        mListAdapter = new FriendRequestsAdapter(this, mButtonRowClickHandler,
+                ((Foursquared) getApplication()).getRemoteResourceManager());
         getListView().setAdapter(mListAdapter);
         getListView().setItemsCanFocus(true);
 
@@ -183,20 +168,27 @@ public class FriendRequestsActivity extends ListActivity {
     }
 
     private void onFriendRequestsTaskComplete(Group<User> users, Exception ex) {
+
+        // Recreate the adapter, will also be necessary when we switch to a
+        // SeparatedListAdapter for merging results between twitter/name/phone
+        // etc.
+        mListAdapter = new FriendRequestsAdapter(this, mButtonRowClickHandler,
+                ((Foursquared) getApplication()).getRemoteResourceManager());
+
         try {
             // Populate the list control below now.
             if (users != null) {
                 mStateHolder.setFoundFriendRequests(users);
-
                 mListAdapter.setGroup(mStateHolder.getFoundFriendRequests());
-                mListAdapter.notifyDataSetChanged();
             } else {
                 // If error, feed list adapter empty user group.
-                mListAdapter.setGroup(new Group<User>());
-                mListAdapter.notifyDataSetChanged();
+                Group<User> usersNone = new Group<User>();
+                mStateHolder.setFoundFriendRequests(usersNone);
+                mListAdapter.setGroup(usersNone);
                 NotificationsUtil.ToastReasonForFailure(FriendRequestsActivity.this, ex);
             }
         } finally {
+            getListView().setAdapter(mListAdapter);
             mStateHolder.setIsRunningFriendRequest(false);
             stopProgressBar();
         }
@@ -401,4 +393,23 @@ public class FriendRequestsActivity extends ListActivity {
             return mIsRunningSendDecision;
         }
     }
+
+    private FriendRequestsAdapter.ButtonRowClickHandler mButtonRowClickHandler = 
+        new FriendRequestsAdapter.ButtonRowClickHandler() {
+        
+        @Override
+        public void onBtnClickIgnore(User user) {
+            denyFriendRequest(user);
+        }
+
+        @Override
+        public void onBtnClickAdd(User user) {
+            approveFriendRequest(user);
+        }
+
+        @Override
+        public void onPhotoClick(User user) {
+            infoFriendRequest(user);
+        }
+    };
 }
