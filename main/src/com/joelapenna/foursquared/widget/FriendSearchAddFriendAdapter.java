@@ -4,17 +4,31 @@
 
 package com.joelapenna.foursquared.widget;
 
+import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.util.RemoteResourceManager;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * @date February 14, 2010
@@ -22,15 +36,23 @@ import android.widget.TextView;
  */
 public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> {
 
+    private static final String TAG = "";
+    private static final boolean DEBUG = FoursquaredSettings.DEBUG;
+    
     private LayoutInflater mInflater;
     private int mLayoutToInflate;
     private ButtonRowClickHandler mClickListener;
+    private RemoteResourceManager mRrm;
+    private Handler mHandler = new Handler();
 
-    public FriendSearchAddFriendAdapter(Context context, ButtonRowClickHandler clickListener) {
+    public FriendSearchAddFriendAdapter(Context context, ButtonRowClickHandler clickListener, RemoteResourceManager rrm) {
         super(context);
         mInflater = LayoutInflater.from(context);
         mLayoutToInflate = R.layout.add_friends_list_item;
         mClickListener = clickListener;
+        mRrm = rrm;
+
+        mRrm.addObserver(new RemoteResourceManagerObserver());
     }
 
     public FriendSearchAddFriendAdapter(Context context, int layoutResource) {
@@ -55,6 +77,7 @@ public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> {
             // views we want to bind data to.
             holder = new ViewHolder();
             holder.main = (LinearLayout) convertView.findViewById(R.id.addFriendListItemBackground);
+            holder.photo = (ImageView) convertView.findViewById(R.id.addFriendListItemPhoto);
             holder.name = (TextView) convertView.findViewById(R.id.addFriendListItemName);
             holder.add = (Button) convertView.findViewById(R.id.addFriendListItemAddButton);
             holder.info = (Button) convertView.findViewById(R.id.addFriendListItemInfoButton);
@@ -70,6 +93,19 @@ public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> {
         }
 
         User user = (User) getItem(position);
+        
+        final Uri photoUri = Uri.parse(user.getPhoto());
+        try {
+            Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photoUri));
+            holder.photo.setImageBitmap(bitmap);
+        } catch (IOException e) {
+            if (Foursquare.MALE.equals(user.getGender())) {
+                holder.photo.setImageResource(R.drawable.blank_boy);
+            } else {
+                holder.photo.setImageResource(R.drawable.blank_girl);
+            }
+        }
+        
         holder.name.setText(user.getFirstname() + " "
                 + (user.getLastname() != null ? user.getLastname() : ""));
         holder.add.setTag(new Integer(position));
@@ -100,9 +136,35 @@ public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> {
         group.remove(position);
         notifyDataSetInvalidated();
     }
+    
+
+    @Override
+    public void setGroup(Group<User> g) {
+        super.setGroup(g);
+        for (int i = 0; i < g.size(); i++) {
+            Uri photoUri = Uri.parse(g.get(i).getPhoto());
+            if (!mRrm.exists(photoUri)) {
+                mRrm.request(photoUri);
+            }
+        }
+    }
+
+    private class RemoteResourceManagerObserver implements Observer {
+        @Override
+        public void update(Observable observable, Object data) {
+            if (DEBUG) Log.d(TAG, "Fetcher got: " + data);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    notifyDataSetChanged();
+                }
+            });
+        }
+    }
 
     static class ViewHolder {
         LinearLayout main;
+        ImageView photo;
         TextView name;
         Button add;
         Button info;

@@ -101,18 +101,10 @@ public class AddFriendsByUserInputActivity extends Activity {
         mTextViewMatches = (TextView) findViewById(R.id.addFriendResultsMatchesTitleTextView);
         mListView = (ListView) findViewById(R.id.addFriendResultsListView);
 
-        mListAdapter = new FriendSearchAddFriendAdapter(this,
-                new FriendSearchAddFriendAdapter.ButtonRowClickHandler() {
-                    @Override
-                    public void onBtnClickAdd(User user) {
-                        userAdd(user);
-                    }
-
-                    @Override
-                    public void onBtnClickInfo(User user) {
-                        userInfo(user);
-                    }
-                });
+        mListAdapter = new FriendSearchAddFriendAdapter(
+            this,
+            mButtonRowClickHandler,
+            ((Foursquared)getApplication()).getRemoteResourceManager());
         mListView.setAdapter(mListAdapter);
         mListView.setItemsCanFocus(true);
 
@@ -253,12 +245,19 @@ public class AddFriendsByUserInputActivity extends Activity {
     }
 
     private void onFindFriendsTaskComplete(Group<User> users, Exception ex) {
+
+        // Recreate the adapter, will also be necessary when we switch to a
+        // SeparatedListAdapter for merging results between twitter/name/phone etc.
+        mListAdapter = new FriendSearchAddFriendAdapter(
+            this,
+            mButtonRowClickHandler,
+            ((Foursquared)getApplication()).getRemoteResourceManager());
+        
         try {
-            // Populate the list control below now.
+            // Populate the list adapter.
             if (users != null) {
                 mStateHolder.setFoundFriends(users);
                 mListAdapter.setGroup(mStateHolder.getFoundFriends());
-                mListAdapter.notifyDataSetChanged();
                 mTextViewMatches.setVisibility(View.VISIBLE);
                 if (users.size() < 1) {
                     mTextViewMatches.setVisibility(View.GONE);
@@ -268,10 +267,10 @@ public class AddFriendsByUserInputActivity extends Activity {
             } else {
                 // If error, feed list adapter empty user group.
                 mListAdapter.setGroup(new Group<User>());
-                mListAdapter.notifyDataSetChanged();
                 NotificationsUtil.ToastReasonForFailure(AddFriendsByUserInputActivity.this, ex);
             }
         } finally {
+            mListView.setAdapter(mListAdapter);
             mEditInput.setEnabled(true);
             mBtnSearch.setEnabled(true);
             mStateHolder.setIsRunningTaskFindFriends(false);
@@ -521,5 +520,22 @@ public class AddFriendsByUserInputActivity extends Activity {
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             mBtnSearch.setEnabled(!TextUtils.isEmpty(s));
         }
+    };
+    
+    /** 
+     * This handler will be called when the user clicks on buttons in one of the
+     * listview's rows.
+     */
+    private FriendSearchAddFriendAdapter.ButtonRowClickHandler mButtonRowClickHandler = 
+        new FriendSearchAddFriendAdapter.ButtonRowClickHandler() {
+            @Override
+            public void onBtnClickAdd(User user) {
+                userAdd(user);
+            }
+    
+            @Override
+            public void onBtnClickInfo(User user) {
+                userInfo(user);
+            }
     };
 }
