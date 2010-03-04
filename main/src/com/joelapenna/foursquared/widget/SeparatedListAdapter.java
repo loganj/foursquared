@@ -8,6 +8,7 @@ package com.joelapenna.foursquared.widget;
 import com.joelapenna.foursquared.R;
 
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
@@ -36,6 +37,10 @@ public class SeparatedListAdapter extends BaseAdapter {
     public void addSection(String section, Adapter adapter) {
         this.headers.add(section);
         this.sections.put(section, adapter);
+        
+        // Register an observer so we can call notifyDataSetChanged() when our
+        // children adapters are modified, otherwise no change will be visible.
+        adapter.registerDataSetObserver(mDataSetObserver);
     }
 
     public void clear() {
@@ -137,4 +142,11 @@ public class SeparatedListAdapter extends BaseAdapter {
     public boolean hasStableIds() {
         return false;
     }
+    
+    private DataSetObserver mDataSetObserver = new DataSetObserver() {
+        @Override
+        public void onChanged() {
+            notifyDataSetChanged();   
+        }
+    };
 }
