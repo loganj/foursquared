@@ -109,6 +109,7 @@ public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> {
         holder.clickable.setTag(new Integer(position));
         holder.name.setText(user.getFirstname() + " "
                 + (user.getLastname() != null ? user.getLastname() : ""));
+        holder.add.setTag(new Integer(position));
 
         return convertView;
     }
