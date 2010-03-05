@@ -134,6 +134,7 @@
   <string name="add_friends_no_matches">No matches found.</string>
   <string name="friend_requests_activity_label">Foursquare Friend Requests</string>
   <string name="friend_requests_decision_sent_ok">Decision sent ok!</string>
+  <string name="friend_requests_no_new_requests">You have no new friend requests.</string>
   <string name="user_activity_fetch_full_image_title">Fetching Image</string>
   <string name="user_activity_fetch_full_image_message">Fetching Image...</string>
 </resources>

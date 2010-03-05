@@ -22,6 +22,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -40,6 +42,7 @@ public class FriendRequestsActivity extends ListActivity {
     private StateHolder mStateHolder;
     private ProgressDialog mDlgProgress;
     private FriendRequestsAdapter mListAdapter;
+    private TextView mTextViewNoRequests;
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
@@ -60,12 +63,16 @@ public class FriendRequestsActivity extends ListActivity {
                 ((Foursquared) getApplication()).getRemoteResourceManager());
         getListView().setAdapter(mListAdapter);
         getListView().setItemsCanFocus(true);
-
+        
+        mTextViewNoRequests = (TextView)findViewById(R.id.textViewNoRequests);
+ 
         Object retained = getLastNonConfigurationInstance();
         if (retained != null && retained instanceof StateHolder) {
             mStateHolder = (StateHolder) retained;
             mStateHolder.setActivityForTaskFriendRequests(this);
             mStateHolder.setActivityForTaskSendDecision(this);
+            
+            decideShowNoFriendRequestsTextView();
         } else {
             mStateHolder = new StateHolder();
 
@@ -128,7 +135,9 @@ public class FriendRequestsActivity extends ListActivity {
             case MENU_REFRESH:
                 startProgressBar(getResources().getString(R.string.friend_requests_activity_label),
                         getResources().getString(R.string.add_friends_progress_bar_message_find));
+                mStateHolder.setRanFetchOnce(false);
                 mStateHolder.startTaskFriendRequests(FriendRequestsActivity.this);
+                decideShowNoFriendRequestsTextView();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -167,6 +176,16 @@ public class FriendRequestsActivity extends ListActivity {
         mStateHolder.startTaskSendDecision(FriendRequestsActivity.this, false, user.getId());
     }
 
+    private void decideShowNoFriendRequestsTextView() {
+        if (mStateHolder.getRanFetchOnce() && 
+            mStateHolder.getFoundFriendRequests().size() < 1) {
+            mTextViewNoRequests.setVisibility(View.VISIBLE);
+        }
+        else {
+            mTextViewNoRequests.setVisibility(View.GONE);
+        }
+    }
+    
     private void onFriendRequestsTaskComplete(Group<User> users, Exception ex) {
 
         // Recreate the adapter, will also be necessary when we switch to a
@@ -190,6 +209,8 @@ public class FriendRequestsActivity extends ListActivity {
         } finally {
             getListView().setAdapter(mListAdapter);
             mStateHolder.setIsRunningFriendRequest(false);
+            mStateHolder.setRanFetchOnce(true);
+            decideShowNoFriendRequestsTextView();
             stopProgressBar();
         }
     }
@@ -217,6 +238,7 @@ public class FriendRequestsActivity extends ListActivity {
                 NotificationsUtil.ToastReasonForFailure(this, ex);
             }
         } finally {
+            decideShowNoFriendRequestsTextView();
             mStateHolder.setIsRunningSendDecision(false);
             stopProgressBar();
         }
@@ -337,11 +359,13 @@ public class FriendRequestsActivity extends ListActivity {
         Group<User> mFoundFriends;
         boolean mIsRunningFriendRequests;
         boolean mIsRunningSendDecision;
+        boolean mRanFetchOnce;
 
         public StateHolder() {
             mFoundFriends = new Group<User>();
             mIsRunningFriendRequests = false;
             mIsRunningSendDecision = false;
+            mRanFetchOnce = false;
         }
 
         public void setFoundFriendRequests(Group<User> foundFriends) {
@@ -391,6 +415,14 @@ public class FriendRequestsActivity extends ListActivity {
 
         public boolean getIsRunningSendDecision() {
             return mIsRunningSendDecision;
+        }
+        
+        public boolean getRanFetchOnce() {
+            return mRanFetchOnce;
+        }
+        
+        public void setRanFetchOnce(boolean ranFetchOnce) {
+            mRanFetchOnce = ranFetchOnce;
         }
     }
 
