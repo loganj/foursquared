@@ -81,7 +81,7 @@ public class FriendRequestsAdapter extends BaseGroupAdapter<User> {
             holder.name = (TextView) convertView.findViewById(R.id.friendRequestListItemName);
             holder.add = (Button) convertView.findViewById(R.id.friendRequestApproveButton);
             holder.ignore = (Button) convertView.findViewById(R.id.friendRequestDenyButton);
-            holder.clickable = (LinearLayout) convertView.findViewById(R.id.friendRequestListItemBClickableArea);
+            holder.clickable = (LinearLayout) convertView.findViewById(R.id.friendRequestListItemClickableArea);
 
             convertView.setTag(holder);
 

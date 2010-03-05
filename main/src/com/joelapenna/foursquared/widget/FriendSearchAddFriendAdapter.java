@@ -77,14 +77,14 @@ public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> {
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.main = (LinearLayout) convertView.findViewById(R.id.addFriendListItemBackground);
+            holder.clickable = (LinearLayout) convertView.findViewById(R.id.addFriendListItemClickableArea);
             holder.photo = (ImageView) convertView.findViewById(R.id.addFriendListItemPhoto);
             holder.name = (TextView) convertView.findViewById(R.id.addFriendListItemName);
             holder.add = (Button) convertView.findViewById(R.id.addFriendListItemAddButton);
 
             convertView.setTag(holder);
 
-            holder.photo.setOnClickListener(mOnClickListenerInfo);
+            holder.clickable.setOnClickListener(mOnClickListenerInfo);
             holder.add.setOnClickListener(mOnClickListenerAdd);
         } else {
             // Get the ViewHolder back to get fast access to the TextView
@@ -106,10 +106,9 @@ public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> {
             }
         }
 
-        holder.photo.setTag(new Integer(position));
+        holder.clickable.setTag(new Integer(position));
         holder.name.setText(user.getFirstname() + " "
                 + (user.getLastname() != null ? user.getLastname() : ""));
-        holder.add.setTag(new Integer(position));
 
         return convertView;
     }
@@ -127,7 +126,7 @@ public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> {
         public void onClick(View v) {
             if (mClickListener != null) {
                 Integer position = (Integer) v.getTag();
-                mClickListener.onPhotoClick((User) getItem(position));
+                mClickListener.onInfoAreaClick((User) getItem(position));
             }
         }
     };
@@ -162,7 +161,7 @@ public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> {
     }
 
     static class ViewHolder {
-        LinearLayout main;
+        LinearLayout clickable;
         ImageView photo;
         TextView name;
         Button add;
@@ -171,6 +170,6 @@ public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> {
     public interface ButtonRowClickHandler {
         public void onBtnClickAdd(User user);
 
-        public void onPhotoClick(User user);
+        public void onInfoAreaClick(User user);
     }
 }
