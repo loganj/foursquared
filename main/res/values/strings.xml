@@ -133,8 +133,11 @@
   <string name="add_friends_request_sent_ok">Friend request sent ok!</string>
   <string name="add_friends_no_matches">No matches found.</string>
   <string name="friend_requests_activity_label">Foursquare Friend Requests</string>
-  <string name="friend_requests_decision_sent_ok">Decision sent ok!</string>
+  <string name="friend_requests_approved">You are now friends with</string>
   <string name="friend_requests_no_new_requests">You have no new friend requests.</string>
+  <string name="friend_requests_progress_bar_find_requests">Getting new friend requests....</string>
+  <string name="friend_requests_progress_bar_approve_request">Adding friend....</string>
+  <string name="friend_requests_progress_bar_ignore_request">Ignoring request....</string>
   <string name="user_activity_fetch_full_image_title">Fetching Image</string>
   <string name="user_activity_fetch_full_image_message">Fetching Image...</string>
 </resources>

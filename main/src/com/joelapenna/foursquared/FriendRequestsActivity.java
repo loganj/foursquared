@@ -45,7 +45,7 @@ public class FriendRequestsActivity extends ListActivity {
     private TextView mTextViewNoRequests;
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
-        @Override
+        @Override 
         public void onReceive(Context context, Intent intent) {
             if (DEBUG) Log.d(TAG, "onReceive: " + intent);
             finish();
@@ -76,10 +76,9 @@ public class FriendRequestsActivity extends ListActivity {
         } else {
             mStateHolder = new StateHolder();
 
-            // If we are scanning the address book, we should kick it off
-            // immediately.
+            // Start searching for friend requests immediately on activity creation.
             startProgressBar(getResources().getString(R.string.friend_requests_activity_label),
-                    getResources().getString(R.string.add_friends_progress_bar_message_find));
+                    getResources().getString(R.string.friend_requests_progress_bar_find_requests));
             mStateHolder.startTaskFriendRequests(FriendRequestsActivity.this);
         }
     }
@@ -90,11 +89,15 @@ public class FriendRequestsActivity extends ListActivity {
 
         if (mStateHolder.getIsRunningFriendRequest()) {
             startProgressBar(getResources().getString(R.string.friend_requests_activity_label),
-                    getResources().getString(R.string.add_friends_progress_bar_message_find));
-        } else if (mStateHolder.getIsRunningSendDecision()) {
+                    getResources().getString(R.string.friend_requests_progress_bar_find_requests));
+        } else if (mStateHolder.getIsRunningApproval()) {
             startProgressBar(getResources().getString(R.string.friend_requests_activity_label),
                     getResources()
-                            .getString(R.string.add_friends_progress_bar_message_send_request));
+                            .getString(R.string.friend_requests_progress_bar_approve_request));
+        } else if (mStateHolder.getIsRunningIgnore()) {
+            startProgressBar(getResources().getString(R.string.friend_requests_activity_label),
+                    getResources()
+                            .getString(R.string.friend_requests_progress_bar_ignore_request));
         }
 
         mListAdapter.setGroup(mStateHolder.getFoundFriendRequests());
@@ -134,7 +137,7 @@ public class FriendRequestsActivity extends ListActivity {
         switch (item.getItemId()) {
             case MENU_REFRESH:
                 startProgressBar(getResources().getString(R.string.friend_requests_activity_label),
-                        getResources().getString(R.string.add_friends_progress_bar_message_find));
+                        getResources().getString(R.string.friend_requests_progress_bar_find_requests));
                 mStateHolder.setRanFetchOnce(false);
                 mStateHolder.startTaskFriendRequests(FriendRequestsActivity.this);
                 decideShowNoFriendRequestsTextView();
@@ -166,14 +169,14 @@ public class FriendRequestsActivity extends ListActivity {
 
     private void approveFriendRequest(User user) {
         startProgressBar(getResources().getString(R.string.friend_requests_activity_label),
-                getResources().getString(R.string.add_friends_progress_bar_message_find));
-        mStateHolder.startTaskSendDecision(FriendRequestsActivity.this, true, user.getId());
+                getResources().getString(R.string.friend_requests_progress_bar_approve_request));
+        mStateHolder.startTaskSendDecision(FriendRequestsActivity.this, user.getId(), true);
     }
 
     private void denyFriendRequest(User user) {
         startProgressBar(getResources().getString(R.string.friend_requests_activity_label),
-                getResources().getString(R.string.add_friends_progress_bar_message_find));
-        mStateHolder.startTaskSendDecision(FriendRequestsActivity.this, false, user.getId());
+                getResources().getString(R.string.friend_requests_progress_bar_ignore_request));
+        mStateHolder.startTaskSendDecision(FriendRequestsActivity.this, user.getId(), false);
     }
 
     private void decideShowNoFriendRequestsTextView() {
@@ -215,7 +218,7 @@ public class FriendRequestsActivity extends ListActivity {
         }
     }
 
-    private void onFriendRequestDecisionTaskComplete(User user, Exception ex) {
+    private void onFriendRequestDecisionTaskComplete(User user, boolean isApproving, Exception ex) {
         try {
             // If sending the request was successful, then we need to remove
             // that user from the
@@ -230,16 +233,22 @@ public class FriendRequestsActivity extends ListActivity {
                     position++;
                 }
 
-                Toast.makeText(this,
-                        getResources().getString(R.string.friend_requests_decision_sent_ok),
-                        Toast.LENGTH_SHORT).show();
-
+                // This should generate the message: "You're now friends with [name]!" if
+                // the user chose to approve the request, otherwise we show no toast, just
+                // remove from the list.
+                if (isApproving) {
+                    Toast.makeText(this,
+                            getResources().getString(R.string.friend_requests_approved) + " " +
+                            user.getFirstname() + "!",
+                            Toast.LENGTH_SHORT).show();
+                }
             } else {
                 NotificationsUtil.ToastReasonForFailure(this, ex);
             }
         } finally {
             decideShowNoFriendRequestsTextView();
-            mStateHolder.setIsRunningSendDecision(false);
+            mStateHolder.setIsRunningApprval(false);
+            mStateHolder.setIsRunningIgnore(false);
             stopProgressBar();
         }
     }
@@ -255,13 +264,6 @@ public class FriendRequestsActivity extends ListActivity {
 
         public void setActivity(FriendRequestsActivity activity) {
             mActivity = activity;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            mActivity.startProgressBar(mActivity.getResources().getString(
-                    R.string.add_friends_activity_label), mActivity.getResources().getString(
-                    R.string.add_friends_progress_bar_message_find));
         }
 
         @Override
@@ -295,13 +297,19 @@ public class FriendRequestsActivity extends ListActivity {
         }
     }
 
-    private static class SendFriendRequestDecisionTask extends AsyncTask<String, Void, User> {
+    private static class SendFriendRequestDecisionTask extends AsyncTask<Void, Void, User> {
 
         private FriendRequestsActivity mActivity;
+        private boolean mIsApproving;
+        private String mUserId;
         private Exception mReason;
 
-        public SendFriendRequestDecisionTask(FriendRequestsActivity activity) {
+        public SendFriendRequestDecisionTask(FriendRequestsActivity activity,
+                                             String userId,
+                                             boolean isApproving) {
             mActivity = activity;
+            mUserId = userId;
+            mIsApproving = isApproving;
         }
 
         public void setActivity(FriendRequestsActivity activity) {
@@ -309,23 +317,16 @@ public class FriendRequestsActivity extends ListActivity {
         }
 
         @Override
-        protected void onPreExecute() {
-            mActivity.startProgressBar(mActivity.getResources().getString(
-                    R.string.add_friends_activity_label), mActivity.getResources().getString(
-                    R.string.add_friends_progress_bar_message_send_request));
-        }
-
-        @Override
-        protected User doInBackground(String... params) {
+        protected User doInBackground(Void... params) {
             try {
                 Foursquared foursquared = (Foursquared) mActivity.getApplication();
                 Foursquare foursquare = foursquared.getFoursquare();
 
                 User user = null;
-                if (Boolean.parseBoolean(params[0]) == true) {
-                    user = foursquare.friendApprove(params[1]);
+                if (mIsApproving) {
+                    user = foursquare.friendApprove(mUserId);
                 } else {
-                    user = foursquare.friendDeny(params[1]);
+                    user = foursquare.friendDeny(mUserId);
                 }
                 return user;
             } catch (Exception e) {
@@ -340,15 +341,15 @@ public class FriendRequestsActivity extends ListActivity {
         protected void onPostExecute(User user) {
             if (DEBUG) Log.d(TAG, "SendFriendRequestTask: onPostExecute()");
             if (mActivity != null) {
-                mActivity.onFriendRequestDecisionTaskComplete(user, mReason);
+                mActivity.onFriendRequestDecisionTaskComplete(user, mIsApproving, mReason);
             }
         }
 
         @Override
         protected void onCancelled() {
             if (mActivity != null) {
-                mActivity.onFriendRequestDecisionTaskComplete(null, new Exception(
-                        "Friend request cancelled."));
+                mActivity.onFriendRequestDecisionTaskComplete(null, mIsApproving,
+                        new Exception("Friend request cancelled."));
             }
         }
     }
@@ -358,13 +359,15 @@ public class FriendRequestsActivity extends ListActivity {
         SendFriendRequestDecisionTask mTaskSendDecision;
         Group<User> mFoundFriends;
         boolean mIsRunningFriendRequests;
-        boolean mIsRunningSendDecision;
+        boolean mIsRunningApproval;
+        boolean mIsRunningIgnore;
         boolean mRanFetchOnce;
 
         public StateHolder() {
             mFoundFriends = new Group<User>();
             mIsRunningFriendRequests = false;
-            mIsRunningSendDecision = false;
+            mIsRunningApproval = false;
+            mIsRunningIgnore = false;
             mRanFetchOnce = false;
         }
 
@@ -382,11 +385,12 @@ public class FriendRequestsActivity extends ListActivity {
             mTaskFriendRequests.execute();
         }
 
-        public void startTaskSendDecision(FriendRequestsActivity activity, boolean approve,
-                String userId) {
-            mIsRunningSendDecision = true;
-            mTaskSendDecision = new SendFriendRequestDecisionTask(activity);
-            mTaskSendDecision.execute(String.valueOf(approve), userId);
+        public void startTaskSendDecision(FriendRequestsActivity activity, String userId,
+                boolean approve) {
+            mIsRunningApproval = approve;
+            mIsRunningIgnore = !approve;
+            mTaskSendDecision = new SendFriendRequestDecisionTask(activity, userId, approve);
+            mTaskSendDecision.execute();
         }
 
         public void setActivityForTaskFriendRequests(FriendRequestsActivity activity) {
@@ -409,14 +413,22 @@ public class FriendRequestsActivity extends ListActivity {
             return mIsRunningFriendRequests;
         }
 
-        public void setIsRunningSendDecision(boolean isRunning) {
-            mIsRunningSendDecision = isRunning;
-        }
-
-        public boolean getIsRunningSendDecision() {
-            return mIsRunningSendDecision;
+        public boolean getIsRunningApproval() {
+            return mIsRunningApproval;
         }
         
+        public void setIsRunningApprval(boolean isRunning) {
+            mIsRunningApproval = isRunning;
+        }
+
+        public boolean getIsRunningIgnore() {
+            return mIsRunningIgnore;
+        }
+        
+        public void setIsRunningIgnore(boolean isRunning) {
+            mIsRunningIgnore = isRunning;
+        }
+
         public boolean getRanFetchOnce() {
             return mRanFetchOnce;
         }
@@ -440,7 +452,7 @@ public class FriendRequestsActivity extends ListActivity {
         }
 
         @Override
-        public void onPhotoClick(User user) {
+        public void onInfoAreaClick(User user) {
             infoFriendRequest(user);
         }
     };
