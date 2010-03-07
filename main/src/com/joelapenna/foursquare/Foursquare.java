@@ -7,6 +7,7 @@ package com.joelapenna.foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.types.Category;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.Credentials;
@@ -205,6 +206,12 @@ public class Foursquare {
     	return mFoursquareV1.findFriendsByTwitter(text);
     }
 
+    @V1
+    public Group<Category> categories() 
+        throws FoursquareException, FoursquareError, IOException {
+        return mFoursquareV1.categories();
+    }
+    
     public static final FoursquareHttpApiV1 createHttpApi(String domain, String clientVersion,
             boolean useOAuth) {
         LOG.log(Level.INFO, "Using foursquare.com for requests.");
