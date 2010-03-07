@@ -215,7 +215,8 @@ public class SearchVenuesActivity extends TabActivity {
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
             Group<Venue> group = searchResults.get(groupsIndex);
             if (group.size() > 0) {
-                VenueListAdapter groupAdapter = new VenueListAdapter(this);
+                VenueListAdapter groupAdapter = new VenueListAdapter(this,
+                        ((Foursquared) getApplication()).getRemoteResourceManager());
                 groupAdapter.setGroup(group);
                 if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
                 mListAdapter.addSection(group.getType(), groupAdapter);

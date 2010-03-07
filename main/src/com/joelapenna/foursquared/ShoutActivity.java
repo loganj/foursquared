@@ -207,7 +207,8 @@ public class ShoutActivity extends Activity {
         mScoreListAdapter = new ScoreListAdapter(this, ((Foursquared) getApplication())
                 .getRemoteResourceManager());
         mSpecialListAdapter = new SpecialListAdapter(this);
-        mNearSpecialListAdapter = new VenueListAdapter(this);
+        mNearSpecialListAdapter = new VenueListAdapter(this,
+                ((Foursquared) getApplication()).getRemoteResourceManager());
         mBadgeListAdapter = new BadgeWithIconListAdapter(this, ((Foursquared) getApplication())
                 .getRemoteResourceManager(), R.layout.badge_list_item);
     }

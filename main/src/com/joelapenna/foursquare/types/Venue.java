@@ -29,6 +29,7 @@ public class Venue implements FoursquareType {
     private Group mTodos;
     private String mTwitter;
     private String mZip;
+    private Category mCategory;
 
     public Venue() {
     }
@@ -177,4 +178,11 @@ public class Venue implements FoursquareType {
         mZip = zip;
     }
 
+    public Category getCategory() {
+        return mCategory;
+    }
+    
+    public void setCategory(Category category) {
+        mCategory = category;
+    }
 }
