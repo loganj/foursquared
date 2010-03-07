@@ -5,17 +5,24 @@
   android:layout_width="fill_parent"
   android:layout_height="?android:attr/listPreferredItemHeight"
   style="@style/listItemStyle">
-
+ 
+  <!-- 
+    The category icons come down to us from foursquare at 32x32 pixel size.
+    To support high-density screens, we want to scale the icons up to the
+    same relative size for all devices, otherwise on droid/nexusone, these
+    icons will appear really small.
+   -->
   <ImageView
     android:id="@+id/icon"
-    android:layout_width="40dip"
-    android:layout_height="fill_parent"
+    android:layout_width="32dip"
+    android:layout_height="32dip"
     android:layout_alignParentTop="true"
     android:layout_alignParentBottom="true"
-    android:paddingLeft="7dip"
-    android:paddingTop="5dip"
     android:src="@drawable/map_marker_blue"
-    gravity="center_horizontal" />
+    android:scaleType="fitCenter"  
+    android:gravity="center_horizontal"
+    android:layout_marginTop="4dip"
+    android:layout_marginLeft="5dip" />
 
   <TextView
     android:id="@+id/venueName"
