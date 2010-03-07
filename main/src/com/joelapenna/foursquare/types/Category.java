@@ -4,6 +4,7 @@
 
 package com.joelapenna.foursquare.types;
 
+
 /**
  * @date March 6, 2010
  * @author Mark Wyszomierski (markww@gmail.com)
@@ -21,8 +22,13 @@ public class Category implements FoursquareType {
 
     /** Url of the icon associated with this category. */
     private String mIconUrl;
+    
+    /** Categories can be nested within one another too. */
+    private Group<Category> mChildCategories;
 
+    
     public Category() {
+        mChildCategories = new Group<Category>();
     }
 
     public String getId() {
@@ -55,5 +61,13 @@ public class Category implements FoursquareType {
 
     public void setIconUrl(String iconUrl) {
         mIconUrl = iconUrl;
+    }
+    
+    public Group<Category> getChildCategories() {
+        return mChildCategories;
+    }
+    
+    public void setChildCategories(Group<Category> categories) {
+        mChildCategories = categories;
     }
 }

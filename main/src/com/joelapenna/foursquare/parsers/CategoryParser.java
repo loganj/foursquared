@@ -46,6 +46,9 @@ public class CategoryParser extends AbstractParser<Category> {
             } else if ("iconurl".equals(name)) {
                 category.setIconUrl(parser.nextText());
 
+            } else if ("categories".equals(name)) {
+                category.setChildCategories(new GroupParser(new CategoryParser()).parse(parser));
+
             } else {
                 // Consume something we don't understand.
                 if (DEBUG) LOG.log(Level.FINE, "Found tag that we don't recognize: " + name);
