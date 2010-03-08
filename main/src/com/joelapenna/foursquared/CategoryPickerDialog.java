@@ -95,6 +95,20 @@ public class CategoryPickerDialog extends Dialog {
     }
     
     @Override
+    protected void onStop() {
+        super.onStop();
+        
+        cleanupPageAdapters(); 
+    }
+    
+    private void cleanupPageAdapters() {
+        for (int i = 0; i < mViewFlipper.getChildCount(); i++) {
+            CategoryPickerPage page = (CategoryPickerPage)mViewFlipper.getChildAt(i).getTag();
+            page.cleanup();
+        }
+    }
+    
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
@@ -118,7 +132,7 @@ public class CategoryPickerDialog extends Dialog {
     }
     
     private static class CategoryPickerPage {
-        private CategoryPickerAdapter mAdapter;
+        private CategoryPickerAdapter mListAdapter;
         
         private Category mCategory;
         private PageListItemSelected mClickListener;
@@ -126,13 +140,13 @@ public class CategoryPickerDialog extends Dialog {
         public void ensureUI(View view, PageListItemSelected clickListener, Category category, RemoteResourceManager rrm) {
             mCategory = category;
             mClickListener = clickListener;
-            mAdapter = new CategoryPickerAdapter(
+            mListAdapter = new CategoryPickerAdapter(
                 view.getContext(), 
                 rrm, 
                 category);
             
             ListView listview = (ListView)view.findViewById(R.id.categoryPickerListView);
-            listview.setAdapter(mAdapter);
+            listview.setAdapter(mListAdapter);
             listview.setOnItemClickListener(mOnItemClickListener);
             
             LinearLayout llRootCategory = (LinearLayout)view.findViewById(R.id.categoryPickerRootCategoryButton);
@@ -161,10 +175,14 @@ public class CategoryPickerDialog extends Dialog {
             }
         }
         
+        public void cleanup() {
+            mListAdapter.removeObserver();    
+        }
+        
         private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-                mClickListener.onPageListItemSelcected((Category)mAdapter.getItem(position));
+                mClickListener.onPageListItemSelcected((Category)mListAdapter.getItem(position));
             }
         };
     }

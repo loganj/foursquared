@@ -27,12 +27,15 @@ import java.util.Observer;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class BadgeWithIconListAdapter extends BadgeListAdapter {
+public class BadgeWithIconListAdapter extends BadgeListAdapter 
+    implements ObservableAdapter {
+    
     private static final String TAG = "BadgeWithIconListAdapter";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private RemoteResourceManager mRrm;
     private Handler mHandler = new Handler();
+    private RemoteResourceManagerObserver mResourcesObserver;
 
     /**
      * @param context
@@ -41,14 +44,22 @@ public class BadgeWithIconListAdapter extends BadgeListAdapter {
     public BadgeWithIconListAdapter(Context context, RemoteResourceManager rrm) {
         super(context);
         mRrm = rrm;
-        mRrm.addObserver(new RemoteResourceManagerObserver());
+        mResourcesObserver = new RemoteResourceManagerObserver();
+
+        mRrm.addObserver(mResourcesObserver);
     }
 
     public BadgeWithIconListAdapter(Context context, RemoteResourceManager rrm, int layoutResource) {
 
         super(context, layoutResource);
         mRrm = rrm;
-        mRrm.addObserver(new RemoteResourceManagerObserver());
+        mResourcesObserver = new RemoteResourceManagerObserver();
+
+        mRrm.addObserver(mResourcesObserver);
+    }
+
+    public void removeObserver() {
+        mRrm.deleteObserver(mResourcesObserver);
     }
 
     @Override

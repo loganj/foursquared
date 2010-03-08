@@ -110,6 +110,13 @@ public class UserActivity extends Activity {
             setUser(user);
         }
     }
+    
+    @Override
+    public void onPause() {
+        super.onPause();
+        
+        mListAdapter.removeObserver();
+    }
 
     @Override
     public void onDestroy() {

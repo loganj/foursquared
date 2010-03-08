@@ -6,7 +6,6 @@ package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Category;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.Stats;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
@@ -32,7 +31,7 @@ import java.util.Observer;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class VenueListAdapter extends BaseVenueAdapter {
+public class VenueListAdapter extends BaseVenueAdapter implements ObservableAdapter {
     private static final String TAG = "VenueListAdapter";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 

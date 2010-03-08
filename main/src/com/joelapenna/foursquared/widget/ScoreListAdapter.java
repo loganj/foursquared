@@ -23,11 +23,12 @@ import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 
-public class ScoreListAdapter extends BaseGroupAdapter<Score> {
+public class ScoreListAdapter extends BaseGroupAdapter<Score> implements ObservableAdapter {
     private static final String TAG = "ScoreListAdapter";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
     private static final String PLUS = " +";
     private RemoteResourceManager mRrm;
+    private RemoteResourceManagerObserver mResourcesObserver;
     private Handler mHandler = new Handler();
 
     private LayoutInflater mInflater;
@@ -35,8 +36,14 @@ public class ScoreListAdapter extends BaseGroupAdapter<Score> {
     public ScoreListAdapter(Context context, RemoteResourceManager rrm) {
         super(context);
         mRrm = rrm;
-        mRrm.addObserver(new RemoteResourceManagerObserver());
+        mResourcesObserver = new RemoteResourceManagerObserver();
         mInflater = LayoutInflater.from(context);
+
+        mRrm.addObserver(mResourcesObserver);
+    }
+    
+    public void removeObserver() {
+        mRrm.deleteObserver(mResourcesObserver);
     }
 
     @Override

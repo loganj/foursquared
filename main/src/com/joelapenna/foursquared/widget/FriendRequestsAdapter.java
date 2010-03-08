@@ -34,7 +34,8 @@ import java.util.Observer;
  * @date February 15, 2010
  * @author Mark Wyszomierski (markww@gmail.com), foursquare.
  */
-public class FriendRequestsAdapter extends BaseGroupAdapter<User> {
+public class FriendRequestsAdapter extends BaseGroupAdapter<User> 
+    implements ObservableAdapter {
 
     private static final String TAG = "FriendRequestsAdapter";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
@@ -43,6 +44,7 @@ public class FriendRequestsAdapter extends BaseGroupAdapter<User> {
     private int mLayoutToInflate;
     private ButtonRowClickHandler mClickListener;
     private RemoteResourceManager mRrm;
+    private RemoteResourceManagerObserver mResourcesObserver;
     private Handler mHandler = new Handler();
 
     public FriendRequestsAdapter(Context context, ButtonRowClickHandler clickListener,
@@ -52,14 +54,19 @@ public class FriendRequestsAdapter extends BaseGroupAdapter<User> {
         mLayoutToInflate = R.layout.friend_request_list_item;
         mClickListener = clickListener;
         mRrm = rrm;
+        mResourcesObserver = new RemoteResourceManagerObserver();
 
-        mRrm.addObserver(new RemoteResourceManagerObserver());
+        mRrm.addObserver(mResourcesObserver);
     }
 
     public FriendRequestsAdapter(Context context, int layoutResource) {
         super(context);
         mInflater = LayoutInflater.from(context);
         mLayoutToInflate = layoutResource;
+    }
+
+    public void removeObserver() {
+        mRrm.deleteObserver(mResourcesObserver);
     }
 
     @Override

@@ -1,34 +1,35 @@
 package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Category;
-import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
-import com.joelapenna.foursquared.widget.FriendRequestsAdapter.ButtonRowClickHandler;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-public class CategoryPickerAdapter extends BaseAdapter {
+public class CategoryPickerAdapter extends BaseAdapter 
+    implements ObservableAdapter {
 
+    private static final String TAG = "CheckinListAdapter";
+    private static final boolean DEBUG = FoursquaredSettings.DEBUG;
+    
     private LayoutInflater mInflater;
     private int mLayoutToInflate;
-    private ButtonRowClickHandler mClickListener;
     private RemoteResourceManager mRrm;
     private RemoteResourceManagerObserver mResourcesObserver;
     private Handler mHandler = new Handler();
@@ -52,6 +53,10 @@ public class CategoryPickerAdapter extends BaseAdapter {
         }
     }
 
+    public void removeObserver() {
+        mRrm.deleteObserver(mResourcesObserver);
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // A ViewHolder keeps references to children views to avoid unnecessary
@@ -71,10 +76,6 @@ public class CategoryPickerAdapter extends BaseAdapter {
             holder.name = (TextView) convertView.findViewById(R.id.categoryPickerName);
 
             convertView.setTag(holder);
-
-//            holder.clickable.setOnClickListener(mOnClickListenerInfo);
-//            holder.add.setOnClickListener(mOnClickListenerApprove);
-//            holder.ignore.setOnClickListener(mOnClickListenerDeny);
         } else {
             // Get the ViewHolder back to get fast access to the TextView
             // and the ImageView.
@@ -88,13 +89,10 @@ public class CategoryPickerAdapter extends BaseAdapter {
             Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photoUri));
             holder.icon.setImageBitmap(bitmap);
         } catch (IOException e) {
-//            holder.photo.setImageResource(R.drawable.blank_boy);
+            if (DEBUG) Log.e(TAG, "Error loading category icon.", e);
         }
  
         holder.name.setText(category.getNodeName());
-    //    holder.clickable.setTag(new Integer(position));
-    //    holder.add.setTag(new Integer(position));
-    //    holder.ignore.setTag(new Integer(position));
 
         return convertView;
     }

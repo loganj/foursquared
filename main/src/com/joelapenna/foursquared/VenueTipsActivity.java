@@ -39,6 +39,7 @@ public class VenueTipsActivity extends LoadableListActivity {
     private Observer mVenueObserver = new VenueObserver();
     private String mClickedTip = null;
     private String mClickedTipAuthor = null;
+    private SeparatedListAdapter mListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,15 @@ public class VenueTipsActivity extends LoadableListActivity {
         super.onSaveInstanceState(outState);
         outState.putString(STATE_CLICKED_TIP, mClickedTip);
         outState.putString(STATE_CLICKED_TIP_AUTHOR, mClickedTipAuthor);
+    }
+    
+    @Override
+    public void onPause() {
+        super.onPause();
+        
+        if (isFinishing() && mListAdapter != null) {
+            mListAdapter.removeObserver();
+        }
     }
 
     @Override
@@ -124,8 +134,8 @@ public class VenueTipsActivity extends LoadableListActivity {
     }
 
     private void putGroupsInAdapter(Group<Group<Tip>> groups) {
-        SeparatedListAdapter mainAdapter = (SeparatedListAdapter)getListAdapter();
-        mainAdapter.clear();
+        mListAdapter = (SeparatedListAdapter)getListAdapter();
+        mListAdapter.clear();
         setEmptyView();
 
         int groupCount = groups.size();
@@ -133,10 +143,10 @@ public class VenueTipsActivity extends LoadableListActivity {
             Group<Tip> group = groups.get(groupsIndex);
             TipListAdapter groupAdapter = new TipListAdapter(this);
             groupAdapter.setGroup(group);
-            mainAdapter.addSection(group.getType(), groupAdapter);
+            mListAdapter.addSection(group.getType(), groupAdapter);
         }
-        mainAdapter.notifyDataSetInvalidated();
-        getListView().setAdapter(mainAdapter);
+        mListAdapter.notifyDataSetInvalidated();
+        getListView().setAdapter(mListAdapter);
     }
 
     private final class VenueObserver implements Observer {

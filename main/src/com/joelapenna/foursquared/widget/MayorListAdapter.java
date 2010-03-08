@@ -5,8 +5,8 @@
 package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.types.Mayor;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Mayor;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
@@ -32,7 +32,7 @@ import java.util.Observer;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class MayorListAdapter extends BaseMayorAdapter {
+public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdapter {
     private static final String TAG = "MayorListAdapter";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
@@ -40,13 +40,19 @@ public class MayorListAdapter extends BaseMayorAdapter {
 
     private RemoteResourceManager mRrm;
     private Handler mHandler = new Handler();
+    private RemoteResourceManagerObserver mResourcesObserver;
 
     public MayorListAdapter(Context context, RemoteResourceManager rrm) {
         super(context);
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
+        mResourcesObserver = new RemoteResourceManagerObserver();
 
-        mRrm.addObserver(new RemoteResourceManagerObserver());
+        mRrm.addObserver(mResourcesObserver);
+    }
+
+    public void removeObserver() {
+        mRrm.deleteObserver(mResourcesObserver);
     }
 
     @Override

@@ -64,6 +64,15 @@ public class VenueCheckinsActivity extends LoadableListActivity {
             ((VenueActivity)getParent()).venueObservable.addObserver(mParentDataObserver);
         }
     }
+    
+    @Override
+    public void onPause() {
+        super.onPause();
+        
+        if (isFinishing()) {
+            mListAdapter.removeObserver();
+        }
+    }
 
     @Override
     public int getNoSearchResultsStringId() {
@@ -104,6 +113,7 @@ public class VenueCheckinsActivity extends LoadableListActivity {
             VenueActivity parent = (VenueActivity)getParent();
             Venue venue = parent.venueObservable.getVenue();
 
+            mListAdapter.removeObserver();
             mListAdapter = new SeparatedListAdapter(VenueCheckinsActivity.this);
 
             boolean hasMayor = venue.getStats() != null && venue.getStats().getMayor() != null;

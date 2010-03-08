@@ -6,14 +6,12 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.error.LocationException;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
 import com.joelapenna.foursquared.util.Comparators;
-import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
@@ -134,6 +132,10 @@ public class SearchVenuesActivity extends TabActivity {
     public void onPause() {
         super.onPause();
         ((Foursquared) getApplication()).removeLocationUpdates();
+        
+        if (isFinishing()) {
+            mListAdapter.removeObserver();
+        }
     }
 
     @Override
@@ -210,6 +212,7 @@ public class SearchVenuesActivity extends TabActivity {
     }
 
     public void putSearchResultsInAdapter(Group<Group<Venue>> searchResults) {
+        mListAdapter.removeObserver();
         mListAdapter = new SeparatedListAdapter(this);
         int groupCount = searchResults.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {

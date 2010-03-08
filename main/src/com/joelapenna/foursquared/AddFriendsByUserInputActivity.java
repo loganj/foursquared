@@ -191,6 +191,10 @@ public class AddFriendsByUserInputActivity extends Activity {
     public void onPause() {
         super.onPause();
         stopProgressBar();
+        
+        if (isFinishing()) {
+            mListAdapter.removeObserver();
+        }
     }
 
     @Override
@@ -248,6 +252,7 @@ public class AddFriendsByUserInputActivity extends Activity {
 
         // Recreate the adapter, will also be necessary when we switch to a
         // SeparatedListAdapter for merging results between twitter/name/phone etc.
+        mListAdapter.removeObserver();
         mListAdapter = new FriendSearchAddFriendAdapter(
             this,
             mButtonRowClickHandler,

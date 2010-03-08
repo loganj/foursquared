@@ -18,7 +18,7 @@ import android.widget.BaseAdapter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class SeparatedListAdapter extends BaseAdapter {
+public class SeparatedListAdapter extends BaseAdapter implements ObservableAdapter {
 
     public final Map<String, Adapter> sections = new LinkedHashMap<String, Adapter>();
     public final ArrayAdapter<String> headers;
@@ -41,6 +41,16 @@ public class SeparatedListAdapter extends BaseAdapter {
         // Register an observer so we can call notifyDataSetChanged() when our
         // children adapters are modified, otherwise no change will be visible.
         adapter.registerDataSetObserver(mDataSetObserver);
+    }
+    
+    public void removeObserver() {
+        // Notify all our children that they should release their observers too.
+        for (Map.Entry<String, Adapter> it : sections.entrySet()) {
+            if (it.getValue() instanceof ObservableAdapter) {
+                ObservableAdapter adapter = (ObservableAdapter)it.getValue();
+                adapter.removeObserver();
+            }
+        }
     }
 
     public void clear() {

@@ -32,21 +32,29 @@ import java.util.Observer;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class CheckinListAdapter extends BaseCheckinAdapter {
+public class CheckinListAdapter extends BaseCheckinAdapter 
+    implements ObservableAdapter {
+    
     private static final String TAG = "CheckinListAdapter";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private LayoutInflater mInflater;
 
     private RemoteResourceManager mRrm;
+    private RemoteResourceManagerObserver mResourcesObserver;
     private Handler mHandler = new Handler();
 
     public CheckinListAdapter(Context context, RemoteResourceManager rrm) {
         super(context);
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
+        mResourcesObserver = new RemoteResourceManagerObserver();
 
-        mRrm.addObserver(new RemoteResourceManagerObserver());
+        mRrm.addObserver(mResourcesObserver);
+    }
+
+    public void removeObserver() {
+        mRrm.deleteObserver(mResourcesObserver);
     }
 
     @Override

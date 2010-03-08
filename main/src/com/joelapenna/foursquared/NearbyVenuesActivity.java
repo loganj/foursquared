@@ -6,7 +6,6 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.app.LoadableListActivity;
@@ -129,6 +128,10 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     public void onPause() {
         super.onPause();
         ((Foursquared) getApplication()).removeLocationUpdates(mSearchLocationObserver);
+        
+        if (isFinishing()) {
+            mListAdapter.removeObserver();
+        }
     }
 
     @Override
@@ -187,8 +190,9 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     }
 
     public void putSearchResultsInAdapter(Group<Group<Venue>> searchResults) {
-        Log.d(TAG, "putSearchResultsInAdapter");
+        if (DEBUG) Log.d(TAG, "putSearchResultsInAdapter");
 
+        mListAdapter.removeObserver();
         mListAdapter = new SeparatedListAdapter(this);
         if (searchResults != null) {
             int groupCount = searchResults.size();

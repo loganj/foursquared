@@ -89,6 +89,15 @@ public class FriendsActivity extends LoadableListActivity {
             onNewIntent(getIntent());
         }
     }
+    
+    @Override
+    public void onPause() {
+        super.onPause();
+        
+        if (isFinishing()) {
+            mListAdapter.removeObserver();
+        }
+    }
 
     @Override
     public void onDestroy() {

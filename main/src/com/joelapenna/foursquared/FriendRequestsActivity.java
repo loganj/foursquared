@@ -108,6 +108,10 @@ public class FriendRequestsActivity extends ListActivity {
     public void onPause() {
         super.onPause();
         stopProgressBar();
+        
+        if (isFinishing()) {
+            mListAdapter.removeObserver();
+        }
     }
 
     @Override
@@ -191,9 +195,8 @@ public class FriendRequestsActivity extends ListActivity {
     
     private void onFriendRequestsTaskComplete(Group<User> users, Exception ex) {
 
-        // Recreate the adapter, will also be necessary when we switch to a
-        // SeparatedListAdapter for merging results between twitter/name/phone
-        // etc.
+        // Recreate the adapter, cleanup beforehand.
+        mListAdapter.removeObserver();
         mListAdapter = new FriendRequestsAdapter(this, mButtonRowClickHandler,
                 ((Foursquared) getApplication()).getRemoteResourceManager());
 
