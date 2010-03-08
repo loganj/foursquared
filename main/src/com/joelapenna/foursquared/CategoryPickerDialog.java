@@ -45,6 +45,8 @@ public class CategoryPickerDialog extends Dialog {
     private ViewFlipper mViewFlipper;
     private Category mChosenCategory;
     
+    private int mFirstDialogHeight;
+    
 
     public CategoryPickerDialog(Context context, Group<Category> categories, Foursquared application) { 
         super(context); 
@@ -62,11 +64,13 @@ public class CategoryPickerDialog extends Dialog {
         
         mViewFlipper = (ViewFlipper)findViewById(R.id.categoryPickerViewFlipper);
         
+        mFirstDialogHeight = -1;
+        
         // By default we always have a top-level page.
         Category root = new Category();
         root.setNodeName("root");
         root.setChildCategories(mCategories);
-        
+
         mViewFlipper.addView(makePage(root));
     }
     
@@ -78,6 +82,14 @@ public class CategoryPickerDialog extends Dialog {
         CategoryPickerPage page = new CategoryPickerPage();
         page.ensureUI(view, mPageListItemSelected, category, mApplication.getRemoteResourceManager());
         view.setTag(page);
+        
+        if (mViewFlipper.getChildCount() == 1 && mFirstDialogHeight == -1) {
+            mFirstDialogHeight = mViewFlipper.getChildAt(0).getHeight();
+        }
+        if (mViewFlipper.getChildCount() > 0) {
+            view.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.FILL_PARENT, mFirstDialogHeight));
+        }
         
         return view;
     }

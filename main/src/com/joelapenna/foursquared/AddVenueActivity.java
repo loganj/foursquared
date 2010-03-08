@@ -38,6 +38,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -66,6 +67,7 @@ public class AddVenueActivity extends Activity {
     private LinearLayout mCategoryLayout;
     private ImageView mCategoryImageView;
     private TextView mCategoryTextView;
+    private ProgressBar mCategoryProgressBar;
 
     private ProgressDialog mDlgProgress;
     
@@ -113,8 +115,8 @@ public class AddVenueActivity extends Activity {
         mCategoryLayout = (LinearLayout) findViewById(R.id.addVenueCategoryLayout);
         mCategoryImageView = (ImageView) findViewById(R.id.addVenueCategoryIcon);
         mCategoryTextView = (TextView) findViewById(R.id.addVenueCategoryTextView);
+        mCategoryProgressBar = (ProgressBar) findViewById(R.id.addVenueCategoryProgressBar);
         
-        mCategoryTextView.setText("Pick a category");
         mCategoryLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,6 +155,11 @@ public class AddVenueActivity extends Activity {
             mStateHolder.setActivityForTaskAddVenue(this);
             
             setFields(mStateHolder.getAddressLookup());
+            setChosenCategory(mStateHolder.getChosenCategory());
+            if (mStateHolder.getCategories() != null && mStateHolder.getCategories().size() > 0) {
+                mCategoryLayout.setEnabled(true);
+                mCategoryProgressBar.setVisibility(View.GONE);
+            }
         } else {
             mStateHolder = new StateHolder();
             mStateHolder.startTaskAddressLookup(this);
@@ -246,6 +253,8 @@ public class AddVenueActivity extends Activity {
             if (categories != null) {
                 mStateHolder.setCategories(categories);
                 mCategoryLayout.setEnabled(true);
+                mCategoryTextView.setText("Pick a category");
+                mCategoryProgressBar.setVisibility(View.GONE);
             } else {
                 // If error, feed list adapter empty user group.
                 mStateHolder.setCategories(new Group<Category>());
@@ -595,7 +604,9 @@ public class AddVenueActivity extends Activity {
                 dlg.setOnCancelListener(new OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
-                        setChosenCategory((CategoryPickerDialog)dialog);
+                        CategoryPickerDialog dlg = (CategoryPickerDialog)dialog;
+                        setChosenCategory(dlg.getChosenCategory());
+                        removeDialog(DIALOG_PICK_CATEGORY);
                     }
                 });
                 return dlg;
@@ -603,9 +614,9 @@ public class AddVenueActivity extends Activity {
         return null;
     } 
     
-    private void setChosenCategory(CategoryPickerDialog dlg) {
-        Category category = dlg.getChosenCategory();
+    private void setChosenCategory(Category category) {
         if (category == null) {
+            mCategoryTextView.setText("Pick a category");
             return;
         }
         

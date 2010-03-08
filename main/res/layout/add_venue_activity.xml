@@ -5,13 +5,19 @@
     android:id="@+id/scrollView"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-    
+        
     <LinearLayout
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
       android:orientation="vertical"
       android:paddingTop="10dip">
 
+      <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+       
       <EditText
         android:id="@+id/nameEditText"
         android:layout_width="fill_parent"
@@ -138,14 +144,24 @@
 	
         <TextView
           android:id="@+id/addVenueCategoryTextView"
-          android:layout_width="fill_parent"
+          android:layout_width="0dip"
           android:layout_height="wrap_content"
+          android:layout_weight="1"
           android:textColor="@color/black_end"
           android:textAppearance="@android:style/TextAppearance.Small" 
           android:singleLine="true"
           android:ellipsize="marquee"
           android:layout_gravity="center_vertical" 
-          android:paddingLeft="9dip" />
+          android:paddingLeft="9dip" 
+          android:text="Loading categories..." />
+          
+        <ProgressBar 
+          android:id="@+id/addVenueCategoryProgressBar"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="right"
+          style="?android:attr/progressBarStyleSmall" 
+          />
   
       </LinearLayout>
         
