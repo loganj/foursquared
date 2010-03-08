@@ -20,9 +20,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.DialogInterface.OnCancelListener;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -34,6 +37,11 @@ import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import java.io.IOException;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -56,7 +64,9 @@ public class AddVenueActivity extends Activity {
     private EditText mZipEditText;
     private EditText mPhoneEditText;
     private Button mAddVenueButton;
-    private Button mCategoryButton;
+    private LinearLayout mCategoryLayout;
+    private ImageView mCategoryImageView;
+    private TextView mCategoryTextView;
 
     private ProgressDialog mDlgProgress;
     
@@ -100,16 +110,19 @@ public class AddVenueActivity extends Activity {
         mStateEditText = (EditText) findViewById(R.id.stateEditText);
         mZipEditText = (EditText) findViewById(R.id.zipEditText);
         mPhoneEditText = (EditText) findViewById(R.id.phoneEditText);
+        mCategoryLayout = (LinearLayout) findViewById(R.id.addVenueCategoryLayout);
+        mCategoryImageView = (ImageView) findViewById(R.id.addVenueCategoryIcon);
+        mCategoryTextView = (TextView) findViewById(R.id.addVenueCategoryTextView);
         
-        mCategoryButton = (Button)findViewById(R.id.addCategoryButton);
-        mCategoryButton.setEnabled(false);
-        mCategoryButton.setOnClickListener(new OnClickListener() {
+        mCategoryTextView.setText("Pick a category");
+        mCategoryLayout.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View arg0) {
+            public void onClick(View view) {
                 showDialog(DIALOG_PICK_CATEGORY);
             }
         });
-
+        mCategoryLayout.setEnabled(false);
+        
         mAddVenueButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -230,7 +243,7 @@ public class AddVenueActivity extends Activity {
             // Populate the categories list now.
             if (categories != null) {
                 mStateHolder.setCategories(categories);
-                mCategoryButton.setEnabled(true);
+                mCategoryLayout.setEnabled(true);
             } else {
                 // If error, feed list adapter empty user group.
                 mStateHolder.setCategories(new Group<Category>());
@@ -570,11 +583,29 @@ public class AddVenueActivity extends Activity {
                 dlg.setOnCancelListener(new OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
-                        removeDialog(DIALOG_PICK_CATEGORY);
+                        setChosenCategory((CategoryPickerDialog)dialog);
                     }
                 });
                 return dlg;
         }
         return null;
     } 
+    
+    private void setChosenCategory(CategoryPickerDialog dlg) {
+        Category category = dlg.getChosenCategory();
+        if (category == null) {
+            return;
+        }
+        
+        try {
+            Bitmap bitmap = BitmapFactory.decodeStream(
+                ((Foursquared)getApplication()).getRemoteResourceManager().getInputStream(
+                    Uri.parse(category.getIconUrl())));
+            mCategoryImageView.setImageBitmap(bitmap);
+        } catch (IOException e) {
+//            holder.photo.setImageResource(R.drawable.blank_boy);
+        }
+        
+        mCategoryTextView.setText(category.getNodeName());
+    }
 }

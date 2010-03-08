@@ -11,8 +11,8 @@
   android:paddingRight="12dip"
   android:paddingTop="5dip"
   android:paddingBottom="5dip"
-  >  
-   
+  >
+    
   <ImageView
     android:id="@+id/categoryPickerIcon"
     android:layout_width="32dip"
