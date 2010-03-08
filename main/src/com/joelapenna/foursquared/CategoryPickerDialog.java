@@ -11,13 +11,22 @@ import com.joelapenna.foursquared.widget.CategoryPickerAdapter;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
 import android.widget.AdapterView.OnItemClickListener;
+
+import java.io.IOException;
 
 /**
  * Presents the user with a list of all available categories from foursquare 
@@ -32,14 +41,15 @@ public class CategoryPickerDialog extends Dialog {
 
     private Foursquared mApplication;
     private Group<Category> mCategories;
-    
     private ViewFlipper mViewFlipper;
+    private Category mChosenCategory;
     
 
     public CategoryPickerDialog(Context context, Group<Category> categories, Foursquared application) { 
         super(context); 
         mApplication = application;
         mCategories = categories;
+        mChosenCategory = null;
     }
     
     @Override 
@@ -71,6 +81,29 @@ public class CategoryPickerDialog extends Dialog {
         return view;
     }
     
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                if (mViewFlipper.getChildCount() > 1) {
+                    mViewFlipper.removeViewAt(mViewFlipper.getChildCount()-1);
+                    return true;
+                } 
+                break;
+        }
+        
+        return super.onKeyDown(keyCode, event);
+    }
+    
+    /**
+     * After the user has dismissed the dialog, the parent activity can use this
+     * to see which category they picked, if any. Will return null if no category
+     * was picked.
+     */
+    public Category getChosenCategory() {
+        return mChosenCategory;
+    }
+    
     private static class CategoryPickerPage {
         private CategoryPickerAdapter mAdapter;
         
@@ -88,12 +121,37 @@ public class CategoryPickerDialog extends Dialog {
             ListView listview = (ListView)view.findViewById(R.id.categoryPickerListView);
             listview.setAdapter(mAdapter);
             listview.setOnItemClickListener(mOnItemClickListener);
+            
+            LinearLayout llRootCategory = (LinearLayout)view.findViewById(R.id.categoryPickerRootCategoryButton);
+            if (category.getNodeName().equals("root") == false) {
+                ImageView iv = (ImageView)view.findViewById(R.id.categoryPickerIcon);
+                try {
+                    Bitmap bitmap = BitmapFactory.decodeStream(rrm.getInputStream(Uri.parse(category.getIconUrl())));
+                    iv.setImageBitmap(bitmap);
+                } catch (IOException e) {
+//                    holder.photo.setImageResource(R.drawable.blank_boy);
+                }
+                
+                TextView tv = (TextView)view.findViewById(R.id.categoryPickerName);
+                tv.setText(category.getNodeName());
+                
+                llRootCategory.setClickable(true);
+                llRootCategory.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mClickListener.onCategorySelected(mCategory);
+                    } 
+                });
+            }
+            else {
+                llRootCategory.setVisibility(View.GONE);
+            }
         }
         
         private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                mClickListener.onPageListItemSelcected((Category)mAdapter.getItem(arg2));
+            public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
+                mClickListener.onPageListItemSelcected((Category)mAdapter.getItem(position));
             }
         };
     }
@@ -101,14 +159,29 @@ public class CategoryPickerDialog extends Dialog {
     private PageListItemSelected mPageListItemSelected = new PageListItemSelected() {
         @Override
         public void onPageListItemSelcected(Category category) {
+            // If the item has children, create a new page for it.
             if (category.getChildCategories() != null && category.getChildCategories().size() > 0) {
                 mViewFlipper.addView(makePage(category));
                 mViewFlipper.showNext();
             }
+            else {
+                // This is a leaf node, finally the user's selection. Record the category
+                // then cancel ourselves, parent activity should pick us up after that.
+                mChosenCategory = category;
+                cancel();
+            }
+        }
+
+        @Override
+        public void onCategorySelected(Category category) {
+            // The user has chosen the category parent listed at the top of the current page.
+            mChosenCategory = category;
+            cancel();
         }
     };
     
     private interface PageListItemSelected {
         public void onPageListItemSelcected(Category category);
+        public void onCategorySelected(Category category);
     }
 }

@@ -56,6 +56,7 @@ public class AddVenueActivity extends Activity {
     private EditText mZipEditText;
     private EditText mPhoneEditText;
     private Button mAddVenueButton;
+    private Button mCategoryButton;
 
     private ProgressDialog mDlgProgress;
     
@@ -100,8 +101,9 @@ public class AddVenueActivity extends Activity {
         mZipEditText = (EditText) findViewById(R.id.zipEditText);
         mPhoneEditText = (EditText) findViewById(R.id.phoneEditText);
         
-        Button btnPickCategory = (Button)findViewById(R.id.addCategoryButton);
-        btnPickCategory.setOnClickListener(new OnClickListener() {
+        mCategoryButton = (Button)findViewById(R.id.addCategoryButton);
+        mCategoryButton.setEnabled(false);
+        mCategoryButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 showDialog(DIALOG_PICK_CATEGORY);
@@ -228,6 +230,7 @@ public class AddVenueActivity extends Activity {
             // Populate the categories list now.
             if (categories != null) {
                 mStateHolder.setCategories(categories);
+                mCategoryButton.setEnabled(true);
             } else {
                 // If error, feed list adapter empty user group.
                 mStateHolder.setCategories(new Group<Category>());
@@ -568,7 +571,6 @@ public class AddVenueActivity extends Activity {
                     @Override
                     public void onCancel(DialogInterface dialog) {
                         removeDialog(DIALOG_PICK_CATEGORY);
-                        finish();
                     }
                 });
                 return dlg;

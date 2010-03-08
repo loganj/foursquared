@@ -67,7 +67,6 @@ public class CategoryPickerAdapter extends BaseAdapter {
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.indent = (LinearLayout) convertView.findViewById(R.id.categoryPickerPadding);
             holder.icon = (ImageView) convertView.findViewById(R.id.categoryPickerIcon);
             holder.name = (TextView) convertView.findViewById(R.id.categoryPickerName);
 
@@ -113,7 +112,6 @@ public class CategoryPickerAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
-        LinearLayout indent;
         ImageView icon;
         TextView name;
     }
