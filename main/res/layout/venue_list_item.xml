@@ -18,7 +18,7 @@
     android:layout_height="32dip"
     android:layout_alignParentTop="true"
     android:layout_alignParentBottom="true"
-    android:src="@drawable/map_marker_blue"
+    android:src="@drawable/category_none"
     android:scaleType="fitCenter"  
     android:gravity="center_horizontal"
     android:layout_marginTop="4dip"

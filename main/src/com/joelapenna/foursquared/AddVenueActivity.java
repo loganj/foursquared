@@ -126,10 +126,6 @@ public class AddVenueActivity extends Activity {
         mAddVenueButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mStateHolder.getChosenCategory() == null) {
-                    return;    
-                }
-                
                 mStateHolder.startTaskAddVenue(
                     AddVenueActivity.this,
                     new String[] {
@@ -141,7 +137,8 @@ public class AddVenueActivity extends Activity {
                         mZipEditText.getText().toString(),
                         mZipEditText.getText().toString(),
                         mPhoneEditText.getText().toString(),
-                        mStateHolder.getChosenCategory().getId()
+                        mStateHolder.getChosenCategory() != null ? 
+                                mStateHolder.getChosenCategory().getId() : null
                     });
             }
         });
@@ -618,7 +615,7 @@ public class AddVenueActivity extends Activity {
                     Uri.parse(category.getIconUrl())));
             mCategoryImageView.setImageBitmap(bitmap);
         } catch (IOException e) {
-//            holder.photo.setImageResource(R.drawable.blank_boy);
+            if (DEBUG) Log.e(TAG, "Error loading category icon.", e);
         }
         
         mCategoryTextView.setText(category.getNodeName());
@@ -632,6 +629,6 @@ public class AddVenueActivity extends Activity {
     }
     
     private boolean canEnableSaveButton() {
-        return mNameEditText.getText().length() > 0 && mStateHolder.getChosenCategory() != null;
+        return mNameEditText.getText().length() > 0;
     }
 }

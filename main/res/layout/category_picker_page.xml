@@ -19,6 +19,7 @@
     android:gravity="center_vertical"
     android:paddingTop="5dip"
     android:paddingBottom="5dip"
+    android:focusable="true"
     android:background="@drawable/border_round_rect_selector"
     >  
    
@@ -26,7 +27,7 @@
       android:id="@+id/categoryPickerIcon"
       android:layout_width="32dip"
       android:layout_height="32dip"
-      android:src="@drawable/map_marker_blue"
+      android:src="@drawable/category_none"
       android:scaleType="fitCenter"  
       android:gravity="center_horizontal"
       android:layout_marginLeft="5dip" />

@@ -122,6 +122,8 @@
         android:layout_marginLeft="5dip"
         android:layout_marginRight="5dip"
         android:layout_marginBottom="15dip"
+        android:enabled="false"
+        android:focusable="true"
         android:background="@drawable/border_round_rect_selector"
         >  
    
@@ -129,7 +131,7 @@
           android:id="@+id/addVenueCategoryIcon"
           android:layout_width="32dip"
           android:layout_height="32dip"
-          android:src="@drawable/map_marker_blue"
+          android:src="@drawable/category_none"
           android:scaleType="fitCenter"  
           android:gravity="center_horizontal"
           android:layout_marginLeft="5dip" />

@@ -119,14 +119,7 @@ public class VenueListAdapter extends BaseVenueAdapter {
     }
 
     private void setDefaultVenueCategoryIcon(Venue venue, ViewHolder holder) {
-        Stats stats = venue.getStats();
-        if (stats != null && stats.getBeenhere() != null && stats.getBeenhere().me()) {
-            if (DEBUG) Log.d(TAG, "Using been here icon");
-            holder.icon.setImageResource(R.drawable.map_marker_blue);
-        } else {
-            if (DEBUG) Log.d(TAG, "Using never been here icon");
-            holder.icon.setImageResource(R.drawable.map_marker_blue_muted);
-        }
+        holder.icon.setImageResource(R.drawable.category_none);
     }
 
     @Override
