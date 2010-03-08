@@ -5,6 +5,7 @@
   <string name="add_venue_activity_label">Add a New Venue</string>
   <string name="add_venue_error_toast_venue_null">Unable to add venue!</string>
   <string name="add_venue_label">Add Venue</string>
+  <string name="add_venue_progress_bar_message">Adding Venue...</string>
   <string name="address">Address</string>
   <string name="app_name">Foursquare</string>
   <string name="badges_header">Badges</string>
