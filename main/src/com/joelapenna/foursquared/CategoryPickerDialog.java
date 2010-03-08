@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -129,7 +130,7 @@ public class CategoryPickerDialog extends Dialog {
                     Bitmap bitmap = BitmapFactory.decodeStream(rrm.getInputStream(Uri.parse(category.getIconUrl())));
                     iv.setImageBitmap(bitmap);
                 } catch (IOException e) {
-//                    holder.photo.setImageResource(R.drawable.blank_boy);
+                    if (DEBUG) Log.e(TAG, "Error loading category icon from disk.", e);
                 }
                 
                 TextView tv = (TextView)view.findViewById(R.id.categoryPickerName);

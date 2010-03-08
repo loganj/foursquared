@@ -101,10 +101,11 @@ public class Foursquare {
     @V1
     @LocationRequired
     public Venue addVenue(String name, String address, String crossstreet, String city,
-            String state, String zip, String phone, Location location) throws FoursquareException,
+            String state, String zip, String phone, String categoryId, Location location) 
+            throws FoursquareException,
             FoursquareError, IOException {
         return mFoursquareV1.addvenue(name, address, crossstreet, city, state, zip, phone,
-                location.geolat, location.geolong, location.geohacc, location.geovacc,
+                categoryId, location.geolat, location.geolong, location.geohacc, location.geovacc,
                 location.geoalt);
     }
 

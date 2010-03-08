@@ -113,18 +113,6 @@
         android:text="Venue Category"
         android:layout_marginBottom="4dip" />
         
-        <!-- 
-      <Button
-        android:id="@+id/addCategoryButton"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Pick Category"
-        android:layout_marginLeft="5dip"
-        android:layout_marginRight="5dip"
-        android:layout_marginBottom="10dip" />
-        -->
-        
-        
       <LinearLayout
         android:id="@+id/addVenueCategoryLayout"
         android:layout_width="fill_parent"
@@ -133,31 +121,31 @@
         android:gravity="center_vertical"
         android:layout_marginLeft="5dip"
         android:layout_marginRight="5dip"
-        android:layout_marginBottom="10dip"
-        android:background="@drawable/border_round_rect"
+        android:layout_marginBottom="15dip"
+        android:background="@drawable/border_round_rect_selector"
         >  
    
-    <ImageView
-      android:id="@+id/addVenueCategoryIcon"
-      android:layout_width="32dip"
-      android:layout_height="32dip"
-      android:src="@drawable/map_marker_blue"
-      android:scaleType="fitCenter"  
-      android:gravity="center_horizontal"
-      android:layout_marginLeft="5dip" />
+        <ImageView
+          android:id="@+id/addVenueCategoryIcon"
+          android:layout_width="32dip"
+          android:layout_height="32dip"
+          android:src="@drawable/map_marker_blue"
+          android:scaleType="fitCenter"  
+          android:gravity="center_horizontal"
+          android:layout_marginLeft="5dip" />
 	
-    <TextView
-      android:id="@+id/addVenueCategoryTextView"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:textColor="@color/black_end"
-      android:textAppearance="@android:style/TextAppearance.Small" 
-      android:singleLine="true"
-      android:ellipsize="marquee"
-      android:layout_gravity="center_vertical" 
-      android:paddingLeft="9dip" />
+        <TextView
+          android:id="@+id/addVenueCategoryTextView"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:textColor="@color/black_end"
+          android:textAppearance="@android:style/TextAppearance.Small" 
+          android:singleLine="true"
+          android:ellipsize="marquee"
+          android:layout_gravity="center_vertical" 
+          android:paddingLeft="9dip" />
   
-  </LinearLayout>
+      </LinearLayout>
         
       <Button
         android:id="@+id/addVenueButton"

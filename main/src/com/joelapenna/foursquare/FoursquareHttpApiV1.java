@@ -168,7 +168,7 @@ class FoursquareHttpApiV1 {
      * @throws IOException
      */
     Venue addvenue(String name, String address, String crossstreet, String city, String state,
-            String zip, String phone, String geolat, String geolong, String geohacc,
+            String zip, String phone, String categoryId, String geolat, String geolong, String geohacc,
             String geovacc, String geoalt) throws FoursquareException,
             FoursquareCredentialsException, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_ADDVENUE), //
@@ -179,6 +179,7 @@ class FoursquareHttpApiV1 {
                 new BasicNameValuePair("state", state), //
                 new BasicNameValuePair("zip", zip), //
                 new BasicNameValuePair("phone", phone), //
+                new BasicNameValuePair("primarycategoryid", categoryId), //
                 new BasicNameValuePair("geolat", geolat), //
                 new BasicNameValuePair("geolong", geolong), //
                 new BasicNameValuePair("geohacc", geohacc), //

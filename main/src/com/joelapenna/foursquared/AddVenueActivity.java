@@ -29,7 +29,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -54,7 +53,7 @@ public class AddVenueActivity extends Activity {
     
     private static final int DIALOG_PICK_CATEGORY = 1;
 
-    private StateHolder mStateHolder = new StateHolder();
+    private StateHolder mStateHolder;
 
     private EditText mNameEditText;
     private EditText mAddressEditText;
@@ -71,6 +70,7 @@ public class AddVenueActivity extends Activity {
     private ProgressDialog mDlgProgress;
     
     
+    
     private TextWatcher mNameFieldWatcher = new TextWatcher() {
         @Override
         public void afterTextChanged(Editable s) {
@@ -82,7 +82,7 @@ public class AddVenueActivity extends Activity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            mAddVenueButton.setEnabled(!TextUtils.isEmpty(s));
+            mAddVenueButton.setEnabled(canEnableSaveButton());
         }
     };
 
@@ -126,6 +126,10 @@ public class AddVenueActivity extends Activity {
         mAddVenueButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mStateHolder.getChosenCategory() == null) {
+                    return;    
+                }
+                
                 mStateHolder.startTaskAddVenue(
                     AddVenueActivity.this,
                     new String[] {
@@ -136,7 +140,8 @@ public class AddVenueActivity extends Activity {
                         mStateEditText.getText().toString(),
                         mZipEditText.getText().toString(),
                         mZipEditText.getText().toString(),
-                        mPhoneEditText.getText().toString()
+                        mPhoneEditText.getText().toString(),
+                        mStateHolder.getChosenCategory().getId()
                     });
             }
         });
@@ -331,6 +336,7 @@ public class AddVenueActivity extends Activity {
                         mParams[4],
                         mParams[5],
                         mParams[6],
+                        mParams[7],
                         LocationUtils.createFoursquareLocation(location));
             } catch (Exception e) {
                 if (DEBUG) Log.d(TAG, "Exception doing add venue", e);
@@ -464,6 +470,7 @@ public class AddVenueActivity extends Activity {
         private boolean mIsRunningTaskGetCategories;
         private AddVenueTask mTaskAddVenue;
         private boolean mIsRunningTaskAddVenue;
+        private Category mChosenCategory;
         
         
         public StateHolder() {
@@ -548,6 +555,14 @@ public class AddVenueActivity extends Activity {
         public boolean getIsRunningTaskAddVenue() {
             return mIsRunningTaskAddVenue;
         }
+        
+        public Category getChosenCategory() {
+            return mChosenCategory;
+        }
+        
+        public void setChosenCategory(Category category) {
+            mChosenCategory = category;
+        }
     }
     
     private static class AddressLookup {
@@ -607,5 +622,16 @@ public class AddVenueActivity extends Activity {
         }
         
         mCategoryTextView.setText(category.getNodeName());
+        
+        // Record the chosen category.
+        mStateHolder.setChosenCategory(category);
+        
+        if (canEnableSaveButton()) {
+            mAddVenueButton.setEnabled(canEnableSaveButton());
+        }
+    }
+    
+    private boolean canEnableSaveButton() {
+        return mNameEditText.getText().length() > 0 && mStateHolder.getChosenCategory() != null;
     }
 }
