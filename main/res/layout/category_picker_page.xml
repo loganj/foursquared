@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Copyright 2010 Mark Wyszomierski -->
+
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical" 
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:paddingLeft="8dip"
+  android:paddingRight="8dip"
+  android:paddingTop="8dip"
+  android:paddingBottom="8dip"
+  android:background="@color/white"
+  >
+
+  <ListView
+    android:id="@+id/categoryPickerListView"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:dividerHeight="1dip" 
+    android:drawSelectorOnTop="false"
+    android:scrollbars="vertical" />
+    
+</LinearLayout>

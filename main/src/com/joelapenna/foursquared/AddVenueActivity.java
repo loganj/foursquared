@@ -12,11 +12,14 @@ import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.DialogInterface.OnCancelListener;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -40,6 +43,8 @@ public class AddVenueActivity extends Activity {
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private static final double MINIMUM_ACCURACY_FOR_ADDRESS = 100.0;
+    
+    private static final int DIALOG_PICK_CATEGORY = 1;
 
     private StateHolder mStateHolder = new StateHolder();
 
@@ -94,6 +99,14 @@ public class AddVenueActivity extends Activity {
         mStateEditText = (EditText) findViewById(R.id.stateEditText);
         mZipEditText = (EditText) findViewById(R.id.zipEditText);
         mPhoneEditText = (EditText) findViewById(R.id.phoneEditText);
+        
+        Button btnPickCategory = (Button)findViewById(R.id.addCategoryButton);
+        btnPickCategory.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                showDialog(DIALOG_PICK_CATEGORY);
+            }
+        });
 
         mAddVenueButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -538,4 +551,28 @@ public class AddVenueActivity extends Activity {
             return mAddress;
         }
     }
+    
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DIALOG_PICK_CATEGORY:
+                // When the user cancels the dialog (by hitting the 'back' key), we
+                // finish this activity. We don't listen to onDismiss() for this
+                // action, because a device rotation will fire onDismiss(), and our
+                // dialog would not be re-displayed after the rotation is complete.
+                CategoryPickerDialog dlg = new CategoryPickerDialog(
+                    this, 
+                    mStateHolder.getCategories(), 
+                    ((Foursquared)getApplication()));
+                dlg.setOnCancelListener(new OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        removeDialog(DIALOG_PICK_CATEGORY);
+                        finish();
+                    }
+                });
+                return dlg;
+        }
+        return null;
+    } 
 }

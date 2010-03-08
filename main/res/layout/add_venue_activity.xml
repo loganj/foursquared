@@ -84,6 +84,13 @@
         android:phoneNumber="true"
         android:imeOptions="actionDone"
         android:hint="555-2368" />
+      
+      <Button
+        android:id="@+id/addCategoryButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Pick Category" />
+        
       <Button
         android:id="@+id/addVenueButton"
         android:layout_width="fill_parent"
