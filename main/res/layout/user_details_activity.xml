@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+    
+    <!-- Copyright 2010 Mark Wyszomierski -->
+    
+<ScrollView 
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/ScrollView01" 
+  android:layout_width="fill_parent" 
+  android:layout_height="fill_parent" >
+  
+  <LinearLayout 
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent">
+    
+    <!-- This is the top header, contains user's picture etc. -->
+    <LinearLayout 
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content"
+      android:background="@color/blue_start"
+      android:paddingLeft="5dip" 
+      android:paddingRight="5dip" 
+      android:paddingTop="10dip" 
+      android:paddingBottom="10dip" 
+      >
+
+      <ImageView
+        android:id="@+id/userDetailsActivityPhoto"
+        android:layout_width="72dip"
+        android:layout_height="72dip"
+        android:padding="3dip"
+        android:background="@drawable/photo_background"
+        android:src="@drawable/blank_boy"
+        android:scaleType="fitCenter"  
+        android:gravity="center_vertical" />
+      
+      <LinearLayout 
+        android:layout_width="fill_parent" 
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dip"
+        android:orientation="vertical" 
+        >
+        
+        <TextView 
+          android:id="@+id/userDetailsActivityName" 
+          android:text="Anonymous" 
+          android:layout_width="wrap_content" 
+          android:layout_height="wrap_content"
+          android:textAppearance="@style/TextViewStyleUserDetailsActivityTitle" />
+          
+        <LinearLayout
+          android:layout_width="fill_parent" 
+          android:layout_height="wrap_content"
+          android:orientation="horizontal" >
+          
+          <LinearLayout
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/user_details_activity_round_rect_badges" >
+        
+            <TextView 
+              android:text="MAYORSHIPS" 
+              android:layout_width="wrap_content" 
+              android:layout_height="wrap_content"
+              android:textAppearance="@style/TextViewStyleUserDetailsActivityNumBadgesTitle" />
+              
+            <LinearLayout
+              android:layout_width="fill_parent" 
+              android:layout_height="wrap_content"
+              android:orientation="horizontal" >
+           
+              <TextView 
+                android:text="-" 
+                android:id="@+id/userDetailsActivityNumMayorships" 
+                android:layout_width="wrap_content" 
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextViewStyleUserDetailsActivityNumBadges" />
+            
+            </LinearLayout>
+              
+          </LinearLayout>
+         
+          <LinearLayout
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/user_details_activity_round_rect_badges" >
+        
+            <TextView 
+              android:text="BADGES" 
+              android:layout_width="wrap_content" 
+              android:layout_height="wrap_content"
+              android:textAppearance="@style/TextViewStyleUserDetailsActivityNumBadgesTitle" />
+              
+            <LinearLayout
+              android:layout_width="fill_parent" 
+              android:layout_height="wrap_content"
+              android:orientation="horizontal" >
+           
+              <TextView 
+                android:text="-" 
+                android:id="@+id/userDetailsActivityNumBadges" 
+                android:layout_width="wrap_content" 
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextViewStyleUserDetailsActivityNumBadges" />
+            
+            </LinearLayout>
+              
+          </LinearLayout>
+        
+        </LinearLayout>
+      </LinearLayout>
+        
+  </LinearLayout>
+   
+   <!-- 
+   <TabWidget android:id="@android:id/tabs" android:layout_width="wrap_content" android:layout_height="wrap_content"></TabWidget>
+     -->
+     
+  </LinearLayout>
+</ScrollView>

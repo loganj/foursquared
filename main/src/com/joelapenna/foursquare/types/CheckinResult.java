@@ -11,23 +11,23 @@ package com.joelapenna.foursquare.types;
  */
 public class CheckinResult implements FoursquareType {
 
-    private Group mBadges;
+    private Group<Badge> mBadges;
     private String mCreated;
     private String mId;
     private Mayor mMayor;
     private String mMessage;
-    private Group mScoring;
-    private Group mSpecials;
+    private Group<Score> mScoring;
+    private Group<Special> mSpecials;
     private Venue mVenue;
 
     public CheckinResult() {
     }
 
-    public Group getBadges() {
+    public Group<Badge> getBadges() {
         return mBadges;
     }
 
-    public void setBadges(Group badges) {
+    public void setBadges(Group<Badge> badges) {
         mBadges = badges;
     }
 
@@ -63,19 +63,19 @@ public class CheckinResult implements FoursquareType {
         mMessage = message;
     }
 
-    public Group getScoring() {
+    public Group<Score> getScoring() {
         return mScoring;
     }
 
-    public void setScoring(Group scoring) {
+    public void setScoring(Group<Score> scoring) {
         mScoring = scoring;
     }
 
-    public Group getSpecials() {
+    public Group<Special> getSpecials() {
         return mSpecials;
     }
 
-    public void setSpecials(Group specials) {
+    public void setSpecials(Group<Special> specials) {
         mSpecials = specials;
     }
 
@@ -86,5 +86,4 @@ public class CheckinResult implements FoursquareType {
     public void setVenue(Venue venue) {
         mVenue = venue;
     }
-
 }

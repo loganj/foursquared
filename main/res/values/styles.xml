@@ -181,6 +181,23 @@
     <item name="android:textSize">13dip</item>
     <item name="android:textColor">@color/grey_end</item>
   </style>
+  
+  <style name="TextViewStyleUserDetailsActivityTitle">
+    <item name="android:textSize">18dip</item>
+    <item name="android:textColor">@color/white</item>
+  </style>
+ 
+  <style name="TextViewStyleUserDetailsActivityNumBadgesTitle">
+    <item name="android:textSize">11dip</item>
+    <item name="android:textColor">@color/white</item>
+  </style>
+ 
+  <style name="TextViewStyleUserDetailsActivityNumBadges">
+    <item name="android:textSize">15dip</item>
+    <item name="android:textColor">@color/white</item>
+    <item name="android:textStyle">bold</item>
+  </style>
+ 
  
   <!-- Provides a transparent background for an activity. Without inheriting from this
        base theme style, 1.5 makes the background solid black instead of transparent.

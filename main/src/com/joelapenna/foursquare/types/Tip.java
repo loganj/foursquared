@@ -4,12 +4,16 @@
 
 package com.joelapenna.foursquare.types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Auto-generated: 2009-11-12 21:45:35.385718
  *
  * @author Joe LaPenna (joe@joelapenna.com)
+ * @author Mark Wyszomierski (markww@gmail.com), implemented Parcelable.
  */
-public class Tip implements FoursquareType {
+public class Tip implements FoursquareType, Parcelable {
 
     private String mCreated;
     private String mDistance;
@@ -21,6 +25,26 @@ public class Tip implements FoursquareType {
     public Tip() {
     }
 
+    private Tip(Parcel in) {
+        mCreated = in.readString();
+        mDistance = in.readString();
+        mId = in.readString();
+        mText = in.readString();
+        mUser = User.CREATOR.createFromParcel(in);
+        mVenue = Venue.CREATOR.createFromParcel(in);
+    }
+    
+    public static final Parcelable.Creator<Tip> CREATOR = new Parcelable.Creator<Tip>() {
+        public Tip createFromParcel(Parcel in) {
+            return new Tip(in);
+        }
+
+        @Override
+        public Tip[] newArray(int size) {
+            return new Tip[size];
+        }
+    };
+    
     public String getCreated() {
         return mCreated;
     }
@@ -69,4 +93,18 @@ public class Tip implements FoursquareType {
         mVenue = venue;
     }
 
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeString(mCreated);
+        out.writeString(mDistance);
+        out.writeString(mId);
+        out.writeString(mText);
+        out.writeParcelable(mUser, flags);
+        out.writeParcelable(mVenue, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 }

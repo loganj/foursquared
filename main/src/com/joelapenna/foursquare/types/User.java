@@ -4,14 +4,18 @@
 
 package com.joelapenna.foursquare.types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Auto-generated: 2010-01-14 11:02:51.892579
  *
  * @author Joe LaPenna (joe@joelapenna.com)
+ * @author Mark Wyszomierski (markww@gmail.com), implemented Parcelable.
  */
-public class User implements FoursquareType {
+public class User implements FoursquareType, Parcelable {
 
-    private Group mBadges;
+    private Group<Badge> mBadges;
     private Checkin mCheckin;
     private String mCreated;
     private String mEmail;
@@ -28,11 +32,46 @@ public class User implements FoursquareType {
     public User() {
     }
 
-    public Group getBadges() {
+    private User(Parcel in) {
+        mCreated = in.readString();
+        mEmail = in.readString();
+        mFirstname = in.readString();
+        mFriendstatus = in.readString();
+        mGender = in.readString();
+        mId = in.readString();
+        mLastname = in.readString();
+        mPhone = in.readString();
+        mPhoto = in.readString();
+        mTwitter = in.readString();
+        
+        mBadges = new Group<Badge>();
+        int numBadges = in.readInt();
+        for (int i = 0; i < numBadges; i++) {
+            Badge badge = Badge.CREATOR.createFromParcel(in);
+            mBadges.add(badge);
+        }
+        
+        //mCheckin = Checkin.class;
+        
+        mSettings = Settings.CREATOR.createFromParcel(in);
+    }
+    
+    public static final User.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
+    public Group<Badge> getBadges() {
         return mBadges;
     }
 
-    public void setBadges(Group badges) {
+    public void setBadges(Group<Badge> badges) {
         mBadges = badges;
     }
 
@@ -132,4 +171,35 @@ public class User implements FoursquareType {
         mTwitter = twitter;
     }
 
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeString(mCreated);
+        out.writeString(mEmail);
+        out.writeString(mFirstname);
+        out.writeString(mFriendstatus);
+        out.writeString(mGender);
+        out.writeString(mId);
+        out.writeString(mLastname);
+        out.writeString(mPhone);
+        out.writeString(mPhoto);
+        out.writeString(mTwitter);
+
+        if (mBadges != null) {
+            out.writeInt(mBadges.size());
+            for (int i = 0; i < mBadges.size(); i++) {
+                out.writeParcelable((Badge)mBadges.get(i), flags);
+            }
+        }
+        else {
+            out.writeInt(0);
+        }
+        
+        out.writeParcelable(mCheckin, flags);
+        out.writeParcelable(mSettings, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 }

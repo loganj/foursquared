@@ -4,12 +4,16 @@
 
 package com.joelapenna.foursquare.types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Auto-generated: 2009-11-12 21:45:34.803921
  *
  * @author Joe LaPenna (joe@joelapenna.com)
+ * @author Mark Wyszomierski (markww@gmail.com), implemented Parcelable.
  */
-public class Stats implements FoursquareType {
+public class Stats implements FoursquareType, Parcelable {
 
     private Beenhere mBeenhere;
     private String mCheckins;
@@ -17,6 +21,23 @@ public class Stats implements FoursquareType {
 
     public Stats() {
     }
+    
+    private Stats(Parcel in) {
+        mBeenhere = Beenhere.CREATOR.createFromParcel(in);
+        mCheckins = in.readString();
+        mMayor = Mayor.CREATOR.createFromParcel(in);
+    }
+    
+    public static final Parcelable.Creator<Stats> CREATOR = new Parcelable.Creator<Stats>() {
+        public Stats createFromParcel(Parcel in) {
+            return new Stats(in);
+        }
+
+        @Override
+        public Stats[] newArray(int size) {
+            return new Stats[size];
+        }
+    };
 
     public Beenhere getBeenhere() {
         return mBeenhere;
@@ -42,4 +63,15 @@ public class Stats implements FoursquareType {
         mMayor = mayor;
     }
 
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeString(mCheckins);
+        out.writeParcelable(mBeenhere, flags);
+        out.writeParcelable(mMayor, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 }

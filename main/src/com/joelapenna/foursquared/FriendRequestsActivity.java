@@ -165,9 +165,10 @@ public class FriendRequestsActivity extends ListActivity {
     }
 
     private void infoFriendRequest(User user) {
-        Intent intent = new Intent(this, UserActivity.class);
-        intent.putExtra(UserActivity.EXTRA_USER, user.getId());
-        intent.setData(Uri.parse("http://foursquare.com/user/" + user.getId()));
+        Intent intent = new Intent(this, UserDetailsActivity.class);
+   // zebra     intent.putExtra(UserActivity.EXTRA_USER, user.getId());
+     //   intent.setData(Uri.parse("http://foursquare.com/user/" + user.getId()));
+        intent.putExtra(UserDetailsActivity.EXTRA_USER_PARCEL, user);
         startActivity(intent);
     }
 

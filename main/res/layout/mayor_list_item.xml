@@ -8,7 +8,7 @@
   android:paddingBottom="10dip"
   android:paddingRight="10dip"
   style="@style/listItemStyle">
-
+   
   <ImageView
     android:id="@+id/photo"
 	android:layout_height="44dip"

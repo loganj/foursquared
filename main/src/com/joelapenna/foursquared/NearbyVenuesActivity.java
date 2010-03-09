@@ -173,7 +173,9 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 startActivity(new Intent(NearbyVenuesActivity.this, AddVenueActivity.class));
                 return true;
             case MENU_MYINFO:
-                startActivity(new Intent(NearbyVenuesActivity.this, UserActivity.class));
+
+ // zebra               intent.putExtra(UserDetailsActivity.EXTRA_USER_PARCEL, user);
+                startActivity(new Intent(NearbyVenuesActivity.this, UserDetailsActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);

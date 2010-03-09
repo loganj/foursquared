@@ -4,15 +4,19 @@
 
 package com.joelapenna.foursquare.types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Auto-generated: 2009-11-17 09:33:51.550183
  *
  * @author Joe LaPenna (joe@joelapenna.com)
+ * @author Mark Wyszomierski (markww@gmail.com), implemented Parcelable.
  */
-public class Venue implements FoursquareType {
+public class Venue implements FoursquareType, Parcelable {
 
     private String mAddress;
-    private Group mCheckins;
+    private Group<Checkin> mCheckins;
     private String mCity;
     private String mCityid;
     private String mCrossstreet;
@@ -25,8 +29,8 @@ public class Venue implements FoursquareType {
     private String mState;
     private Stats mStats;
     private Tags mTags;
-    private Group mTips;
-    private Group mTodos;
+    private Group<Tip> mTips;
+    private Group<Tip> mTodos;
     private String mTwitter;
     private String mZip;
     private Category mCategory;
@@ -34,6 +38,65 @@ public class Venue implements FoursquareType {
     public Venue() {
     }
 
+    private Venue(Parcel in) {
+        mAddress = in.readString();
+        mCity = in.readString();
+        mCityid = in.readString();
+        mCrossstreet = in.readString();
+        mDistance = in.readString();
+        mGeolat = in.readString();
+        mGeolong = in.readString();
+        mId = in.readString();
+        mName = in.readString();
+        mPhone = in.readString();
+        mState = in.readString();
+        mTwitter = in.readString();
+        mZip = in.readString();
+        
+        mCheckins = new Group<Checkin>();
+        int numCheckins = in.readInt();
+        for (int i = 0; i < numCheckins; i++) {
+            Checkin checkin = Checkin.CREATOR.createFromParcel(in);
+            mCheckins.add(checkin); 
+        }
+        
+        mStats = Stats.CREATOR.createFromParcel(in);
+        
+        mTags = new Tags();
+        int numTags = in.readInt();
+        for (int i = 0; i < numTags; i++) {
+            String tag = in.readString();
+            mTags.add(tag);
+        }
+  
+        mTips = new Group<Tip>();
+        int numTips = in.readInt();
+        for (int i = 0; i < numTips; i++) {
+            Tip tip = Tip.CREATOR.createFromParcel(in);
+            mTips.add(tip);
+        }
+
+        mTodos = new Group<Tip>();
+        int numTodos = in.readInt();
+        for (int i = 0; i < numTodos; i++) {
+            Tip todo = Tip.CREATOR.createFromParcel(in);
+            mTodos.add(todo);
+        }
+
+        mCategory = Category.CREATOR.createFromParcel(in);
+    }
+    
+    public static final Parcelable.Creator<Venue> CREATOR = new Parcelable.Creator<Venue>() {
+        public Venue createFromParcel(Parcel in) {
+            return new Venue(in);
+        }
+
+        @Override
+        public Venue[] newArray(int size) {
+            return new Venue[size];
+        }
+    };
+    
     public String getAddress() {
         return mAddress;
     }
@@ -42,11 +105,11 @@ public class Venue implements FoursquareType {
         mAddress = address;
     }
 
-    public Group getCheckins() {
+    public Group<Checkin> getCheckins() {
         return mCheckins;
     }
 
-    public void setCheckins(Group checkins) {
+    public void setCheckins(Group<Checkin> checkins) {
         mCheckins = checkins;
     }
 
@@ -146,19 +209,19 @@ public class Venue implements FoursquareType {
         mTags = tags;
     }
 
-    public Group getTips() {
+    public Group<Tip> getTips() {
         return mTips;
     }
 
-    public void setTips(Group tips) {
+    public void setTips(Group<Tip> tips) {
         mTips = tips;
     }
 
-    public Group getTodos() {
+    public Group<Tip> getTodos() {
         return mTodos;
     }
 
-    public void setTodos(Group todos) {
+    public void setTodos(Group<Tip> todos) {
         mTodos = todos;
     }
 
@@ -184,5 +247,52 @@ public class Venue implements FoursquareType {
     
     public void setCategory(Category category) {
         mCategory = category;
+    }
+    
+    
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeString(mAddress);
+        out.writeString(mCity);
+        out.writeString(mCityid);
+        out.writeString(mCrossstreet);
+        out.writeString(mDistance);
+        out.writeString(mGeolat);
+        out.writeString(mGeolong);
+        out.writeString(mId);
+        out.writeString(mName);
+        out.writeString(mPhone);
+        out.writeString(mState);
+        out.writeString(mTwitter);
+        out.writeString(mZip);
+
+        out.writeInt(mCheckins.size());
+        for (int i = 0; i < mCheckins.size(); i++) {
+            out.writeParcelable((Checkin)mCheckins.get(i), flags);
+        }
+        
+        out.writeParcelable(mStats, flags);
+        
+        out.writeInt(mTags.size());
+        for (int i = 0; i < mTags.size(); i++) {
+            out.writeString(mTags.get(i));
+        }
+  
+        out.writeInt(mTips.size());
+        for (int i = 0; i < mTips.size(); i++) {
+            out.writeParcelable((Tip)mTips.get(i), flags);
+        }
+
+        out.writeInt(mTodos.size());
+        for (int i = 0; i < mTodos.size(); i++) {
+            out.writeParcelable((Tip)mTodos.get(i), flags);
+        }
+        
+        out.writeParcelable(mCategory, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 }

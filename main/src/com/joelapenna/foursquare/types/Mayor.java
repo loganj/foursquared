@@ -4,12 +4,16 @@
 
 package com.joelapenna.foursquare.types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Auto-generated: 2009-11-12 21:45:35.140783
  *
  * @author Joe LaPenna (joe@joelapenna.com)
+ * @author Mark Wyszomierski (markww@gmail.com), implemented Parcelable.
  */
-public class Mayor implements FoursquareType {
+public class Mayor implements FoursquareType, Parcelable {
 
     private String mCheckins;
     private String mCount;
@@ -19,6 +23,25 @@ public class Mayor implements FoursquareType {
 
     public Mayor() {
     }
+    
+    private Mayor(Parcel in) {
+        mCheckins = in.readString();
+        mCount = in.readString();
+        mMessage = in.readString();
+        mType = in.readString();
+        mUser = User.CREATOR.createFromParcel(in);
+    }
+    
+    public static final Parcelable.Creator<Mayor> CREATOR = new Parcelable.Creator<Mayor>() {
+        public Mayor createFromParcel(Parcel in) {
+            return new Mayor(in);
+        }
+
+        @Override
+        public Mayor[] newArray(int size) {
+            return new Mayor[size];
+        }
+    };
 
     public String getCheckins() {
         return mCheckins;
@@ -60,4 +83,17 @@ public class Mayor implements FoursquareType {
         mUser = user;
     }
 
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeString(mCheckins);
+        out.writeString(mCount);
+        out.writeString(mMessage);
+        out.writeString(mType);
+        out.writeParcelable(mUser, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 }

@@ -4,12 +4,15 @@
 
 package com.joelapenna.foursquare.types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 
 /**
  * @date March 6, 2010
  * @author Mark Wyszomierski (markww@gmail.com)
  */
-public class Category implements FoursquareType {
+public class Category implements FoursquareType, Parcelable {
 
     /** The category's id. */
     private String mId;
@@ -30,6 +33,31 @@ public class Category implements FoursquareType {
     public Category() {
         mChildCategories = new Group<Category>();
     }
+    
+    private Category(Parcel in) {
+        mChildCategories = new Group<Category>();
+        
+        mId = in.readString();
+        mFullPathName = in.readString();
+        mNodeName = in.readString();
+        mIconUrl = in.readString();
+        int numCategories = in.readInt();
+        for (int i = 0; i < numCategories; i++) {
+            Category category = Category.CREATOR.createFromParcel(in);
+            mChildCategories.add(category);
+        }
+    }
+    
+    public static final Parcelable.Creator<Category> CREATOR = new Parcelable.Creator<Category>() {
+        public Category createFromParcel(Parcel in) {
+            return new Category(in);
+        }
+
+        @Override 
+        public Category[] newArray(int size) {
+            return new Category[size];
+        }
+    };
 
     public String getId() {
         return mId;
@@ -69,5 +97,23 @@ public class Category implements FoursquareType {
     
     public void setChildCategories(Group<Category> categories) {
         mChildCategories = categories;
+    }
+    
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeString(mId);
+        out.writeString(mFullPathName);
+        out.writeString(mNodeName);
+        out.writeString(mIconUrl);
+
+        out.writeInt(mChildCategories.size());
+        for (Category it : mChildCategories) {
+            out.writeParcelable(it, flags);
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 }

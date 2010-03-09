@@ -294,6 +294,18 @@
       android:name=".FetchImageForViewIntent"
       android:theme="@style/ThemeTransparentDialogBase.TransparentDialog">
     </activity> 
+    
+    <activity
+      android:name=".UserDetailsActivity">
+      <intent-filter>
+        <action
+          android:name="android.intent.action.MAIN" />
+      </intent-filter>
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
+    </activity>
 
     <receiver
       android:name=".appwidget.FriendsAppWidgetProvider"

@@ -217,9 +217,10 @@ public class AddFriendsByUserInputActivity extends Activity {
     }
 
     private void userInfo(User user) {
-        Intent intent = new Intent(AddFriendsByUserInputActivity.this, UserActivity.class);
-        intent.putExtra(UserActivity.EXTRA_USER, user.getId());
-        intent.setData(Uri.parse("http://foursquare.com/user/" + user.getId()));
+        Intent intent = new Intent(AddFriendsByUserInputActivity.this, UserDetailsActivity.class);
+   // zebra     intent.putExtra(UserActivity.EXTRA_USER, user.getId());
+        //intent.setData(Uri.parse("http://foursquare.com/user/" + user.getId()));
+        intent.putExtra(UserDetailsActivity.EXTRA_USER_PARCEL, user);
         startActivity(intent);
     }
     

@@ -83,7 +83,7 @@ public class BrowsableActivity extends Activity {
                 break;
             case URI_PATH_USER:
                 if (DEBUG) Log.d(TAG, "Matched: URI_PATH_USER");
-                intent = new Intent(this, UserActivity.class);
+                intent = new Intent(this, UserDetailsActivity.class);
                 intent.putExtra(UserActivity.EXTRA_USER, uri.getQueryParameter("uid"));
                 startActivity(intent);
                 break;
