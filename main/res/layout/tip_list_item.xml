@@ -10,28 +10,23 @@
 
   <TextView
     android:id="@+id/tipTextView"
-
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-
     android:maxLines="3"
     android:ellipsize="end"
     android:gravity="center_vertical"
-    android:paddingLeft="7dip" />
+    android:paddingLeft="7dip" 
+    android:textAppearance="@style/TextViewStyleTipListItemTip" />
 
   <TextView
     android:id="@+id/userTextView"
-
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-
     android:gravity="right|bottom"
-
-    style="@style/secondaryTextStyle"
-
     android:maxLines="1"
     android:scrollHorizontally="true"
     android:ellipsize="end"
-    android:paddingLeft="7dip" />
+    android:paddingLeft="7dip"
+    android:textAppearance="@style/TextViewStyleTipListItemSignature" />
 
 </LinearLayout>

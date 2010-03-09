@@ -171,6 +171,16 @@
     <item name="android:textSize">11dip</item>
     <item name="android:textColor">@color/grey_end</item>
   </style>
+  
+  <style name="TextViewStyleTipListItemTip">
+    <item name="android:textSize">15dip</item>
+    <item name="android:textColor">@color/black_end</item>
+  </style>
+  
+  <style name="TextViewStyleTipListItemSignature">
+    <item name="android:textSize">13dip</item>
+    <item name="android:textColor">@color/grey_end</item>
+  </style>
  
   <!-- Provides a transparent background for an activity. Without inheriting from this
        base theme style, 1.5 makes the background solid black instead of transparent.
