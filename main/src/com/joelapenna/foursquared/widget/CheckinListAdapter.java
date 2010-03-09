@@ -74,6 +74,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter
             holder = new ViewHolder();
             holder.photo = (ImageView)convertView.findViewById(R.id.photo);
             holder.firstLine = (TextView)convertView.findViewById(R.id.firstLine);
+            holder.secondLine = (TextView)convertView.findViewById(R.id.secondLine);
             holder.shoutTextView = (TextView)convertView.findViewById(R.id.shoutTextView);
             holder.timeTextView = (TextView)convertView.findViewById(R.id.timeTextView);
 
@@ -100,13 +101,23 @@ public class CheckinListAdapter extends BaseCheckinAdapter
         }
 
         holder.firstLine.setText(StringFormatters.getCheckinMessage(checkin, true));
+        if (checkin.getVenue() != null && checkin.getVenue().getAddress() != null) {
+            String address = checkin.getVenue().getAddress();
+            if (checkin.getVenue().getCrossstreet() != null && 
+                checkin.getVenue().getCrossstreet().length() > 0) {
+                address += "(" + checkin.getVenue().getCrossstreet() + ")";
+            }
+            holder.secondLine.setText(address);
+        }
         holder.timeTextView.setText(StringFormatters
                 .getRelativeTimeSpanString(checkin.getCreated()));
 
         if (checkin.getShout() != null) {
             holder.shoutTextView.setText(checkin.getShout());
+            holder.shoutTextView.setVisibility(View.VISIBLE);
         } else {
             holder.shoutTextView.setText("");
+            holder.shoutTextView.setVisibility(View.GONE);
         }
 
         return convertView;
@@ -139,6 +150,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter
     private static class ViewHolder {
         ImageView photo;
         TextView firstLine;
+        TextView secondLine;
         TextView shoutTextView;
         TextView timeTextView;
     }

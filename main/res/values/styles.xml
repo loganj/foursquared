@@ -145,6 +145,32 @@
       name="android:textColor">@android:color/white</item>
   </style>
   
+  <style name="TextViewStyleVenueNameListItem">
+    <item name="android:textSize">15dip</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:textColor">@color/black_end</item>
+  </style>
+
+  <style name="TextViewStyleVenueAddressListItem">
+    <item name="android:textSize">13dip</item>
+    <item name="android:textColor">@color/black_end</item>
+  </style>
+  
+  <style name="TextViewStyleCheckinListItemLine1">
+    <item name="android:textSize">15dip</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:textColor">@color/black_end</item>
+  </style>
+
+  <style name="TextViewStyleCheckinListItemLine2">
+    <item name="android:textSize">13dip</item>
+    <item name="android:textColor">@color/black_end</item>
+  </style>
+  
+  <style name="TextViewStyleCheckinListItemLine3">
+    <item name="android:textSize">11dip</item>
+    <item name="android:textColor">@color/grey_end</item>
+  </style>
  
   <!-- Provides a transparent background for an activity. Without inheriting from this
        base theme style, 1.5 makes the background solid black instead of transparent.
