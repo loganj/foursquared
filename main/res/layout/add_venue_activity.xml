@@ -154,7 +154,7 @@
           android:layout_gravity="center_vertical" 
           android:paddingLeft="9dip" 
           android:text="Loading categories..." />
-           
+          
         <ProgressBar
           android:id="@+id/addVenueCategoryProgressBar"
           android:layout_width="wrap_content"

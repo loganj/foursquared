@@ -11,7 +11,6 @@ import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
-import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -65,14 +64,14 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
         // need to re-inflate it. We only inflate a new View when the
         // convertView supplied by ListView is null.
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.mayor, null);
+            convertView = mInflater.inflate(R.layout.mayor_list_item, null);
 
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
             holder.photo = (ImageView)convertView.findViewById(R.id.photo);
             holder.firstLine = (TextView)convertView.findViewById(R.id.firstLine);
-            holder.timeTextView = (TextView)convertView.findViewById(R.id.timeTextView);
+            holder.secondLine = (TextView)convertView.findViewById(R.id.mayorMessageTextView);
 
             convertView.setTag(holder);
         } else {
@@ -81,7 +80,6 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
             holder = (ViewHolder)convertView.getTag();
         }
 
-        if (DEBUG) Log.d(TAG, "Populating Mayor list item.");
         Mayor mayor = (Mayor)getItem(position);
         final User user = mayor.getUser();
         final Uri photoUri = Uri.parse(user.getPhoto());
@@ -97,8 +95,8 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
             }
         }
 
-        holder.firstLine.setText(StringFormatters.getUserAbbreviatedName(user));
-        holder.timeTextView.setText(mayor.getCheckins());
+        holder.firstLine.setText(mayor.getUser().getFirstname());
+        holder.secondLine.setText(mayor.getMessage());
 
         return convertView;
     }
@@ -130,6 +128,6 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
     private static class ViewHolder {
         ImageView photo;
         TextView firstLine;
-        TextView timeTextView;
+        TextView secondLine;
     }
 }

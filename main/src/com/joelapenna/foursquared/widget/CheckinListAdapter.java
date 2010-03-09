@@ -108,7 +108,12 @@ public class CheckinListAdapter extends BaseCheckinAdapter
                 address += "(" + checkin.getVenue().getCrossstreet() + ")";
             }
             holder.secondLine.setText(address);
+            holder.secondLine.setVisibility(View.VISIBLE);
         }
+        else {
+            holder.secondLine.setVisibility(View.GONE);
+        }
+        
         holder.timeTextView.setText(StringFormatters
                 .getRelativeTimeSpanString(checkin.getCreated()));
 
