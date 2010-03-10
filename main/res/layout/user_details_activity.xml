@@ -90,7 +90,7 @@
           android:layout_width="wrap_content" 
           android:layout_height="wrap_content"
           android:orientation="vertical"
-          android:background="@drawable/user_details_activity_round_rect_badges"
+          android:background="@drawable/user_details_activity_round_rect_badges_selector"
           android:focusable="true"
           android:clickable="true" >
         

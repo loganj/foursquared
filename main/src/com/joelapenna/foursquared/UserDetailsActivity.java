@@ -61,6 +61,7 @@ public class UserDetailsActivity extends TabActivity {
 
     private ImageView mImageViewPhoto;
     private TextView mTextViewName;
+    private LinearLayout mLayoutNumBadges;
     private TextView mTextViewNumMayorships;
     private TextView mTextViewNumBadges;
     private TabHost mTabHost;
@@ -165,13 +166,14 @@ public class UserDetailsActivity extends TabActivity {
         mTextViewNumBadges = (TextView)findViewById(R.id.userDetailsActivityNumBadges);
         
         // When the user clicks the badges section, then launch the badges activity.
-        LinearLayout layoutNumBadges = (LinearLayout)findViewById(R.id.userDetailsActivityNumBadgesLayout);
-        layoutNumBadges.setOnClickListener(new OnClickListener() {
+        mLayoutNumBadges = (LinearLayout)findViewById(R.id.userDetailsActivityNumBadgesLayout);
+        mLayoutNumBadges.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 startBadgesActivity();
             }
         });
+        mLayoutNumBadges.setEnabled(false);
         
         // At startup, we need to have at least one tab. Once we load the full user object,
         // we can clear all tabs, and add our real tabs once we know what they are.
@@ -303,6 +305,9 @@ public class UserDetailsActivity extends TabActivity {
             mStateHolder.getShowAddFriendOptions());
         specTab2.setContent(intent);
         mTabHost.addTab(specTab2);
+        
+        // User can also now click on the badges tab.
+        mLayoutNumBadges.setEnabled(true);
     }
     
     private View prepareTabView(String text) {
