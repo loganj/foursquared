@@ -213,6 +213,12 @@ public class Foursquare {
         return mFoursquareV1.categories();
     }
     
+    @V1
+    public Group<Checkin> history(int limit) 
+        throws FoursquareException, FoursquareError, IOException {
+        return mFoursquareV1.history(limit);
+    }
+    
     public static final FoursquareHttpApiV1 createHttpApi(String domain, String clientVersion,
             boolean useOAuth) {
         LOG.log(Level.INFO, "Using foursquare.com for requests.");

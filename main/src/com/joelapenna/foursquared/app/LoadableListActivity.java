@@ -46,5 +46,4 @@ public class LoadableListActivity extends ListActivity {
     public int getNoSearchResultsStringId() {
         return R.string.no_search_results;
     }
-
 }

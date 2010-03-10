@@ -141,4 +141,19 @@
   <string name="friend_requests_progress_bar_ignore_request">Ignoring request....</string>
   <string name="user_activity_fetch_full_image_title">Fetching Image</string>
   <string name="user_activity_fetch_full_image_message">Fetching Image...</string>
+  <string name="user_actions_activity_no_info">No additional information available.</string>
+  <string name="user_actions_activity_action_sms">SMS</string>
+  <string name="user_actions_activity_action_email">Email</string>
+  <string name="user_actions_activity_action_phone">Call</string>
+  <string name="user_actions_activity_action_send_friend_request">Send A Friend Request</string>
+  <string name="user_actions_activity_action_approve_pending_friend_request">Approve Pending Friend Request</string>
+  <string name="user_actions_activity_action_readonly_friend_request">Friend Request Sent</string>
+  <string name="user_actions_activity_action_twitter">Twitter</string>
+  <string name="user_actions_activity_action_facebook">Facebook</string>
+  <string name="user_history_activity_no_info">No history available.</string>
+  <string name="user_details_activity_tab_title_info">Info</string>
+  <string name="user_details_activity_tab_title_history">History</string>
+  <string name="user_details_activity_tab_title_friends">Friends</string>
+  <string name="user_details_activity_title_mayorships">MAYORSHIPS</string>
+  <string name="user_details_activity_title_badges">BADGES</string>
 </resources>

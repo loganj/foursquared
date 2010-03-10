@@ -19,6 +19,7 @@ public class User implements FoursquareType, Parcelable {
     private Checkin mCheckin;
     private String mCreated;
     private String mEmail;
+    private String mFacebook;
     private String mFirstname;
     private String mFriendstatus;
     private String mGender;
@@ -28,6 +29,7 @@ public class User implements FoursquareType, Parcelable {
     private String mPhoto;
     private Settings mSettings;
     private String mTwitter;
+    private Group<Venue> mMayorships;
 
     public User() {
     }
@@ -35,6 +37,7 @@ public class User implements FoursquareType, Parcelable {
     private User(Parcel in) {
         mCreated = in.readString();
         mEmail = in.readString();
+        mFacebook = in.readString();
         mFirstname = in.readString();
         mFriendstatus = in.readString();
         mGender = in.readString();
@@ -51,9 +54,20 @@ public class User implements FoursquareType, Parcelable {
             mBadges.add(badge);
         }
         
-        //mCheckin = Checkin.class;
+        if (in.readInt() == 1) {
+            mCheckin = Checkin.CREATOR.createFromParcel(in);
+        }
         
-        mSettings = Settings.CREATOR.createFromParcel(in);
+        if (in.readInt() == 1) {
+            mSettings = Settings.CREATOR.createFromParcel(in);
+        }
+        
+        mMayorships = new Group<Venue>();
+        int numMayorships = in.readInt();
+        for (int i = 0; i < numMayorships; i++) {
+            Venue venue = Venue.CREATOR.createFromParcel(in);
+            mMayorships.add(venue);
+        }
     }
     
     public static final User.Creator<User> CREATOR = new Parcelable.Creator<User>() {
@@ -99,6 +113,14 @@ public class User implements FoursquareType, Parcelable {
         mEmail = email;
     }
 
+    public String getFacebook() {
+        return mFacebook;
+    }
+
+    public void setFacebook(String facebook) {
+        mFacebook = facebook;
+    }
+    
     public String getFirstname() {
         return mFirstname;
     }
@@ -139,6 +161,14 @@ public class User implements FoursquareType, Parcelable {
         mLastname = lastname;
     }
 
+    public Group<Venue> getMayorships() {
+        return mMayorships;
+    }
+
+    public void setMayorships(Group<Venue> mayorships) {
+        mMayorships = mayorships;
+    }
+    
     public String getPhone() {
         return mPhone;
     }
@@ -175,6 +205,7 @@ public class User implements FoursquareType, Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(mCreated);
         out.writeString(mEmail);
+        out.writeString(mFacebook);
         out.writeString(mFirstname);
         out.writeString(mFriendstatus);
         out.writeString(mGender);
@@ -187,15 +218,38 @@ public class User implements FoursquareType, Parcelable {
         if (mBadges != null) {
             out.writeInt(mBadges.size());
             for (int i = 0; i < mBadges.size(); i++) {
-                out.writeParcelable((Badge)mBadges.get(i), flags);
+                out.writeParcelable(mBadges.get(i), flags);
             }
         }
         else {
             out.writeInt(0);
         }
         
-        out.writeParcelable(mCheckin, flags);
-        out.writeParcelable(mSettings, flags);
+        if (mCheckin != null) {
+            out.writeInt(1);
+            out.writeParcelable(mCheckin, flags);
+        }
+        else {
+            out.writeInt(0);
+        }
+        
+        if (mCheckin != null) {
+            out.writeInt(1);
+            out.writeParcelable(mSettings, flags);
+        }
+        else {
+            out.writeInt(0);
+        }
+        
+        if (mMayorships != null) {
+            out.writeInt(mMayorships.size());
+            for (int i = 0; i < mMayorships.size(); i++) {
+                out.writeParcelable(mMayorships.get(i), flags);
+            }
+        }
+        else {
+            out.writeInt(0);
+        }
     }
 
     @Override

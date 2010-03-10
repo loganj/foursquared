@@ -183,8 +183,9 @@
   </style>
   
   <style name="TextViewStyleUserDetailsActivityTitle">
-    <item name="android:textSize">18dip</item>
+    <item name="android:textSize">20dip</item>
     <item name="android:textColor">@color/white</item>
+    <item name="android:textStyle">bold</item>
   </style>
  
   <style name="TextViewStyleUserDetailsActivityNumBadgesTitle">
@@ -195,6 +196,12 @@
   <style name="TextViewStyleUserDetailsActivityNumBadges">
     <item name="android:textSize">15dip</item>
     <item name="android:textColor">@color/white</item>
+    <item name="android:textStyle">bold</item>
+  </style>
+ 
+  <style name="TextViewStyleUserDetailsActivityTabTitles">
+    <item name="android:textSize">15dip</item>
+    <item name="android:textColor">@color/dgrey_end</item>
     <item name="android:textStyle">bold</item>
   </style>
  

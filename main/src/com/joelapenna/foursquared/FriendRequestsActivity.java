@@ -16,7 +16,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -166,8 +165,6 @@ public class FriendRequestsActivity extends ListActivity {
 
     private void infoFriendRequest(User user) {
         Intent intent = new Intent(this, UserDetailsActivity.class);
-   // zebra     intent.putExtra(UserActivity.EXTRA_USER, user.getId());
-     //   intent.setData(Uri.parse("http://foursquare.com/user/" + user.getId()));
         intent.putExtra(UserDetailsActivity.EXTRA_USER_PARCEL, user);
         startActivity(intent);
     }

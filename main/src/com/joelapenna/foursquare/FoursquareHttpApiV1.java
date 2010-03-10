@@ -69,6 +69,7 @@ class FoursquareHttpApiV1 {
     private static final String URL_API_FIND_FRIENDS_BY_PHONE = "/findfriends/byphone";
     private static final String URL_API_FIND_FRIENDS_BY_TWITTER = "/findfriends/bytwitter";
     private static final String URL_API_CATEGORIES = "/categories";
+    private static final String URL_API_HISTORY = "/history";
 
     private final DefaultHttpClient mHttpClient = AbstractHttpApi.createHttpClient();
     private HttpApi mHttpApi;
@@ -407,7 +408,17 @@ class FoursquareHttpApiV1 {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_CATEGORIES));
         return (Group<Category>) mHttpApi.doHttpRequest(httpGet, new GroupParser(new CategoryParser()));
     }
-        
+
+    /**
+     * /history
+     */
+    @SuppressWarnings("unchecked")
+    public Group<Checkin> history(int limit) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
+        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_HISTORY));
+        return (Group<Checkin>) mHttpApi.doHttpRequest(httpGet, new GroupParser(new CheckinParser()));
+    }
+    
     private String fullUrl(String url) {
         return mApiBaseUrl + url;
     }

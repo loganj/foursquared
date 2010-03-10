@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+  <!-- Copyright 2010 Mark Wyszomierski -->
+
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:paddingLeft="15dip"
+  android:paddingRight="8dip"
+  android:paddingTop="5dip"
+  android:paddingBottom="8dip"
+  android:orientation="vertical">
+
+  <!-- Should show venue name, if exists. -->
+  <TextView
+    android:id="@+id/firstLine"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:maxLines="1"
+    android:ellipsize="end"
+    android:paddingBottom="2dip"
+    android:textAppearance="@style/TextViewStyleCheckinListItemLine1" />
+    
+  <!-- Should show shout, if exists. -->
+  <TextView
+    android:id="@+id/shoutTextView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingBottom="2dip"
+    android:maxLines="2"
+    android:ellipsize="end"
+    android:textAppearance="@style/TextViewStyleCheckinListItemLine2" />
+    
+  <!-- Should show timestamp. -->
+  <TextView
+    android:id="@+id/timeTextView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:maxLines="1"
+    android:scrollHorizontally="true"
+    android:ellipsize="end"
+    android:textAppearance="@style/TextViewStyleCheckinListItemLine3" />
+
+</LinearLayout>

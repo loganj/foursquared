@@ -183,10 +183,9 @@ public class FriendsActivity extends LoadableListActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Checkin checkin = (Checkin) parent.getAdapter().getItem(position);
                 if (checkin.getUser() != null) {
-                    if (DEBUG) Log.d(TAG, "firing venue activity for venue");
                     Intent intent = new Intent(FriendsActivity.this, UserDetailsActivity.class);
-  //zebra                  intent.putExtra(UserActivity.EXTRA_USER, checkin.getUser().getId());
                     intent.putExtra(UserDetailsActivity.EXTRA_USER_PARCEL, checkin.getUser());
+                    intent.putExtra(UserDetailsActivity.EXTRA_SHOW_ADD_FRIEND_OPTIONS, true);
                     startActivity(intent);
                 }
             }

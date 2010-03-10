@@ -8,7 +8,9 @@
   <ListView
     android:id="@android:id/list"
     android:layout_height="fill_parent"
-    android:layout_width="fill_parent" />
+    android:layout_width="fill_parent"
+    android:drawSelectorOnTop="false"
+    android:scrollbars="vertical" />
 
   <include
     android:id="@android:id/empty"
