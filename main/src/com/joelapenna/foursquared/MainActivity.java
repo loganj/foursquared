@@ -64,13 +64,6 @@ public class MainActivity extends TabActivity {
 
         mTabHost = getTabHost();
 
-        // Places tab
-        mTabHost.addTab(mTabHost.newTabSpec("places") //
-                .setIndicator(getString(R.string.nearby_label),
-                        getResources().getDrawable(R.drawable.places_tab)) // the tab icon
-                .setContent(new Intent(this, NearbyVenuesActivity.class)) // The contained activity
-                );
-
         // Friends tab
         mTabHost.addTab(mTabHost.newTabSpec("friends") //
                 .setIndicator(getString(R.string.checkins_label),
@@ -78,6 +71,26 @@ public class MainActivity extends TabActivity {
                 // icon
                 .setContent(new Intent(this, FriendsActivity.class)) // The contained activity
                 );
+        
+        // Places tab
+        mTabHost.addTab(mTabHost.newTabSpec("places") //
+                .setIndicator(getString(R.string.nearby_label),
+                        getResources().getDrawable(R.drawable.places_tab)) // the tab icon
+                .setContent(new Intent(this, NearbyVenuesActivity.class)) // The contained activity
+                );
+ 
+        // 'Me' tab, just shows our own info. At this point we should have a stored user id.
+        String userId = ((Foursquared)getApplication()).getUserId();
+        
+        Intent intentTabMe = new Intent(this, UserDetailsActivity.class);
+        intentTabMe.putExtra(UserDetailsActivity.EXTRA_USER_ID, userId == null ? "unknown" : userId);
+        mTabHost.addTab(mTabHost.newTabSpec("me") //
+                .setIndicator(getString(R.string.main_activity_tab_title_me),
+                        getResources().getDrawable(R.drawable.recent_checkins_tab)) // the tab
+                // icon
+                .setContent(intentTabMe) // The contained activity
+                );
+        
         mTabHost.setCurrentTab(0);
     }
 

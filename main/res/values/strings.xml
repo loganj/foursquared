@@ -156,4 +156,5 @@
   <string name="user_details_activity_tab_title_friends">Friends</string>
   <string name="user_details_activity_title_mayorships">MAYORSHIPS</string>
   <string name="user_details_activity_title_badges">BADGES</string>
+  <string name="main_activity_tab_title_me">Me</string>
 </resources>

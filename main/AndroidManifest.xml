@@ -28,7 +28,7 @@
     android:name="Foursquared"
     android:icon="@drawable/icon"
     android:label="@string/app_name"
-    android:theme="@style/FoursquareTheme" android:debuggable="true">
+    android:theme="@style/FoursquareTheme" >
 
     <meta-data
       android:name="android.app.default_searchable"
