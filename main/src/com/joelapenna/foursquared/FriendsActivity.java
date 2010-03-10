@@ -50,7 +50,6 @@ public class FriendsActivity extends LoadableListActivity {
     private static final int MENU_REFRESH = 1;
     private static final int MENU_SHOUT = 2;
     private static final int MENU_STATS = 3;
-    private static final int MENU_MYINFO = 4;
     private static final int MENU_GROUP_SEARCH = 0;
 
     private SearchTask mSearchTask;
@@ -122,8 +121,6 @@ public class FriendsActivity extends LoadableListActivity {
                 .setIcon(R.drawable.ic_menu_shout);
         menu.add(Menu.NONE, MENU_STATS, Menu.NONE, R.string.stats_label) //
                 .setIcon(android.R.drawable.ic_menu_sort_by_size);
-        menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
-                .setIcon(drawable.ic_menu_myinfo);
 
         MenuUtils.addPreferencesToMenu(this, menu);
 
@@ -143,9 +140,6 @@ public class FriendsActivity extends LoadableListActivity {
                 return true;
             case MENU_STATS:
                 startActivity(new Intent(FriendsActivity.this, StatsActivity.class));
-                return true;
-            case MENU_MYINFO:
-                startActivity(new Intent(FriendsActivity.this, UserActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);
