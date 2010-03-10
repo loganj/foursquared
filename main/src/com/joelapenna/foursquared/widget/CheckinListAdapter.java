@@ -18,6 +18,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -100,30 +101,35 @@ public class CheckinListAdapter extends BaseCheckinAdapter
             }
         }
 
+        // Always show the checkin message itself, this is server-generated.
         holder.firstLine.setText(StringFormatters.getCheckinMessage(checkin, true));
-        if (checkin.getVenue() != null && checkin.getVenue().getAddress() != null) {
-            String address = checkin.getVenue().getAddress();
-            if (checkin.getVenue().getCrossstreet() != null && 
-                checkin.getVenue().getCrossstreet().length() > 0) {
-                address += "(" + checkin.getVenue().getCrossstreet() + ")";
-            }
-            holder.secondLine.setText(address);
-            holder.secondLine.setVisibility(View.VISIBLE);
-        }
-        else {
-            holder.secondLine.setVisibility(View.GONE);
-        }
         
-        holder.timeTextView.setText(StringFormatters
-                .getRelativeTimeSpanString(checkin.getCreated()));
-
-        if (checkin.getShout() != null) {
+        // If we have a shout, we show that in place of the venue address.
+        if (TextUtils.isEmpty(checkin.getShout()) == false) {
             holder.shoutTextView.setText(checkin.getShout());
             holder.shoutTextView.setVisibility(View.VISIBLE);
+            holder.secondLine.setVisibility(View.GONE);
         } else {
+            // No shout, show address instead.
             holder.shoutTextView.setText("");
             holder.shoutTextView.setVisibility(View.GONE);
+            
+            if (checkin.getVenue() != null && checkin.getVenue().getAddress() != null) {
+                String address = checkin.getVenue().getAddress();
+                if (checkin.getVenue().getCrossstreet() != null && 
+                    checkin.getVenue().getCrossstreet().length() > 0) {
+                    address += " (" + checkin.getVenue().getCrossstreet() + ")";
+                }
+                holder.secondLine.setText(address);
+                holder.secondLine.setVisibility(View.VISIBLE);
+            }
+            else {
+                holder.secondLine.setVisibility(View.GONE);
+            }
         }
+
+        holder.timeTextView.setText(StringFormatters
+                .getRelativeTimeSpanString(checkin.getCreated()));
 
         return convertView;
     }

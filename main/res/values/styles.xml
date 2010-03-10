@@ -145,6 +145,7 @@
       name="android:textColor">@android:color/white</item>
   </style>
   
+  
   <style name="TextViewStyleVenueNameListItem">
     <item name="android:textSize">15dip</item>
     <item name="android:textStyle">bold</item>
@@ -156,21 +157,28 @@
     <item name="android:textColor">@color/black_end</item>
   </style>
   
-  <style name="TextViewStyleCheckinListItemLine1">
+  
+  <style name="TextViewStyleCheckinListItemLineMessage">
     <item name="android:textSize">15dip</item>
     <item name="android:textStyle">bold</item>
     <item name="android:textColor">@color/black_end</item>
   </style>
 
-  <style name="TextViewStyleCheckinListItemLine2">
+  <style name="TextViewStyleCheckinListItemLineShout">
     <item name="android:textSize">13dip</item>
     <item name="android:textColor">@color/black_end</item>
   </style>
   
-  <style name="TextViewStyleCheckinListItemLine3">
-    <item name="android:textSize">11dip</item>
+  <style name="TextViewStyleCheckinListItemLineAddress">
+    <item name="android:textSize">13dip</item>
+    <item name="android:textColor">@color/dgrey_start</item>
+  </style>
+  
+  <style name="TextViewStyleCheckinListItemLineTimestamp">
+    <item name="android:textSize">13dip</item>
     <item name="android:textColor">@color/grey_end</item>
   </style>
+  
   
   <style name="TextViewStyleTipListItemTip">
     <item name="android:textSize">15dip</item>
@@ -181,6 +189,7 @@
     <item name="android:textSize">13dip</item>
     <item name="android:textColor">@color/grey_end</item>
   </style>
+  
   
   <style name="TextViewStyleUserDetailsActivityTitle">
     <item name="android:textSize">20dip</item>

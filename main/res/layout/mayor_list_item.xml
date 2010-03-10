@@ -45,7 +45,7 @@
     android:layout_alignParentRight="true"
     android:layout_alignWithParentIfMissing="true"
     android:gravity="center_vertical"
-    android:textAppearance="@style/TextViewStyleCheckinListItemLine1"
+    android:textAppearance="@style/TextViewStyleCheckinListItemLineMessage"
     android:maxLines="1"
     android:paddingLeft="5dip"
     android:ellipsize="end" />
@@ -59,7 +59,7 @@
     android:layout_alignParentBottom="true"
     android:layout_alignWithParentIfMissing="true"
     android:gravity="left|bottom"
-    style="@style/TextViewStyleCheckinListItemLine3"
+    android:textAppearance="@style/TextViewStyleCheckinListItemLineTimestamp"
     android:maxLines="1"
     android:scrollHorizontally="true"
     android:ellipsize="end" 

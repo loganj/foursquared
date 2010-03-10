@@ -20,7 +20,7 @@
     android:maxLines="1"
     android:ellipsize="end"
     android:paddingBottom="2dip"
-    android:textAppearance="@style/TextViewStyleCheckinListItemLine1" />
+    android:textAppearance="@style/TextViewStyleCheckinListItemLineMessage" />
     
   <!-- Should show shout, if exists. -->
   <TextView
@@ -30,7 +30,7 @@
     android:paddingBottom="2dip"
     android:maxLines="2"
     android:ellipsize="end"
-    android:textAppearance="@style/TextViewStyleCheckinListItemLine2" />
+    android:textAppearance="@style/TextViewStyleCheckinListItemLineShout" />
     
   <!-- Should show timestamp. -->
   <TextView
@@ -40,6 +40,6 @@
     android:maxLines="1"
     android:scrollHorizontally="true"
     android:ellipsize="end"
-    android:textAppearance="@style/TextViewStyleCheckinListItemLine3" />
+    android:textAppearance="@style/TextViewStyleCheckinListItemLineTimestamp" />
 
 </LinearLayout>

@@ -6,7 +6,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="?android:attr/listPreferredItemHeight"
-  android:paddingBottom="10dip"
+  android:paddingBottom="7dip"
   android:paddingRight="10dip"
   android:orientation="horizontal"
   style="@style/listItemStyle">
@@ -32,32 +32,36 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
     
+    <!-- Checkin message, server generated. -->
     <TextView
       android:id="@+id/firstLine"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textAppearance="@style/TextViewStyleCheckinListItemLine1"
+      android:textAppearance="@style/TextViewStyleCheckinListItemLineMessage"
       android:maxLines="1"
       android:ellipsize="end" />
     
+    <!-- Shout, if present. -->
     <TextView
       android:id="@+id/secondLine"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textAppearance="@style/TextViewStyleCheckinListItemLine2"
+      android:textAppearance="@style/TextViewStyleCheckinListItemLineAddress"
       android:maxLines="1"
       android:scrollHorizontally="true"
       android:ellipsize="end" />
 
+    <!-- Address, if present. -->
     <TextView
       android:id="@+id/shoutTextView"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:paddingRight="3dip"
-      android:textAppearance="@style/TextViewStyleCheckinListItemLine2"
+      android:textAppearance="@style/TextViewStyleCheckinListItemLineShout"
       android:maxLines="2"
       android:ellipsize="end" />
     
+    <!-- Timestamp. -->
     <TextView
       android:id="@+id/timeTextView"
       android:layout_width="wrap_content"
@@ -65,7 +69,7 @@
       android:maxLines="1"
       android:scrollHorizontally="true"
       android:ellipsize="end"
-      android:textAppearance="@style/TextViewStyleCheckinListItemLine3" />
+      android:textAppearance="@style/TextViewStyleCheckinListItemLineTimestamp" />
 
   </LinearLayout>
   
