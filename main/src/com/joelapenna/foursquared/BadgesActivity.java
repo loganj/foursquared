@@ -9,14 +9,21 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.AdapterView.OnItemClickListener;
 
 import java.util.ArrayList;
 
@@ -35,6 +42,8 @@ public class BadgesActivity extends Activity {
 
     public static final String EXTRA_BADGE_ARRAY_LIST_PARCEL = Foursquared.PACKAGE_NAME
         + ".BadgesActivity.EXTRA_BADGE_ARRAY_LIST_PARCEL";
+    
+    private static final int DIALOG_ID_INFO = 1;
 
     private GridView mBadgesGrid;
     private BadgeWithIconListAdapter mListAdapter;
@@ -104,10 +113,43 @@ public class BadgesActivity extends Activity {
                 ((Foursquared)getApplication()).getRemoteResourceManager());
         mListAdapter.setGroup(mStateHolder.getBadges());
         mBadgesGrid.setAdapter(mListAdapter);
+        mBadgesGrid.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View v, int position, long arg3) {
+                Badge badge = (Badge)mListAdapter.getItem(position);
+                showDialogInfo(badge.getName(), badge.getDescription());
+            }
+        });
+    }
+    
+    private void showDialogInfo(String title, String message) {
+        mStateHolder.setDlgInfoTitle(title);
+        mStateHolder.setDlgInfoMessage(message);
+        showDialog(DIALOG_ID_INFO);
+    }
+    
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DIALOG_ID_INFO:
+                AlertDialog dlgInfo = new AlertDialog.Builder(this)
+                    .setTitle(mStateHolder.getDlgInfoTitle())
+                    .setIcon(0)
+                    .setMessage(mStateHolder.getDlgInfoMessage()).create();
+                dlgInfo.setOnDismissListener(new OnDismissListener() {
+                    public void onDismiss(DialogInterface dialog) {
+                        removeDialog(DIALOG_ID_INFO);
+                    }
+                });
+                return dlgInfo;
+        }
+        return null;
     }
     
     private static class StateHolder {
         private Group<Badge> mBadges;
+        private String mDlgInfoTitle;
+        private String mDlgInfoMessage;
         
         public StateHolder() {
             mBadges = new Group<Badge>();
@@ -119,6 +161,22 @@ public class BadgesActivity extends Activity {
         
         public Group<Badge> getBadges() {
             return mBadges;
+        }
+        
+        public String getDlgInfoTitle() {
+            return mDlgInfoTitle;
+        }
+        
+        public void setDlgInfoTitle(String text) {
+            mDlgInfoTitle = text;
+        }
+
+        public String getDlgInfoMessage() {
+            return mDlgInfoMessage;
+        }
+        
+        public void setDlgInfoMessage(String text) {
+            mDlgInfoMessage = text;
         }
     }
 }
