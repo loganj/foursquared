@@ -30,8 +30,14 @@ public class Tip implements FoursquareType, Parcelable {
         mDistance = in.readString();
         mId = in.readString();
         mText = in.readString();
-        mUser = User.CREATOR.createFromParcel(in);
-        mVenue = Venue.CREATOR.createFromParcel(in);
+        
+        if (in.readInt() == 1) {
+            mUser = User.CREATOR.createFromParcel(in);
+        }
+        
+        if (in.readInt() == 1) {
+            mVenue = Venue.CREATOR.createFromParcel(in);
+        }
     }
     
     public static final Parcelable.Creator<Tip> CREATOR = new Parcelable.Creator<Tip>() {
@@ -99,8 +105,20 @@ public class Tip implements FoursquareType, Parcelable {
         out.writeString(mDistance);
         out.writeString(mId);
         out.writeString(mText);
-        out.writeParcelable(mUser, flags);
-        out.writeParcelable(mVenue, flags);
+        
+        if (mUser != null) {
+            out.writeInt(1);
+            out.writeParcelable(mUser, flags);
+        } else {
+            out.writeInt(0);
+        }
+        
+        if (mVenue != null) {
+            out.writeInt(1);
+            out.writeParcelable(mVenue, flags);
+        } else {
+            out.writeInt(0);
+        }
     }
 
     @Override

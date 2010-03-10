@@ -331,6 +331,14 @@
       </intent-filter>
     </activity>
     
+    <activity
+      android:name=".BadgesActivity">
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
+    </activity>
+    
     <receiver
       android:name=".appwidget.FriendsAppWidgetProvider"
       android:label="@string/friends_appwidget_3x3_label">

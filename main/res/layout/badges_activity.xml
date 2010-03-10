@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+  <!-- Copyright 2010 Mark Wyszomierski -->
+
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="@color/white" >
+    
+  <GridView
+    android:id="@+id/badgesGrid"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:horizontalSpacing="12dip"
+    android:verticalSpacing="12dip"
+    android:columnWidth="90dip"
+    android:numColumns="auto_fit" />
+    
+</LinearLayout>

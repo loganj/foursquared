@@ -29,7 +29,10 @@ public class Mayor implements FoursquareType, Parcelable {
         mCount = in.readString();
         mMessage = in.readString();
         mType = in.readString();
-        mUser = User.CREATOR.createFromParcel(in);
+        
+        if (in.readInt() == 1) {
+            mUser = User.CREATOR.createFromParcel(in);
+        }
     }
     
     public static final Parcelable.Creator<Mayor> CREATOR = new Parcelable.Creator<Mayor>() {
@@ -89,7 +92,13 @@ public class Mayor implements FoursquareType, Parcelable {
         out.writeString(mCount);
         out.writeString(mMessage);
         out.writeString(mType);
-        out.writeParcelable(mUser, flags);
+        
+        if (mUser != null) {
+            out.writeInt(1);
+            out.writeParcelable(mUser, flags);
+        } else {
+            out.writeInt(0);
+        }
     }
 
     @Override

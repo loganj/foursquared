@@ -60,7 +60,9 @@ public class Venue implements FoursquareType, Parcelable {
             mCheckins.add(checkin); 
         }
         
-        mStats = Stats.CREATOR.createFromParcel(in);
+        if (in.readInt() == 1) {
+            mStats = Stats.CREATOR.createFromParcel(in);
+        }
         
         mTags = new Tags();
         int numTags = in.readInt();
@@ -83,7 +85,9 @@ public class Venue implements FoursquareType, Parcelable {
             mTodos.add(todo);
         }
 
-        mCategory = Category.CREATOR.createFromParcel(in);
+        if (in.readInt() == 1) {
+            mCategory = Category.CREATOR.createFromParcel(in);
+        }
     }
     
     public static final Parcelable.Creator<Venue> CREATOR = new Parcelable.Creator<Venue>() {
@@ -266,29 +270,55 @@ public class Venue implements FoursquareType, Parcelable {
         out.writeString(mTwitter);
         out.writeString(mZip);
 
-        out.writeInt(mCheckins.size());
-        for (int i = 0; i < mCheckins.size(); i++) {
-            out.writeParcelable((Checkin)mCheckins.get(i), flags);
+        if (mCheckins != null) {
+            out.writeInt(mCheckins.size());
+            for (int i = 0; i < mCheckins.size(); i++) {
+                out.writeParcelable(mCheckins.get(i), flags);
+            }
+        } else {
+            out.writeInt(0);
         }
         
-        out.writeParcelable(mStats, flags);
+        if (mStats != null) {
+            out.writeInt(1);
+            out.writeParcelable(mStats, flags);
+        } else {
+            out.writeInt(0);    
+        }
         
-        out.writeInt(mTags.size());
-        for (int i = 0; i < mTags.size(); i++) {
-            out.writeString(mTags.get(i));
+        if (mTags != null) {
+            out.writeInt(mTags.size());
+            for (int i = 0; i < mTags.size(); i++) {
+                out.writeString(mTags.get(i));
+            }
+        } else {
+            out.writeInt(0);
         }
   
-        out.writeInt(mTips.size());
-        for (int i = 0; i < mTips.size(); i++) {
-            out.writeParcelable((Tip)mTips.get(i), flags);
+        if (mTips != null) {
+            out.writeInt(mTips.size());
+            for (int i = 0; i < mTips.size(); i++) {
+                out.writeParcelable((Tip)mTips.get(i), flags);
+            }
+        } else {
+            out.writeInt(0);
         }
 
-        out.writeInt(mTodos.size());
-        for (int i = 0; i < mTodos.size(); i++) {
-            out.writeParcelable((Tip)mTodos.get(i), flags);
+        if (mTodos != null) {
+            out.writeInt(mTodos.size());
+            for (int i = 0; i < mTodos.size(); i++) {
+                out.writeParcelable((Tip)mTodos.get(i), flags);
+            }
+        } else {
+            out.writeInt(0);
         }
-        
-        out.writeParcelable(mCategory, flags);
+            
+        if (mCategory != null) {
+            out.writeInt(1);
+            out.writeParcelable(mCategory, flags);
+        } else {
+            out.writeInt(0);
+        }
     }
 
     @Override

@@ -203,7 +203,7 @@ public class User implements FoursquareType, Parcelable {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeString(mCreated);
+        out.writeString(mCreated); 
         out.writeString(mEmail);
         out.writeString(mFacebook);
         out.writeString(mFirstname);
@@ -220,24 +220,21 @@ public class User implements FoursquareType, Parcelable {
             for (int i = 0; i < mBadges.size(); i++) {
                 out.writeParcelable(mBadges.get(i), flags);
             }
-        }
-        else {
+        } else {
             out.writeInt(0);
         }
         
         if (mCheckin != null) {
             out.writeInt(1);
             out.writeParcelable(mCheckin, flags);
-        }
-        else {
+        } else {
             out.writeInt(0);
         }
         
-        if (mCheckin != null) {
+        if (mSettings != null) {
             out.writeInt(1);
             out.writeParcelable(mSettings, flags);
-        }
-        else {
+        } else {
             out.writeInt(0);
         }
         
@@ -246,8 +243,7 @@ public class User implements FoursquareType, Parcelable {
             for (int i = 0; i < mMayorships.size(); i++) {
                 out.writeParcelable(mMayorships.get(i), flags);
             }
-        }
-        else {
+        } else {
             out.writeInt(0);
         }
     }

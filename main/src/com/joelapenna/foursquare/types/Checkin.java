@@ -32,8 +32,14 @@ public class Checkin implements FoursquareType, Parcelable {
         mId = in.readString();
         mIsmayor = in.readInt() == 1;
         mShout = in.readString();
-        mUser= User.CREATOR.createFromParcel(in);
-        mVenue= Venue.CREATOR.createFromParcel(in);
+        
+        if (in.readInt() == 1) {
+            mUser= User.CREATOR.createFromParcel(in);
+        }
+        
+        if (in.readInt() == 1) {
+            mVenue= Venue.CREATOR.createFromParcel(in);
+        }
     }
     
     public static final Parcelable.Creator<Checkin> CREATOR = new Parcelable.Creator<Checkin>() {
@@ -110,10 +116,22 @@ public class Checkin implements FoursquareType, Parcelable {
         out.writeString(mId);
         out.writeInt(mIsmayor ? 1 : 0);
         out.writeString(mShout);
-        out.writeParcelable(mUser, flags);
-        out.writeParcelable(mVenue, flags);
+        
+        if (mUser != null) {
+            out.writeInt(1);
+            out.writeParcelable(mUser, flags);
+        } else {
+            out.writeInt(0);
+        }
+        
+        if (mVenue != null) {
+            out.writeInt(1);
+            out.writeParcelable(mVenue, flags);
+        } else {
+            out.writeInt(0);
+        }
     }
-
+    
     @Override
     public int describeContents() {
         return 0;

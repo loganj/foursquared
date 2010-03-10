@@ -164,6 +164,15 @@ public class UserDetailsActivity extends TabActivity {
         mTextViewNumMayorships = (TextView)findViewById(R.id.userDetailsActivityNumMayorships);
         mTextViewNumBadges = (TextView)findViewById(R.id.userDetailsActivityNumBadges);
         
+        // When the user clicks the badges section, then launch the badges activity.
+        LinearLayout layoutNumBadges = (LinearLayout)findViewById(R.id.userDetailsActivityNumBadgesLayout);
+        layoutNumBadges.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startBadgesActivity();
+            }
+        });
+        
         // At startup, we need to have at least one tab. Once we load the full user object,
         // we can clear all tabs, and add our real tabs once we know what they are.
         mTabHost = getTabHost();
@@ -307,6 +316,15 @@ public class UserDetailsActivity extends TabActivity {
     public Object onRetainNonConfigurationInstance() {
         mStateHolder.setActivityForTaskUserDetails(null);
         return mStateHolder;
+    }
+    
+    private void startBadgesActivity() {
+        if (mStateHolder.getUser() != null) {
+            Intent intent = new Intent(UserDetailsActivity.this, BadgesActivity.class);
+            intent.putParcelableArrayListExtra(BadgesActivity.EXTRA_BADGE_ARRAY_LIST_PARCEL,
+                mStateHolder.getUser().getBadges());
+            startActivity(intent);
+        }
     }
     
     private void onUserDetailsTaskComplete(User user, Exception ex) {
