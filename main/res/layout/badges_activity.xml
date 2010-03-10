@@ -6,15 +6,15 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
-  android:background="@color/white" >
+  android:background="@color/white"
+  android:paddingTop="10dip"
+  android:paddingBottom="10dip" >
     
   <GridView
     android:id="@+id/badgesGrid"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:horizontalSpacing="12dip"
-    android:verticalSpacing="12dip"
-    android:columnWidth="90dip"
-    android:numColumns="auto_fit" />
+    android:numColumns="3"
+    android:verticalSpacing="15dip" />
     
 </LinearLayout>
