@@ -6,6 +6,7 @@ package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Category;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Stats;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
@@ -106,13 +107,31 @@ public class VenueListAdapter extends BaseVenueAdapter implements ObservableAdap
             setDefaultVenueCategoryIcon(venue, holder);
         }
 
+        // Venue name.
         holder.venueName.setText(venue.getName());
-        holder.locationLine1.setText(venue.getAddress());
 
-        String line2 = StringFormatters.getVenueLocationCrossStreetOrCity(venue);
-        if (line2 != null) {
-            holder.locationLine2.setText(line2);
+        // Venue street address (cross streets | city, state zip).
+        StringBuilder sb = new StringBuilder(128);
+        sb.append(venue.getAddress());
+        String crossStreets = StringFormatters.getVenueLocationCrossStreetOrCity(venue);
+        if (crossStreets != null) {
+            sb.append(" ");
+            sb.append(crossStreets);
         }
+        holder.locationLine1.setText(sb.toString());
+        
+        // Distance, number of people here.
+        StringBuilder sbExtra = new StringBuilder(128);
+        sbExtra.append(venue.getDistance());
+        sbExtra.append("m");
+        Stats stats = venue.getStats();
+        if (stats != null && !stats.getHereNow().equals("0")) {
+            sbExtra.append(",  number of people here:  ");
+            sbExtra.append(stats.getHereNow());
+        }
+        holder.locationLine2.setText(sbExtra.toString());
+        
+        
         if (DEBUG) Log.d(TAG, "Returning: " + convertView);
         return convertView;
     }

@@ -44,7 +44,9 @@
     android:layout_alignParentRight="true"
     android:layout_below="@id/venueName"
     android:paddingLeft="7dip"
-    android:textAppearance="@style/TextViewStyleVenueAddressListItem" />
+    android:textAppearance="@style/TextViewStyleVenueAddressListItem"
+    android:singleLine="true"
+    android:ellipsize="marquee" />
 
   <TextView
     android:id="@+id/venueLocationLine2"

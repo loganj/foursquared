@@ -17,6 +17,7 @@ public class Stats implements FoursquareType, Parcelable {
 
     private Beenhere mBeenhere;
     private String mCheckins;
+    private String mHereNow;
     private Mayor mMayor;
 
     public Stats() {
@@ -25,6 +26,7 @@ public class Stats implements FoursquareType, Parcelable {
     private Stats(Parcel in) {
         mBeenhere = Beenhere.CREATOR.createFromParcel(in);
         mCheckins = in.readString();
+        mHereNow = in.readString();
         mMayor = Mayor.CREATOR.createFromParcel(in);
     }
     
@@ -54,7 +56,15 @@ public class Stats implements FoursquareType, Parcelable {
     public void setCheckins(String checkins) {
         mCheckins = checkins;
     }
+    
+    public String getHereNow() {
+        return mHereNow;
+    }
 
+    public void setHereNow(String herenow) {
+        mHereNow = herenow;
+    }
+    
     public Mayor getMayor() {
         return mMayor;
     }
@@ -67,6 +77,7 @@ public class Stats implements FoursquareType, Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(mCheckins);
         out.writeParcelable(mBeenhere, flags);
+        out.writeString(mHereNow);
         out.writeParcelable(mMayor, flags);
     }
 
