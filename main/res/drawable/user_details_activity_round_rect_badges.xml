@@ -5,5 +5,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
   <padding android:left="7dip" android:top="1dip" android:right="7dip" android:bottom="1dip" />
   <corners android:radius="4dip" />
-  <solid android:color="#0000FF" />
+  <solid android:color="@color/blue_badges_mayor" />
 </shape>  

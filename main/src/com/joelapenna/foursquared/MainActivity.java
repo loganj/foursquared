@@ -86,7 +86,7 @@ public class MainActivity extends TabActivity {
         intentTabMe.putExtra(UserDetailsActivity.EXTRA_USER_ID, userId == null ? "unknown" : userId);
         mTabHost.addTab(mTabHost.newTabSpec("me") //
                 .setIndicator(getString(R.string.main_activity_tab_title_me),
-                        getResources().getDrawable(R.drawable.recent_checkins_tab)) // the tab
+                        getResources().getDrawable(R.drawable.me_tab_boy)) // the tab
                 // icon
                 .setContent(intentTabMe) // The contained activity
                 );

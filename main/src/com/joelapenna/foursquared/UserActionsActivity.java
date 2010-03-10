@@ -233,17 +233,17 @@ public class UserActionsActivity extends LoadableListActivity {
                     if (TextUtils.isEmpty(mUser.getPhone()) == false) {
                         mActions.add(new Action(context.getResources().getString(
                             R.string.user_actions_activity_action_sms), 
-                            R.drawable.default_on, ACTION_ID_SMS));
+                            R.drawable.user_action_text, ACTION_ID_SMS));
                     } 
                     if (TextUtils.isEmpty(mUser.getEmail()) == false) {
                         mActions.add(new Action(context.getResources().getString(
                             R.string.user_actions_activity_action_email), 
-                            R.drawable.default_on, ACTION_ID_EMAIL));
+                            R.drawable.user_action_email, ACTION_ID_EMAIL));
                     }
                     if (TextUtils.isEmpty(mUser.getEmail()) == false) {
                         mActions.add(new Action(context.getResources().getString(
                             R.string.user_actions_activity_action_phone), 
-                            R.drawable.default_on, ACTION_ID_PHONE));
+                            R.drawable.user_action_phone, ACTION_ID_PHONE));
                     }
                 }
                 else if (showAddFriendOptions) {
@@ -268,12 +268,12 @@ public class UserActionsActivity extends LoadableListActivity {
                 if (TextUtils.isEmpty(mUser.getTwitter()) == false) {
                     mActions.add(new Action(context.getResources().getString(
                         R.string.user_actions_activity_action_twitter), 
-                        R.drawable.default_on, ACTION_ID_TWITTER));
+                        R.drawable.user_action_twitter, ACTION_ID_TWITTER));
                 }
                 if (TextUtils.isEmpty(mUser.getFacebook()) == false) {
                     mActions.add(new Action(context.getResources().getString(
                         R.string.user_actions_activity_action_facebook), 
-                        R.drawable.default_on, ACTION_ID_FACEBOOK));
+                        R.drawable.user_action_facebook, ACTION_ID_FACEBOOK));
                 }
             }
         }

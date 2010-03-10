@@ -258,7 +258,7 @@ public class VenueActivity extends TabActivity {
         intent = new Intent(this, VenueCheckinsActivity.class);
         tabHost.addTab(tabHost.newTabSpec(tag) //
                 .setIndicator(getString(R.string.venue_checkins_tab),
-                        resources.getDrawable(R.drawable.recent_checkins_tab)).setContent(intent));
+                        resources.getDrawable(R.drawable.friends_tab)).setContent(intent));
         
         tag = (String) this.getText(R.string.venue_info_activity_label);
         intent = new Intent(this, VenueMapActivity.class);
