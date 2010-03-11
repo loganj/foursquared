@@ -82,9 +82,9 @@ public class UserActivity extends Activity {
         setContentView(R.layout.user_activity);
         registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
-        mVenueView = (VenueView)findViewById(R.id.venue);
-        
-        ImageView userPhoto = (ImageView)findViewById(R.id.photo);
+        mVenueView = (VenueView) findViewById(R.id.venue);
+
+        ImageView userPhoto = (ImageView) findViewById(R.id.photo);
         userPhoto.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,15 +106,15 @@ public class UserActivity extends Activity {
         if (getLastNonConfigurationInstance() == null) {
             mUserTask = new UserTask().execute();
         } else {
-            User user = (User)getLastNonConfigurationInstance();
+            User user = (User) getLastNonConfigurationInstance();
             setUser(user);
         }
     }
-    
+
     @Override
     public void onPause() {
         super.onPause();
-        
+
         mListAdapter.removeObserver();
     }
 
@@ -145,9 +145,9 @@ public class UserActivity extends Activity {
     }
 
     private void initGridViewAdapter() {
-        mBadgesGrid = (GridView)findViewById(R.id.badgesGrid);
+        mBadgesGrid = (GridView) findViewById(R.id.badgesGrid);
         mListAdapter = new BadgeWithIconListAdapter(UserActivity.this,
-                ((Foursquared)getApplication()).getRemoteResourceManager());
+                ((Foursquared) getApplication()).getRemoteResourceManager());
         mBadgesGrid.setAdapter(mListAdapter);
     }
 
@@ -184,7 +184,7 @@ public class UserActivity extends Activity {
         try {
             Uri icon = Uri.parse(badge.getIcon());
             if (DEBUG) Log.d(TAG, icon.toString());
-            mBadgeDialog.setIcon(new BitmapDrawable(((Foursquared)getApplication())
+            mBadgeDialog.setIcon(new BitmapDrawable(((Foursquared) getApplication())
                     .getRemoteResourceManager().getInputStream(icon)));
         } catch (IOException e) {
             if (DEBUG) Log.d(TAG, "IOException", e);
@@ -207,8 +207,6 @@ public class UserActivity extends Activity {
         mUserObservable.notifyObservers(user);
     }
 
-
-
     private class UserTask extends AsyncTask<Void, Void, User> {
 
         private Exception mReason;
@@ -223,8 +221,10 @@ public class UserActivity extends Activity {
         protected User doInBackground(Void... params) {
             try {
                 return ((Foursquared) getApplication()).getFoursquare().user(
-                    mUserId, false, true,
-                    LocationUtils.createFoursquareLocation(((Foursquared) getApplication())
+                        mUserId,
+                        false,
+                        true,
+                        LocationUtils.createFoursquareLocation(((Foursquared) getApplication())
                                 .getLastKnownLocation()));
             } catch (Exception e) {
                 mReason = e;
@@ -261,7 +261,7 @@ public class UserActivity extends Activity {
     private class UserObserver implements Observer {
         @Override
         public void update(Observable observable, Object data) {
-            User user = (User)data;
+            User user = (User) data;
             displayUser(user);
             displayBadges(user);
             displayCheckin(user);
@@ -271,11 +271,11 @@ public class UserActivity extends Activity {
         private void displayBadges(User user) {
             if (user.getBadges() != null) {
                 mListAdapter.setGroup(user.getBadges());
-                ((TextView)findViewById(R.id.badgesHeader)).setVisibility(TextView.VISIBLE);
+                ((TextView) findViewById(R.id.badgesHeader)).setVisibility(TextView.VISIBLE);
                 mBadgesGrid.setOnItemClickListener(new OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Badge badge = (Badge)parent.getAdapter().getItem(position);
+                        Badge badge = (Badge) parent.getAdapter().getItem(position);
                         showBadgeDialog(badge);
                     }
                 });
@@ -285,15 +285,16 @@ public class UserActivity extends Activity {
         private void displayCheckin(User user) {
             Checkin checkin = user.getCheckin();
             if (checkin != null && !TextUtils.isEmpty(checkin.getShout())) {
-                ((TextView)findViewById(R.id.secondLine)).setText(checkin.getShout());
+                ((TextView) findViewById(R.id.secondLine)).setText(checkin.getShout());
             }
 
             if (checkin != null && checkin.getVenue() != null) {
                 final Venue venue = user.getCheckin().getVenue();
                 mVenueView.setVenue(venue);
-                ((TextView)findViewById(R.id.venueHeader)).setVisibility(TextView.VISIBLE);
+                ((TextView) findViewById(R.id.venueHeader)).setVisibility(TextView.VISIBLE);
 
-                // Hell, I'm not even sure if this is the right place to put this... Whatever.
+                // Hell, I'm not even sure if this is the right place to put
+                // this... Whatever.
                 mVenueView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -303,7 +304,8 @@ public class UserActivity extends Activity {
                     }
                 });
             } else {
-                // If we don't have a checkin location, clear it from the UI so it doesn't take up
+                // If we don't have a checkin location, clear it from the UI so
+                // it doesn't take up
                 // space.
                 LayoutParams params = mVenueView.getLayoutParams();
                 params.height = 0;
@@ -314,13 +316,13 @@ public class UserActivity extends Activity {
         private void displayUser(User user) {
             if (DEBUG) Log.d(TAG, "loading user");
             String fullName = StringFormatters.getUserFullName(user);
-            TextView name = (TextView)findViewById(R.id.name);
+            TextView name = (TextView) findViewById(R.id.name);
 
             name.setText(fullName);
             UserUtils.ensureUserPhoto(UserActivity.this, user, DEBUG, TAG);
         }
     }
-    
+
     private void showUserPhotoLarge() {
         if (mUser == null) {
             return;
@@ -329,10 +331,10 @@ public class UserActivity extends Activity {
         if (photoUrl == null) {
             return;
         }
-        
+
         // If "_thumbs" exists, remove it to get the url of the full-size image.
         photoUrl = photoUrl.replace("_thumbs", "");
-        
+
         Intent intent = new Intent();
         intent.setClass(this, FetchImageForViewIntent.class);
         intent.putExtra(FetchImageForViewIntent.IMAGE_URL, photoUrl);

@@ -56,6 +56,7 @@ public class VenueActivity extends TabActivity {
     private static final int MENU_SHOUT = 1;
     private static final int MENU_TIPADD = 2;
     private static final int MENU_CALL = 3;
+    private static final int MENU_MYINFO = 4;
 
     private static final int RESULT_SHOUT = 1;
 
@@ -122,13 +123,12 @@ public class VenueActivity extends TabActivity {
         menu.add(Menu.NONE, MENU_TIPADD, 2, R.string.add_a_tip).setIcon(
                 android.R.drawable.ic_menu_set_as);
 
-        menu.add(Menu.NONE, MENU_CALL, 3, R.string.call).setIcon(
-                android.R.drawable.ic_menu_call);
-        
+        menu.add(Menu.NONE, MENU_CALL, 3, R.string.call).setIcon(android.R.drawable.ic_menu_call);
+
         int sdk = new Integer(Build.VERSION.SDK).intValue();
         if (sdk < 4) {
-            menu.add(Menu.NONE, MENU_CALL, 3, R.string.call).setIcon(
-                    android.R.drawable.ic_menu_call);
+            menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
+                .setIcon(R.drawable.ic_menu_myinfo);
         }
 
         MenuUtils.addPreferencesToMenu(this, menu);
@@ -167,6 +167,12 @@ public class VenueActivity extends TabActivity {
                 Uri phoneUri = Uri.fromParts("tel", mStateHolder.venue.getPhone(), null);
                 startActivity(new Intent(Intent.ACTION_CALL, phoneUri));
                 // nothing sucka.
+                return true;
+            case MENU_MYINFO:
+                Intent intentUser = new Intent(VenueActivity.this, UserDetailsActivity.class);
+                intentUser.putExtra(UserDetailsActivity.EXTRA_USER_ID,
+                        ((Foursquared) getApplication()).getUserId());
+                startActivity(intentUser);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -265,18 +271,18 @@ public class VenueActivity extends TabActivity {
         tabHost.addTab(tabHost.newTabSpec(tag) //
                 .setIndicator(getString(R.string.venue_checkins_tab),
                         resources.getDrawable(R.drawable.friends_tab)).setContent(intent));
-        
+
         tag = (String) this.getText(R.string.venue_info_activity_label);
         intent = new Intent(this, VenueMapActivity.class);
         tabHost.addTab(tabHost.newTabSpec(tag) //
                 .setIndicator(getString(R.string.map_label),
                         resources.getDrawable(R.drawable.map_tab)).setContent(intent));
-        
+
         tag = (String) this.getText(R.string.venue_tips_activity_label);
         intent = new Intent(this, VenueTipsActivity.class);
         tabHost.addTab(tabHost.newTabSpec(tag) //
                 .setIndicator(getString(R.string.venue_info_tab),
-                        resources.getDrawable(R.drawable.venue_info_tab)).setContent(intent));
+                        resources.getDrawable(R.drawable.tips_tab)).setContent(intent));
     }
 
     private void onVenueSet() {

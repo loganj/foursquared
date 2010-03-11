@@ -41,7 +41,7 @@ public class MainActivity extends TabActivity {
         registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         // Don't start the main activity if we don't have credentials
-        if (!((Foursquared)getApplication()).isReady()) {
+        if (!((Foursquared) getApplication()).isReady()) {
             if (DEBUG) Log.d(TAG, "Not ready for user.");
             redirectToLoginActivity();
         }
@@ -68,30 +68,41 @@ public class MainActivity extends TabActivity {
         // Friends tab
         mTabHost.addTab(mTabHost.newTabSpec("friends") //
                 .setIndicator(getString(R.string.checkins_label),
-                        getResources().getDrawable(R.drawable.friends_tab)) // the tab
+                        getResources().getDrawable(R.drawable.friends_tab)) // the
+                                                                            // tab
                 // icon
-                .setContent(new Intent(this, FriendsActivity.class)) // The contained activity
+                .setContent(new Intent(this, FriendsActivity.class)) // The
+                                                                     // contained
+                                                                     // activity
                 );
-        
+
         // Places tab
         mTabHost.addTab(mTabHost.newTabSpec("places") //
                 .setIndicator(getString(R.string.nearby_label),
-                        getResources().getDrawable(R.drawable.places_tab)) // the tab icon
-                .setContent(new Intent(this, NearbyVenuesActivity.class)) // The contained activity
+                        getResources().getDrawable(R.drawable.places_tab)) // the
+                                                                           // tab
+                                                                           // icon
+                .setContent(new Intent(this, NearbyVenuesActivity.class)) // The
+                                                                          // contained
+                                                                          // activity
                 );
- 
-        // 1.5 can't display tabs within tabs, so we won't have the 'me' tab for 1.5 users.
+
+        // 1.5 can't display tabs within tabs, so we won't have the 'me' tab for
+        // 1.5 users.
         // They can access the 'me' page through the context menu.
         int sdk = new Integer(Build.VERSION.SDK).intValue();
         if (sdk > 3) {
-            // 'Me' tab, just shows our own info. At this point we should have a stored user id.
-            String userId = ((Foursquared)getApplication()).getUserId();
-            
+            // 'Me' tab, just shows our own info. At this point we should have a
+            // stored user id.
+            String userId = ((Foursquared) getApplication()).getUserId();
+
             Intent intentTabMe = new Intent(this, UserDetailsActivity.class);
-            intentTabMe.putExtra(UserDetailsActivity.EXTRA_USER_ID, userId == null ? "unknown" : userId);
+            intentTabMe.putExtra(UserDetailsActivity.EXTRA_USER_ID, userId == null ? "unknown"
+                    : userId);
             mTabHost.addTab(mTabHost.newTabSpec("me") //
                     .setIndicator(getString(R.string.main_activity_tab_title_me),
-                            getResources().getDrawable(R.drawable.me_tab_boy)) // the tab
+                            getResources().getDrawable(R.drawable.me_tab_boy)) // the
+                                                                               // tab
                     // icon
                     .setContent(intentTabMe) // The contained activity
                     );
