@@ -24,6 +24,7 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -53,9 +54,7 @@ public class VenueActivity extends TabActivity {
     private static final int DIALOG_TIPADD = 1;
 
     private static final int MENU_SHOUT = 1;
-
     private static final int MENU_TIPADD = 2;
-
     private static final int MENU_CALL = 3;
 
     private static final int RESULT_SHOUT = 1;
@@ -123,7 +122,14 @@ public class VenueActivity extends TabActivity {
         menu.add(Menu.NONE, MENU_TIPADD, 2, R.string.add_a_tip).setIcon(
                 android.R.drawable.ic_menu_set_as);
 
-        menu.add(Menu.NONE, MENU_CALL, 3, R.string.call).setIcon(android.R.drawable.ic_menu_call);
+        menu.add(Menu.NONE, MENU_CALL, 3, R.string.call).setIcon(
+                android.R.drawable.ic_menu_call);
+        
+        int sdk = new Integer(Build.VERSION.SDK).intValue();
+        if (sdk < 4) {
+            menu.add(Menu.NONE, MENU_CALL, 3, R.string.call).setIcon(
+                    android.R.drawable.ic_menu_call);
+        }
 
         MenuUtils.addPreferencesToMenu(this, menu);
 

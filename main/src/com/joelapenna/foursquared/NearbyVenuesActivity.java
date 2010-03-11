@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -150,6 +151,12 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 .setIcon(R.drawable.ic_menu_refresh);
         menu.add(Menu.NONE, MENU_ADD_VENUE, Menu.NONE, R.string.add_venue_label) //
                 .setIcon(R.drawable.ic_menu_add);
+        
+        int sdk = new Integer(Build.VERSION.SDK).intValue();
+        if (sdk < 4) {
+            menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
+                    .setIcon(R.drawable.ic_menu_myinfo);
+        }
 
         MenuUtils.addPreferencesToMenu(this, menu);
 

@@ -8,7 +8,6 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquared.R.drawable;
 import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.Comparators;
@@ -22,11 +21,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -50,6 +51,7 @@ public class FriendsActivity extends LoadableListActivity {
     private static final int MENU_REFRESH = 1;
     private static final int MENU_SHOUT = 2;
     private static final int MENU_STATS = 3;
+    private static final int MENU_MYINFO = 4;
     private static final int MENU_GROUP_SEARCH = 0;
 
     private SearchTask mSearchTask;
@@ -121,7 +123,13 @@ public class FriendsActivity extends LoadableListActivity {
                 .setIcon(R.drawable.ic_menu_shout);
         menu.add(Menu.NONE, MENU_STATS, Menu.NONE, R.string.stats_label) //
                 .setIcon(R.drawable.ic_menu_leaderboard);
-
+        
+        int sdk = new Integer(Build.VERSION.SDK).intValue();
+        if (sdk < 4) {
+            menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
+                    .setIcon(R.drawable.ic_menu_myinfo);
+        }
+        
         MenuUtils.addPreferencesToMenu(this, menu);
 
         return true;
@@ -140,6 +148,12 @@ public class FriendsActivity extends LoadableListActivity {
                 return true;
             case MENU_STATS:
                 startActivity(new Intent(FriendsActivity.this, StatsActivity.class));
+                return true;
+            case MENU_MYINFO:
+                Intent intentUser = new Intent(FriendsActivity.this, UserDetailsActivity.class);
+                intentUser.putExtra(UserDetailsActivity.EXTRA_USER_ID, 
+                    ((Foursquared)getApplication()).getUserId());
+                startActivity(intentUser);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -182,6 +196,12 @@ public class FriendsActivity extends LoadableListActivity {
                     intent.putExtra(UserDetailsActivity.EXTRA_SHOW_ADD_FRIEND_OPTIONS, true);
                     startActivity(intent);
                 }
+            }
+        });
+        listView.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View arg0) {
+                return false;
             }
         });
     }

@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
@@ -79,18 +80,22 @@ public class MainActivity extends TabActivity {
                 .setContent(new Intent(this, NearbyVenuesActivity.class)) // The contained activity
                 );
  
-        // 'Me' tab, just shows our own info. At this point we should have a stored user id.
-        String userId = ((Foursquared)getApplication()).getUserId();
-        
-        Intent intentTabMe = new Intent(this, UserDetailsActivity.class);
-        intentTabMe.putExtra(UserDetailsActivity.EXTRA_USER_ID, userId == null ? "unknown" : userId);
-        mTabHost.addTab(mTabHost.newTabSpec("me") //
-                .setIndicator(getString(R.string.main_activity_tab_title_me),
-                        getResources().getDrawable(R.drawable.me_tab_boy)) // the tab
-                // icon
-                .setContent(intentTabMe) // The contained activity
-                );
-        
+        // 1.5 can't display tabs within tabs, so we won't have the 'me' tab for 1.5 users.
+        // They can access the 'me' page through the context menu.
+        int sdk = new Integer(Build.VERSION.SDK).intValue();
+        if (sdk > 3) {
+            // 'Me' tab, just shows our own info. At this point we should have a stored user id.
+            String userId = ((Foursquared)getApplication()).getUserId();
+            
+            Intent intentTabMe = new Intent(this, UserDetailsActivity.class);
+            intentTabMe.putExtra(UserDetailsActivity.EXTRA_USER_ID, userId == null ? "unknown" : userId);
+            mTabHost.addTab(mTabHost.newTabSpec("me") //
+                    .setIndicator(getString(R.string.main_activity_tab_title_me),
+                            getResources().getDrawable(R.drawable.me_tab_boy)) // the tab
+                    // icon
+                    .setContent(intentTabMe) // The contained activity
+                    );
+        }
         mTabHost.setCurrentTab(0);
     }
 
