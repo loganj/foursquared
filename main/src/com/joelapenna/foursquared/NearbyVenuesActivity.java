@@ -49,7 +49,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     static final String TAG = "NearbyVenuesActivity";
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    public static final long DELAY_TIME_IN_MS = 4000;
+    public static final long DELAY_TIME_IN_MS = 1L;
 
     private static final int MENU_REFRESH = 0;
     private static final int MENU_ADD_VENUE = 1;

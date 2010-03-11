@@ -72,13 +72,21 @@
           <LinearLayout
             android:layout_width="fill_parent" 
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:gravity="center_vertical" >
+            
+            <ImageView
+              android:layout_width="16dip"
+              android:layout_height="16dip"
+              android:src="@drawable/crown_small"
+              android:scaleType="fitCenter"  />
           
             <TextView 
               android:id="@+id/userDetailsActivityNumMayorships" 
               android:layout_width="wrap_content" 
               android:layout_height="wrap_content"
               android:text="-" 
+              android:paddingLeft="5dip"
               android:textAppearance="@style/TextViewStyleUserDetailsActivityNumBadges" />
            
           </LinearLayout>
@@ -93,7 +101,7 @@
           android:background="@drawable/user_details_activity_round_rect_badges_selector"
           android:focusable="true"
           android:clickable="true" >
-        
+          
           <TextView 
             android:text="@string/user_details_activity_title_badges" 
             android:layout_width="wrap_content" 
@@ -103,13 +111,21 @@
           <LinearLayout
             android:layout_width="fill_parent" 
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:gravity="center_vertical" >
+            
+            <ImageView
+              android:layout_width="16dip"
+              android:layout_height="16dip"
+              android:src="@drawable/crown_small"
+              android:scaleType="fitCenter"  />
            
             <TextView 
               android:id="@+id/userDetailsActivityNumBadges" 
               android:layout_width="wrap_content" 
               android:layout_height="wrap_content"
               android:text="-" 
+              android:paddingLeft="5dip"
               android:textAppearance="@style/TextViewStyleUserDetailsActivityNumBadges" />
             
           </LinearLayout>
