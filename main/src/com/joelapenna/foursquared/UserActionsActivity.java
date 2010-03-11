@@ -439,10 +439,16 @@ public class UserActionsActivity extends LoadableListActivity {
         mStateHolder.setIsRunningApprval(false);
         mStateHolder.setIsRunningIgnore(false);
         if (user != null) {
-            // We can modify the adapter to reflect the new state of the user
-            // friendship.
+            // The returned user object won't contain any updated friend status string in it,
+            // so we just modify our own user object to have a friend status of "friends" now.
+            // This will have the effect of only still showing public info immediately, the
+            // user will have to reload this activity to see the new friend's phone # and all
+            // that stuff, will improve in subsequent versions.
+            // TODO: Update reload of user actions after approve friend status.
+            mStateHolder.getUser().setFriendstatus("friend");
             ensureUi();
         } else {
+            // If we failed, friend status remains unchanged.
             NotificationsUtil.ToastReasonForFailure(this, ex);
         }
     }
@@ -451,10 +457,14 @@ public class UserActionsActivity extends LoadableListActivity {
         stopProgressBar();
         mStateHolder.setIsRunningTaskSendFriendRequest(false);
         if (user != null) {
-            // We can modify the adapter to reflect the new state of the user
-            // friendship.
+            // Modify our user's friend status string to reflect the fact that we 
+            // have a pending friend request sent to them. Then we recreate the
+            // list adapter which will see this new friend state and change the
+            // friend relationship item for us. Kinda ugly but works for now.
+            mStateHolder.getUser().setFriendstatus("pendingthem");
             ensureUi();
         } else {
+            // If we failed, friend status remains unchanged.
             NotificationsUtil.ToastReasonForFailure(this, ex);
         }
     }

@@ -136,12 +136,16 @@ public class UserFriendsActivity extends LoadableListActivity {
             mStateHolder.setFriends(new Group<User>());
             mListAdapter.setGroup(mStateHolder.getFriends());
             getListView().setAdapter(mListAdapter);
-            setEmptyView();
             
             NotificationsUtil.ToastReasonForFailure(this, ex);
         }
         mStateHolder.setIsRunningFriendsTask(false);
         mStateHolder.setFetchedFriendsOnce(true);
+        
+        // TODO: We can probably tighten this up by just calling ensureUI() again.
+        if (mStateHolder.getFriends().size() == 0) {
+            setEmptyView();
+        }
     }
     
     /**

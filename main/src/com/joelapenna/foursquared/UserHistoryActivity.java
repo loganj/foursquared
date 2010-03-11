@@ -106,12 +106,16 @@ public class UserHistoryActivity extends LoadableListActivity {
             mStateHolder.setHistory(new Group<Checkin>());
             mListAdapter.setGroup(mStateHolder.getHistory());
             getListView().setAdapter(mListAdapter);
-            setEmptyView();
             
             NotificationsUtil.ToastReasonForFailure(this, ex);
         }
         mStateHolder.setIsRunningHistoryTask(false);
         mStateHolder.setFetchedOnce(true);
+        
+        // TODO: Can tighten this up by just calling ensureUI() probably.
+        if (mStateHolder.getHistory().size() == 0) {
+            setEmptyView();
+        }
     }
     
     /**
