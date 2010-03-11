@@ -15,6 +15,7 @@ import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
+import com.joelapenna.foursquared.util.UserUtils;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
 
@@ -154,8 +155,10 @@ public class NearbyVenuesActivity extends LoadableListActivity {
 
         int sdk = new Integer(Build.VERSION.SDK).intValue();
         if (sdk < 4) {
+            int menuIcon = UserUtils.getDrawableForMeMenuItemByGender(
+                ((Foursquared) getApplication()).getUserGender());
             menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
-                    .setIcon(R.drawable.ic_menu_myinfo);
+                    .setIcon(menuIcon);
         }
 
         MenuUtils.addPreferencesToMenu(this, menu);

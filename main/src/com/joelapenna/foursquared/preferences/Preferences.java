@@ -51,6 +51,9 @@ public class Preferences {
 
     // Extra info for getUserId
     private static final String PREFERENCE_ID = "id";
+    
+    // Extra info about the user, their gender, to control icon used for 'me' in the UI.
+    private static final String PREFERENCE_GENDER = "gender";
 
     // Not-in-XML preferences for dumpcatcher
     public static final String PREFERENCE_DUMPCATCHER_CLIENT = "dumpcatcher_client";
@@ -109,6 +112,10 @@ public class Preferences {
         return prefs.getString(PREFERENCE_ID, null);
     }
 
+    public static String getUserGender(SharedPreferences prefs) {
+        return prefs.getString(PREFERENCE_GENDER, null);
+    }
+    
     public static void storeCity(final Editor editor, City city) {
         if (city != null) {
             editor.putString(PREFERENCE_CITY_ID, city.getId());
@@ -129,6 +136,7 @@ public class Preferences {
             editor.putString(PREFERENCE_ID, user.getId());
             editor.putBoolean(PREFERENCE_TWITTER_CHECKIN, user.getSettings().sendtotwitter());
             editor.putBoolean(PREFERENCE_FACEBOOK_CHECKIN, user.getSettings().sendtofacebook());
+            editor.putString(PREFERENCE_GENDER, user.getGender());
             if (DEBUG) Log.d(TAG, "Setting user info");
         } else {
             if (Preferences.DEBUG) Log.d(Preferences.TAG, "Unable to lookup user.");

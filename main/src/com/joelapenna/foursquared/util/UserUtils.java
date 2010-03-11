@@ -96,4 +96,24 @@ public class UserUtils {
             return false;
         }
     }
+    
+    public static int getDrawableForMeTabByGender(String gender) {
+        if (gender == null) {
+            return R.drawable.me_tab_boy;
+        } else if (gender.equals("female")) {
+            return R.drawable.me_tab_girl;
+        } else {
+            return R.drawable.me_tab_boy;
+        }
+    }
+    
+    public static int getDrawableForMeMenuItemByGender(String gender) {
+        if (gender == null) {
+            return R.drawable.ic_menu_myinfo_boy;
+        } else if (gender.equals("female")) {
+            return R.drawable.ic_menu_myinfo_girl;
+        } else {
+            return R.drawable.ic_menu_myinfo_boy;
+        }
+    }
 }

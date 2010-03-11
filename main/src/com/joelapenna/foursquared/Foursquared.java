@@ -122,6 +122,10 @@ public class Foursquared extends Application {
     public String getUserId() {
         return Preferences.getUserId(mPrefs);
     }
+    
+    public String getUserGender() {
+        return Preferences.getUserGender(mPrefs);
+    }
 
     public String getVersion() {
 

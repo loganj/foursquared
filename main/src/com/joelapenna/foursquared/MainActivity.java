@@ -4,6 +4,8 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquared.util.UserUtils;
+
 import android.app.Activity;
 import android.app.TabActivity;
 import android.content.BroadcastReceiver;
@@ -93,17 +95,21 @@ public class MainActivity extends TabActivity {
         int sdk = new Integer(Build.VERSION.SDK).intValue();
         if (sdk > 3) {
             // 'Me' tab, just shows our own info. At this point we should have a
-            // stored user id.
+            // stored user id, and a user gender to control the image which is
+            // displayed on the tab.
             String userId = ((Foursquared) getApplication()).getUserId();
-
+            String userGender = ((Foursquared) getApplication()).getUserGender();
+            
             Intent intentTabMe = new Intent(this, UserDetailsActivity.class);
             intentTabMe.putExtra(UserDetailsActivity.EXTRA_USER_ID, userId == null ? "unknown"
                     : userId);
             mTabHost.addTab(mTabHost.newTabSpec("me") //
                     .setIndicator(getString(R.string.main_activity_tab_title_me),
-                            getResources().getDrawable(R.drawable.me_tab_boy)) // the
-                                                                               // tab
-                    // icon
+                            getResources().getDrawable(
+                                    UserUtils.getDrawableForMeTabByGender(
+                                            userGender))) // the
+                                                          // tab
+                                                          // icon
                     .setContent(intentTabMe) // The contained activity
                     );
         }
