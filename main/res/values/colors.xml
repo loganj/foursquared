@@ -36,4 +36,6 @@
         name="grey_end">#8C9DAE</color>
     <color
         name="blue_badges_mayor">#095b72</color>
+    <color
+        name="vlgrey">#EEEEEE</color>
 </resources>

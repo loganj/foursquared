@@ -98,9 +98,7 @@ public class UserActionsActivity extends LoadableListActivity {
                 mStateHolder.setShowAddFriendOptions(getIntent().getBooleanExtra(
                         EXTRA_SHOW_ADD_FRIEND_OPTIONS, false));
             } else {
-                Log
-                        .e(TAG,
-                                "UserActionsFriendActivity requires a user pareclable in its intent extras.");
+                Log.e(TAG, "UserActionsFriendActivity requires a user pareclable in its intent extras.");
                 finish();
                 return;
             }
@@ -162,6 +160,14 @@ public class UserActionsActivity extends LoadableListActivity {
                     case ActionsAdapter.ACTION_ID_FACEBOOK:
                         startWebIntent("http://www.facebook.com/profile.php?id="
                                 + mStateHolder.getUser().getFacebook());
+                        break;
+                    case ActionsAdapter.ACTION_ID_LAST_SEEN_AT:
+                        Intent intent = new Intent(UserActionsActivity.this, VenueActivity.class);
+                        intent.setAction(Intent.ACTION_VIEW);
+                        intent.putExtra(Foursquared.EXTRA_VENUE_ID, 
+                            mStateHolder.getUser().getCheckin().getVenue().getId());
+                        startActivity(intent);
+                        break;
                     case ActionsAdapter.ACTION_ID_SEND_FRIEND_REQUEST:
                         mStateHolder.startTaskSendFriendRequest(UserActionsActivity.this,
                                 mStateHolder.getUser().getId());
@@ -212,6 +218,7 @@ public class UserActionsActivity extends LoadableListActivity {
         public static final int ACTION_ID_PHONE = 2;
         public static final int ACTION_ID_TWITTER = 3;
         public static final int ACTION_ID_FACEBOOK = 4;
+        public static final int ACTION_ID_LAST_SEEN_AT = 5; // Going to go away eventually.
         public static final int ACTION_ID_SEND_FRIEND_REQUEST = 100;
         public static final int ACTION_ID_SEND_APPROVE_FRIEND_REQUEST = 101;
         public static final int ACTION_ID_SEND_READONLY_FRIEND_REQUEST = 102;
@@ -229,6 +236,11 @@ public class UserActionsActivity extends LoadableListActivity {
 
             mActions = new ArrayList<Action>();
             if (user != null) {
+                if (user.getCheckin() != null && user.getCheckin().getVenue() != null) {
+                    mActions.add(new Action(
+                            "Last seen at " + user.getCheckin().getVenue().getName(),
+                            R.drawable.map_marker_blue, ACTION_ID_LAST_SEEN_AT, false));
+                }
                 if (UserUtils.isFriend(user)) {
                     if (TextUtils.isEmpty(mUser.getPhone()) == false) {
                         mActions.add(new Action(context.getResources().getString(
