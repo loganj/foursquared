@@ -34,8 +34,8 @@ import java.util.Observer;
  * @date February 14, 2010
  * @author Mark Wyszomierski (markww@gmail.com), foursquare.
  */
-public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> 
-    implements ObservableAdapter {
+public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User> implements
+        ObservableAdapter {
 
     private static final String TAG = "";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
@@ -58,7 +58,7 @@ public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User>
 
         mRrm.addObserver(mResourcesObserver);
     }
-    
+
     public void removeObserver() {
         mRrm.deleteObserver(mResourcesObserver);
     }
@@ -84,7 +84,8 @@ public class FriendSearchAddFriendAdapter extends BaseGroupAdapter<User>
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.clickable = (LinearLayout) convertView.findViewById(R.id.addFriendListItemClickableArea);
+            holder.clickable = (LinearLayout) convertView
+                    .findViewById(R.id.addFriendListItemClickableArea);
             holder.photo = (ImageView) convertView.findViewById(R.id.addFriendListItemPhoto);
             holder.name = (TextView) convertView.findViewById(R.id.addFriendListItemName);
             holder.add = (Button) convertView.findViewById(R.id.addFriendListItemAddButton);

@@ -23,7 +23,6 @@ public class AddFriendsActivity extends Activity {
     private static final String TAG = "AddFriendsActivity";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +60,7 @@ public class AddFriendsActivity extends Activity {
                 Intent intent = new Intent(AddFriendsActivity.this,
                         AddFriendsByUserInputActivity.class);
                 intent.putExtra(AddFriendsByUserInputActivity.INPUT_TYPE,
-                        AddFriendsByUserInputActivity.INPUT_TYPE_NAME_OR_PHONE); 
+                        AddFriendsByUserInputActivity.INPUT_TYPE_NAME_OR_PHONE);
                 startActivity(intent);
             }
         });

@@ -1,3 +1,4 @@
+
 package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Category;
@@ -22,12 +23,11 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
-public class CategoryPickerAdapter extends BaseAdapter 
-    implements ObservableAdapter {
+public class CategoryPickerAdapter extends BaseAdapter implements ObservableAdapter {
 
     private static final String TAG = "CheckinListAdapter";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
-    
+
     private LayoutInflater mInflater;
     private int mLayoutToInflate;
     private RemoteResourceManager mRrm;
@@ -36,7 +36,7 @@ public class CategoryPickerAdapter extends BaseAdapter
     private Category mCategory;
 
     public CategoryPickerAdapter(Context context, RemoteResourceManager rrm, Category category) {
-        super(); 
+        super();
         mCategory = category;
         mInflater = LayoutInflater.from(context);
         mLayoutToInflate = R.layout.category_picker_list_item;
@@ -44,7 +44,7 @@ public class CategoryPickerAdapter extends BaseAdapter
         mResourcesObserver = new RemoteResourceManagerObserver();
 
         mRrm.addObserver(mResourcesObserver);
-        
+
         for (Category it : mCategory.getChildCategories()) {
             Uri photoUri = Uri.parse(it.getIconUrl());
             if (!mRrm.exists(photoUri)) {
@@ -91,7 +91,7 @@ public class CategoryPickerAdapter extends BaseAdapter
         } catch (IOException e) {
             if (DEBUG) Log.e(TAG, "Error loading category icon.", e);
         }
- 
+
         holder.name.setText(category.getNodeName());
 
         return convertView;
@@ -128,25 +128,25 @@ public class CategoryPickerAdapter extends BaseAdapter
     public long getItemId(int position) {
         return position;
     }
-    
+
     @Override
     public boolean hasStableIds() {
         return true;
     }
-    
+
     public static class CategoryFlat {
         private Category mCategory;
         private int mDepth;
-        
+
         public CategoryFlat(Category category, int depth) {
             mCategory = category;
             mDepth = depth;
         }
-        
+
         public Category getCategory() {
             return mCategory;
         }
-        
+
         public int getDepth() {
             return mDepth;
         }

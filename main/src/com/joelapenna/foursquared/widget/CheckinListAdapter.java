@@ -33,9 +33,8 @@ import java.util.Observer;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class CheckinListAdapter extends BaseCheckinAdapter 
-    implements ObservableAdapter {
-    
+public class CheckinListAdapter extends BaseCheckinAdapter implements ObservableAdapter {
+
     private static final String TAG = "CheckinListAdapter";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
@@ -73,20 +72,20 @@ public class CheckinListAdapter extends BaseCheckinAdapter
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.photo = (ImageView)convertView.findViewById(R.id.photo);
-            holder.firstLine = (TextView)convertView.findViewById(R.id.firstLine);
-            holder.secondLine = (TextView)convertView.findViewById(R.id.secondLine);
-            holder.shoutTextView = (TextView)convertView.findViewById(R.id.shoutTextView);
-            holder.timeTextView = (TextView)convertView.findViewById(R.id.timeTextView);
+            holder.photo = (ImageView) convertView.findViewById(R.id.photo);
+            holder.firstLine = (TextView) convertView.findViewById(R.id.firstLine);
+            holder.secondLine = (TextView) convertView.findViewById(R.id.secondLine);
+            holder.shoutTextView = (TextView) convertView.findViewById(R.id.shoutTextView);
+            holder.timeTextView = (TextView) convertView.findViewById(R.id.timeTextView);
 
             convertView.setTag(holder);
         } else {
             // Get the ViewHolder back to get fast access to the TextView
             // and the ImageView.
-            holder = (ViewHolder)convertView.getTag();
+            holder = (ViewHolder) convertView.getTag();
         }
 
-        Checkin checkin = (Checkin)getItem(position);
+        Checkin checkin = (Checkin) getItem(position);
         final User user = checkin.getUser();
         final Uri photoUri = Uri.parse(user.getPhoto());
 
@@ -103,7 +102,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter
 
         // Always show the checkin message itself, this is server-generated.
         holder.firstLine.setText(StringFormatters.getCheckinMessage(checkin, true));
-        
+
         // If we have a shout, we show that in place of the venue address.
         if (TextUtils.isEmpty(checkin.getShout()) == false) {
             holder.shoutTextView.setText(checkin.getShout());
@@ -113,17 +112,16 @@ public class CheckinListAdapter extends BaseCheckinAdapter
             // No shout, show address instead.
             holder.shoutTextView.setText("");
             holder.shoutTextView.setVisibility(View.GONE);
-            
+
             if (checkin.getVenue() != null && checkin.getVenue().getAddress() != null) {
                 String address = checkin.getVenue().getAddress();
-                if (checkin.getVenue().getCrossstreet() != null && 
-                    checkin.getVenue().getCrossstreet().length() > 0) {
+                if (checkin.getVenue().getCrossstreet() != null
+                        && checkin.getVenue().getCrossstreet().length() > 0) {
                     address += " (" + checkin.getVenue().getCrossstreet() + ")";
                 }
                 holder.secondLine.setText(address);
                 holder.secondLine.setVisibility(View.VISIBLE);
-            }
-            else {
+            } else {
                 holder.secondLine.setVisibility(View.GONE);
             }
         }

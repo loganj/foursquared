@@ -129,7 +129,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     public void onPause() {
         super.onPause();
         ((Foursquared) getApplication()).removeLocationUpdates(mSearchLocationObserver);
-        
+
         if (isFinishing()) {
             mListAdapter.removeObserver();
         }
@@ -151,7 +151,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 .setIcon(R.drawable.ic_menu_refresh);
         menu.add(Menu.NONE, MENU_ADD_VENUE, Menu.NONE, R.string.add_venue_label) //
                 .setIcon(R.drawable.ic_menu_add);
-        
+
         int sdk = new Integer(Build.VERSION.SDK).intValue();
         if (sdk < 4) {
             menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
@@ -179,8 +179,8 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 return true;
             case MENU_MYINFO:
                 Intent intentUser = new Intent(NearbyVenuesActivity.this, UserDetailsActivity.class);
-                intentUser.putExtra(UserDetailsActivity.EXTRA_USER_ID, 
-                    ((Foursquared)getApplication()).getUserId());
+                intentUser.putExtra(UserDetailsActivity.EXTRA_USER_ID,
+                        ((Foursquared) getApplication()).getUserId());
                 startActivity(intentUser);
                 return true;
         }

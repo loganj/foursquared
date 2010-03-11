@@ -51,7 +51,7 @@ public class FriendsMapActivity extends MapActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_map_activity);
 
-        mCheckinButton = (Button)findViewById(R.id.venueButton);
+        mCheckinButton = (Button) findViewById(R.id.venueButton);
         mCheckinButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,7 +81,8 @@ public class FriendsMapActivity extends MapActivity {
         super.onResume();
         if (DEBUG) Log.d(TAG, "onResume()");
         mMyLocationOverlay.enableMyLocation();
-        // mMyLocationOverlay.enableCompass(); // Disabled due to a sdk 1.5 emulator bug
+        // mMyLocationOverlay.enableCompass(); // Disabled due to a sdk 1.5
+        // emulator bug
 
         clearMap();
         loadSearchResults(FriendsActivity.searchResultsObservable.getSearchResults());
@@ -105,7 +106,7 @@ public class FriendsMapActivity extends MapActivity {
     }
 
     private void initMap() {
-        mMapView = (MapView)findViewById(R.id.mapView);
+        mMapView = (MapView) findViewById(R.id.mapView);
         mMapView.setBuiltInZoomControls(true);
         mMapController = mMapView.getController();
 
@@ -127,7 +128,8 @@ public class FriendsMapActivity extends MapActivity {
             if (DEBUG) Log.d(TAG, "adding a map view checkin overlay.");
             mCheckinsGroupOverlays.add(mappableCheckinsOverlay);
         }
-        // Only add the list of checkin group overlays if it contains any overlays.
+        // Only add the list of checkin group overlays if it contains any
+        // overlays.
         if (mCheckinsGroupOverlays.size() > 0) {
             mMapView.getOverlays().addAll(mCheckinsGroupOverlays);
         }
@@ -142,8 +144,9 @@ public class FriendsMapActivity extends MapActivity {
     }
 
     /**
-     * Create an overlay that contains a specific group's list of mappable checkins.
-     *
+     * Create an overlay that contains a specific group's list of mappable
+     * checkins.
+     * 
      * @param group
      * @return
      */
@@ -154,7 +157,7 @@ public class FriendsMapActivity extends MapActivity {
 
         final int checkinCount = group.size();
         for (int checkinIndex = 0; checkinIndex < checkinCount; checkinIndex++) {
-            Checkin checkin = (Checkin)group.get(checkinIndex);
+            Checkin checkin = (Checkin) group.get(checkinIndex);
             if (VenueUtils.hasValidLocation(checkin.getVenue())) {
                 if (DEBUG) Log.d(TAG, "adding checkin: " + checkin.getVenue().getName());
                 mappableCheckins.add(checkin);
@@ -214,7 +217,7 @@ public class FriendsMapActivity extends MapActivity {
         @Override
         protected boolean onTap(int i) {
             if (DEBUG) Log.d(TAG, "onTap: " + this + " " + i);
-            CheckinOverlayItem item = (CheckinOverlayItem)getItem(i);
+            CheckinOverlayItem item = (CheckinOverlayItem) getItem(i);
             item.getCheckin();
             Checkin checkin = item.getCheckin();
             mTappedVenue = checkin.getVenue();

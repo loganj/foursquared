@@ -90,11 +90,11 @@ public class FriendsActivity extends LoadableListActivity {
             onNewIntent(getIntent());
         }
     }
-    
+
     @Override
     public void onPause() {
         super.onPause();
-        
+
         if (isFinishing()) {
             mListAdapter.removeObserver();
         }
@@ -123,13 +123,13 @@ public class FriendsActivity extends LoadableListActivity {
                 .setIcon(R.drawable.ic_menu_shout);
         menu.add(Menu.NONE, MENU_STATS, Menu.NONE, R.string.stats_label) //
                 .setIcon(R.drawable.ic_menu_leaderboard);
-        
+
         int sdk = new Integer(Build.VERSION.SDK).intValue();
         if (sdk < 4) {
             menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
                     .setIcon(R.drawable.ic_menu_myinfo);
         }
-        
+
         MenuUtils.addPreferencesToMenu(this, menu);
 
         return true;
@@ -151,8 +151,8 @@ public class FriendsActivity extends LoadableListActivity {
                 return true;
             case MENU_MYINFO:
                 Intent intentUser = new Intent(FriendsActivity.this, UserDetailsActivity.class);
-                intentUser.putExtra(UserDetailsActivity.EXTRA_USER_ID, 
-                    ((Foursquared)getApplication()).getUserId());
+                intentUser.putExtra(UserDetailsActivity.EXTRA_USER_ID,
+                        ((Foursquared) getApplication()).getUserId());
                 startActivity(intentUser);
                 return true;
         }

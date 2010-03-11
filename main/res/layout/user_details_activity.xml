@@ -45,7 +45,7 @@
         
       <TextView 
         android:id="@+id/userDetailsActivityName" 
-        android:layout_width="wrap_content" 
+        android:layout_width="fill_parent" 
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextViewStyleUserDetailsActivityTitle" />
           
@@ -103,29 +103,39 @@
           
           <TextView 
             android:text="@string/user_details_activity_title_badges" 
-            android:layout_width="wrap_content" 
+            android:layout_width="fill_parent" 
             android:layout_height="wrap_content"
+            android:paddingRight="20dip"
             android:textAppearance="@style/TextViewStyleUserDetailsActivityNumBadgesTitle" />
               
           <LinearLayout
             android:layout_width="fill_parent" 
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:orientation="horizontal"
             android:gravity="center_vertical" >
             
             <ImageView
-              android:layout_width="16dip"
-              android:layout_height="16dip"
-              android:src="@drawable/crown_small"
+              android:layout_width="17dip"
+              android:layout_height="20dip"
+              android:src="@drawable/badge"
               android:scaleType="fitCenter"  />
            
             <TextView 
               android:id="@+id/userDetailsActivityNumBadges" 
-              android:layout_width="wrap_content" 
+              android:layout_width="0dip" 
               android:layout_height="wrap_content"
+              android:layout_weight="1"
               android:text="-" 
               android:paddingLeft="5dip"
+              android:paddingRight="10dip"
               android:textAppearance="@style/TextViewStyleUserDetailsActivityNumBadges" />
+              
+            <ImageView
+              android:layout_width="9dip"
+              android:layout_height="13dip"
+              android:src="@drawable/arrow_white"
+              android:scaleType="fitCenter"
+              android:gravity="right"  />
             
           </LinearLayout>
               
