@@ -120,7 +120,7 @@ public class FriendsActivity extends LoadableListActivity {
         menu.add(Menu.NONE, MENU_SHOUT, Menu.NONE, R.string.shout_action_label) //
                 .setIcon(R.drawable.ic_menu_shout);
         menu.add(Menu.NONE, MENU_STATS, Menu.NONE, R.string.stats_label) //
-                .setIcon(android.R.drawable.ic_menu_sort_by_size);
+                .setIcon(R.drawable.ic_menu_leaderboard);
 
         MenuUtils.addPreferencesToMenu(this, menu);
 

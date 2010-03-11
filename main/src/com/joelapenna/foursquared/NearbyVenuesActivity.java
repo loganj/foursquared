@@ -144,14 +144,12 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.search_label) //
-                .setIcon(android.R.drawable.ic_search_category_default) //
+                .setIcon(R.drawable.ic_menu_search) //
                 .setAlphabeticShortcut(SearchManager.MENU_KEY);
         menu.add(Menu.NONE, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
                 .setIcon(R.drawable.ic_menu_refresh);
         menu.add(Menu.NONE, MENU_ADD_VENUE, Menu.NONE, R.string.add_venue_label) //
-                .setIcon(android.R.drawable.ic_menu_add);
-        menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
-                .setIcon(R.drawable.ic_menu_myinfo);
+                .setIcon(R.drawable.ic_menu_add);
 
         MenuUtils.addPreferencesToMenu(this, menu);
 
