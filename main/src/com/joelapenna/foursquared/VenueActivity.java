@@ -8,6 +8,7 @@ import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.util.UserUtils;
@@ -22,11 +23,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,6 +49,8 @@ import java.util.Observable;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
+ * @author Mark Wyszomierski (markww@gmail.com)
+ *         -Replaced shout activity with CheckinGatherInfoActivity (3/10/2010).
  */
 public class VenueActivity extends TabActivity {
     private static final String TAG = "VenueActivity";
@@ -54,21 +59,17 @@ public class VenueActivity extends TabActivity {
 
     private static final int DIALOG_TIPADD = 1;
 
-    private static final int MENU_SHOUT = 1;
+    private static final int MENU_CHECKIN = 1;
     private static final int MENU_TIPADD = 2;
     private static final int MENU_CALL = 3;
     private static final int MENU_MYINFO = 4;
 
-    private static final int RESULT_SHOUT = 1;
+    private static final int RESULT_CODE_ACTIVITY_CHECKIN_EXECUTE = 1;
 
     final VenueObservable venueObservable = new VenueObservable();
-
     private final StateHolder mStateHolder = new StateHolder();
-
     private final HashSet<Object> mProgressBarTasks = new HashSet<Object>();
-
     private VenueView mVenueView;
-
     private boolean mCheckedInSuccessfully = false;
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
@@ -94,9 +95,8 @@ public class VenueActivity extends TabActivity {
         mVenueView.setCheckinButtonOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(VenueActivity.this, ShoutActivity.class);
-                ShoutActivity.venueIntoIntentExtras(mStateHolder.venue, intent);
-                startActivityForResult(intent, RESULT_SHOUT);
+                // This is a quick checkin, so we can just execute the checkin directly.
+                startCheckinQuick();
             }
         });
 
@@ -118,7 +118,7 @@ public class VenueActivity extends TabActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        menu.add(Menu.NONE, MENU_SHOUT, 1, R.string.checkin_action_label) //
+        menu.add(Menu.NONE, MENU_CHECKIN, 1, R.string.checkin_action_label) //
                 .setIcon(R.drawable.ic_menu_checkin);
 
         menu.add(Menu.NONE, MENU_TIPADD, 2, R.string.add_a_tip).setIcon(
@@ -142,7 +142,7 @@ public class VenueActivity extends TabActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean checkinEnabled = (mStateHolder.venueId != null) && !mCheckedInSuccessfully;
-        menu.findItem(MENU_SHOUT).setEnabled(checkinEnabled);
+        menu.findItem(MENU_CHECKIN).setEnabled(checkinEnabled);
 
         boolean callEnabled = mStateHolder.venue != null
                 && !TextUtils.isEmpty(mStateHolder.venue.getPhone());
@@ -154,14 +154,8 @@ public class VenueActivity extends TabActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case MENU_SHOUT:
-                Intent intent = new Intent(VenueActivity.this, ShoutActivity.class);
-                ShoutActivity.venueIntoIntentExtras(mStateHolder.venue, intent);
-                // No matter what the immediate checkin user preference is,
-                // never auto-checkin
-                // (always present the shout prompt).
-                intent.putExtra(ShoutActivity.EXTRA_IMMEDIATE_CHECKIN, false);
-                startActivityForResult(intent, RESULT_SHOUT);
+            case MENU_CHECKIN:   
+                startCheckin();
                 return true;
             case MENU_TIPADD:
                 showDialog(DIALOG_TIPADD);
@@ -240,9 +234,13 @@ public class VenueActivity extends TabActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            mCheckedInSuccessfully = true;
-            mVenueView.setCheckinButtonEnabled(false);
+        switch (requestCode) {
+            case RESULT_CODE_ACTIVITY_CHECKIN_EXECUTE:
+                if (resultCode == Activity.RESULT_OK) {
+                    mCheckedInSuccessfully = true;
+                    mVenueView.setCheckinButtonEnabled(false);
+                }
+                break;
         }
     }
 
@@ -301,7 +299,29 @@ public class VenueActivity extends TabActivity {
         mStateHolder.venueId = venue.getId();
         venueObservable.notifyObservers(venue);
         onVenueSet();
-
+    }
+    
+    private void startCheckin() {
+        Intent intent = new Intent(this, CheckinOrShoutGatherInfoActivity.class);
+        intent.putExtra(CheckinOrShoutGatherInfoActivity.INTENT_EXTRA_IS_CHECKIN, true);
+        intent.putExtra(CheckinOrShoutGatherInfoActivity.INTENT_EXTRA_VENUE_ID, mStateHolder.venue.getId());
+        intent.putExtra(CheckinOrShoutGatherInfoActivity.INTENT_EXTRA_VENUE_NAME, mStateHolder.venue.getName());
+        startActivityForResult(intent, RESULT_CODE_ACTIVITY_CHECKIN_EXECUTE);
+    }
+    
+    private void startCheckinQuick() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean tellFriends = settings.getBoolean(Preferences.PREFERENCE_SHARE_CHECKIN, true);
+        boolean tellTwitter = settings.getBoolean(Preferences.PREFERENCE_TWITTER_CHECKIN, false);
+        boolean tellFacebook = settings.getBoolean(Preferences.PREFERENCE_FACEBOOK_CHECKIN, false);
+        
+        Intent intent = new Intent(VenueActivity.this, CheckinExecuteActivity.class);
+        intent.putExtra(CheckinExecuteActivity.INTENT_EXTRA_VENUE_ID, mStateHolder.venue.getId());
+        intent.putExtra(CheckinExecuteActivity.INTENT_EXTRA_SHOUT, "");
+        intent.putExtra(CheckinExecuteActivity.INTENT_EXTRA_TELL_FRIENDS, tellFriends);
+        intent.putExtra(CheckinExecuteActivity.INTENT_EXTRA_TELL_TWITTER, tellTwitter);
+        intent.putExtra(CheckinExecuteActivity.INTENT_EXTRA_TELL_FACEBOOK, tellFacebook);
+        startActivityForResult(intent, RESULT_CODE_ACTIVITY_CHECKIN_EXECUTE);
     }
 
     class VenueObservable extends Observable {

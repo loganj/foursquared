@@ -157,4 +157,6 @@
   <string name="user_details_activity_title_mayorships">MAYORSHIPS</string>
   <string name="user_details_activity_title_badges">BADGES</string>
   <string name="main_activity_tab_title_me">Me</string>
+  <string name="checkin_execute_activity_progress_bar_message">Checking-in...</string>
+  <string name="shout_execute_activity_progress_bar_message">Posting shout...</string>
 </resources>

@@ -2,7 +2,7 @@
 <manifest
   xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.joelapenna.foursquared"
-  android:versionName="2010-03-05" android:versionCode="2010030500">
+  android:versionName="2010-03-10" android:versionCode="2010031000">
 
   <uses-permission
     android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -199,23 +199,6 @@
       android:name=".SearchVenuesMapActivity">
     </activity>
 
-
-    <activity
-      android:name=".ShoutActivity"
-      android:label="@string/shout_activity_label"
-      android:configChanges="keyboardHidden|orientation"
-      android:theme="@android:style/Theme.Dialog">
-      <intent-filter>
-        <action
-          android:name="android.intent.action.MAIN" />
-      </intent-filter>
-      <intent-filter>
-        <action
-          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
-      </intent-filter>
-    </activity>
-
-
     <activity
       android:name=".StatsActivity">
       <intent-filter>
@@ -333,6 +316,37 @@
     
     <activity
       android:name=".BadgesActivity">
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
+    </activity>
+    
+    <activity
+      android:name=".CheckinOrShoutGatherInfoActivity"
+      android:theme="@android:style/Theme.Dialog"
+      android:configChanges="keyboardHidden|orientation" >
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+      </intent-filter>
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
+    </activity>
+    
+    <activity
+      android:name=".CheckinExecuteActivity"
+      android:theme="@style/ThemeTransparentDialogBase.TransparentDialog" >
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
+    </activity>
+    
+    <activity
+      android:name=".ShoutExecuteActivity"
+      android:theme="@style/ThemeTransparentDialogBase.TransparentDialog" >
       <intent-filter>
         <action
           android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />

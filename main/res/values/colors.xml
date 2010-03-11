@@ -38,4 +38,9 @@
         name="blue_badges_mayor">#095b72</color>
     <color
         name="vlgrey">#EEEEEE</color>
+    <color
+        name="color_score_list_adapter_highlight">#EEEEEE</color>
+    <color
+        name="color_score_mayor_section_background">#DDDDDD</color>
+        
 </resources>

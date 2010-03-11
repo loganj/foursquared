@@ -154,8 +154,8 @@ public class FriendsActivity extends LoadableListActivity {
                 executeSearchTask(null);
                 return true;
             case MENU_SHOUT:
-                Intent intent = new Intent(FriendsActivity.this, ShoutActivity.class);
-                intent.putExtra(ShoutActivity.EXTRA_SHOUT, true);
+                Intent intent = new Intent(this, CheckinOrShoutGatherInfoActivity.class);
+                intent.putExtra(CheckinOrShoutGatherInfoActivity.INTENT_EXTRA_IS_SHOUT, true);
                 startActivity(intent);
                 return true;
             case MENU_STATS:

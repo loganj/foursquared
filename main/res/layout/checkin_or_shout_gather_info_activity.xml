@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+    
+<!-- Copyright 2010 Mark Wyszomierski -->
+
+<ScrollView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content">
+
+  <LinearLayout 
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent" 
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:paddingLeft="5dip"
+    android:paddingRight="5dip" >
+    
+    <CheckBox 
+      android:id="@+id/checkboxTellFriends" 
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content"
+      android:text="@string/tell_my_friends"
+      android:textColor="#333"
+      />
+  
+    <CheckBox  
+      android:id="@+id/checkboxTellTwitter" 
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content"
+      android:text="@string/tell_twitter"
+      android:textColor="#333"
+      />
+     
+    <CheckBox 
+      android:id="@+id/checkboxTellFacebook" 
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content"
+      android:text="@string/tell_facebook"
+      android:textColor="#333"
+      />
+    
+    <EditText 
+      android:id="@+id/editTextShout" 
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content"
+      android:hint="@string/shout_hint"
+      android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
+      android:imeOptions="actionDone"
+      android:lines="2"
+      android:gravity="top"
+      />
+    
+    <Button 
+      android:id="@+id/btnCheckin" 
+      android:text="@string/checkin_action_label" 
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content"
+      />
+
+  </LinearLayout>
+
+</ScrollView>

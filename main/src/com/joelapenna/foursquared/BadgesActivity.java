@@ -17,6 +17,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.DialogInterface.OnDismissListener;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +27,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -117,14 +120,15 @@ public class BadgesActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapter, View v, int position, long arg3) {
                 Badge badge = (Badge)mListAdapter.getItem(position);
-                showDialogInfo(badge.getName(), badge.getDescription());
+                showDialogInfo(badge.getName(), badge.getDescription(), badge.getIcon());
             }
         });
     }
     
-    private void showDialogInfo(String title, String message) {
+    private void showDialogInfo(String title, String message, String badgeIconUrl) {
         mStateHolder.setDlgInfoTitle(title);
         mStateHolder.setDlgInfoMessage(message);
+        mStateHolder.setDlgInfoBadgeIconUrl(badgeIconUrl);
         showDialog(DIALOG_ID_INFO);
     }
     
@@ -141,6 +145,14 @@ public class BadgesActivity extends Activity {
                         removeDialog(DIALOG_ID_INFO);
                     }
                 });
+                try {
+                    Uri icon = Uri.parse(mStateHolder.getDlgInfoBadgeIconUrl());
+                    dlgInfo.setIcon(new BitmapDrawable(((Foursquared) getApplication())
+                            .getRemoteResourceManager().getInputStream(icon)));
+                } catch (IOException e) {
+                    Log.e(TAG, "Error loading badge dialog!", e);
+                    dlgInfo.setIcon(R.drawable.default_on);
+                }
                 return dlgInfo;
         }
         return null;
@@ -150,6 +162,7 @@ public class BadgesActivity extends Activity {
         private Group<Badge> mBadges;
         private String mDlgInfoTitle;
         private String mDlgInfoMessage;
+        private String mDlgInfoBadgeIconUrl;
         
         public StateHolder() {
             mBadges = new Group<Badge>();
@@ -177,6 +190,14 @@ public class BadgesActivity extends Activity {
         
         public void setDlgInfoMessage(String text) {
             mDlgInfoMessage = text;
+        }
+        
+        public String getDlgInfoBadgeIconUrl() {
+            return mDlgInfoBadgeIconUrl;
+        }
+        
+        public void setDlgInfoBadgeIconUrl(String url) {
+            mDlgInfoBadgeIconUrl = url;
         }
     }
 }

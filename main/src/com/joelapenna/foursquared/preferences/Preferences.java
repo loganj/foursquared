@@ -80,7 +80,7 @@ public class Preferences {
             if (DEBUG) Log.d(TAG, "storeLoginAndPassword commit failed");
             return false;
         }
-
+        
         User user = foursquare.user(null, false, false, location);
         storeUser(editor, user);
         if (!editor.commit()) {
@@ -115,7 +115,7 @@ public class Preferences {
     public static String getUserGender(SharedPreferences prefs) {
         return prefs.getString(PREFERENCE_GENDER, null);
     }
-    
+            
     public static void storeCity(final Editor editor, City city) {
         if (city != null) {
             editor.putString(PREFERENCE_CITY_ID, city.getId());
