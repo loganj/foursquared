@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -65,7 +66,7 @@ public class CheckinResultDialog extends Dialog
 
 
     public CheckinResultDialog(Context context, CheckinResult result, Foursquared application) { 
-        super(context);//, R.style.ThemeOurDlgBase_ThemeOurDlg2); 
+        super(context, R.style.ThemeCustomDlgBase_ThemeCustomDlg); 
         mCheckinResult = result;
         mApplication = application;
         mHandler = new Handler();
@@ -78,6 +79,7 @@ public class CheckinResultDialog extends Dialog
         super.onCreate(savedInstanceState); 
     
         setContentView(R.layout.checkin_result_dialog);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setTitle("Checked in!");
         
         

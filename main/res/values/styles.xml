@@ -231,5 +231,32 @@
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
    </style>
+   
+   
+   <!-- 
+     Custom dialog theme using our own 9 patch background to get a different
+     color in the titlebar. 
+       -markww (March 10, 2010)
+      <item name="android:windowBackground">@drawable/dlg_background</item>
+   -->
+   <style name="ThemeCustomDlgBase" parent="@android:style/Theme.Dialog">
+   </style> 
+   <style name="ThemeCustomDlgBase.ThemeCustomDlg">
+     <item name="android:windowBackground">@drawable/dlg_background</item>
+     <item name="android:windowTitleStyle">@style/CustomDlgTitleStyle</item>
+   </style>
+     
+     
+   <!-- 
+     Override to let us use two lines instead of one for these dialogs, if necessary.
+     The checkin dialog usually needs two lines because venue names can be long.
+     We could also specify a custom title font here if we really wanted.
+       -markww (March 10, 2010)
+    -->
+   <style name="CustomDlgTitleStyle">
+     <item name="android:maxLines">2</item>
+     <item name="android:singleLine">false</item>
+     <item name="android:textAppearance">@android:style/TextAppearance.DialogWindowTitle</item>
+   </style> 
   
 </resources>

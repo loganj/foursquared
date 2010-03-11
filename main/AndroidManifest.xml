@@ -322,9 +322,10 @@
       </intent-filter>
     </activity>
     
+    <!-- ThemeCustomDlgBase.ThemeCustomDlg -->
     <activity
       android:name=".CheckinOrShoutGatherInfoActivity"
-      android:theme="@android:style/Theme.Dialog"
+      android:theme="@style/ThemeCustomDlgBase.ThemeCustomDlg"
       android:configChanges="keyboardHidden|orientation" >
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
