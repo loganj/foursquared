@@ -37,9 +37,13 @@ import android.widget.AdapterView.OnItemClickListener;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Observable;
+import java.util.Observer;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
+ * @author Mark Wyszomierski (markww@gmail.com)
+ *         -Added dummy location observer, new menu icon logic, 
+ *          links to new user activity (3/10/2010).
  */
 public class FriendsActivity extends LoadableListActivity {
     static final String TAG = "FriendsActivity";
@@ -57,9 +61,10 @@ public class FriendsActivity extends LoadableListActivity {
 
     private SearchTask mSearchTask;
     private SearchHolder mSearchHolder = new SearchHolder();
-
     private CheckinListAdapter mListAdapter;
+    private SearchLocationObserver mSearchLocationObserver = new SearchLocationObserver();
 
+    
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -91,20 +96,24 @@ public class FriendsActivity extends LoadableListActivity {
             onNewIntent(getIntent());
         }
     }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ((Foursquared) getApplication()).requestLocationUpdates(mSearchLocationObserver);
+    }
 
     @Override
     public void onPause() {
         super.onPause();
+        
+        ((Foursquared) getApplication()).removeLocationUpdates(mSearchLocationObserver);
 
         if (isFinishing()) {
             mListAdapter.removeObserver();
+            unregisterReceiver(mLoggedOutReceiver);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(mLoggedOutReceiver);
     }
 
     @Override
@@ -319,4 +328,16 @@ public class FriendsActivity extends LoadableListActivity {
             return mSearchHolder.query;
         }
     };
+    
+    /** 
+     * This is really just a dummy observer to get the GPS running
+     * since this is the new splash page. After getting a fix, we
+     * might want to stop registering this observer thereafter so
+     * it doesn't annoy the user too much.
+     */
+    private class SearchLocationObserver implements Observer {
+        @Override
+        public void update(Observable observable, Object data) {
+        }
+    }
 }

@@ -90,8 +90,7 @@ public class MainActivity extends TabActivity {
                 );
 
         // 1.5 can't display tabs within tabs, so we won't have the 'me' tab for
-        // 1.5 users.
-        // They can access the 'me' page through the context menu.
+        // 1.5 users. They can access the 'me' page through the context menu.
         int sdk = new Integer(Build.VERSION.SDK).intValue();
         if (sdk > 3) {
             // 'Me' tab, just shows our own info. At this point we should have a
