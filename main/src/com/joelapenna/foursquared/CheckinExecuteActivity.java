@@ -136,9 +136,14 @@ public class CheckinExecuteActivity extends Activity {
         
         if (isFinishing()) {
             mStateHolder.cancelTasks();
-            unregisterReceiver(mLoggedOutReceiver);
         }
-    } 
+    }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mLoggedOutReceiver);
+    }
 
     private void startProgressBar(String title, String message) {
         if (mDlgProgress == null) {

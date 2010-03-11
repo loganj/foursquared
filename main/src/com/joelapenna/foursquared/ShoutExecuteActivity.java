@@ -114,10 +114,15 @@ public class ShoutExecuteActivity extends Activity {
         
         if (isFinishing()) {
             mStateHolder.cancelTasks();
-            unregisterReceiver(mLoggedOutReceiver);
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mLoggedOutReceiver);
+    }
+    
     private void startProgressBar(String title, String message) {
         if (mDlgProgress == null) {
             mDlgProgress = ProgressDialog.show(this, title, message);

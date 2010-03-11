@@ -11,7 +11,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Mayor;
 import com.joelapenna.foursquare.types.Score;
 import com.joelapenna.foursquare.types.User;
-import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.util.Base64Coder;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
 import com.joelapenna.foursquared.widget.ScoreListAdapter;
@@ -21,13 +21,12 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -60,17 +59,16 @@ public class CheckinResultDialog extends Dialog
     
     private CheckinResult mCheckinResult;
     private Handler mHandler;
-    private boolean mPopulatedMayorImage;
     private RemoteResourceManagerObserver mObserverMayorPhoto;
     private Foursquared mApplication;
-
+    private String mExtrasDecoded;
+    private WebViewDialog mDlgWebViewExtras;
 
     public CheckinResultDialog(Context context, CheckinResult result, Foursquared application) { 
         super(context, R.style.ThemeCustomDlgBase_ThemeCustomDlg); 
         mCheckinResult = result;
         mApplication = application;
         mHandler = new Handler();
-        mPopulatedMayorImage = false;
         mObserverMayorPhoto = null;
     } 
 
@@ -79,9 +77,7 @@ public class CheckinResultDialog extends Dialog
         super.onCreate(savedInstanceState); 
     
         setContentView(R.layout.checkin_result_dialog);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setTitle("Checked in!");
-        
         
         TextView tvMessage = (TextView)findViewById(R.id.textViewCheckinMessage);
         tvMessage.setText(mCheckinResult.getMessage());
@@ -94,6 +90,11 @@ public class CheckinResultDialog extends Dialog
         // Add whatever points they got as a result of this checkin.
         addScores(mCheckinResult.getScoring(), adapter, mApplication.getRemoteResourceManager());
 
+        // Add a button below the mayor section which will launch a new webview if
+        // we have additional content from the server. This is base64 encoded and
+        // is supposed to be just dumped into a webview.
+        addExtras(mCheckinResult.getMarkup());
+        
         // List items construction complete.
         ListView listview = (ListView)findViewById(R.id.listViewCheckinBadgesAndScores);
         listview.setAdapter(adapter);
@@ -105,6 +106,10 @@ public class CheckinResultDialog extends Dialog
     @Override
     protected void onStop() {
         super.onStop();
+        
+        if (mDlgWebViewExtras != null && mDlgWebViewExtras.isShowing()) {
+            mDlgWebViewExtras.dismiss();
+        }
         
         if (mObserverMayorPhoto != null) {
             mApplication.getRemoteResourceManager().deleteObserver(mObserverMayorPhoto);
@@ -130,91 +135,130 @@ public class CheckinResultDialog extends Dialog
             return; 
         }
 
-        ScoreListAdapter adapter = new ScoreListAdapter(getContext(), rrm);
-        adapter.setGroup(scores);
-        adapterMain.addSection(getContext().getResources().getString(R.string.checkin_score), adapter);
-
+        // We make our own local score group because we'll inject the total as 
+        // a new dummy score element.
+        Group<Score> scoresWithTotal = new Group<Score>();
+        
         // Total up the scoring.
         int total = 0;
         for (Score score : scores) {
             total += Integer.parseInt(score.getPoints());
+            scoresWithTotal.add(score);
         }
         
-        // Show total score section if any points received for this checkin.
-        if (total > 0) {
-            // TODO: Decide if we want the score section fixed in place, or just make it
-            // another element in the ScoreListAdapter, either is possible.
-            
-            LinearLayout llScoreTotal = (LinearLayout)findViewById(R.id.llCheckinScoreTotal);
-            llScoreTotal.setVisibility(View.VISIBLE);
-            
-            TextView tvScoreTotal = (TextView)findViewById(R.id.textViewCheckinScoreTotal);
-            tvScoreTotal.setText(String.valueOf(total));
-        }
+        // Add a dummy score element to the group which is just the total.
+        Score scoreTotal = new Score();
+        scoreTotal.setIcon("");
+        scoreTotal.setMessage(getContext().getResources().getString(
+                R.string.checkin_result_dialog_score_total));
+        scoreTotal.setPoints(String.valueOf(total));
+        scoresWithTotal.add(scoreTotal);
+        
+        // Give it all to the adapter now.
+        ScoreListAdapter adapter = new ScoreListAdapter(getContext(), rrm);
+        adapter.setGroup(scoresWithTotal);
+        adapterMain.addSection(getContext().getResources().getString(R.string.checkin_score), adapter);
     }
     
     private void addMayor(Mayor mayor, RemoteResourceManager rrm) {
-        if (mayor == null) {
-            return;
-        }
         
-        // The mayor section should be revealed in this case.
         LinearLayout llMayor = (LinearLayout)findViewById(R.id.llCheckinMayorInfo);
-        llMayor.setVisibility(View.VISIBLE);
+        if (mayor == null) {
+            llMayor.setVisibility(View.GONE);
+            return;
+        } else {
+            llMayor.setVisibility(View.VISIBLE);
+        }
         
         // Set the mayor message.
         TextView tvMayorMessage = (TextView)findViewById(R.id.textViewCheckinMayorMessage);
         tvMayorMessage.setText(mayor.getMessage());
         
-        // If the user associated with the mayor object is null, it means we're the 
-        // mayor. So point this user object to ourselves.
-        User user = mayor.getUser();
-        if (user == null) {
-            try { 
-                Location location = mApplication.getLastKnownLocation();
-                user = mApplication.getFoursquare().user(null, false, false, LocationUtils.createFoursquareLocation(location));
-
-            } catch (Exception ex) {
-                // TODO: Better error reporting here than just dumping to log?
-                Log.e(TAG, "Error creating user object for mayor checkin section.", ex);
-                return;
+        // A few cases here for the image to display.
+        ImageView ivMayor = (ImageView)findViewById(R.id.imageViewCheckinMayor);
+        if (mCheckinResult.getMayor().getUser() == null) {
+            // I am still the mayor.
+            // Just show the crown icon.
+            ivMayor.setImageDrawable(getContext().getResources().getDrawable(R.drawable.crown));
+        }
+        else if (mCheckinResult.getMayor().getType().equals("nochange")) {
+            // Someone else is mayor.
+            // Show that user's photo from the network. If not already on disk,
+            // we need to start a fetch for it.
+            Uri photoUri = populateMayorImageFromNetwork();
+            if (photoUri != null) {
+                mApplication.getRemoteResourceManager().request(photoUri);
+                mObserverMayorPhoto = new RemoteResourceManagerObserver();
+                rrm.addObserver(mObserverMayorPhoto);
             }
         }
-        
-        // If we don't have the mayor's photo on disk, try to fetch it from the net.
-        boolean populatedMayorImage = populateMayorImage();
-        if (!populatedMayorImage) {
-            mObserverMayorPhoto = new RemoteResourceManagerObserver();
-            rrm.addObserver(mObserverMayorPhoto);
+        else if (mCheckinResult.getMayor().getType().equals("new")) {
+            // I just became the new mayor as a result of this checkin.
+            // Just show the crown icon.
+            ivMayor.setImageDrawable(getContext().getResources().getDrawable(R.drawable.crown));
+        }
+        else if (mCheckinResult.getMayor().getType().equals("stolen")) {
+            // I stole mayorship from someone else as a result of this checkin.
+            // Just show the crown icon.
+            ivMayor.setImageDrawable(getContext().getResources().getDrawable(R.drawable.crown));
         }
     }
     
-    private boolean populateMayorImage() {
-        if (mPopulatedMayorImage) {
-            return true;
-        }
+    private void addExtras(String extras) {
         
-        if (mCheckinResult.getMayor() == null || mCheckinResult.getMayor().getUser() == null) {
-            return true;
-        }
-        
-        ImageView ivMayor = (ImageView)findViewById(R.id.imageViewCheckinMayor);
-        
-        User user = mCheckinResult.getMayor().getUser();
-        Uri photoUri = Uri.parse(user.getPhoto());
-        try {
-            Bitmap bitmap = BitmapFactory.decodeStream(mApplication.getRemoteResourceManager().getInputStream(photoUri));
-            ivMayor.setImageBitmap(bitmap);
-            return true;
-        } catch (IOException e) {
-            if (Foursquare.MALE.equals(user.getGender())) {
-                ivMayor.setImageResource(R.drawable.blank_boy);
-            } else {
-                ivMayor.setImageResource(R.drawable.blank_girl);
-            }
+        LinearLayout llExtras = (LinearLayout)findViewById(R.id.llCheckinExtras);
+        if (TextUtils.isEmpty(extras)) {
+            llExtras.setVisibility(View.GONE);
+            return;
+        } else {
+            llExtras.setVisibility(View.VISIBLE); 
         }
 
-        return false;
+        // The server sent us additional content, it is base64 encoded, so decode it now.
+        mExtrasDecoded = Base64Coder.decodeString(extras);
+        
+        // TODO: Replace with generic extras method.
+        // Now when the user clicks this 'button' pop up yet another dialog dedicated
+        // to showing just the webview and the decoded content. This is not ideal but
+        // having problems putting a webview directly inline with the rest of the 
+        // checkin content, we can improve this later.
+        llExtras.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDlgWebViewExtras = new WebViewDialog(getContext(), "SXSW Stats", mExtrasDecoded);
+                mDlgWebViewExtras.show();
+            }
+        });
+    }
+    
+    /**
+     * If we have to download the user's photo from the net (wasn't already in cache)
+     * will return the uri to launch.
+     */
+    private Uri populateMayorImageFromNetwork() {
+        
+        User user = mCheckinResult.getMayor().getUser();
+        ImageView ivMayor = (ImageView)findViewById(R.id.imageViewCheckinMayor);
+        
+        if (user != null) {
+            Uri photoUri = Uri.parse(user.getPhoto());
+            try {
+                Bitmap bitmap = BitmapFactory.decodeStream(
+                    mApplication.getRemoteResourceManager().getInputStream(photoUri));
+                ivMayor.setImageBitmap(bitmap);
+                return null;
+            } catch (IOException e) {
+                // User's image wasn't already in the cache, have to start a request for it.
+                if (Foursquare.MALE.equals(user.getGender())) {
+                    ivMayor.setImageResource(R.drawable.blank_boy);
+                } else {
+                    ivMayor.setImageResource(R.drawable.blank_girl);
+                }
+                return photoUri;
+            } 
+        }
+
+        return null;
     }
     
     /**
@@ -228,7 +272,7 @@ public class CheckinResultDialog extends Dialog
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    populateMayorImage(); 
+                    populateMayorImageFromNetwork(); 
                 }
             });
         }

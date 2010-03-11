@@ -14,6 +14,7 @@ public class CheckinResult implements FoursquareType {
     private Group<Badge> mBadges;
     private String mCreated;
     private String mId;
+    private String mMarkup;
     private Mayor mMayor;
     private String mMessage;
     private Group<Score> mScoring;
@@ -47,6 +48,14 @@ public class CheckinResult implements FoursquareType {
         mId = id;
     }
 
+    public String getMarkup() {
+        return mMarkup;
+    }
+    
+    public void setMarkup(String markup) {
+        mMarkup = markup;
+    }
+    
     public Mayor getMayor() {
         return mMayor;
     }

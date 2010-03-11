@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,15 +74,22 @@ public class ScoreListAdapter extends BaseGroupAdapter<Score> implements Observa
 
         Score score = (Score) getItem(position);
         holder.scoreDesc.setText(score.getMessage());
-        holder.scoreNum.setText(PLUS + score.getPoints());
 
-        try {
-            Bitmap bitmap = BitmapFactory.decodeStream(//
-                    mRrm.getInputStream(Uri.parse(score.getIcon())));
-            holder.scoreIcon.setImageBitmap(bitmap);
-        } catch (IOException e) {
-            if (DEBUG) Log.d(TAG, "Could not load bitmap. We don't have it yet.");
-            holder.scoreIcon.setImageResource(R.drawable.default_on);
+        String scoreIconUrl = score.getIcon();
+        if (!TextUtils.isEmpty(scoreIconUrl)) {
+            try {
+                Bitmap bitmap = BitmapFactory.decodeStream(//
+                        mRrm.getInputStream(Uri.parse(score.getIcon())));
+                holder.scoreIcon.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                if (DEBUG) Log.d(TAG, "Could not load bitmap. We don't have it yet.");
+                holder.scoreIcon.setImageResource(R.drawable.default_on);
+            }
+            holder.scoreIcon.setVisibility(View.VISIBLE);
+            holder.scoreNum.setText(PLUS + score.getPoints());
+        } else {
+            holder.scoreIcon.setVisibility(View.INVISIBLE);
+            holder.scoreNum.setText(score.getPoints());
         }
 
         return convertView;

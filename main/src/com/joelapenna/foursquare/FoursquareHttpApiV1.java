@@ -233,7 +233,8 @@ class FoursquareHttpApiV1 {
                 new BasicNameValuePair("shout", shout), //
                 new BasicNameValuePair("private", (isPrivate) ? "1" : "0"), //
                 new BasicNameValuePair("twitter", (twitter) ? "1" : "0"), //
-                new BasicNameValuePair("facebook", (facebook) ? "1" : "0"));
+                new BasicNameValuePair("facebook", (facebook) ? "1" : "0"), //
+                new BasicNameValuePair("markup", "android")); // used only by android for checkin result 'extras'.
         return (CheckinResult) mHttpApi.doHttpRequest(httpPost, new CheckinResultParser());
     }
 
