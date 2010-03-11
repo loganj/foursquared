@@ -39,6 +39,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TabHost;
@@ -96,7 +97,14 @@ public class VenueActivity extends TabActivity {
             @Override
             public void onClick(View v) {
                 // This is a quick checkin, so we can just execute the checkin directly.
-                startCheckinQuick();
+                // There's a setting in preferences which can block this behavior though.
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(
+                        VenueActivity.this);
+                if (settings.getBoolean(Preferences.PREFERENCE_IMMEDIATE_CHECKIN, false)) {
+                    startCheckinQuick();
+                } else {
+                    startCheckin();   
+                }
             }
         });
 
