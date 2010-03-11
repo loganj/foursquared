@@ -120,14 +120,19 @@ public class VenueListAdapter extends BaseVenueAdapter implements ObservableAdap
         }
         holder.locationLine1.setText(sb.toString());
         
-        // Distance, number of people here.
+        // TODO: Parse the int value of the string instead of all these compares.
+        // Distance, number of people here. 
         StringBuilder sbExtra = new StringBuilder(128);
         sbExtra.append(venue.getDistance());
-        sbExtra.append("m");
+        sbExtra.append(" meters");
         Stats stats = venue.getStats();
-        if (stats != null && !stats.getHereNow().equals("0")) {
-            sbExtra.append(",  number of people here:  ");
+        if (stats != null && 
+           !stats.getHereNow().equals("0") &&
+           !stats.getHereNow().equals("1") &&
+           !stats.getHereNow().equals("2")) {
+            sbExtra.append("      ");
             sbExtra.append(stats.getHereNow());
+            sbExtra.append(" people here");
         }
         holder.locationLine2.setText(sbExtra.toString());
         
