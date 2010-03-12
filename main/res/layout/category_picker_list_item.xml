@@ -24,13 +24,24 @@
 	
   <TextView
     android:id="@+id/categoryPickerName"
-    android:layout_width="fill_parent"
+    android:layout_width="0dip"
     android:layout_height="wrap_content"
+    android:layout_weight="1"
     android:textColor="@color/black_end"
     android:textAppearance="@android:style/TextAppearance.Small" 
     android:singleLine="true"
     android:ellipsize="marquee"
     android:layout_gravity="center_vertical" 
     android:paddingLeft="10dip" />
-  
+    
+  <ImageView
+    android:id="@+id/categoryPickerIconDisclosure"
+    android:layout_width="9dip"
+    android:layout_height="13dip"
+    android:src="@drawable/arrow_grey"
+    android:scaleType="fitCenter"  
+    android:gravity="center_horizontal"
+    android:layout_marginLeft="5dip"
+    android:visibility="gone" />
+
 </LinearLayout>

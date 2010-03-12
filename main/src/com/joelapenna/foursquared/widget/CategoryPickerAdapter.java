@@ -74,6 +74,7 @@ public class CategoryPickerAdapter extends BaseAdapter implements ObservableAdap
             holder = new ViewHolder();
             holder.icon = (ImageView) convertView.findViewById(R.id.categoryPickerIcon);
             holder.name = (TextView) convertView.findViewById(R.id.categoryPickerName);
+            holder.disclosure = (ImageView) convertView.findViewById(R.id.categoryPickerIconDisclosure);
 
             convertView.setTag(holder);
         } else {
@@ -90,6 +91,12 @@ public class CategoryPickerAdapter extends BaseAdapter implements ObservableAdap
             holder.icon.setImageBitmap(bitmap);
         } catch (IOException e) {
             if (DEBUG) Log.e(TAG, "Error loading category icon.", e);
+        }
+        
+        if (category.getChildCategories() != null && category.getChildCategories().size() > 0) {
+            holder.disclosure.setVisibility(View.VISIBLE);
+        } else {
+            holder.disclosure.setVisibility(View.GONE);
         }
 
         holder.name.setText(category.getNodeName());
@@ -112,6 +119,7 @@ public class CategoryPickerAdapter extends BaseAdapter implements ObservableAdap
     private static class ViewHolder {
         ImageView icon;
         TextView name;
+        ImageView disclosure;
     }
 
     @Override
