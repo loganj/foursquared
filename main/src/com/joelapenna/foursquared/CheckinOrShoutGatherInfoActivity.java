@@ -150,7 +150,7 @@ public class CheckinOrShoutGatherInfoActivity extends Activity {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 
         CheckBox cbTellFriends = (CheckBox)findViewById(R.id.checkboxTellFriends);
-        cbTellFriends.setChecked(settings.getBoolean(Preferences.PREFERENCE_SHARE_CHECKIN, false));
+        cbTellFriends.setChecked(settings.getBoolean(Preferences.PREFERENCE_SHARE_CHECKIN, true));
         
         CheckBox cbTellTwitter = (CheckBox)findViewById(R.id.checkboxTellTwitter);
         if (settings.getBoolean(Preferences.PREFERENCE_TWITTER_CHECKIN, false)) {

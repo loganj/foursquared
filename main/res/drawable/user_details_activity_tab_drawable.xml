@@ -34,7 +34,7 @@
     android:state_selected="true"
     android:state_pressed="false" 
     android:state_enabled="true"
-    android:drawable="@color/blue_start" />
+    android:drawable="@color/vlgrey" />
 
   <!-- Pressed -->
   <item 
