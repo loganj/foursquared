@@ -7,6 +7,7 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.HistoryListAdapter;
@@ -17,8 +18,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * This only works for the currently authenticated user.
@@ -82,6 +87,15 @@ public class UserHistoryActivity extends LoadableListActivity {
         ListView listView = getListView();
         listView.setAdapter(mListAdapter);
         listView.setSmoothScrollbarEnabled(true);
+        listView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View view, int position, long arg3) {
+                Object obj = (Object)mListAdapter.getItem(position);
+                if (obj != null) {
+                    startVenueActivity((Checkin)obj);
+                }
+            }
+        });
         
         if (mStateHolder.getIsRunningHistoryTask()) {
             setLoadingView();
@@ -115,6 +129,19 @@ public class UserHistoryActivity extends LoadableListActivity {
         // TODO: Can tighten this up by just calling ensureUI() probably.
         if (mStateHolder.getHistory().size() == 0) {
             setEmptyView();
+        }
+    }
+    
+    private void startVenueActivity(Checkin checkin) {
+        // TODO: Perform some action when user is clicking on a shout history item.
+        if (checkin != null) {
+            if (checkin.getVenue() != null && !TextUtils.isEmpty(checkin.getVenue().getId())) {
+                Venue venue = checkin.getVenue();
+                Intent intent = new Intent(this, VenueActivity.class);
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.putExtra(Foursquared.EXTRA_VENUE_ID, venue.getId());
+                startActivity(intent);
+            }
         }
     }
     
