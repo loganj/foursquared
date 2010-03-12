@@ -137,10 +137,9 @@ public class AddVenueActivity extends Activity {
                         mCityEditText.getText().toString(),
                         mStateEditText.getText().toString(),
                         mZipEditText.getText().toString(),
-                        mZipEditText.getText().toString(),
                         mPhoneEditText.getText().toString(),
                         mStateHolder.getChosenCategory() != null ? 
-                                mStateHolder.getChosenCategory().getId() : null
+                                mStateHolder.getChosenCategory().getId() : ""
                     });
             }
         });
@@ -335,14 +334,14 @@ public class AddVenueActivity extends Activity {
                 Location location = foursquared.getLastKnownLocationOrThrow();
 
                 return foursquare.addVenue(
-                        mParams[0],
-                        mParams[1],
-                        mParams[2],
-                        mParams[3],
-                        mParams[4],
-                        mParams[5],
-                        mParams[6],
-                        mParams[7],
+                        mParams[0], // name
+                        mParams[1], // address
+                        mParams[2], // cross street
+                        mParams[3], // city
+                        mParams[4], // state,
+                        mParams[5], // zip
+                        mParams[6], // phone
+                        mParams[7], // category id
                         LocationUtils.createFoursquareLocation(location));
             } catch (Exception e) {
                 if (DEBUG) Log.d(TAG, "Exception doing add venue", e);

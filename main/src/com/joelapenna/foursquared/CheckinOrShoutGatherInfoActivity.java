@@ -155,15 +155,11 @@ public class CheckinOrShoutGatherInfoActivity extends Activity {
         CheckBox cbTellTwitter = (CheckBox)findViewById(R.id.checkboxTellTwitter);
         if (settings.getBoolean(Preferences.PREFERENCE_TWITTER_CHECKIN, false)) {
             cbTellTwitter.setChecked(true);
-        } else {
-            cbTellTwitter.setVisibility(View.GONE);
         }
         
         CheckBox cbTellFacebook = (CheckBox)findViewById(R.id.checkboxTellFacebook);
         if (settings.getBoolean(Preferences.PREFERENCE_FACEBOOK_CHECKIN, false)) {
             cbTellFacebook.setChecked(true);
-        } else {
-            cbTellFacebook.setVisibility(View.GONE);
         }
         
         Button btnCheckin = (Button)findViewById(R.id.btnCheckin);
