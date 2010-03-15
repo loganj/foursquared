@@ -21,6 +21,7 @@
       android:summaryOff="@string/preferences_share_summary_off"
       android:defaultValue="true" />
   </PreferenceCategory>
+  
   <PreferenceCategory
     android:title="@string/preferences_category_friends">
     <com.joelapenna.foursquared.preferences.ClickPreference
@@ -34,6 +35,18 @@
       android:summary="@string/preferences_friend_requests_summary" />
   </PreferenceCategory>
 
+  <PreferenceCategory
+    android:title="@string/preferences_category_startup">
+    <ListPreference
+      android:key="startup_tab" 
+      android:persistent="true"
+      android:title="@string/preferences_startup_tab"
+      android:summary="@string/preferences_startup_tab_summary"
+      android:entries="@array/startup_tabs" 
+      android:entryValues="@array/startup_tabs_values"
+      android:defaultValue="Friends" />
+  </PreferenceCategory>
+  
   <PreferenceCategory
     android:title="@string/preferences_other_settings">
     <com.joelapenna.foursquared.preferences.ClickPreference

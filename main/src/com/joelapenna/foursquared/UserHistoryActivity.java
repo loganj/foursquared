@@ -25,6 +25,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * This only works for the currently authenticated user.
  * 
@@ -79,7 +83,7 @@ public class UserHistoryActivity extends LoadableListActivity {
         mStateHolder.setActivityForTaskFriends(null);
         return mStateHolder;
     }
-
+    
     private void ensureUi() {
         mListAdapter = new HistoryListAdapter(this);
         mListAdapter.setGroup(mStateHolder.getHistory());
@@ -167,7 +171,23 @@ public class UserHistoryActivity extends LoadableListActivity {
             try {
                 Foursquared foursquared = (Foursquared) mActivity.getApplication();
                 Foursquare foursquare = foursquared.getFoursquare();
-                return foursquare.history(100);
+                
+                // When we get the history result back, iterate over all and convert the
+                // supplied timestamps to local time. We want to do this here in the 
+                // background thread.
+                DateFormat df = new SimpleDateFormat("EEE, dd MMM yy HH:mm:ss Z");
+                
+                Group<Checkin> history = foursquare.history(100);
+                for (Checkin it : history) {
+                    try {
+                        Date date = df.parse(it.getCreated());
+                        it.setCreated(date.toLocaleString());
+                    } catch (Exception ex) {
+                        // If timestamp parse exception, just leave it in its original format.
+                    }
+                }
+                
+                return history;
             } catch (Exception e) {
                 mReason = e;
             }

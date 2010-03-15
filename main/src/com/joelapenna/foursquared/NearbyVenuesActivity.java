@@ -51,7 +51,10 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     static final String TAG = "NearbyVenuesActivity";
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    public static final long DELAY_TIME_IN_MS = 1L;
+    public static final String INTENT_EXTRA_STARTUP_GEOLOC_DELAY = Foursquared.PACKAGE_NAME
+            + ".NearbyVenuesActivity.INTENT_EXTRA_STARTUP_GEOLOC_DELAY";
+
+    private long mDelayTimeInMS = 1L;
 
     private static final int MENU_REFRESH = 0;
     private static final int MENU_ADD_VENUE = 1;
@@ -107,8 +110,14 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 setSearchResults(holder.results);
             }
         }
+        
+        // We can reparse the delay startup time each onCreate().
+        if (getIntent().getExtras() != null) {
+            mDelayTimeInMS = getIntent().getLongExtra(
+                    INTENT_EXTRA_STARTUP_GEOLOC_DELAY, 1L);
+        }
     }
-
+ 
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -122,7 +131,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         ((Foursquared) getApplication()).requestLocationUpdates(mSearchLocationObserver);
 
         if (mSearchHolder.results == null) {
-            mSearchHandler.sendEmptyMessageDelayed(SearchHandler.MESSAGE_SEARCH, DELAY_TIME_IN_MS);
+            mSearchHandler.sendEmptyMessageDelayed(SearchHandler.MESSAGE_SEARCH, mDelayTimeInMS);
         }
     }
 

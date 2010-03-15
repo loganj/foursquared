@@ -152,14 +152,14 @@ public class SearchVenuesActivity extends TabActivity {
 
         // Always show these.
         menu.add(MENU_GROUP_SEARCH, MENU_SEARCH, Menu.NONE, R.string.search_label) //
-                .setIcon(android.R.drawable.ic_search_category_default) //
+                .setIcon(R.drawable.ic_menu_search) //
                 .setAlphabeticShortcut(SearchManager.MENU_KEY);
         menu.add(MENU_GROUP_SEARCH, MENU_NEARBY, Menu.NONE, R.string.nearby_label) //
                 .setIcon(android.R.drawable.ic_menu_compass);
         menu.add(MENU_GROUP_SEARCH, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
                 .setIcon(R.drawable.ic_menu_refresh);
         menu.add(MENU_GROUP_SEARCH, MENU_ADD_VENUE, Menu.NONE, R.string.add_venue_label) //
-                .setIcon(android.R.drawable.ic_menu_add);
+                .setIcon(R.drawable.ic_menu_add);
 
         return true;
     }

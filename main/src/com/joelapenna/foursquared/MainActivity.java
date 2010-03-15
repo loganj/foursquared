@@ -4,6 +4,7 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.UserUtils;
 
 import android.app.Activity;
@@ -12,8 +13,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Window;
 import android.widget.TabHost;
@@ -66,29 +69,25 @@ public class MainActivity extends TabActivity {
         }
 
         mTabHost = getTabHost();
-
-        // Friends tab
-        mTabHost.addTab(mTabHost.newTabSpec("friends") //
-                .setIndicator(getString(R.string.checkins_label),
-                        getResources().getDrawable(R.drawable.friends_tab)) // the
-                                                                            // tab
-                // icon
-                .setContent(new Intent(this, FriendsActivity.class)) // The
-                                                                     // contained
-                                                                     // activity
-                );
-
-        // Places tab
-        mTabHost.addTab(mTabHost.newTabSpec("places") //
-                .setIndicator(getString(R.string.nearby_label),
-                        getResources().getDrawable(R.drawable.places_tab)) // the
-                                                                           // tab
-                                                                           // icon
-                .setContent(new Intent(this, NearbyVenuesActivity.class)) // The
-                                                                          // contained
-                                                                          // activity
-                );
-
+        
+        // We may want to show the friends tab first, or the places tab first, depending on
+        // the user preferences.
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+ 
+        // We can add more tabs here eventually, but if "Friends" isn't the startup tab, then
+        // we are left with "Places" being the startup tab instead.
+        String[] startupTabValues = getResources().getStringArray(R.array.startup_tabs_values);
+        String startupTab = settings.getString(
+                Preferences.PREFERENCE_STARTUP_TAB, startupTabValues[0]);
+        if (startupTab.equals(startupTabValues[0])) {
+            addTabFriends();
+            addTabPlaces(false);
+        } else {
+            addTabPlaces(true);
+            addTabFriends();
+        } 
+        
+        
         // 1.5 can't display tabs within tabs, so we won't have the 'me' tab for
         // 1.5 users. They can access the 'me' page through the context menu.
         int sdk = new Integer(Build.VERSION.SDK).intValue();
@@ -112,7 +111,38 @@ public class MainActivity extends TabActivity {
                     .setContent(intentTabMe) // The contained activity
                     );
         }
+        
         mTabHost.setCurrentTab(0);
+    }
+    
+    private void addTabFriends() {
+         // Friends tab
+        mTabHost.addTab(mTabHost.newTabSpec("friends") //
+                .setIndicator(getString(R.string.checkins_label),
+                        getResources().getDrawable(R.drawable.friends_tab)) // the
+                                                                            // tab
+                // icon
+                .setContent(new Intent(this, FriendsActivity.class)) // The
+                                                                     // contained
+                                                                     // activity
+                );
+    }
+    
+    private void addTabPlaces(boolean delayLocationFetch) {
+        // Places tab
+        Intent intent = new Intent(this, NearbyVenuesActivity.class);
+        if (delayLocationFetch) {
+            intent.putExtra(NearbyVenuesActivity.INTENT_EXTRA_STARTUP_GEOLOC_DELAY, 4000L);
+        }
+        mTabHost.addTab(mTabHost.newTabSpec("places") //
+                .setIndicator(getString(R.string.nearby_label),
+                        getResources().getDrawable(R.drawable.places_tab)) // the
+                                                                           // tab
+                                                                           // icon
+                .setContent(intent) // The
+                                    // contained
+                                    // activity
+                );
     }
 
     private void redirectToLoginActivity() {

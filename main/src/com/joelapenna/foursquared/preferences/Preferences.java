@@ -28,7 +28,8 @@ public class Preferences {
     // Visible Preferences (sync with preferences.xml)
     public static final String PREFERENCE_SHARE_CHECKIN = "share_checkin";
     public static final String PREFERENCE_IMMEDIATE_CHECKIN = "immediate_checkin";
-
+    public static final String PREFERENCE_STARTUP_TAB = "startup_tab";
+ 
     // Hacks for preference activity extra UI elements.
     public static final String PREFERENCE_ADVANCED_SETTINGS = "advanced_settings";
     public static final String PREFERENCE_TWITTER_CHECKIN = "twitter_checkin";
