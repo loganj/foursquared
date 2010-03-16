@@ -18,6 +18,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -111,20 +112,28 @@ public class VenueListAdapter extends BaseVenueAdapter implements ObservableAdap
         holder.venueName.setText(venue.getName());
 
         // Venue street address (cross streets | city, state zip).
-        StringBuilder sb = new StringBuilder(128);
-        sb.append(venue.getAddress());
-        String crossStreets = StringFormatters.getVenueLocationCrossStreetOrCity(venue);
-        if (crossStreets != null) {
-            sb.append(" ");
-            sb.append(crossStreets);
+        if (!TextUtils.isEmpty(venue.getAddress())) { 
+            StringBuilder sb = new StringBuilder(128);
+            sb.append(venue.getAddress());
+            String crossStreets = StringFormatters.getVenueLocationCrossStreetOrCity(venue);
+            if (crossStreets != null) {
+                sb.append(" ");
+                sb.append(crossStreets);
+            }
+            holder.locationLine1.setText(sb.toString());
+            holder.locationLine1.setVisibility(View.VISIBLE);
+        } else {
+            holder.locationLine1.setVisibility(View.GONE);
         }
-        holder.locationLine1.setText(sb.toString());
         
         // TODO: Parse the int value of the string instead of all these compares.
         // Distance, number of people here. 
         StringBuilder sbExtra = new StringBuilder(128);
-        sbExtra.append(venue.getDistance());
-        sbExtra.append(" meters");
+        if (!TextUtils.isEmpty(venue.getDistance())) {
+            sbExtra.append(venue.getDistance());
+            sbExtra.append(" meters");
+        }
+        
         Stats stats = venue.getStats();
         if (stats != null && 
            !stats.getHereNow().equals("0") &&
@@ -134,8 +143,13 @@ public class VenueListAdapter extends BaseVenueAdapter implements ObservableAdap
             sbExtra.append(stats.getHereNow());
             sbExtra.append(" people here");
         }
-        holder.locationLine2.setText(sbExtra.toString());
         
+        if (sbExtra.length() > 0) {
+            holder.locationLine2.setText(sbExtra.toString());
+            holder.locationLine2.setVisibility(View.VISIBLE);
+        } else {
+            holder.locationLine2.setVisibility(View.GONE);
+        }
         
         if (DEBUG) Log.d(TAG, "Returning: " + convertView);
         return convertView;
