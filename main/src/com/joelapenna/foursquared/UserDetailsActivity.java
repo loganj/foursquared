@@ -55,6 +55,7 @@ public class UserDetailsActivity extends TabActivity {
 
     private ImageView mImageViewPhoto;
     private TextView mTextViewName;
+    private LinearLayout mLayoutNumMayorships;
     private LinearLayout mLayoutNumBadges;
     private TextView mTextViewNumMayorships;
     private TextView mTextViewNumBadges;
@@ -157,6 +158,16 @@ public class UserDetailsActivity extends TabActivity {
         mTextViewNumMayorships = (TextView) findViewById(R.id.userDetailsActivityNumMayorships);
         mTextViewNumBadges = (TextView) findViewById(R.id.userDetailsActivityNumBadges);
 
+        // When the user clicks the mayorships section, then launch the mayorships activity.
+        mLayoutNumMayorships = (LinearLayout) findViewById(R.id.userDetailsActivityNumMayorshipsLayout);
+        mLayoutNumMayorships.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startMayorshipsActivity();
+            }
+        });
+        mLayoutNumMayorships.setEnabled(false);
+        
         // When the user clicks the badges section, then launch the badges
         // activity.
         mLayoutNumBadges = (LinearLayout) findViewById(R.id.userDetailsActivityNumBadgesLayout);
@@ -285,8 +296,9 @@ public class UserDetailsActivity extends TabActivity {
         specTab2.setContent(intent);
         mTabHost.addTab(specTab2);
 
-        // User can also now click on the badges tab.
+        // User can also now click on the badges / mayorships layouts.
         mLayoutNumBadges.setEnabled(true);
+        mLayoutNumMayorships.setEnabled(true);
     }
 
     private View prepareTabView(String text) {
@@ -308,6 +320,16 @@ public class UserDetailsActivity extends TabActivity {
             intent.putParcelableArrayListExtra(BadgesActivity.EXTRA_BADGE_ARRAY_LIST_PARCEL,
                     mStateHolder.getUser().getBadges());
             startActivity(intent);
+        }
+    }
+    
+    private void startMayorshipsActivity() {
+        if (mStateHolder.getUser() != null) {
+            Intent intent = new Intent(UserDetailsActivity.this, UserMayorshipsActivity.class);
+            intent.putExtra(UserMayorshipsActivity.EXTRA_USER_ID, mStateHolder.getUser().getId());
+            //intent.putParcelableArrayListExtra(UserMayorshipsActivity.EXTRA_VENUE_LIST_PARCEL,
+            //        mStateHolder.getUser().getMayorships());
+            startActivity(intent); 
         }
     }
 

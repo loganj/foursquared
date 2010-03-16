@@ -163,4 +163,5 @@
   <string name="checkin_execute_activity_progress_bar_message">Checking-in...</string>
   <string name="shout_execute_activity_progress_bar_message">Posting shout...</string>
   <string name="checkin_result_dialog_score_total">Total for this checkin:</string>
+  <string name="user_mayorships_activity_title">Foursquare - Mayorships</string>
 </resources> 

@@ -56,11 +56,14 @@
         android:paddingTop="10dip" >
           
         <LinearLayout
+          android:id="@+id/userDetailsActivityNumMayorshipsLayout" 
           android:layout_width="wrap_content" 
           android:layout_height="wrap_content"
           android:orientation="vertical"
-          android:background="@drawable/user_details_activity_round_rect_badges"
-          android:layout_marginRight="10dip" >
+          android:layout_marginRight="10dip"
+          android:background="@drawable/user_details_activity_round_rect_badges_selector"
+          android:focusable="true"
+          android:clickable="true" >
         
           <TextView 
             android:text="@string/user_details_activity_title_mayorships" 
@@ -82,12 +85,20 @@
           
             <TextView 
               android:id="@+id/userDetailsActivityNumMayorships" 
-              android:layout_width="wrap_content" 
+              android:layout_width="0dip" 
               android:layout_height="wrap_content"
+              android:layout_weight="1"
               android:text="-" 
               android:paddingLeft="5dip"
               android:textAppearance="@style/TextViewStyleUserDetailsActivityNumBadges" />
            
+            <ImageView
+              android:layout_width="9dip"
+              android:layout_height="13dip"
+              android:src="@drawable/arrow_white"
+              android:scaleType="fitCenter"
+              android:gravity="right"  />
+              
           </LinearLayout>
               
         </LinearLayout>

@@ -356,6 +356,15 @@
       </intent-filter>
     </activity>
     
+    <activity
+      android:name=".UserMayorshipsActivity"
+      android:label="@string/user_mayorships_activity_title" >
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
+    </activity>
+    
     <receiver
       android:name=".appwidget.FriendsAppWidgetProvider"
       android:label="@string/friends_appwidget_3x3_label">
