@@ -126,7 +126,7 @@ public class Foursquared extends Application {
     public String getUserGender() {
         return Preferences.getUserGender(mPrefs);
     }
-
+    
     public String getVersion() {
 
         if (mVersion != null) {
@@ -135,7 +135,15 @@ public class Foursquared extends Application {
             return "";
         }
     }
+    
+    public String getLastSeenChangelogVersion() {
+        return Preferences.getLastSeenChangelogVersion(mPrefs);
+    }
 
+    public void storeLastSeenChangelogVersion(String version) {
+        Preferences.storeLastSeenChangelogVersion(mPrefs.edit(), version); 
+    }
+    
     public RemoteResourceManager getRemoteResourceManager() {
         return mRemoteResourceManager;
     }

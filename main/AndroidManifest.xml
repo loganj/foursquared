@@ -324,7 +324,6 @@
       </intent-filter>
     </activity>
     
-    <!-- ThemeCustomDlgBase.ThemeCustomDlg -->
     <activity
       android:name=".CheckinOrShoutGatherInfoActivity"
       android:theme="@style/ThemeCustomDlgBase.ThemeCustomDlg"
@@ -365,6 +364,11 @@
       </intent-filter>
     </activity>
     
+    <activity
+      android:name=".ChangelogActivity"
+      android:theme="@style/ThemeCustomDlgBase.ThemeCustomDlg"
+      android:label="@string/changelog_activity_title" />
+     
     <receiver
       android:name=".appwidget.FriendsAppWidgetProvider"
       android:label="@string/friends_appwidget_3x3_label">

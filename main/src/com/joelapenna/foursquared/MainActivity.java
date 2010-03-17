@@ -17,6 +17,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Window;
 import android.widget.TabHost;
@@ -49,12 +50,15 @@ public class MainActivity extends TabActivity {
         if (!((Foursquared) getApplication()).isReady()) {
             if (DEBUG) Log.d(TAG, "Not ready for user.");
             redirectToLoginActivity();
+            return;
         }
 
         if (DEBUG) Log.d(TAG, "Setting up main activity layout.");
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.main_activity);
         initTabHost();
+        
+        showChangelogActivity();
     }
 
     @Override
@@ -153,5 +157,23 @@ public class MainActivity extends TabActivity {
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
+    } 
+    
+    private void showChangelogActivity() {
+        Foursquared foursquared = (Foursquared) getApplication();
+        
+        String lastSeenChangelogVersion = foursquared.getLastSeenChangelogVersion();
+        if (TextUtils.isEmpty(lastSeenChangelogVersion) || 
+            lastSeenChangelogVersion.compareTo(foursquared.getVersion()) < 0) {
+            
+            // Save the fact that we're going to show the changelog activity.
+            foursquared.storeLastSeenChangelogVersion(foursquared.getVersion());
+
+            // Now show it.
+            Intent intent = new Intent(this, ChangelogActivity.class);
+            startActivity(intent);
+        } else { 
+            if (DEBUG) Log.d(TAG, "Changelog already shown for current version, ignoring.");
+        }
     }
 }

@@ -59,6 +59,11 @@ public class Preferences {
     // Not-in-XML preferences for dumpcatcher
     public static final String PREFERENCE_DUMPCATCHER_CLIENT = "dumpcatcher_client";
 
+    // Keeps track of the last changelog version shown to the user at startup.
+    private static final String PREFERENCE_LAST_SEEN_CHANGELOG_VERSION 
+        = "last_seen_changelog_version";
+    
+    
     public static String createUniqueId(SharedPreferences preferences) {
         String uniqueId = preferences.getString(PREFERENCE_DUMPCATCHER_CLIENT, null);
         if (uniqueId == null) {
@@ -116,7 +121,11 @@ public class Preferences {
     public static String getUserGender(SharedPreferences prefs) {
         return prefs.getString(PREFERENCE_GENDER, null);
     }
-            
+    
+    public static String getLastSeenChangelogVersion(SharedPreferences prefs) {
+        return prefs.getString(PREFERENCE_LAST_SEEN_CHANGELOG_VERSION, null);
+    }
+           
     public static void storeCity(final Editor editor, City city) {
         if (city != null) {
             editor.putString(PREFERENCE_CITY_ID, city.getId());
@@ -141,6 +150,13 @@ public class Preferences {
             if (DEBUG) Log.d(TAG, "Setting user info");
         } else {
             if (Preferences.DEBUG) Log.d(Preferences.TAG, "Unable to lookup user.");
+        }
+    }
+    
+    public static void storeLastSeenChangelogVersion(final Editor editor, String version) {
+        editor.putString(PREFERENCE_LAST_SEEN_CHANGELOG_VERSION, version);
+        if (!editor.commit()) {
+            Log.e(TAG, "storeLastSeenChangelogVersion commit failed");
         }
     }
 }
