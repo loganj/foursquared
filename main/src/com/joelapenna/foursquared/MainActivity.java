@@ -114,7 +114,7 @@ public class MainActivity extends TabActivity {
                                                           // icon
                     .setContent(intentTabMe) // The contained activity
                     );
-        }
+        } 
         
         mTabHost.setCurrentTab(0);
     }
