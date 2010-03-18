@@ -64,6 +64,8 @@
   <string name="preferences_category_friends">Friends</string>
   <string name="preferences_category_startup">Startup</string>
   <string name="preferences_category_user_actions">User Actions</string>
+  <string name="preferences_changelog">Changelog</string>
+  <string name="preferences_changelog_summary">See what's changed between application versions.</string>
   <string name="preferences_city_name_summary">Update your foursquare city."</string>
   <string name="preferences_city_name_title">Update City</string>
   <string name="preferences_friend_add_summary">Find others who are also on Foursquare.</string>

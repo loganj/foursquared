@@ -39,6 +39,7 @@ public class Preferences {
     public static final String PREFERENCE_FACEBOOK_CHECKIN = "facebook_checkin";
     public static final String PREFERENCE_FRIEND_REQUESTS = "friend_requests";
     public static final String PREFERENCE_FRIEND_ADD = "friend_add";
+    public static final String PREFERENCE_CHANGELOG = "changelog";
     public static final String PREFERENCE_CITY_NAME = "city_name";
     public static final String PREFERENCE_LOGOUT = "logout";
     public static final String PREFERENCE_SEND_FEEDBACK = "send_feedback";

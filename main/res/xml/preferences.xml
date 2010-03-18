@@ -58,6 +58,10 @@
       android:entryValues="@array/startup_tabs_values"
       android:defaultValue="Friends" />
     <com.joelapenna.foursquared.preferences.ClickPreference
+      android:key="changelog"
+      android:title="@string/preferences_changelog"
+      android:summary="@string/preferences_changelog_summary" />
+    <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="send_feedback"
       android:title="@string/feedback_label"
       android:summary="@string/send_feedback_preference_summary" />
