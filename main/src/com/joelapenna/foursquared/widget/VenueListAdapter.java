@@ -10,6 +10,7 @@ import com.joelapenna.foursquare.types.Stats;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.util.MeasurementSystems;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
 
@@ -41,13 +42,16 @@ public class VenueListAdapter extends BaseVenueAdapter implements ObservableAdap
     private RemoteResourceManager mRrm;
     private Handler mHandler;
     private RemoteResourceManagerObserver mResourcesObserver;
+    private boolean mUseMeasurementTypeMetric;
 
-    public VenueListAdapter(Context context, RemoteResourceManager rrm) {
+    public VenueListAdapter(Context context, RemoteResourceManager rrm, 
+            boolean useMeasurementTypeMetric) {
         super(context);
         mInflater = LayoutInflater.from(context);
         mHandler = new Handler();
         mRrm = rrm;
         mResourcesObserver = new RemoteResourceManagerObserver();
+        mUseMeasurementTypeMetric = useMeasurementTypeMetric;
 
         mRrm.addObserver(mResourcesObserver);
     }
@@ -126,14 +130,23 @@ public class VenueListAdapter extends BaseVenueAdapter implements ObservableAdap
             holder.locationLine1.setVisibility(View.GONE);
         }
         
-        // TODO: Parse the int value of the string instead of all these compares.
-        // Distance, number of people here. 
+        // If we're using yards, we already changed all the distance values
+        // in the setGroup() method, just append the correct unit name.
         StringBuilder sbExtra = new StringBuilder(128);
         if (!TextUtils.isEmpty(venue.getDistance())) {
-            sbExtra.append(venue.getDistance());
-            sbExtra.append(" meters");
+            if (mUseMeasurementTypeMetric) {
+                sbExtra.append(venue.getDistance());
+                sbExtra.append(" meters");
+            } else {
+                // TODO: Can we do better here, instead of parsing on every getView() call?
+                int meters = Integer.parseInt(venue.getDistance());
+                sbExtra.append(Math.round(MeasurementSystems.metersToYards(meters)));
+                sbExtra.append(" yards");
+            }
         }
         
+        // TODO: Parse the int value of the string instead of all these compares.
+        // Add the number of people currently at the venue.
         Stats stats = venue.getStats();
         if (stats != null && 
            !stats.getHereNow().equals("0") &&
@@ -162,8 +175,10 @@ public class VenueListAdapter extends BaseVenueAdapter implements ObservableAdap
     @Override
     public void setGroup(Group<Venue> g) {
         super.setGroup(g);
-        for (int i = 0; i < g.size(); i++) {
-            Category category = g.get(i).getCategory();
+        
+        for (Venue it : g) {
+            // Start download of category icon if not already in the cache.
+            Category category = it.getCategory();
             if (category != null) {
                 Uri photoUri = Uri.parse(category.getIconUrl());
                 if (!mRrm.exists(photoUri)) {

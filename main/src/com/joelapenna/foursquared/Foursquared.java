@@ -82,7 +82,10 @@ public class Foursquared extends Application {
 
         // Setup Prefs (to load dumpcatcher)
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-
+        
+        // If this is a new install, setup some defaults in the preferences.
+        Preferences.setupDefaults(mPrefs, getResources());
+        
         // Setup Dumpcatcher - We've outgrown this infrastructure but we'll
         // leave its calls in place for the day that someone pays for some
         // appengine quota.
@@ -139,9 +142,17 @@ public class Foursquared extends Application {
     public String getLastSeenChangelogVersion() {
         return Preferences.getLastSeenChangelogVersion(mPrefs);
     }
+    
+    public String getMeasurementSystem() {
+        return Preferences.getMeasurementSystem(mPrefs);
+    } 
 
     public void storeLastSeenChangelogVersion(String version) {
         Preferences.storeLastSeenChangelogVersion(mPrefs.edit(), version); 
+    }
+    
+    public void storeMeasurementSystem(String system) {
+        Preferences.storeMeasurementSystem(mPrefs.edit(), system); 
     }
     
     public RemoteResourceManager getRemoteResourceManager() {

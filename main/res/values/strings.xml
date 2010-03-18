@@ -76,6 +76,8 @@
   <string name="preferences_label">Preferences</string>
   <string name="preferences_logout_summary">Sign out of Foursquare.</string>
   <string name="preferences_logout_title">Logout</string>
+  <string name="preferences_measurement_system">Measurements</string>
+  <string name="preferences_measurement_system_summary">Show distances in meters or yards.</string>
   <string name="preferences_other_settings">Other Settings</string>
   <string name="preferences_share_checkin_title">Tell my friends</string>
   <string name="preferences_share_summary_off">By default, don't tell my friends when I check-in.</string>

@@ -10,6 +10,7 @@ import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.util.MeasurementSystems;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
 
@@ -113,7 +114,9 @@ public class UserMayorshipsActivity extends LoadableListActivity {
 
     private void ensureUi() {
         mListAdapter = new VenueListAdapter(this, 
-            ((Foursquared) getApplication()).getRemoteResourceManager());
+            ((Foursquared) getApplication()).getRemoteResourceManager(),
+            ((Foursquared) getApplication()).getMeasurementSystem().equals(
+                    MeasurementSystems.METRIC));
         mListAdapter.setGroup(mStateHolder.getVenues());
         
         ListView listView = getListView();
@@ -142,7 +145,9 @@ public class UserMayorshipsActivity extends LoadableListActivity {
     private void onVenuesTaskComplete(User user, Exception ex) {
         mListAdapter.removeObserver();
         mListAdapter = new VenueListAdapter(this, 
-            ((Foursquared) getApplication()).getRemoteResourceManager());
+            ((Foursquared) getApplication()).getRemoteResourceManager(),
+            ((Foursquared) getApplication()).getMeasurementSystem().equals(
+                    MeasurementSystems.METRIC));
         if (user != null) {
             mStateHolder.setVenues(user.getMayorships());
             mListAdapter.setGroup(mStateHolder.getVenues());

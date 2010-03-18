@@ -36,7 +36,19 @@
   </PreferenceCategory>
 
   <PreferenceCategory
-    android:title="@string/preferences_category_startup">
+    android:title="@string/preferences_other_settings">
+    <com.joelapenna.foursquared.preferences.ClickPreference
+      android:key="advanced_settings"
+      android:title="@string/preferences_additional_settings"
+      android:summary="@string/preferences_additional_settings_summary" />
+    <ListPreference
+      android:key="measurement_system" 
+      android:persistent="true"
+      android:title="@string/preferences_measurement_system"
+      android:summary="@string/preferences_measurement_system_summary"
+      android:entries="@array/measurement_systems" 
+      android:entryValues="@array/measurement_systems_values"
+      android:defaultValue="Metric" />
     <ListPreference
       android:key="startup_tab" 
       android:persistent="true"
@@ -45,14 +57,6 @@
       android:entries="@array/startup_tabs" 
       android:entryValues="@array/startup_tabs_values"
       android:defaultValue="Friends" />
-  </PreferenceCategory>
-  
-  <PreferenceCategory
-    android:title="@string/preferences_other_settings">
-    <com.joelapenna.foursquared.preferences.ClickPreference
-      android:key="advanced_settings"
-      android:title="@string/preferences_additional_settings"
-      android:summary="@string/preferences_additional_settings_summary" />
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="send_feedback"
       android:title="@string/feedback_label"
