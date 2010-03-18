@@ -38,6 +38,7 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -71,6 +72,9 @@ public class Foursquared extends Application {
     private Foursquare mFoursquare;
 
     private BestLocationListener mBestLocationListener = new BestLocationListener();
+    
+    private boolean mIsFirstRun;
+    
 
     @Override
     public void onCreate() {
@@ -79,13 +83,16 @@ public class Foursquared extends Application {
         Log.i(TAG, "Using Debug Log:\t" + DEBUG);
 
         mVersion = getVersionString(this);
+        
+        // Check if this is a new install by seeing if our preference file exists on disk.
+        mIsFirstRun = checkIfIsFirstRun();
 
         // Setup Prefs (to load dumpcatcher)
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         
-        // If this is a new install, setup some defaults in the preferences.
+        // Setup some defaults in our preferences if not set yet.
         Preferences.setupDefaults(mPrefs, getResources());
-        
+         
         // Setup Dumpcatcher - We've outgrown this infrastructure but we'll
         // leave its calls in place for the day that someone pays for some
         // appengine quota.
@@ -93,7 +100,7 @@ public class Foursquared extends Application {
         // Resources resources = getResources();
         // new DumpcatcherHelper(Preferences.createUniqueId(mPrefs), resources);
         // }
-
+ 
         // Sometimes we want the application to do some work on behalf of the
         // Activity. Lets do that
         // asynchronously.
@@ -271,6 +278,16 @@ public class Foursquared extends Application {
             if (DEBUG) Log.d(TAG, "Falling back to NullDiskCache for RemoteResourceManager");
             mRemoteResourceManager = new RemoteResourceManager(new NullDiskCache());
         }
+    }
+
+    public boolean getIsFirstRun() {
+        return mIsFirstRun;
+    }
+
+    private boolean checkIfIsFirstRun() {
+        File file = new File(
+            "/data/data/com.joelapenna.foursquared/shared_prefs/com.joelapenna.foursquared_preferences.xml");
+        return !file.exists();
     }
 
     /**

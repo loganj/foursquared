@@ -42,6 +42,7 @@ public class MainActivity extends TabActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         if (DEBUG) Log.d(TAG, "onCreate()");
         setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL);
         registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
@@ -58,6 +59,9 @@ public class MainActivity extends TabActivity {
         setContentView(R.layout.main_activity);
         initTabHost();
         
+        // Only show the changelog if this isn't the first run of the app.
+        // Otherwise the changelog will be a weird distraction to first-
+        // time users.
         showChangelogActivity();
     }
 
@@ -157,7 +161,7 @@ public class MainActivity extends TabActivity {
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
-    } 
+    }
     
     private void showChangelogActivity() {
         Foursquared foursquared = (Foursquared) getApplication();
@@ -169,9 +173,14 @@ public class MainActivity extends TabActivity {
             // Save the fact that we're going to show the changelog activity.
             foursquared.storeLastSeenChangelogVersion(foursquared.getVersion());
 
-            // Now show it.
-            Intent intent = new Intent(this, ChangelogActivity.class);
-            startActivity(intent);
+            // Also show only if this is NOT the first run of the app. We will
+            // just skip showing the changelog for first-time installs - the
+            // changelog would have no meaning for these users and be annoying
+            // for them.
+            if (!foursquared.getIsFirstRun()) {
+                Intent intent = new Intent(this, ChangelogActivity.class);
+                startActivity(intent);
+            }
         } else { 
             if (DEBUG) Log.d(TAG, "Changelog already shown for current version, ignoring.");
         }
