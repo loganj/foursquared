@@ -19,8 +19,6 @@ import android.widget.TextView;
  * @author jlapenna
  */
 public class BadgeListAdapter extends BaseBadgeAdapter {
-    private static final String TAG = "BadgeListAdapter";
-    private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private LayoutInflater mInflater;
     private int mLayoutToInflate;

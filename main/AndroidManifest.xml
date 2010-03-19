@@ -211,21 +211,6 @@
       </intent-filter>
     </activity>
 
-
-    <activity
-      android:name=".UserActivity"
-      android:theme="@android:style/Theme.Dialog">
-      <intent-filter>
-        <action
-          android:name="android.intent.action.MAIN" />
-      </intent-filter>
-      <intent-filter>
-        <action
-          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
-      </intent-filter>
-    </activity>
-
-
     <activity
       android:name=".VenueActivity">
       <intent-filter>
