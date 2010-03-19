@@ -17,6 +17,7 @@ public class Checkin implements FoursquareType, Parcelable {
 
     private String mCreated;
     private String mDisplay;
+    private String mDistance;
     private String mId;
     private boolean mIsmayor;
     private String mShout;
@@ -29,6 +30,7 @@ public class Checkin implements FoursquareType, Parcelable {
     private Checkin(Parcel in) {
         mCreated = in.readString();
         mDisplay = in.readString();
+        mDistance = in.readString();
         mId = in.readString();
         mIsmayor = in.readInt() == 1;
         mShout = in.readString();
@@ -67,6 +69,14 @@ public class Checkin implements FoursquareType, Parcelable {
 
     public void setDisplay(String display) {
         mDisplay = display;
+    }
+    
+    public String getDistance() {
+        return mDistance;
+    }
+    
+    public void setDistance(String distance) {
+        mDistance = distance;
     }
 
     public String getId() {
@@ -113,6 +123,7 @@ public class Checkin implements FoursquareType, Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(mCreated);
         out.writeString(mDisplay);
+        out.writeString(mDistance);
         out.writeString(mId);
         out.writeInt(mIsmayor ? 1 : 0);
         out.writeString(mShout);

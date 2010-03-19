@@ -15,12 +15,14 @@ import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.util.UserUtils;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
+import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,7 +37,11 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -44,6 +50,7 @@ import java.util.Observer;
  * @author Mark Wyszomierski (markww@gmail.com)
  *         -Added dummy location observer, new menu icon logic, 
  *          links to new user activity (3/10/2010).
+ *         -Sorting checkins by distance/time. (3/18/2010)
  */
 public class FriendsActivity extends LoadableListActivity {
     static final String TAG = "FriendsActivity";
@@ -51,7 +58,8 @@ public class FriendsActivity extends LoadableListActivity {
 
     public static final String QUERY_NEARBY = null;
 
-    public static SearchResultsObservable searchResultsObservable;
+    private static final int CITY_RADIUS_IN_METERS = 20 * 1000; // 20km
+    private static final long SLEEP_TIME_IF_NO_LOCATION = 3000L;
 
     private static final int MENU_REFRESH = 1;
     private static final int MENU_SHOUT = 2;
@@ -59,9 +67,11 @@ public class FriendsActivity extends LoadableListActivity {
     private static final int MENU_MYINFO = 4;
     private static final int MENU_GROUP_SEARCH = 0;
 
+    public static SearchResultsObservable searchResultsObservable;
+    
     private SearchTask mSearchTask;
     private SearchHolder mSearchHolder = new SearchHolder();
-    private CheckinListAdapter mListAdapter;
+    private SeparatedListAdapter mListAdapter;
     private SearchLocationObserver mSearchLocationObserver = new SearchLocationObserver();
 
     
@@ -193,9 +203,8 @@ public class FriendsActivity extends LoadableListActivity {
     }
 
     private void initListViewAdapter() {
-        mListAdapter = new CheckinListAdapter(this, //
-                ((Foursquared) getApplication()).getRemoteResourceManager());
-
+        mListAdapter = new SeparatedListAdapter(this);
+        
         ListView listView = getListView();
         listView.setAdapter(mListAdapter);
         listView.setOnItemClickListener(new OnItemClickListener() {
@@ -216,12 +225,6 @@ public class FriendsActivity extends LoadableListActivity {
                 return false;
             }
         });
-    }
-
-    private void putSearchResultsInAdapter(Group<Checkin> searchResults) {
-        if (searchResults != null) {
-            mListAdapter.setGroup(searchResults);
-        }
     }
 
     private void setSearchResults(Group<Checkin> searchResults) {
@@ -298,13 +301,141 @@ public class FriendsActivity extends LoadableListActivity {
 
         Group<Checkin> search() throws FoursquareException, IOException {
             Foursquare foursquare = ((Foursquared) getApplication()).getFoursquare();
-            Group<Checkin> checkins;
-            checkins = foursquare.checkins(LocationUtils
-                    .createFoursquareLocation(((Foursquared) getApplication())
-                            .getLastKnownLocation()));
+            
+            // If we're the startup tab, it's likely that we won't have a geo location
+            // immediately. For now we can use this ugly method of sleeping for three
+            // seconds to at least let network location get a lock. We're only trying
+            // to discern between same-city, so we can even use LocationManager's
+            // getLastKnownLocation() method because we don't care if we're even a few
+            // miles off.
+            Location loc = ((Foursquared) getApplication())
+                    .getLastKnownLocation();
+            if (loc == null) {
+                try { Thread.sleep(SLEEP_TIME_IF_NO_LOCATION); } catch (InterruptedException ex) {}
+                loc = ((Foursquared) getApplication())
+                    .getLastKnownLocation();
+            }
+            
+            Group<Checkin> checkins = foursquare.checkins(LocationUtils
+                    .createFoursquareLocation(loc));
+            
             Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
+            
             return checkins;
         }
+    }
+    
+    /**
+     * Sort checkin results first by distance [same city | different city],
+     * then within the [same city] bucket, sort by last three hours, today,
+     * and yesterday. If we had no geoloation at the time of the search, we
+     * won't have any distance parameter to do the first level of sorting,
+     * in this case we just place all our friends in the [same city] bucket.
+     */
+    private void putSearchResultsInAdapter(Group<Checkin> checkins) {
+        
+        Group<Checkin> recent = new Group<Checkin>();
+        Group<Checkin> today = new Group<Checkin>();
+        Group<Checkin> yesterday = new Group<Checkin>();
+        Group<Checkin> older = new Group<Checkin>();
+        Group<Checkin> other = new Group<Checkin>();
+
+        if (checkins != null && checkins.size() > 0) {
+
+            DateFormat df = new SimpleDateFormat("EEE, dd MMM yy HH:mm:ss Z");
+            
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date());
+            
+            // Three hours ago or newer.
+            cal.add(Calendar.HOUR, -3);
+            Date dateRecent = cal.getTime();
+                        
+            // Today.
+            cal.set(Calendar.HOUR, 0);
+            Date dateToday = cal.getTime();
+    
+            // Yesterday.
+            cal.add(Calendar.DAY_OF_MONTH, -1);
+            cal.set(Calendar.HOUR, 0);
+            Date dateYesterday = cal.getTime();
+            
+            
+            for (Checkin it : checkins) {
+    
+                // If we can't parse the distance value, it's possible that we
+                // did not have a geolocation for the device at the time the
+                // search was run. In this case just assume this friend is nearby
+                // to sort them in the time buckets.
+                int meters = 0;
+                try {
+                    meters = Integer.parseInt(it.getDistance());
+                } catch (NumberFormatException ex) {
+                    if (DEBUG) Log.d(TAG, "Couldn't parse distance for checkin during friend search.");
+                    meters = 0;
+                }
+    
+                if (meters > CITY_RADIUS_IN_METERS) {
+                    other.add(it);
+                } else {
+                    try {
+                        Date date = df.parse(it.getCreated());
+                        if (date.after(dateRecent)) {
+                            recent.add(it);
+                        } else if (date.after(dateToday)) {
+                            today.add(it);
+                        } else if (date.after(dateYesterday)) {
+                            yesterday.add(it);
+                        } else {
+                            older.add(it);
+                        }
+                    } catch (Exception ex) {
+                        older.add(it);
+                    }
+                }
+            }
+        }
+        
+        mListAdapter.removeObserver();
+        mListAdapter.clear();
+        mListAdapter = new SeparatedListAdapter(this);
+        if (recent.size() > 0) {
+            CheckinListAdapter adapter = new CheckinListAdapter(this, 
+                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            adapter.setGroup(recent);
+            mListAdapter.addSection(getResources().getString(
+                    R.string.friendsactivity_title_sort_recent), adapter);
+        }
+        if (today.size() > 0) {
+            CheckinListAdapter adapter = new CheckinListAdapter(this, 
+                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            adapter.setGroup(today);
+            mListAdapter.addSection(getResources().getString(
+                    R.string.friendsactivity_title_sort_today), adapter);
+        }
+        if (yesterday.size() > 0) {
+            CheckinListAdapter adapter = new CheckinListAdapter(this, 
+                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            adapter.setGroup(yesterday);
+            mListAdapter.addSection(getResources().getString(
+                    R.string.friendsactivity_title_sort_yesterday), adapter);
+        }
+        if (older.size() > 0) {
+            CheckinListAdapter adapter = new CheckinListAdapter(this, 
+                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            adapter.setGroup(older);
+            mListAdapter.addSection(getResources().getString(
+                    R.string.friendsactivity_title_sort_older), adapter);
+        }
+        if (other.size() > 0) {
+            CheckinListAdapter adapter = new CheckinListAdapter(this, 
+                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            adapter.setGroup(other);
+            mListAdapter.addSection(getResources().getString(
+                    R.string.friendsactivity_title_sort_other_city), adapter);
+        }
+        
+        getListView().setAdapter(mListAdapter);
     }
 
     private static class SearchHolder {

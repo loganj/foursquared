@@ -21,7 +21,7 @@
       android:summaryOff="@string/preferences_share_summary_off"
       android:defaultValue="true" />
   </PreferenceCategory>
-  
+   
   <PreferenceCategory
     android:title="@string/preferences_category_friends">
     <com.joelapenna.foursquared.preferences.ClickPreference
@@ -48,7 +48,7 @@
       android:summary="@string/preferences_measurement_system_summary"
       android:entries="@array/measurement_systems" 
       android:entryValues="@array/measurement_systems_values"
-      android:defaultValue="Metric" />
+      android:defaultValue="Metric" /> 
     <ListPreference
       android:key="startup_tab" 
       android:persistent="true"
