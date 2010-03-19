@@ -202,7 +202,6 @@ public class UserMayorshipsActivity extends LoadableListActivity {
         @Override
         protected User doInBackground(String... params) {
             try {
-                Thread.sleep(10000);
                 Foursquared foursquared = (Foursquared) mActivity.getApplication();
                 Foursquare foursquare = foursquared.getFoursquare();
                 return foursquare.user(params[0], Foursquare.USER_MAYOR_VENUE_INFO_FULL, false, 
