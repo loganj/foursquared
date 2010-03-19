@@ -125,9 +125,8 @@ public class VenueListAdapter extends BaseVenueAdapter implements ObservableAdap
                 sb.append(crossStreets);
             }
             holder.locationLine1.setText(sb.toString());
-            holder.locationLine1.setVisibility(View.VISIBLE);
         } else {
-            holder.locationLine1.setVisibility(View.GONE);
+            holder.locationLine1.setText("");
         }
         
         // If we're using yards, we already changed all the distance values

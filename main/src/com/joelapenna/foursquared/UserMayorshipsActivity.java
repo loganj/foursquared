@@ -12,6 +12,7 @@ import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.MeasurementSystems;
 import com.joelapenna.foursquared.util.NotificationsUtil;
+import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
 
 import android.content.BroadcastReceiver;
@@ -39,7 +40,7 @@ import java.util.ArrayList;
 public class UserMayorshipsActivity extends LoadableListActivity {
     static final String TAG = "UserMayorshipsActivity";
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
-    
+
     public static final String EXTRA_USER_ID = Foursquared.PACKAGE_NAME
         + ".UserMayorshipsActivity.EXTRA_USER_ID";
 
@@ -47,7 +48,7 @@ public class UserMayorshipsActivity extends LoadableListActivity {
         + ".UserMayorshipsActivity.EXTRA_VENUE_LIST_PARCEL";
 
     private StateHolder mStateHolder;
-    private VenueListAdapter mListAdapter;
+    private SeparatedListAdapter mListAdapter;
 
     
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
@@ -113,11 +114,15 @@ public class UserMayorshipsActivity extends LoadableListActivity {
     }
 
     private void ensureUi() {
-        mListAdapter = new VenueListAdapter(this, 
+        mListAdapter = new SeparatedListAdapter(this);
+        VenueListAdapter adapter = new VenueListAdapter(this, 
             ((Foursquared) getApplication()).getRemoteResourceManager(),
             ((Foursquared) getApplication()).getMeasurementSystem().equals(
                     MeasurementSystems.METRIC));
-        mListAdapter.setGroup(mStateHolder.getVenues());
+        adapter.setGroup(mStateHolder.getVenues());
+        mListAdapter.addSection(
+                getResources().getString(R.string.user_mayorships_activity_adapter_title), 
+                adapter);
         
         ListView listView = getListView();
         listView.setAdapter(mListAdapter);
@@ -144,22 +149,25 @@ public class UserMayorshipsActivity extends LoadableListActivity {
 
     private void onVenuesTaskComplete(User user, Exception ex) {
         mListAdapter.removeObserver();
-        mListAdapter = new VenueListAdapter(this, 
+        mListAdapter = new SeparatedListAdapter(this);
+        VenueListAdapter adapter = new VenueListAdapter(this, 
             ((Foursquared) getApplication()).getRemoteResourceManager(),
             ((Foursquared) getApplication()).getMeasurementSystem().equals(
                     MeasurementSystems.METRIC));
+        
         if (user != null) {
             mStateHolder.setVenues(user.getMayorships());
-            mListAdapter.setGroup(mStateHolder.getVenues());
-            getListView().setAdapter(mListAdapter);
         }
         else {
             mStateHolder.setVenues(new Group<Venue>());
-            mListAdapter.setGroup(mStateHolder.getVenues());
-            getListView().setAdapter(mListAdapter);
-            
             NotificationsUtil.ToastReasonForFailure(this, ex);
         }
+        adapter.setGroup(mStateHolder.getVenues());
+        mListAdapter.addSection(
+                getResources().getString(R.string.user_mayorships_activity_adapter_title), 
+                adapter);
+        getListView().setAdapter(mListAdapter);
+        
         mStateHolder.setIsRunningVenuesTask(false);
         mStateHolder.setFetchedVenuesOnce(true);
         

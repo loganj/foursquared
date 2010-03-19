@@ -357,7 +357,7 @@
     
     <activity
       android:name=".UserMayorshipsActivity"
-      android:label="@string/user_mayorships_activity_title" >
+      android:label="@string/app_name" >
       <intent-filter>
         <action
           android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
