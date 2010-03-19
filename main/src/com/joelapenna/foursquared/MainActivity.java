@@ -62,7 +62,7 @@ public class MainActivity extends TabActivity {
         // Only show the changelog if this isn't the first run of the app.
         // Otherwise the changelog will be a weird distraction to first-
         // time users.
-        showChangelogActivity();
+        //showChangelogActivity();
     }
 
     @Override
