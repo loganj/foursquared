@@ -85,7 +85,8 @@ public class UserHistoryActivity extends LoadableListActivity {
     }
     
     private void ensureUi() {
-        mListAdapter = new HistoryListAdapter(this);
+        mListAdapter = new HistoryListAdapter(
+                this, ((Foursquared) getApplication()).getRemoteResourceManager());
         mListAdapter.setGroup(mStateHolder.getHistory());
         
         ListView listView = getListView();
@@ -114,12 +115,13 @@ public class UserHistoryActivity extends LoadableListActivity {
     }
     
     private void onHistoryTaskComplete(Group<Checkin> group, Exception ex) {
-        mListAdapter = new HistoryListAdapter(this);
+        mListAdapter = new HistoryListAdapter(
+                this, ((Foursquared) getApplication()).getRemoteResourceManager());
         if (group != null) {
             mStateHolder.setHistory(group);
             mListAdapter.setGroup(mStateHolder.getHistory());
             getListView().setAdapter(mListAdapter);
-        }
+        } 
         else {
             mStateHolder.setHistory(new Group<Checkin>());
             mListAdapter.setGroup(mStateHolder.getHistory());
