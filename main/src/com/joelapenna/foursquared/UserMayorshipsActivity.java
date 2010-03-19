@@ -204,7 +204,7 @@ public class UserMayorshipsActivity extends LoadableListActivity {
             try {
                 Foursquared foursquared = (Foursquared) mActivity.getApplication();
                 Foursquare foursquare = foursquared.getFoursquare();
-                return foursquare.user(params[0], Foursquare.USER_MAYOR_VENUE_INFO_FULL, false, 
+                return foursquare.user(params[0], true, false, 
                         LocationUtils.createFoursquareLocation(foursquared.getLastKnownLocation()));
             } catch (Exception e) {
                 mReason = e;

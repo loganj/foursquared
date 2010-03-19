@@ -223,7 +223,7 @@ public class UserActivity extends Activity {
             try {
                 return ((Foursquared) getApplication()).getFoursquare().user(
                         mUserId,
-                        Foursquare.USER_MAYOR_VENUE_INFO_NONE,
+                        false,
                         true,
                         LocationUtils.createFoursquareLocation(((Foursquared) getApplication())
                                 .getLastKnownLocation()));

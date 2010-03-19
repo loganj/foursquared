@@ -368,7 +368,7 @@ public class UserDetailsActivity extends TabActivity {
             try {
                 return ((Foursquared) mActivity.getApplication()).getFoursquare().user(
                         params[0],
-                        Foursquare.USER_MAYOR_VENUE_INFO_LIGHT,
+                        true,
                         true,
                         LocationUtils.createFoursquareLocation(((Foursquared) mActivity
                                 .getApplication()).getLastKnownLocation()));
