@@ -70,7 +70,7 @@ class FoursquareHttpApiV1 {
     private static final String URL_API_FIND_FRIENDS_BY_TWITTER = "/findfriends/bytwitter";
     private static final String URL_API_CATEGORIES = "/categories";
     private static final String URL_API_HISTORY = "/history";
-
+    
     private final DefaultHttpClient mHttpClient = AbstractHttpApi.createHttpClient();
     private HttpApi mHttpApi;
 
@@ -241,12 +241,12 @@ class FoursquareHttpApiV1 {
     /**
      * /user?uid=9937
      */
-    User user(String uid, boolean mayor, boolean badges, String geolat, String geolong,
+    User user(String uid, int mayor, boolean badges, String geolat, String geolong,
             String geohacc, String geovacc, String geoalt) throws FoursquareException,
             FoursquareCredentialsException, FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_USER), //
                 new BasicNameValuePair("uid", uid), //
-                new BasicNameValuePair("mayor", (mayor) ? "1" : "0"), //
+                new BasicNameValuePair("mayor", String.valueOf(mayor)), //
                 new BasicNameValuePair("badges", (badges) ? "1" : "0"), //
                 new BasicNameValuePair("geolat", geolat), //
                 new BasicNameValuePair("geolong", geolong), //

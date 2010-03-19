@@ -327,8 +327,6 @@ public class UserDetailsActivity extends TabActivity {
         if (mStateHolder.getUser() != null) {
             Intent intent = new Intent(UserDetailsActivity.this, UserMayorshipsActivity.class);
             intent.putExtra(UserMayorshipsActivity.EXTRA_USER_ID, mStateHolder.getUser().getId());
-            //intent.putParcelableArrayListExtra(UserMayorshipsActivity.EXTRA_VENUE_LIST_PARCEL,
-            //        mStateHolder.getUser().getMayorships());
             startActivity(intent); 
         }
     }
@@ -370,7 +368,7 @@ public class UserDetailsActivity extends TabActivity {
             try {
                 return ((Foursquared) mActivity.getApplication()).getFoursquare().user(
                         params[0],
-                        true,
+                        Foursquare.USER_MAYOR_VENUE_INFO_LIGHT,
                         true,
                         LocationUtils.createFoursquareLocation(((Foursquared) mActivity
                                 .getApplication()).getLastKnownLocation()));

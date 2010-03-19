@@ -4,6 +4,7 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Badge;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.User;
@@ -222,7 +223,7 @@ public class UserActivity extends Activity {
             try {
                 return ((Foursquared) getApplication()).getFoursquare().user(
                         mUserId,
-                        false,
+                        Foursquare.USER_MAYOR_VENUE_INFO_NONE,
                         true,
                         LocationUtils.createFoursquareLocation(((Foursquared) getApplication())
                                 .getLastKnownLocation()));

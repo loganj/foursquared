@@ -373,7 +373,8 @@ public class Foursquared extends Application {
                         // have it.
                         Foursquare.Location location = LocationUtils
                                 .createFoursquareLocation(getLastKnownLocation());
-                        User user = getFoursquare().user(null, false, false, location);
+                        User user = getFoursquare().user(
+                                null, Foursquare.USER_MAYOR_VENUE_INFO_NONE, false, location);
                         Editor editor = mPrefs.edit();
                         Preferences.storeUser(editor, user);
                         editor.commit();

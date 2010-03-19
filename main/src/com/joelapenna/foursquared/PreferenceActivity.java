@@ -132,8 +132,9 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                 Location location = foursquared.getLastKnownLocation();
 
                 Foursquare foursquare = foursquared.getFoursquare();
-                return foursquare.user(null, false, false, LocationUtils
-                        .createFoursquareLocation(location));
+                return foursquare.user(
+                        null, Foursquare.USER_MAYOR_VENUE_INFO_NONE, false, LocationUtils
+                            .createFoursquareLocation(location));
 
             } catch (Exception e) {
                 mReason = e;

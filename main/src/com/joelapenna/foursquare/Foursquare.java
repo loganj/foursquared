@@ -41,6 +41,11 @@ public class Foursquare {
     public static final String MALE = "male";
     public static final String FEMALE = "female";
 
+    /** For use with user(), probably move this to a more reasonable location. */
+    public static final int USER_MAYOR_VENUE_INFO_NONE = 0;
+    public static final int USER_MAYOR_VENUE_INFO_LIGHT = 1;
+    public static final int USER_MAYOR_VENUE_INFO_FULL = 2;
+
     private String mPhone;
     private String mPassword;
     private FoursquareHttpApiV1 mFoursquareV1;
@@ -164,7 +169,7 @@ public class Foursquare {
     }
 
     @V1
-    public User user(String user, boolean mayor, boolean badges, Location location)
+    public User user(String user, int mayor, boolean badges, Location location)
             throws FoursquareException, FoursquareError, IOException {
         if (location != null) {
             return mFoursquareV1.user(user, mayor, badges, location.geolat, location.geolong,
