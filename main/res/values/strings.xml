@@ -171,5 +171,6 @@
   <string name="shout_execute_activity_progress_bar_message">Posting shout...</string>
   <string name="checkin_result_dialog_score_total">Total for this checkin:</string>
   <string name="user_mayorships_activity_adapter_title">Mayorships</string>
+  <string name="user_mayorships_activity_no_info">This user has no mayorships.</string>
   <string name="changelog_activity_title">Foursquare Changelog</string>
 </resources> 

@@ -116,10 +116,12 @@ public class UserMayorshipsActivity extends LoadableListActivity {
         mListAdapter = new SeparatedListAdapter(this);
         VenueListAdapter adapter = new VenueListAdapter(this, 
             ((Foursquared) getApplication()).getRemoteResourceManager());
-        adapter.setGroup(mStateHolder.getVenues());
-        mListAdapter.addSection(
+        if (mStateHolder.getVenues().size() > 0) {
+            adapter.setGroup(mStateHolder.getVenues());
+            mListAdapter.addSection(
                 getResources().getString(R.string.user_mayorships_activity_adapter_title), 
                 adapter);
+        }
         
         ListView listView = getListView();
         listView.setAdapter(mListAdapter);
@@ -147,8 +149,6 @@ public class UserMayorshipsActivity extends LoadableListActivity {
     private void onVenuesTaskComplete(User user, Exception ex) {
         mListAdapter.removeObserver();
         mListAdapter = new SeparatedListAdapter(this);
-        VenueListAdapter adapter = new VenueListAdapter(this, 
-            ((Foursquared) getApplication()).getRemoteResourceManager());
         
         if (user != null) {
             mStateHolder.setVenues(user.getMayorships());
@@ -157,10 +157,15 @@ public class UserMayorshipsActivity extends LoadableListActivity {
             mStateHolder.setVenues(new Group<Venue>());
             NotificationsUtil.ToastReasonForFailure(this, ex);
         }
-        adapter.setGroup(mStateHolder.getVenues());
-        mListAdapter.addSection(
-                getResources().getString(R.string.user_mayorships_activity_adapter_title), 
-                adapter);
+        
+        if (mStateHolder.getVenues().size() > 0) {
+            VenueListAdapter adapter = new VenueListAdapter(this, 
+                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            adapter.setGroup(mStateHolder.getVenues());
+            mListAdapter.addSection(
+                    getResources().getString(R.string.user_mayorships_activity_adapter_title), 
+                    adapter);
+        }
         getListView().setAdapter(mListAdapter);
         
         mStateHolder.setIsRunningVenuesTask(false);
@@ -170,6 +175,11 @@ public class UserMayorshipsActivity extends LoadableListActivity {
         if (mStateHolder.getVenues().size() == 0) {
             setEmptyView();
         }
+    }
+    
+    @Override
+    public int getNoSearchResultsStringId() {
+        return R.string.user_mayorships_activity_no_info;
     }
     
     /**
@@ -192,6 +202,7 @@ public class UserMayorshipsActivity extends LoadableListActivity {
         @Override
         protected User doInBackground(String... params) {
             try {
+                Thread.sleep(10000);
                 Foursquared foursquared = (Foursquared) mActivity.getApplication();
                 Foursquare foursquare = foursquared.getFoursquare();
                 return foursquare.user(params[0], Foursquare.USER_MAYOR_VENUE_INFO_FULL, false, 
