@@ -5,7 +5,6 @@
 package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Badge;
-import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
 
 import android.content.Context;
