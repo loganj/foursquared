@@ -150,16 +150,8 @@ public class Foursquared extends Application {
         return Preferences.getLastSeenChangelogVersion(mPrefs);
     }
     
-    public String getMeasurementSystem() {
-        return Preferences.getMeasurementSystem(mPrefs);
-    } 
-
     public void storeLastSeenChangelogVersion(String version) {
         Preferences.storeLastSeenChangelogVersion(mPrefs.edit(), version); 
-    }
-    
-    public void storeMeasurementSystem(String system) {
-        Preferences.storeMeasurementSystem(mPrefs.edit(), system); 
     }
     
     public RemoteResourceManager getRemoteResourceManager() {

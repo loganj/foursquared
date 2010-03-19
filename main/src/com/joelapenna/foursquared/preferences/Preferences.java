@@ -11,7 +11,6 @@ import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
-import com.joelapenna.foursquared.util.MeasurementSystems;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -67,9 +66,6 @@ public class Preferences {
     private static final String PREFERENCE_LAST_SEEN_CHANGELOG_VERSION 
         = "last_seen_changelog_version";
     
-    // Display distances in meters or yards?
-    private static final String PREFERENCE_MEASUREMENT_SYSTEM = "measurement_system";
-    
     
     /**
      * Gives us a chance to set some default preferences if this is the first install
@@ -80,9 +76,6 @@ public class Preferences {
         if (!preferences.contains(PREFERENCE_STARTUP_TAB)) {
             String[] startupTabValues = resources.getStringArray(R.array.startup_tabs_values);
             editor.putString(PREFERENCE_STARTUP_TAB, startupTabValues[0]);
-        }
-        if (!preferences.contains(PREFERENCE_MEASUREMENT_SYSTEM)) {
-            editor.putString(PREFERENCE_MEASUREMENT_SYSTEM, MeasurementSystems.METRIC);
         }
         editor.commit();
     }
@@ -149,10 +142,6 @@ public class Preferences {
         return prefs.getString(PREFERENCE_LAST_SEEN_CHANGELOG_VERSION, null);
     }
     
-    public static String getMeasurementSystem(SharedPreferences prefs) {
-        return prefs.getString(PREFERENCE_MEASUREMENT_SYSTEM, MeasurementSystems.METRIC);
-    }
-    
     public static void storeCity(final Editor editor, City city) {
         if (city != null) {
             editor.putString(PREFERENCE_CITY_ID, city.getId());
@@ -184,13 +173,6 @@ public class Preferences {
         editor.putString(PREFERENCE_LAST_SEEN_CHANGELOG_VERSION, version);
         if (!editor.commit()) {
             Log.e(TAG, "storeLastSeenChangelogVersion commit failed");
-        }
-    }
-    
-    public static void storeMeasurementSystem(final Editor editor, String system) {
-        editor.putString(PREFERENCE_MEASUREMENT_SYSTEM, system);
-        if (!editor.commit()) {
-            Log.e(TAG, "storeMeasurementSystem commit failed");
         }
     }
 }

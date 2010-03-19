@@ -10,7 +10,6 @@ import com.joelapenna.foursquare.types.Stats;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
-import com.joelapenna.foursquared.util.MeasurementSystems;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
 
@@ -42,16 +41,13 @@ public class VenueListAdapter extends BaseVenueAdapter implements ObservableAdap
     private RemoteResourceManager mRrm;
     private Handler mHandler;
     private RemoteResourceManagerObserver mResourcesObserver;
-    private boolean mUseMeasurementTypeMetric;
 
-    public VenueListAdapter(Context context, RemoteResourceManager rrm, 
-            boolean useMeasurementTypeMetric) {
+    public VenueListAdapter(Context context, RemoteResourceManager rrm) {
         super(context);
         mInflater = LayoutInflater.from(context);
         mHandler = new Handler();
         mRrm = rrm;
         mResourcesObserver = new RemoteResourceManagerObserver();
-        mUseMeasurementTypeMetric = useMeasurementTypeMetric;
 
         mRrm.addObserver(mResourcesObserver);
     }
@@ -133,15 +129,8 @@ public class VenueListAdapter extends BaseVenueAdapter implements ObservableAdap
         // in the setGroup() method, just append the correct unit name.
         StringBuilder sbExtra = new StringBuilder(128);
         if (!TextUtils.isEmpty(venue.getDistance())) {
-            if (mUseMeasurementTypeMetric) {
-                sbExtra.append(venue.getDistance());
-                sbExtra.append(" meters");
-            } else {
-                // TODO: Can we do better here, instead of parsing on every getView() call?
-                int meters = Integer.parseInt(venue.getDistance());
-                sbExtra.append(Math.round(MeasurementSystems.metersToYards(meters)));
-                sbExtra.append(" yards");
-            }
+            sbExtra.append(venue.getDistance());
+            sbExtra.append(" meters");
         }
         
         // TODO: Parse the int value of the string instead of all these compares.

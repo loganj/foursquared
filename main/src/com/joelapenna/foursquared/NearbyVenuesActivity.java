@@ -13,7 +13,6 @@ import com.joelapenna.foursquared.error.LocationException;
 import com.joelapenna.foursquared.location.BestLocationListener;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.Comparators;
-import com.joelapenna.foursquared.util.MeasurementSystems;
 import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.util.UserUtils;
@@ -221,9 +220,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 Group<Venue> group = searchResults.get(groupsIndex);
                 if (group.size() > 0) {
                     VenueListAdapter groupAdapter = new VenueListAdapter(this,
-                            ((Foursquared) getApplication()).getRemoteResourceManager(),
-                            ((Foursquared) getApplication()).getMeasurementSystem().equals(
-                                    MeasurementSystems.METRIC));
+                            ((Foursquared) getApplication()).getRemoteResourceManager());
                     groupAdapter.setGroup(group);
                     if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
                     mListAdapter.addSection(group.getType(), groupAdapter);

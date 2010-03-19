@@ -42,14 +42,6 @@
       android:title="@string/preferences_additional_settings"
       android:summary="@string/preferences_additional_settings_summary" />
     <ListPreference
-      android:key="measurement_system" 
-      android:persistent="true"
-      android:title="@string/preferences_measurement_system"
-      android:summary="@string/preferences_measurement_system_summary"
-      android:entries="@array/measurement_systems" 
-      android:entryValues="@array/measurement_systems_values"
-      android:defaultValue="Metric" /> 
-    <ListPreference
       android:key="startup_tab" 
       android:persistent="true"
       android:title="@string/preferences_startup_tab"
