@@ -8,6 +8,7 @@ import com.joelapenna.foursquare.types.Category;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquared.R;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
+import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -101,10 +102,11 @@ public class HistoryListAdapter extends BaseCheckinAdapter
             holder.shoutTextView.setVisibility(View.VISIBLE);
         } else {
             holder.shoutTextView.setVisibility(View.GONE);
-        }
+        } 
 
-        holder.timeTextView.setText(checkin.getCreated());
-
+        holder.timeTextView.setText( 
+            StringFormatters.getRelativeTimeSpanString(checkin.getCreated()));
+        
         return convertView;
     }
     
