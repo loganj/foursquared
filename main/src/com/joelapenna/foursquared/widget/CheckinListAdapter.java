@@ -10,6 +10,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.util.CheckinTimestampSort;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
 
@@ -27,11 +28,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
+ * @author Mark Wyszomierski (markww@gmail.com)
+ *   -Added local hashmap of cached timestamps processed at setGroup()
+ *    time to conform to the same timestamp conventions other foursquare
+ *    apps are using.
  */
 public class CheckinListAdapter extends BaseCheckinAdapter implements ObservableAdapter {
 
@@ -43,16 +50,19 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
     private RemoteResourceManager mRrm;
     private RemoteResourceManagerObserver mResourcesObserver;
     private Handler mHandler = new Handler();
-
+    private HashMap<String, String> mCachedTimestamps;
+    
+    
     public CheckinListAdapter(Context context, RemoteResourceManager rrm) {
         super(context);
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
         mResourcesObserver = new RemoteResourceManagerObserver();
+        mCachedTimestamps = new HashMap<String, String>();
 
         mRrm.addObserver(mResourcesObserver);
     }
-
+    
     public void removeObserver() {
         mRrm.deleteObserver(mResourcesObserver);
     }
@@ -126,8 +136,12 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
             }
         }
 
-        holder.timeTextView.setText(StringFormatters
-                .getRelativeTimeSpanString(checkin.getCreated()));
+        String timestamp = mCachedTimestamps.get(checkin.getId());
+        if (timestamp != null) {
+            holder.timeTextView.setText(timestamp);
+        } else {
+            holder.timeTextView.setText(checkin.getCreated());
+        }
 
         return convertView;
     }
@@ -135,10 +149,26 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
     @Override
     public void setGroup(Group<Checkin> g) {
         super.setGroup(g);
-        for (int i = 0; i < g.size(); i++) {
-            Uri photoUri = Uri.parse((g.get(i)).getUser().getPhoto());
+        mCachedTimestamps.clear();
+
+        CheckinTimestampSort timestamps = new CheckinTimestampSort();
+        
+        for (Checkin it : g) {
+            Uri photoUri = Uri.parse(it.getUser().getPhoto());
             if (!mRrm.exists(photoUri)) {
                 mRrm.request(photoUri);
+            }
+
+            Date date = new Date(it.getCreated());
+            if (date.after(timestamps.getBoundaryRecent())) {
+                mCachedTimestamps.put(it.getId(), 
+                    StringFormatters.getRelativeTimeSpanString(it.getCreated()).toString());
+            } else if (date.after(timestamps.getBoundaryToday())) {
+                mCachedTimestamps.put(it.getId(), StringFormatters.getTodayTimeString(it.getCreated()));
+            } else if (date.after(timestamps.getBoundaryYesterday())) {
+                mCachedTimestamps.put(it.getId(), StringFormatters.getYesterdayTimeString(it.getCreated()));
+            } else {
+                mCachedTimestamps.put(it.getId(), StringFormatters.getOlderTimeString(it.getCreated()));
             }
         }
     }

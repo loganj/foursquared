@@ -10,6 +10,7 @@ import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.util.CheckinTimestampSort;
 import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
@@ -37,9 +38,6 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Observable;
@@ -342,25 +340,7 @@ public class FriendsActivity extends LoadableListActivity {
 
         if (checkins != null && checkins.size() > 0) {
 
-            DateFormat df = new SimpleDateFormat("EEE, dd MMM yy HH:mm:ss Z");
-            
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(new Date());
-            
-            // Three hours ago or newer.
-            cal.add(Calendar.HOUR, -3);
-            Date dateRecent = cal.getTime();
-                        
-            // Today.
-            cal.set(Calendar.HOUR, 0);
-            Date dateToday = cal.getTime();
-    
-            // Yesterday.
-            cal.add(Calendar.DAY_OF_MONTH, -1);
-            cal.set(Calendar.HOUR, 0);
-            Date dateYesterday = cal.getTime();
-            
-            
+            CheckinTimestampSort timestamps = new CheckinTimestampSort();
             for (Checkin it : checkins) {
     
                 // If we can't parse the distance value, it's possible that we
@@ -374,17 +354,17 @@ public class FriendsActivity extends LoadableListActivity {
                     if (DEBUG) Log.d(TAG, "Couldn't parse distance for checkin during friend search.");
                     meters = 0;
                 }
-    
+      
                 if (meters > CITY_RADIUS_IN_METERS) {
                     other.add(it);
                 } else {
-                    try {
-                        Date date = df.parse(it.getCreated());
-                        if (date.after(dateRecent)) {
+                    try { 
+                        Date date = new Date(it.getCreated());
+                        if (date.after(timestamps.getBoundaryRecent())) {
                             recent.add(it);
-                        } else if (date.after(dateToday)) {
-                            today.add(it);
-                        } else if (date.after(dateYesterday)) {
+                        } else if (date.after(timestamps.getBoundaryToday())) {
+                            today.add(it); 
+                        } else if (date.after(timestamps.getBoundaryYesterday())) {
                             yesterday.add(it);
                         } else {
                             older.add(it);
