@@ -31,7 +31,23 @@ public class Comparators {
                  */
                 @Override
                 public int compare(Venue object1, Venue object2) {
-                    return object1.getDistance().compareTo(object2.getDistance());
+                    // TODO: In practice we're pretty much guaranteed to get valid locations
+                    // from foursquare, but.. what if we don't, what's a good fail behavior
+                    // here?
+                    try {
+                        int d1 = Integer.parseInt(object1.getDistance());
+                        int d2 = Integer.parseInt(object2.getDistance());
+                        
+                        if (d1 < d2) {
+                            return -1;
+                        } else if (d1 > d2) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    } catch (NumberFormatException ex) {
+                        return object1.getDistance().compareTo(object2.getDistance());
+                    }
                 }
             };
         }
