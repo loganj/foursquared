@@ -14,6 +14,8 @@ import java.util.Comparator;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
+ * @author Mark Wyszomierski (markww@gmail.com)
+ *   -Updated getVenueDistanceComparator() to do numeric comparison. (2010-03-23)
  */
 public class Comparators {
 
