@@ -19,6 +19,7 @@ import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -191,6 +192,7 @@ public class CheckinResultDialog extends Dialog
                 mObserverMayorPhoto = new RemoteResourceManagerObserver();
                 rrm.addObserver(mObserverMayorPhoto);
             }
+            addClickHandlerForMayorImage(ivMayor, mayor.getUser().getId());
         }
         else if (mCheckinResult.getMayor().getType().equals("new")) {
             // I just became the new mayor as a result of this checkin.
@@ -227,6 +229,18 @@ public class CheckinResultDialog extends Dialog
             public void onClick(View v) {
                 mDlgWebViewExtras = new WebViewDialog(getContext(), "SXSW Stats", mExtrasDecoded);
                 mDlgWebViewExtras.show();
+            }
+        });
+    }
+    
+    private void addClickHandlerForMayorImage(View view, final String userId) {
+        // Show a user detail activity when the user clicks on the mayor's image.
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), UserDetailsActivity.class);
+                intent.putExtra(UserDetailsActivity.EXTRA_USER_ID, userId);
+                v.getContext().startActivity(intent);
             }
         });
     }
