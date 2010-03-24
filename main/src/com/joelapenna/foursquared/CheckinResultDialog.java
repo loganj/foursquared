@@ -10,12 +10,15 @@ import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Mayor;
 import com.joelapenna.foursquare.types.Score;
+import com.joelapenna.foursquare.types.Special;
 import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.Base64Coder;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.widget.BadgeWithIconListAdapter;
 import com.joelapenna.foursquared.widget.ScoreListAdapter;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
+import com.joelapenna.foursquared.widget.SpecialListAdapter;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -28,10 +31,12 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.IOException;
 import java.util.Observable;
@@ -90,6 +95,9 @@ public class CheckinResultDialog extends Dialog
         
         // Add whatever points they got as a result of this checkin.
         addScores(mCheckinResult.getScoring(), adapter, mApplication.getRemoteResourceManager());
+        
+        // Add any specials that are nearby.
+        addSpecials(mCheckinResult.getSpecials(), adapter);
 
         // Add a button below the mayor section which will launch a new webview if
         // we have additional content from the server. This is base64 encoded and
@@ -99,6 +107,7 @@ public class CheckinResultDialog extends Dialog
         // List items construction complete.
         ListView listview = (ListView)findViewById(R.id.listViewCheckinBadgesAndScores);
         listview.setAdapter(adapter);
+        listview.setOnItemClickListener(mOnItemClickListener);
 
         // Show mayor info if any.
         addMayor(mCheckinResult.getMayor(), mApplication.getRemoteResourceManager());
@@ -206,6 +215,20 @@ public class CheckinResultDialog extends Dialog
         }
     }
     
+    private void addSpecials(Group<Special> specials,
+                             SeparatedListAdapter adapterMain) {
+        
+        if (specials == null || specials.size() < 1) {
+            return;
+        }
+        
+        SpecialListAdapter adapter = new SpecialListAdapter(getContext());
+        adapter.setGroup(specials);
+        
+        adapterMain.addSection(
+            getContext().getResources().getString(R.string.checkin_specials), adapter);
+    }
+    
     private void addExtras(String extras) {
         
         LinearLayout llExtras = (LinearLayout)findViewById(R.id.llCheckinExtras);
@@ -291,4 +314,26 @@ public class CheckinResultDialog extends Dialog
             });
         }
     }
+    
+    private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
+            
+            Object obj = adapter.getItemAtPosition(position);
+            if (obj != null) {
+                if (obj instanceof Special) {
+                    // When the user clicks on a special, if the venue is different than
+                    // the venue the user checked in at (already being viewed) then show
+                    // a new venue activity for that special.
+                    Venue venue = ((Special)obj).getVenue();
+                    if (venue != null) {
+                        Intent intent = new Intent(getContext(), VenueActivity.class);
+                        intent.setAction(Intent.ACTION_VIEW);
+                        intent.putExtra(Foursquared.EXTRA_VENUE_ID, venue.getId());
+                        getContext().startActivity(intent);
+                    }
+                }
+            }
+        }
+    };
 }
