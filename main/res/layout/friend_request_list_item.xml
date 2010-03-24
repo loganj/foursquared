@@ -20,17 +20,19 @@
     android:layout_height="wrap_content"
     android:layout_weight="1"
     android:orientation="horizontal"> 
-  
-    <ImageView
+
+	<ImageView
       android:id="@+id/friendRequestListItemPhoto"
-      android:layout_height="46dip"
-      android:layout_width="46dip"
-      android:background="#186db5"
+	  android:layout_height="46dip"
+	  android:layout_width="46dip"
+      android:background="@drawable/photo_background"
+      android:layout_alignParentTop="true"
+      android:layout_alignParentLeft="true"
+      android:padding="3dip"
       android:src="@drawable/blank_boy"
       android:gravity="center_vertical"
-      android:scaleType="fitXY" 
-	  android:padding="2dip" />
-	
+      android:scaleType="fitXY" />
+    
     <TextView
       android:id="@+id/friendRequestListItemName"
       android:layout_width="fill_parent"

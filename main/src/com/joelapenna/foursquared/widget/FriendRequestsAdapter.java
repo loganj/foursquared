@@ -46,6 +46,8 @@ public class FriendRequestsAdapter extends BaseGroupAdapter<User>
     private RemoteResourceManager mRrm;
     private RemoteResourceManagerObserver mResourcesObserver;
     private Handler mHandler = new Handler();
+    private int mLoadedPhotoIndex;
+    
 
     public FriendRequestsAdapter(Context context, ButtonRowClickHandler clickListener,
             RemoteResourceManager rrm) {
@@ -55,6 +57,7 @@ public class FriendRequestsAdapter extends BaseGroupAdapter<User>
         mClickListener = clickListener;
         mRrm = rrm;
         mResourcesObserver = new RemoteResourceManagerObserver();
+        mLoadedPhotoIndex = 0;
 
         mRrm.addObserver(mResourcesObserver);
     }
@@ -66,6 +69,7 @@ public class FriendRequestsAdapter extends BaseGroupAdapter<User>
     }
 
     public void removeObserver() {
+        mHandler.removeCallbacks(mRunnableLoadPhotos);
         mRrm.deleteObserver(mResourcesObserver);
     }
 
@@ -158,12 +162,9 @@ public class FriendRequestsAdapter extends BaseGroupAdapter<User>
     @Override
     public void setGroup(Group<User> g) {
         super.setGroup(g);
-        for (int i = 0; i < g.size(); i++) {
-            Uri photoUri = Uri.parse(g.get(i).getPhoto());
-            if (!mRrm.exists(photoUri)) {
-                mRrm.request(photoUri);
-            }
-        }
+        mLoadedPhotoIndex = 0;
+        
+        mHandler.postDelayed(mRunnableLoadPhotos, 10L);
     }
 
     private class RemoteResourceManagerObserver implements Observer {
@@ -178,6 +179,20 @@ public class FriendRequestsAdapter extends BaseGroupAdapter<User>
             });
         }
     }
+    
+    private Runnable mRunnableLoadPhotos = new Runnable() {
+        @Override
+        public void run() {
+            if (mLoadedPhotoIndex < getCount()) {
+                User user = (User)getItem(mLoadedPhotoIndex++);
+                Uri photoUri = Uri.parse(user.getPhoto());
+                if (!mRrm.exists(photoUri)) {
+                    mRrm.request(photoUri);
+                } 
+                mHandler.postDelayed(mRunnableLoadPhotos, 200L);
+            }
+        }
+    };
 
     static class ViewHolder {
         LinearLayout clickable;
