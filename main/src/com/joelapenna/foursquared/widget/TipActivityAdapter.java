@@ -96,7 +96,7 @@ public class TipActivityAdapter extends BaseTipAdapter {
                 tv.setText(mContext.getResources().getString(R.string.tip_activity_action_todo));
                 break;
             case ACTION_ID_IVE_DONE_THIS:
-                iv.setImageResource(R.drawable.user_action_friend_pending);
+                iv.setImageResource(R.drawable.button_done);
                 tv.setText(mContext.getResources().getString(R.string.tip_activity_action_done_this));
                 break;
         }
