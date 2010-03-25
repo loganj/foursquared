@@ -5,26 +5,45 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="?android:attr/listPreferredItemHeight"
-  android:orientation="vertical"
-  style="@style/listItemStyle">
+  android:paddingTop="5dip"
+  android:paddingLeft="7dip"
+  android:paddingRight="5dip"
+  android:paddingBottom="5dip"
+  style="@style/listItemStyle" >
+  
+  <ImageView
+    android:id="@+id/tipPhoto"
+	android:layout_height="46dip"
+	android:layout_width="46dip"
+    android:background="@drawable/photo_background"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentLeft="true"
+    android:padding="3dip"
+    android:src="@drawable/blank_boy"
+    android:scaleType="fitXY" />
+    
+    <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:paddingLeft="8dip" > 
+    
+      <TextView
+        android:id="@+id/tipTextView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textAppearance="@style/TextViewStyleTipListItemTip" />
 
-  <TextView
-    android:id="@+id/tipTextView"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:paddingLeft="7dip" 
-    android:textAppearance="@style/TextViewStyleTipListItemTip" />
+      <TextView
+        android:id="@+id/userTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:ellipsize="end"
+        android:textAppearance="@style/TextViewStyleTipListItemSignature" />
 
-  <TextView
-    android:id="@+id/userTextView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:gravity="right|bottom"
-    android:maxLines="1"
-    android:scrollHorizontally="true"
-    android:ellipsize="end"
-    android:paddingLeft="7dip"
-    android:textAppearance="@style/TextViewStyleTipListItemSignature" />
-
+  </LinearLayout>
+  
 </LinearLayout>

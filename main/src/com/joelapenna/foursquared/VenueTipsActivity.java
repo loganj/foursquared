@@ -26,6 +26,7 @@ import java.util.Observer;
  * @author Joe LaPenna (joe@joelapenna.com)
  * @author Mark Wyszomierski (markww@gmail.com)
  *   -modified to start TipActivity on tip click (2010-03-25)
+ *   -added photos for tips (2010-03-25)
  */
 public class VenueTipsActivity extends LoadableListActivity {
     public static final String TAG = "VenueTipsActivity";
@@ -114,13 +115,15 @@ public class VenueTipsActivity extends LoadableListActivity {
 
     private void putGroupsInAdapter(Group<Group<Tip>> groups) {
         mListAdapter = (SeparatedListAdapter)getListAdapter();
+        mListAdapter.removeObserver();
         mListAdapter.clear();
         setEmptyView();
 
         int groupCount = groups.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
             Group<Tip> group = groups.get(groupsIndex);
-            TipListAdapter groupAdapter = new TipListAdapter(this);
+            TipListAdapter groupAdapter = new TipListAdapter(
+                this, ((Foursquared)getApplication()).getRemoteResourceManager());
             groupAdapter.setGroup(group);
             mListAdapter.addSection(group.getType(), groupAdapter);
         }
