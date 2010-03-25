@@ -12,8 +12,6 @@
     android:id="@+id/tipTextView"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:maxLines="3"
-    android:ellipsize="end"
     android:gravity="center_vertical"
     android:paddingLeft="7dip" 
     android:textAppearance="@style/TextViewStyleTipListItemTip" />

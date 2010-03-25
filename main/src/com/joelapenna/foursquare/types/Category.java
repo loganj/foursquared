@@ -43,7 +43,7 @@ public class Category implements FoursquareType, Parcelable {
         mIconUrl = in.readString();
         int numCategories = in.readInt();
         for (int i = 0; i < numCategories; i++) {
-            Category category = Category.CREATOR.createFromParcel(in);
+            Category category = in.readParcelable(Category.class.getClassLoader());
             mChildCategories.add(category);
         }
     }

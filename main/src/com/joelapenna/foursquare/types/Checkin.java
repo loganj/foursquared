@@ -36,11 +36,11 @@ public class Checkin implements FoursquareType, Parcelable {
         mShout = in.readString();
         
         if (in.readInt() == 1) {
-            mUser= User.CREATOR.createFromParcel(in);
+            mUser = in.readParcelable(User.class.getClassLoader());
         }
         
         if (in.readInt() == 1) {
-            mVenue= Venue.CREATOR.createFromParcel(in);
+            mVenue = in.readParcelable(Venue.class.getClassLoader());
         }
     }
     

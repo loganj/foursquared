@@ -173,4 +173,7 @@
   <string name="user_mayorships_activity_adapter_title">Mayorships</string>
   <string name="user_mayorships_activity_no_info">This user has no mayorships.</string>
   <string name="changelog_activity_title">Foursquare Changelog</string>
+  <string name="tip_activity_by">by</string>
+  <string name="tip_activity_action_todo">Add to my To-Do list</string>
+  <string name="tip_activity_action_done_this">I\'ve done this!</string>
 </resources> 

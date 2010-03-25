@@ -50,22 +50,22 @@ public class User implements FoursquareType, Parcelable {
         mBadges = new Group<Badge>();
         int numBadges = in.readInt();
         for (int i = 0; i < numBadges; i++) {
-            Badge badge = Badge.CREATOR.createFromParcel(in);
+            Badge badge = in.readParcelable(Badge.class.getClassLoader());
             mBadges.add(badge);
         }
         
         if (in.readInt() == 1) {
-            mCheckin = Checkin.CREATOR.createFromParcel(in);
+            mCheckin = in.readParcelable(Checkin.class.getClassLoader());
         }
         
         if (in.readInt() == 1) {
-            mSettings = Settings.CREATOR.createFromParcel(in);
+            mSettings = in.readParcelable(Settings.class.getClassLoader());
         }
         
         mMayorships = new Group<Venue>();
         int numMayorships = in.readInt();
         for (int i = 0; i < numMayorships; i++) {
-            Venue venue = Venue.CREATOR.createFromParcel(in);
+            Venue venue = in.readParcelable(Venue.class.getClassLoader());
             mMayorships.add(venue);
         }
     }
@@ -203,17 +203,17 @@ public class User implements FoursquareType, Parcelable {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeString(mCreated); 
-        out.writeString(mEmail);
-        out.writeString(mFacebook);
-        out.writeString(mFirstname);
-        out.writeString(mFriendstatus);
-        out.writeString(mGender);
-        out.writeString(mId);
-        out.writeString(mLastname);
-        out.writeString(mPhone);
-        out.writeString(mPhoto);
-        out.writeString(mTwitter);
+        out.writeString(mCreated != null ? mCreated : ""); 
+        out.writeString(mEmail != null ? mEmail : "");
+        out.writeString(mFacebook != null ? mFacebook : "");
+        out.writeString(mFirstname != null ? mFirstname : "");
+        out.writeString(mFriendstatus != null ? mFriendstatus : "");
+        out.writeString(mGender != null ? mGender : "");
+        out.writeString(mId != null ? mId : "");
+        out.writeString(mLastname != null ? mLastname : "");
+        out.writeString(mPhone != null ? mPhone : "");
+        out.writeString(mPhoto != null ? mPhoto : "");
+        out.writeString(mTwitter != null ? mTwitter : "");
 
         if (mBadges != null) {
             out.writeInt(mBadges.size());

@@ -24,10 +24,10 @@ public class Stats implements FoursquareType, Parcelable {
     }
     
     private Stats(Parcel in) {
-        mBeenhere = Beenhere.CREATOR.createFromParcel(in);
+        mBeenhere = in.readParcelable(Beenhere.class.getClassLoader());
         mCheckins = in.readString();
         mHereNow = in.readString();
-        mMayor = Mayor.CREATOR.createFromParcel(in);
+        mMayor = in.readParcelable(Mayor.class.getClassLoader());
     }
     
     public static final Parcelable.Creator<Stats> CREATOR = new Parcelable.Creator<Stats>() {

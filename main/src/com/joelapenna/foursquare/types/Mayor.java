@@ -31,7 +31,7 @@ public class Mayor implements FoursquareType, Parcelable {
         mType = in.readString();
         
         if (in.readInt() == 1) {
-            mUser = User.CREATOR.createFromParcel(in);
+            mUser = in.readParcelable(User.class.getClassLoader());
         }
     }
     

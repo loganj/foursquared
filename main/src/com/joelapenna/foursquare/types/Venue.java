@@ -56,12 +56,12 @@ public class Venue implements FoursquareType, Parcelable {
         mCheckins = new Group<Checkin>();
         int numCheckins = in.readInt();
         for (int i = 0; i < numCheckins; i++) {
-            Checkin checkin = Checkin.CREATOR.createFromParcel(in);
+            Checkin checkin = in.readParcelable(Checkin.class.getClassLoader());
             mCheckins.add(checkin); 
         }
         
         if (in.readInt() == 1) {
-            mStats = Stats.CREATOR.createFromParcel(in);
+            mStats = in.readParcelable(Stats.class.getClassLoader());
         }
         
         mTags = new Tags();
@@ -74,19 +74,19 @@ public class Venue implements FoursquareType, Parcelable {
         mTips = new Group<Tip>();
         int numTips = in.readInt();
         for (int i = 0; i < numTips; i++) {
-            Tip tip = Tip.CREATOR.createFromParcel(in);
+            Tip tip = in.readParcelable(Tip.class.getClassLoader());
             mTips.add(tip);
         }
 
         mTodos = new Group<Tip>();
         int numTodos = in.readInt();
         for (int i = 0; i < numTodos; i++) {
-            Tip todo = Tip.CREATOR.createFromParcel(in);
+            Tip todo = in.readParcelable(Tip.class.getClassLoader());
             mTodos.add(todo);
         }
 
         if (in.readInt() == 1) {
-            mCategory = Category.CREATOR.createFromParcel(in);
+            mCategory = in.readParcelable(Category.class.getClassLoader());
         }
     }
     
@@ -256,19 +256,19 @@ public class Venue implements FoursquareType, Parcelable {
     
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeString(mAddress);
-        out.writeString(mCity);
-        out.writeString(mCityid);
-        out.writeString(mCrossstreet);
-        out.writeString(mDistance);
-        out.writeString(mGeolat);
-        out.writeString(mGeolong);
-        out.writeString(mId);
-        out.writeString(mName);
-        out.writeString(mPhone);
-        out.writeString(mState);
-        out.writeString(mTwitter);
-        out.writeString(mZip);
+        out.writeString(mAddress != null ? mAddress : "");
+        out.writeString(mCity != null ? mCity : "");
+        out.writeString(mCityid != null ? mCityid : "");
+        out.writeString(mCrossstreet != null ? mCrossstreet : "");
+        out.writeString(mDistance != null ? mDistance : "");
+        out.writeString(mGeolat != null ? mGeolat : "");
+        out.writeString(mGeolong != null ? mGeolong : "");
+        out.writeString(mId != null ? mId : "");
+        out.writeString(mName != null ? mName : "");
+        out.writeString(mPhone != null ? mPhone : "");
+        out.writeString(mState != null ? mState : "");
+        out.writeString(mTwitter != null ? mTwitter : "");
+        out.writeString(mZip != null ? mZip : "");
 
         if (mCheckins != null) {
             out.writeInt(mCheckins.size());
