@@ -4,6 +4,8 @@
 
 package com.joelapenna.foursquare.types;
 
+import com.joelapenna.foursquare.util.ParcelUtils;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -25,10 +27,10 @@ public class Mayor implements FoursquareType, Parcelable {
     }
     
     private Mayor(Parcel in) {
-        mCheckins = in.readString();
-        mCount = in.readString();
-        mMessage = in.readString();
-        mType = in.readString();
+        mCheckins = ParcelUtils.readStringFromParcel(in);
+        mCount = ParcelUtils.readStringFromParcel(in);
+        mMessage = ParcelUtils.readStringFromParcel(in);
+        mType = ParcelUtils.readStringFromParcel(in);
         
         if (in.readInt() == 1) {
             mUser = in.readParcelable(User.class.getClassLoader());
@@ -88,10 +90,10 @@ public class Mayor implements FoursquareType, Parcelable {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeString(mCheckins);
-        out.writeString(mCount);
-        out.writeString(mMessage);
-        out.writeString(mType);
+        ParcelUtils.writeStringToParcel(out, mCheckins);
+        ParcelUtils.writeStringToParcel(out, mCount);
+        ParcelUtils.writeStringToParcel(out, mMessage);
+        ParcelUtils.writeStringToParcel(out, mType);
         
         if (mUser != null) {
             out.writeInt(1);

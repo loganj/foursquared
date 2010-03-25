@@ -4,6 +4,8 @@
 
 package com.joelapenna.foursquare.types;
 
+import com.joelapenna.foursquare.util.ParcelUtils;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -24,10 +26,10 @@ public class Badge implements FoursquareType, Parcelable {
     }
     
     private Badge(Parcel in) {
-        mDescription = in.readString();
-        mIcon = in.readString();
-        mId = in.readString();
-        mName = in.readString();
+        mDescription = ParcelUtils.readStringFromParcel(in);
+        mIcon = ParcelUtils.readStringFromParcel(in);
+        mId = ParcelUtils.readStringFromParcel(in);
+        mName = ParcelUtils.readStringFromParcel(in);
     }
     
     public static final Parcelable.Creator<Badge> CREATOR = new Parcelable.Creator<Badge>() {
@@ -75,10 +77,10 @@ public class Badge implements FoursquareType, Parcelable {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeString(mDescription);
-        out.writeString(mIcon);
-        out.writeString(mId);
-        out.writeString(mName);
+        ParcelUtils.writeStringToParcel(out, mDescription);
+        ParcelUtils.writeStringToParcel(out, mIcon);
+        ParcelUtils.writeStringToParcel(out, mId);
+        ParcelUtils.writeStringToParcel(out, mName);
     }
 
     @Override

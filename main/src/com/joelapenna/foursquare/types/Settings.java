@@ -4,6 +4,8 @@
 
 package com.joelapenna.foursquare.types;
 
+import com.joelapenna.foursquare.util.ParcelUtils;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -24,8 +26,8 @@ public class Settings implements FoursquareType, Parcelable {
     }
     
     private Settings(Parcel in) {
-        mFeedsKey = in.readString();
-        mPings = in.readString();
+        mFeedsKey = ParcelUtils.readStringFromParcel(in);
+        mPings = ParcelUtils.readStringFromParcel(in);
         mSendtofacebook = in.readInt() == 1;
         mSendtotwitter = in.readInt() == 1;
     }
@@ -75,8 +77,8 @@ public class Settings implements FoursquareType, Parcelable {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeString(mFeedsKey);
-        out.writeString(mPings);
+        ParcelUtils.writeStringToParcel(out, mFeedsKey);
+        ParcelUtils.writeStringToParcel(out, mPings);
         out.writeInt(mSendtofacebook ? 1 : 0);
         out.writeInt(mSendtotwitter ? 1 : 0);
     }

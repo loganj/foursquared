@@ -4,6 +4,8 @@
 
 package com.joelapenna.foursquare.types;
 
+import com.joelapenna.foursquare.util.ParcelUtils;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -39,20 +41,20 @@ public class Venue implements FoursquareType, Parcelable {
     }
 
     private Venue(Parcel in) {
-        mAddress = in.readString();
-        mCity = in.readString();
-        mCityid = in.readString();
-        mCrossstreet = in.readString();
-        mDistance = in.readString();
-        mGeolat = in.readString();
-        mGeolong = in.readString();
-        mId = in.readString();
-        mName = in.readString();
-        mPhone = in.readString();
-        mState = in.readString();
-        mTwitter = in.readString();
-        mZip = in.readString();
-        
+        mAddress = ParcelUtils.readStringFromParcel(in);
+        mCity = ParcelUtils.readStringFromParcel(in);
+        mCityid = ParcelUtils.readStringFromParcel(in);
+        mCrossstreet = ParcelUtils.readStringFromParcel(in);
+        mDistance = ParcelUtils.readStringFromParcel(in);
+        mGeolat = ParcelUtils.readStringFromParcel(in);
+        mGeolong = ParcelUtils.readStringFromParcel(in);
+        mId = ParcelUtils.readStringFromParcel(in);
+        mName = ParcelUtils.readStringFromParcel(in);
+        mPhone = ParcelUtils.readStringFromParcel(in);
+        mState = ParcelUtils.readStringFromParcel(in);
+        mTwitter = ParcelUtils.readStringFromParcel(in);
+        mZip = ParcelUtils.readStringFromParcel(in);
+
         mCheckins = new Group<Checkin>();
         int numCheckins = in.readInt();
         for (int i = 0; i < numCheckins; i++) {
@@ -256,19 +258,19 @@ public class Venue implements FoursquareType, Parcelable {
     
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeString(mAddress != null ? mAddress : "");
-        out.writeString(mCity != null ? mCity : "");
-        out.writeString(mCityid != null ? mCityid : "");
-        out.writeString(mCrossstreet != null ? mCrossstreet : "");
-        out.writeString(mDistance != null ? mDistance : "");
-        out.writeString(mGeolat != null ? mGeolat : "");
-        out.writeString(mGeolong != null ? mGeolong : "");
-        out.writeString(mId != null ? mId : "");
-        out.writeString(mName != null ? mName : "");
-        out.writeString(mPhone != null ? mPhone : "");
-        out.writeString(mState != null ? mState : "");
-        out.writeString(mTwitter != null ? mTwitter : "");
-        out.writeString(mZip != null ? mZip : "");
+        ParcelUtils.writeStringToParcel(out, mAddress);
+        ParcelUtils.writeStringToParcel(out, mCity);
+        ParcelUtils.writeStringToParcel(out, mCityid);
+        ParcelUtils.writeStringToParcel(out, mCrossstreet);
+        ParcelUtils.writeStringToParcel(out, mDistance);
+        ParcelUtils.writeStringToParcel(out, mGeolat);
+        ParcelUtils.writeStringToParcel(out, mGeolong);
+        ParcelUtils.writeStringToParcel(out, mId);
+        ParcelUtils.writeStringToParcel(out, mName);
+        ParcelUtils.writeStringToParcel(out, mPhone);
+        ParcelUtils.writeStringToParcel(out, mState);
+        ParcelUtils.writeStringToParcel(out, mTwitter);
+        ParcelUtils.writeStringToParcel(out, mZip);
 
         if (mCheckins != null) {
             out.writeInt(mCheckins.size());

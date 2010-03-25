@@ -4,6 +4,8 @@
 
 package com.joelapenna.foursquare.types;
 
+import com.joelapenna.foursquare.util.ParcelUtils;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -25,8 +27,8 @@ public class Stats implements FoursquareType, Parcelable {
     
     private Stats(Parcel in) {
         mBeenhere = in.readParcelable(Beenhere.class.getClassLoader());
-        mCheckins = in.readString();
-        mHereNow = in.readString();
+        mCheckins = ParcelUtils.readStringFromParcel(in);
+        mHereNow = ParcelUtils.readStringFromParcel(in);
         mMayor = in.readParcelable(Mayor.class.getClassLoader());
     }
     
@@ -75,9 +77,9 @@ public class Stats implements FoursquareType, Parcelable {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeString(mCheckins);
         out.writeParcelable(mBeenhere, flags);
-        out.writeString(mHereNow);
+        ParcelUtils.writeStringToParcel(out, mCheckins);
+        ParcelUtils.writeStringToParcel(out, mHereNow);
         out.writeParcelable(mMayor, flags);
     }
 

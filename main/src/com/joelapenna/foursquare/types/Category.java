@@ -4,6 +4,8 @@
 
 package com.joelapenna.foursquare.types;
 
+import com.joelapenna.foursquare.util.ParcelUtils;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -37,10 +39,10 @@ public class Category implements FoursquareType, Parcelable {
     private Category(Parcel in) {
         mChildCategories = new Group<Category>();
         
-        mId = in.readString();
-        mFullPathName = in.readString();
-        mNodeName = in.readString();
-        mIconUrl = in.readString();
+        mId = ParcelUtils.readStringFromParcel(in);
+        mFullPathName = ParcelUtils.readStringFromParcel(in);
+        mNodeName = ParcelUtils.readStringFromParcel(in);
+        mIconUrl = ParcelUtils.readStringFromParcel(in);
         int numCategories = in.readInt();
         for (int i = 0; i < numCategories; i++) {
             Category category = in.readParcelable(Category.class.getClassLoader());
@@ -101,10 +103,10 @@ public class Category implements FoursquareType, Parcelable {
     
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeString(mId);
-        out.writeString(mFullPathName);
-        out.writeString(mNodeName);
-        out.writeString(mIconUrl);
+        ParcelUtils.writeStringToParcel(out, mId);
+        ParcelUtils.writeStringToParcel(out, mFullPathName);
+        ParcelUtils.writeStringToParcel(out, mNodeName);
+        ParcelUtils.writeStringToParcel(out, mIconUrl);
 
         out.writeInt(mChildCategories.size());
         for (Category it : mChildCategories) {

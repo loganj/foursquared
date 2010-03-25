@@ -4,6 +4,8 @@
 
 package com.joelapenna.foursquare.types;
 
+import com.joelapenna.foursquare.util.ParcelUtils;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -26,10 +28,10 @@ public class Tip implements FoursquareType, Parcelable {
     }
 
     private Tip(Parcel in) {
-        mCreated = in.readString();
-        mDistance = in.readString();
-        mId = in.readString();
-        mText = in.readString();
+        mCreated = ParcelUtils.readStringFromParcel(in);
+        mDistance = ParcelUtils.readStringFromParcel(in);
+        mId = ParcelUtils.readStringFromParcel(in);
+        mText = ParcelUtils.readStringFromParcel(in);
         
         if (in.readInt() == 1) {
             mUser = in.readParcelable(User.class.getClassLoader());
@@ -101,10 +103,10 @@ public class Tip implements FoursquareType, Parcelable {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeString(mCreated != null ? mCreated : " ");
-        out.writeString(mDistance != null ? mDistance : " ");
-        out.writeString(mId != null ? mId : " ");
-        out.writeString(mText != null ? mText : " ");
+        ParcelUtils.writeStringToParcel(out, mCreated);
+        ParcelUtils.writeStringToParcel(out, mDistance);
+        ParcelUtils.writeStringToParcel(out, mId);
+        ParcelUtils.writeStringToParcel(out, mText);
         
         if (mUser != null) {
             out.writeInt(1); 

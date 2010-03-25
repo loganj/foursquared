@@ -4,6 +4,8 @@
 
 package com.joelapenna.foursquare.types;
 
+import com.joelapenna.foursquare.util.ParcelUtils;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -35,17 +37,17 @@ public class User implements FoursquareType, Parcelable {
     }
 
     private User(Parcel in) {
-        mCreated = in.readString();
-        mEmail = in.readString();
-        mFacebook = in.readString();
-        mFirstname = in.readString();
-        mFriendstatus = in.readString();
-        mGender = in.readString();
-        mId = in.readString();
-        mLastname = in.readString();
-        mPhone = in.readString();
-        mPhoto = in.readString();
-        mTwitter = in.readString();
+        mCreated = ParcelUtils.readStringFromParcel(in);
+        mEmail = ParcelUtils.readStringFromParcel(in);
+        mFacebook = ParcelUtils.readStringFromParcel(in);
+        mFirstname = ParcelUtils.readStringFromParcel(in);
+        mFriendstatus = ParcelUtils.readStringFromParcel(in);
+        mGender = ParcelUtils.readStringFromParcel(in);
+        mId = ParcelUtils.readStringFromParcel(in);
+        mLastname = ParcelUtils.readStringFromParcel(in);
+        mPhone = ParcelUtils.readStringFromParcel(in);
+        mPhoto = ParcelUtils.readStringFromParcel(in);
+        mTwitter = ParcelUtils.readStringFromParcel(in);
         
         mBadges = new Group<Badge>();
         int numBadges = in.readInt();
@@ -203,17 +205,17 @@ public class User implements FoursquareType, Parcelable {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeString(mCreated != null ? mCreated : ""); 
-        out.writeString(mEmail != null ? mEmail : "");
-        out.writeString(mFacebook != null ? mFacebook : "");
-        out.writeString(mFirstname != null ? mFirstname : "");
-        out.writeString(mFriendstatus != null ? mFriendstatus : "");
-        out.writeString(mGender != null ? mGender : "");
-        out.writeString(mId != null ? mId : "");
-        out.writeString(mLastname != null ? mLastname : "");
-        out.writeString(mPhone != null ? mPhone : "");
-        out.writeString(mPhoto != null ? mPhoto : "");
-        out.writeString(mTwitter != null ? mTwitter : "");
+        ParcelUtils.writeStringToParcel(out, mCreated);
+        ParcelUtils.writeStringToParcel(out, mEmail);
+        ParcelUtils.writeStringToParcel(out, mFacebook);
+        ParcelUtils.writeStringToParcel(out, mFirstname);
+        ParcelUtils.writeStringToParcel(out, mFriendstatus);
+        ParcelUtils.writeStringToParcel(out, mGender);
+        ParcelUtils.writeStringToParcel(out, mId);
+        ParcelUtils.writeStringToParcel(out, mLastname);
+        ParcelUtils.writeStringToParcel(out, mPhone);
+        ParcelUtils.writeStringToParcel(out, mPhoto);
+        ParcelUtils.writeStringToParcel(out, mTwitter);
 
         if (mBadges != null) {
             out.writeInt(mBadges.size());

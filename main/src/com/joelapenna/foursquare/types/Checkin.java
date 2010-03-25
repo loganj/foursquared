@@ -4,6 +4,8 @@
 
 package com.joelapenna.foursquare.types;
 
+import com.joelapenna.foursquare.util.ParcelUtils;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -28,12 +30,12 @@ public class Checkin implements FoursquareType, Parcelable {
     }
     
     private Checkin(Parcel in) {
-        mCreated = in.readString();
-        mDisplay = in.readString();
-        mDistance = in.readString();
-        mId = in.readString();
+        mCreated = ParcelUtils.readStringFromParcel(in);
+        mDisplay = ParcelUtils.readStringFromParcel(in);
+        mDistance = ParcelUtils.readStringFromParcel(in);
+        mId = ParcelUtils.readStringFromParcel(in);
         mIsmayor = in.readInt() == 1;
-        mShout = in.readString();
+        mShout = ParcelUtils.readStringFromParcel(in);
         
         if (in.readInt() == 1) {
             mUser = in.readParcelable(User.class.getClassLoader());
@@ -121,12 +123,12 @@ public class Checkin implements FoursquareType, Parcelable {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeString(mCreated);
-        out.writeString(mDisplay);
-        out.writeString(mDistance);
-        out.writeString(mId);
+        ParcelUtils.writeStringToParcel(out, mCreated);
+        ParcelUtils.writeStringToParcel(out, mDisplay);
+        ParcelUtils.writeStringToParcel(out, mDistance);
+        ParcelUtils.writeStringToParcel(out, mId);
         out.writeInt(mIsmayor ? 1 : 0);
-        out.writeString(mShout);
+        ParcelUtils.writeStringToParcel(out, mShout);
         
         if (mUser != null) {
             out.writeInt(1);
