@@ -143,6 +143,8 @@ public class UserHistoryActivity extends LoadableListActivity {
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.putExtra(Foursquared.EXTRA_VENUE_ID, venue.getId());
                 startActivity(intent);
+            } else {
+                Log.e(TAG, "Venue has no ID to start venue activity.");
             }
         }
     }
