@@ -176,4 +176,8 @@
   <string name="tip_activity_by">by</string>
   <string name="tip_activity_action_todo">Add to my To-Do list</string>
   <string name="tip_activity_action_done_this">I\'ve done this!</string>
+  <string name="tip_activity_prgoress_title">Tips</string>
+  <string name="tip_activity_prgoress_message">Updating...</string>
+  <string name="tip_activity_prgoress_complete_todo">Tip has been marked as a to-do!</string>
+  <string name="tip_activity_prgoress_complete_done">Tip has been marked as done!</string>
 </resources> 

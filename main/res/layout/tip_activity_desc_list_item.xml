@@ -14,15 +14,16 @@
     android:id="@+id/tipActivityDescListItemLabel1"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:textColor="@color/black_end"
-    android:textAppearance="@android:style/TextAppearance.Small" 
-    android:singleLine="true" />
+    android:textAppearance="@style/TextViewStyleTipActivityVenueName" 
+    android:singleLine="true"
+    android:paddingBottom="10dip" />
       
   <TextView
     android:id="@+id/tipActivityDescListItemLabel2"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:textColor="@color/black_end"
-    android:textAppearance="@android:style/TextAppearance.Small" />
+    android:textAppearance="@android:style/TextAppearance.Small"
+    android:paddingBottom="5dip" />
    
 </LinearLayout>

@@ -219,6 +219,18 @@ public class Foursquare {
         return mFoursquareV1.history(limit);
     }
     
+    @V1
+    public Tip tipMarkTodo(String tipId) 
+        throws FoursquareException, FoursquareError, IOException {
+        return mFoursquareV1.tipMarkTodo(tipId);
+    }
+    
+    @V1
+    public Tip tipMarkDone(String tipId) 
+        throws FoursquareException, FoursquareError, IOException {
+        return mFoursquareV1.tipMarkDone(tipId);
+    }
+    
     public static final FoursquareHttpApiV1 createHttpApi(String domain, String clientVersion,
             boolean useOAuth) {
         LOG.log(Level.INFO, "Using foursquare.com for requests.");

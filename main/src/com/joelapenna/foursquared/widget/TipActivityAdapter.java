@@ -49,7 +49,7 @@ public class TipActivityAdapter extends BaseTipAdapter {
 
         switch (position) {
             case ACTION_ID_NONE:
-                return generateView0(convertView);
+                return generateViewTip(convertView);
             case ACTION_ID_ADD_TODO_LIST:
             case ACTION_ID_IVE_DONE_THIS:
                 return generateViewActions(convertView, position);
@@ -58,7 +58,7 @@ public class TipActivityAdapter extends BaseTipAdapter {
         return convertView;
     }
     
-    private View generateView0(View convertView) {
+    private View generateViewTip(View convertView) {
         if (convertView == null) {
             convertView = mInflater.inflate(mLayoutToInflate0, null);
         } else {
@@ -70,7 +70,7 @@ public class TipActivityAdapter extends BaseTipAdapter {
 
         TextView tv1 = (TextView) convertView.findViewById(R.id.tipActivityDescListItemLabel1);
         TextView tv2 = (TextView) convertView.findViewById(R.id.tipActivityDescListItemLabel2);
-        tv1.setText(mVenueName);
+        tv1.setText("@ " + mVenueName);
         tv2.setText(mTipText);
         
         convertView.setTag(new Integer(ACTION_ID_NONE));

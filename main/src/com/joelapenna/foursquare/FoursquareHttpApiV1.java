@@ -70,6 +70,8 @@ class FoursquareHttpApiV1 {
     private static final String URL_API_FIND_FRIENDS_BY_TWITTER = "/findfriends/bytwitter";
     private static final String URL_API_CATEGORIES = "/categories";
     private static final String URL_API_HISTORY = "/history";
+    private static final String URL_API_TIP_TODO = "/tip/marktodo";
+    private static final String URL_API_TIP_DONE = "/tip/markdone";
     
     private final DefaultHttpClient mHttpClient = AbstractHttpApi.createHttpClient();
     private HttpApi mHttpApi;
@@ -418,6 +420,26 @@ class FoursquareHttpApiV1 {
             FoursquareCredentialsException, FoursquareError, IOException {
         HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_HISTORY));
         return (Group<Checkin>) mHttpApi.doHttpRequest(httpGet, new GroupParser(new CheckinParser()));
+    }
+    
+    /**
+     * /tip/marktodo
+     */
+    public Tip tipMarkTodo(String tipId) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
+        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_TIP_TODO), //
+                new BasicNameValuePair("tid", tipId));
+        return (Tip) mHttpApi.doHttpRequest(httpPost, new TipParser());
+    }
+    
+    /**
+     * /tip/markdone
+     */
+    public Tip tipMarkDone(String tipId) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
+        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_TIP_DONE), //
+                new BasicNameValuePair("tid", tipId));
+        return (Tip) mHttpApi.doHttpRequest(httpPost, new TipParser());
     }
     
     private String fullUrl(String url) {

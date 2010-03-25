@@ -13,27 +13,27 @@ import com.joelapenna.foursquared.util.StringFormatters;
 import com.joelapenna.foursquared.widget.TipActivityAdapter;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.DialogInterface.OnDismissListener;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.IOException;
 import java.util.Observable;
@@ -65,14 +65,13 @@ public class TipActivity extends Activity {
     public static final String EXTRA_VENUE_NAME = Foursquared.PACKAGE_NAME
         + ".TipActivity.EXTRA_VENUE_NAME";
     
-    private static final int DIALOG_ID_INFO = 1;
-
     private TipActivityAdapter mListAdapter;
     private StateHolder mStateHolder;
     private ListView mListView;
     private Handler mHandler;
     private RemoteResourceManager mRrm;
     private RemoteResourceManagerObserver mResourcesObserver;
+    private ProgressDialog mDlgProgress;
     
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
@@ -95,6 +94,7 @@ public class TipActivity extends Activity {
         Object retained = getLastNonConfigurationInstance();
         if (retained != null && retained instanceof StateHolder) {
             mStateHolder = (StateHolder) retained;
+            mStateHolder.setActivityForTipTask(this);
         } else {
             mStateHolder = new StateHolder();
             if (getIntent().getExtras() != null && 
@@ -122,6 +122,15 @@ public class TipActivity extends Activity {
     }
     
     @Override
+    public void onResume() {
+        super.onResume();
+        
+        if (mStateHolder.getIsRunningTipTask()) {
+            startProgressBar("sdfs", "sssss");
+        }
+    }
+    
+    @Override
     public void onPause() {
         super.onPause();
         
@@ -132,11 +141,13 @@ public class TipActivity extends Activity {
         if (isFinishing()) {
             unregisterReceiver(mLoggedOutReceiver);
             mHandler.removeCallbacks(mRunnableUpdateUserPhoto);
+            stopProgressBar();
         }
     }
 
     @Override
     public Object onRetainNonConfigurationInstance() {
+        mStateHolder.setActivityForTipTask(null);
         return mStateHolder;
     }
 
@@ -164,6 +175,21 @@ public class TipActivity extends Activity {
         
         mListView = (ListView)findViewById(R.id.tipActivityListView);
         mListView.setAdapter(mListAdapter);
+        mListView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
+                switch (position) {
+                    case TipActivityAdapter.ACTION_ID_ADD_TODO_LIST:
+                        mStateHolder.startTipTask(TipActivity.this, mStateHolder.getTip().getId(), 
+                                TipActivityAdapter.ACTION_ID_ADD_TODO_LIST);
+                        break;
+                    case TipActivityAdapter.ACTION_ID_IVE_DONE_THIS:
+                        mStateHolder.startTipTask(TipActivity.this, mStateHolder.getTip().getId(), 
+                                TipActivityAdapter.ACTION_ID_IVE_DONE_THIS);
+                        break;
+                }
+            }
+        });
     }
     
     private void setUserPhoto(boolean fetchIfMissing) {
@@ -202,46 +228,112 @@ public class TipActivity extends Activity {
         startActivity(intent);
     }
     
-    private void showDialogInfo(String title, String message, String badgeIconUrl) {
-        mStateHolder.setDlgInfoTitle(title);
-        mStateHolder.setDlgInfoMessage(message);
-        mStateHolder.setDlgInfoBadgeIconUrl(badgeIconUrl);
-        showDialog(DIALOG_ID_INFO);
+    private void startProgressBar(String title, String message) {
+        if (mDlgProgress == null) {
+            mDlgProgress = ProgressDialog.show(this, title, message);
+        }
+        mDlgProgress.show();
+    }
+
+    private void stopProgressBar() {
+        if (mDlgProgress != null) {
+            mDlgProgress.dismiss();
+            mDlgProgress = null;
+        }
     }
     
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-            case DIALOG_ID_INFO:
-                AlertDialog dlgInfo = new AlertDialog.Builder(this)
-                    .setTitle(mStateHolder.getDlgInfoTitle())
-                    .setIcon(0)
-                    .setMessage(mStateHolder.getDlgInfoMessage()).create();
-                dlgInfo.setOnDismissListener(new OnDismissListener() {
-                    public void onDismiss(DialogInterface dialog) {
-                        removeDialog(DIALOG_ID_INFO);
-                    }
-                });
-                try {
-                    Uri icon = Uri.parse(mStateHolder.getDlgInfoBadgeIconUrl());
-                    dlgInfo.setIcon(new BitmapDrawable(((Foursquared) getApplication())
-                            .getRemoteResourceManager().getInputStream(icon)));
-                } catch (IOException e) {
-                    Log.e(TAG, "Error loading badge dialog!", e);
-                    dlgInfo.setIcon(R.drawable.default_on);
-                }
-                return dlgInfo;
+    private void onTipTaskComplete(Tip tip, int type, Exception ex) {
+        stopProgressBar();
+        mStateHolder.setIsRunningTipTask(false);
+        if (tip != null) {
+            String message = "";
+            switch (type) {
+                case TipActivityAdapter.ACTION_ID_ADD_TODO_LIST:
+                    message = getResources().getString(
+                            R.string.tip_activity_prgoress_complete_todo);
+                    break;
+                case TipActivityAdapter.ACTION_ID_IVE_DONE_THIS:
+                    message = getResources().getString(
+                            R.string.tip_activity_prgoress_complete_done);
+                    break;
+            }
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
         }
-        return null;
+    }
+    
+    private static class TipTask extends AsyncTask<String, Void, Tip> {
+        private TipActivity mActivity;
+        private String mTipId;
+        private int mTask;
+        private Exception mReason;
+
+        public TipTask(TipActivity activity, String tipid, int task) {
+            mActivity = activity;
+            mTipId = tipid;
+            mTask = task;
+        }
+
+        public void setActivity(TipActivity activity) {
+            mActivity = activity;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mActivity.startProgressBar(mActivity.getResources().getString(
+                    R.string.add_friends_activity_label), mActivity.getResources().getString(
+                    R.string.add_friends_progress_bar_message_find));
+        }
+
+        @Override
+        protected Tip doInBackground(String... params) {
+            try {
+                Foursquared foursquared = (Foursquared) mActivity.getApplication();
+                Foursquare foursquare = foursquared.getFoursquare();
+
+                Tip tip = null;
+                switch (mTask) {
+                    case TipActivityAdapter.ACTION_ID_ADD_TODO_LIST:
+                        tip = foursquare.tipMarkTodo(mTipId);
+                        break;
+                    case TipActivityAdapter.ACTION_ID_IVE_DONE_THIS:
+                        tip = foursquare.tipMarkDone(mTipId);
+                        break;
+                }
+                return tip;
+                
+            } catch (Exception e) {
+                if (DEBUG) Log.d(TAG, "TipTask: Exception performing tip task.", e);
+                mReason = e;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Tip tip) {
+            if (DEBUG) Log.d(TAG, "TipTask: onPostExecute()");
+            if (mActivity != null) {
+                mActivity.onTipTaskComplete(tip, mTask, mReason);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            if (mActivity != null) {
+                mActivity.onTipTaskComplete(null, mTask, new Exception("Tip task cancelled."));
+            }
+        }
     }
     
     private static class StateHolder {
         private Tip mTip;
-        private String mDlgInfoTitle;
-        private String mDlgInfoMessage;
-        private String mDlgInfoBadgeIconUrl;
+        private TipTask mTipTask;
+        private boolean mIsRunningTipTask;
+        
         
         public StateHolder() {
+            mIsRunningTipTask = false;
         }
         
         public void setTip(Tip tip) { 
@@ -251,29 +343,25 @@ public class TipActivity extends Activity {
         public Tip getTip() {
             return mTip;
         }
-        
-        public String getDlgInfoTitle() {
-            return mDlgInfoTitle;
-        }
-        
-        public void setDlgInfoTitle(String text) {
-            mDlgInfoTitle = text;
+
+        public void startTipTask(TipActivity activity, String tipId, int task) {
+            mIsRunningTipTask = true;
+            mTipTask = new TipTask(activity, tipId, task);
+            mTipTask.execute();
         }
 
-        public String getDlgInfoMessage() {
-            return mDlgInfoMessage;
+        public void setActivityForTipTask(TipActivity activity) {
+            if (mTipTask != null) {
+                mTipTask.setActivity(activity);
+            }
         }
         
-        public void setDlgInfoMessage(String text) {
-            mDlgInfoMessage = text;
+        public void setIsRunningTipTask(boolean isRunningTipTask) {
+            mIsRunningTipTask = isRunningTipTask;
         }
         
-        public String getDlgInfoBadgeIconUrl() {
-            return mDlgInfoBadgeIconUrl;
-        }
-        
-        public void setDlgInfoBadgeIconUrl(String url) {
-            mDlgInfoBadgeIconUrl = url;
+        public boolean getIsRunningTipTask() {
+            return mIsRunningTipTask;
         }
     }
     
