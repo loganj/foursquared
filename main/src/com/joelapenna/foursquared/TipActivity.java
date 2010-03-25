@@ -126,7 +126,7 @@ public class TipActivity extends Activity {
         super.onResume();
         
         if (mStateHolder.getIsRunningTipTask()) {
-            startProgressBar("sdfs", "sssss");
+            startProgressBar(mStateHolder.getTask());
         }
     }
     
@@ -228,9 +228,23 @@ public class TipActivity extends Activity {
         startActivity(intent);
     }
     
-    private void startProgressBar(String title, String message) {
+    private void startProgressBar(int task) {
         if (mDlgProgress == null) {
-            mDlgProgress = ProgressDialog.show(this, title, message);
+            
+            String message = "";
+            switch (task) {
+                case TipActivityAdapter.ACTION_ID_ADD_TODO_LIST:
+                    message = getResources().getString(
+                        R.string.tip_activity_action_todo);
+                    break;
+                case TipActivityAdapter.ACTION_ID_IVE_DONE_THIS:
+                    message = getResources().getString(
+                        R.string.tip_activity_action_done_this);
+                    break;
+            }
+
+            mDlgProgress = ProgressDialog.show(
+                this, getResources().getString(R.string.tip_activity_prgoress_title), message);
         }
         mDlgProgress.show();
     }
@@ -281,9 +295,11 @@ public class TipActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
-            mActivity.startProgressBar(mActivity.getResources().getString(
-                    R.string.add_friends_activity_label), mActivity.getResources().getString(
-                    R.string.add_friends_progress_bar_message_find));
+            mActivity.startProgressBar(mTask);
+        }
+        
+        public int getTask() {
+            return mTask;
         }
 
         @Override
@@ -342,6 +358,10 @@ public class TipActivity extends Activity {
         
         public Tip getTip() {
             return mTip;
+        }
+        
+        public int getTask() {
+            return mTipTask.getTask();
         }
 
         public void startTipTask(TipActivity activity, String tipId, int task) {
