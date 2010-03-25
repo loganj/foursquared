@@ -34,17 +34,33 @@
     <LinearLayout 
       android:layout_width="fill_parent" 
       android:layout_height="wrap_content"
+      android:layout_weight="1"
       android:paddingLeft="10dip"
-      android:orientation="vertical" 
+      android:orientation="horizontal"
+      android:gravity="center_vertical"  
       >
        
       <TextView 
         android:id="@+id/tipActivityName" 
-        android:layout_width="fill_parent" 
+        android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextViewStyleUserDetailsActivityTitle" />
         
+      <LinearLayout 
+        android:layout_width="0dip" 
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+        
+      <ImageView
+        android:layout_width="9dip"
+        android:layout_height="13dip"
+        android:src="@drawable/arrow_white"
+        android:scaleType="fitCenter"  
+        android:gravity="center_vertical" 
+        android:layout_marginRight="5dip" />
+      
     </LinearLayout>
+      
   </LinearLayout>
  
   <ListView 
