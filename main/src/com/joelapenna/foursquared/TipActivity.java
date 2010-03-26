@@ -65,6 +65,10 @@ public class TipActivity extends Activity {
     public static final String EXTRA_VENUE_NAME = Foursquared.PACKAGE_NAME
         + ".TipActivity.EXTRA_VENUE_NAME";
     
+    public static final int RESULT_TIP_NO_CHANGE   = 0;
+    public static final int RESULT_TIP_MARKED_TODO = 1;
+    public static final int RESULT_TIP_MARKED_DONE = 2;
+    
     private TipActivityAdapter mListAdapter;
     private StateHolder mStateHolder;
     private ListView mListView;
@@ -265,10 +269,12 @@ public class TipActivity extends Activity {
                 case TipActivityAdapter.ACTION_ID_ADD_TODO_LIST:
                     message = getResources().getString(
                             R.string.tip_activity_prgoress_complete_todo);
+                    setResult(RESULT_TIP_MARKED_TODO);
                     break;
                 case TipActivityAdapter.ACTION_ID_IVE_DONE_THIS:
                     message = getResources().getString(
                             R.string.tip_activity_prgoress_complete_done);
+                    setResult(RESULT_TIP_MARKED_DONE);
                     break;
             }
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
