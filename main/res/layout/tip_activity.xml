@@ -31,36 +31,35 @@
       android:scaleType="fitCenter"  
       android:gravity="center_vertical" />
       
-    <LinearLayout 
-      android:layout_width="fill_parent" 
+    <TextView 
+      android:id="@+id/tipActivityName" 
+      android:layout_width="wrap_content" 
       android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:paddingLeft="10dip"
-      android:orientation="horizontal"
+      android:paddingLeft="8dip"
+      android:textAppearance="@style/TextViewStyleUserDetailsActivityTitle" />
+        
+    <LinearLayout 
+      android:layout_width="0dip" 
+      android:layout_height="fill_parent"
+      android:layout_weight="1" />
+      
+    <LinearLayout 
+      android:layout_width="wrap_content" 
+      android:layout_height="fill_parent"
       android:gravity="center_vertical"  
       >
-       
-      <TextView 
-        android:id="@+id/tipActivityName" 
-        android:layout_width="wrap_content" 
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextViewStyleUserDetailsActivityTitle" />
-        
-      <LinearLayout 
-        android:layout_width="0dip" 
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
-        
+      
       <ImageView
         android:layout_width="9dip"
         android:layout_height="13dip"
         android:src="@drawable/arrow_white"
         android:scaleType="fitCenter"  
         android:gravity="center_vertical" 
-        android:layout_marginRight="5dip" />
-      
+        android:layout_marginLeft="3dip"
+        android:layout_marginRight="3dip" />
+        
     </LinearLayout>
-      
+        
   </LinearLayout>
  
   <ListView 
