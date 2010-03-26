@@ -65,9 +65,8 @@ public class TipActivity extends Activity {
     public static final String EXTRA_VENUE_NAME = Foursquared.PACKAGE_NAME
         + ".TipActivity.EXTRA_VENUE_NAME";
     
-    public static final int RESULT_TIP_NO_CHANGE   = 0;
-    public static final int RESULT_TIP_MARKED_TODO = 1;
-    public static final int RESULT_TIP_MARKED_DONE = 2;
+    public static final int RESULT_TIP_MARKED_TODO = -2;
+    public static final int RESULT_TIP_MARKED_DONE = -3;
     
     private TipActivityAdapter mListAdapter;
     private StateHolder mStateHolder;
