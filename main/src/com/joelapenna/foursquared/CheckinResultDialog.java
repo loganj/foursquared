@@ -222,8 +222,23 @@ public class CheckinResultDialog extends Dialog
             return;
         }
         
+        // For now, get rid of specials not tied to the current venue. If the special is
+        // tied to this venue, then there would be no <venue> block associated with the
+        // special. If there is a <venue> block associated with the special, it means it
+        // belongs to another venue and we won't show it.
+        Group<Special> localSpecials = new Group<Special>();
+        for (Special it : specials) {
+            if (it.getVenue() == null) {
+                localSpecials.add(it);
+            }
+        }
+        
+        if (localSpecials.size() < 1) {
+            return;
+        }
+        
         SpecialListAdapter adapter = new SpecialListAdapter(getContext());
-        adapter.setGroup(specials);
+        adapter.setGroup(localSpecials);
         
         adapterMain.addSection(
             getContext().getResources().getString(R.string.checkin_specials), adapter);
