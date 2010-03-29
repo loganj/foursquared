@@ -101,20 +101,32 @@ public class StringFormatters {
      * Returns a format that will look like: "9:09 AM".
      */
     public static String getTodayTimeString(String created) {
-        return DATE_FORMAT_TODAY.format(new Date(created));
+        try {
+            return DATE_FORMAT_TODAY.format(DATE_FORMAT.parse(created));
+        } catch (ParseException e) {
+            return created;
+        }
     }
     
     /**
      * Returns a format that will look like: "Sun 1:56 PM".
      */
     public static String getYesterdayTimeString(String created) {
-        return DATE_FORMAT_YESTERDAY.format(new Date(created));
+        try {
+            return DATE_FORMAT_YESTERDAY.format(DATE_FORMAT.parse(created));
+        } catch (ParseException e) {
+            return created;
+        }
     }
     
     /**
      * Returns a format that will look like: "Sat Mar 20".
      */
     public static String getOlderTimeString(String created) {
-        return DATE_FORMAT_OLDER.format(new Date(created));
+        try {
+            return DATE_FORMAT_OLDER.format(DATE_FORMAT.parse(created));
+        } catch (ParseException e) {
+            return created;
+        }
     }
 }
