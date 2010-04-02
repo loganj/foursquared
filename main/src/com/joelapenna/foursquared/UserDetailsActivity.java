@@ -7,6 +7,7 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
@@ -25,6 +26,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -52,7 +55,11 @@ public class UserDetailsActivity extends TabActivity {
 
     public static final String EXTRA_SHOW_ADD_FRIEND_OPTIONS = Foursquared.PACKAGE_NAME
             + ".UserDetailsActivity.EXTRA_SHOW_ADD_FRIEND_OPTIONS";
+    
+    private static final int MENU_FRIEND_REQUESTS    = 0;
+    private static final int MENU_SHOUT              = 1;
 
+    
     private ImageView mImageViewPhoto;
     private TextView mTextViewName;
     private LinearLayout mLayoutNumMayorships;
@@ -341,6 +348,39 @@ public class UserDetailsActivity extends TabActivity {
         } else {
             NotificationsUtil.ToastReasonForFailure(this, ex);
         }
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        
+        // We have a different set of menu options for the logged-in user vs
+        // viewing a friend and potentially a stranger even.
+        User user = mStateHolder.getUser();
+        if (user != null && user.getId().equals(((Foursquared) getApplication()).getUserId())) {
+            menu.add(Menu.NONE, MENU_FRIEND_REQUESTS, Menu.NONE, 
+                    R.string.preferences_friend_requests_title).setIcon(R.drawable.friends_tab_selected);
+            menu.add(Menu.NONE, MENU_SHOUT, Menu.NONE, 
+                    R.string.shout_action_label).setIcon(R.drawable.ic_menu_shout);
+            MenuUtils.addPreferencesToMenu(this, menu);
+        }
+        
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case MENU_FRIEND_REQUESTS:
+                startActivity(new Intent(this, FriendRequestsActivity.class));
+                return true;
+            case MENU_SHOUT:
+                Intent intent = new Intent(this, CheckinOrShoutGatherInfoActivity.class);
+                intent.putExtra(CheckinOrShoutGatherInfoActivity.INTENT_EXTRA_IS_SHOUT, true);
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
