@@ -28,6 +28,7 @@ public class Venue implements FoursquareType, Parcelable {
     private String mId;
     private String mName;
     private String mPhone;
+    private Group<Special> mSpecials;
     private String mState;
     private Stats mStats;
     private Tags mTags;
@@ -60,6 +61,15 @@ public class Venue implements FoursquareType, Parcelable {
         for (int i = 0; i < numCheckins; i++) {
             Checkin checkin = in.readParcelable(Checkin.class.getClassLoader());
             mCheckins.add(checkin); 
+        }
+        
+        int numSpecials = in.readInt();
+        if (numSpecials > 0) {
+            mSpecials = new Group<Special>();
+            for (int i = 0; i < numSpecials; i++) {
+                Special special = in.readParcelable(Special.class.getClassLoader());
+                mSpecials.add(special);
+            }
         }
         
         if (in.readInt() == 1) {
@@ -190,7 +200,15 @@ public class Venue implements FoursquareType, Parcelable {
     public void setPhone(String phone) {
         mPhone = phone;
     }
+    
+    public Group<Special> getSpecials() {
+        return mSpecials;
+    }
 
+    public void setSpecials(Group<Special> specials) {
+        mSpecials = specials;
+    }
+    
     public String getState() {
         return mState;
     }
@@ -276,6 +294,15 @@ public class Venue implements FoursquareType, Parcelable {
             out.writeInt(mCheckins.size());
             for (int i = 0; i < mCheckins.size(); i++) {
                 out.writeParcelable(mCheckins.get(i), flags);
+            }
+        } else {
+            out.writeInt(0);
+        }
+        
+        if (mSpecials != null) {
+            out.writeInt(mSpecials.size());
+            for (int i = 0; i < mSpecials.size(); i++) {
+                out.writeParcelable((Special)mSpecials.get(i), flags);
             }
         } else {
             out.writeInt(0);

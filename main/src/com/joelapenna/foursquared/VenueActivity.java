@@ -4,6 +4,7 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
@@ -104,6 +105,12 @@ public class VenueActivity extends TabActivity {
                 } else {
                     startCheckin();   
                 }
+            }
+        });
+        mVenueView.setSpecialOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showWebViewForSpecial();
             }
         });
 
@@ -329,6 +336,20 @@ public class VenueActivity extends TabActivity {
         intent.putExtra(CheckinExecuteActivity.INTENT_EXTRA_TELL_TWITTER, tellTwitter);
         intent.putExtra(CheckinExecuteActivity.INTENT_EXTRA_TELL_FACEBOOK, tellFacebook);
         startActivityForResult(intent, RESULT_CODE_ACTIVITY_CHECKIN_EXECUTE);
+    }
+    
+    private void showWebViewForSpecial() {
+        // api.foursquare.com
+        // specialid
+        // userid
+        // http://%@/iphone/special?sid=%@&uid=%@
+        StringBuilder sb = new StringBuilder(128);
+        sb.append("http://api.foursquare.com/iphone/special?sid=");
+        sb.append(mStateHolder.venue.getSpecials().get(0).getId());
+        sb.append("&uid=");
+        sb.append(((Foursquared)getApplication()).getUserId());
+        
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(sb.toString())));
     }
 
     class VenueObservable extends Observable {
