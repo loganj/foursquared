@@ -2,7 +2,7 @@
 <manifest
   xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.joelapenna.foursquared"
-  android:versionName="2010-03-29" android:versionCode="2010032900">
+  android:versionName="2010-04-08" android:versionCode="2010040800">
 
   <uses-permission
     android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -362,7 +362,11 @@
       android:name=".ChangelogActivity"
       android:theme="@android:style/Theme.Dialog"
       android:label="@string/changelog_activity_title" />
-     
+
+    <activity
+      android:name=".SpecialWebViewActivity" >
+    </activity> 
+    
     <receiver
       android:name=".appwidget.FriendsAppWidgetProvider"
       android:label="@string/friends_appwidget_3x3_label">

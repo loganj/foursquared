@@ -4,7 +4,6 @@
 
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
@@ -339,17 +338,15 @@ public class VenueActivity extends TabActivity {
     }
     
     private void showWebViewForSpecial() {
-        // api.foursquare.com
-        // specialid
-        // userid
-        // http://%@/iphone/special?sid=%@&uid=%@
-        StringBuilder sb = new StringBuilder(128);
-        sb.append("http://api.foursquare.com/iphone/special?sid=");
-        sb.append(mStateHolder.venue.getSpecials().get(0).getId());
-        sb.append("&uid=");
-        sb.append(((Foursquared)getApplication()).getUserId());
         
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(sb.toString())));
+        Intent intent = new Intent(this, SpecialWebViewActivity.class);
+        intent.putExtra(SpecialWebViewActivity.EXTRA_CREDENTIALS_USERNAME, 
+                PreferenceManager.getDefaultSharedPreferences(this).getString(Preferences.PREFERENCE_LOGIN, ""));
+        intent.putExtra(SpecialWebViewActivity.EXTRA_CREDENTIALS_PASSWORD, 
+                PreferenceManager.getDefaultSharedPreferences(this).getString(Preferences.PREFERENCE_PASSWORD, ""));
+        intent.putExtra(SpecialWebViewActivity.EXTRA_SPECIAL_ID, 
+                mStateHolder.venue.getSpecials().get(0).getId());
+        startActivity(intent);
     }
 
     class VenueObservable extends Observable {

@@ -180,4 +180,6 @@
   <string name="tip_activity_prgoress_message">Updating...</string>
   <string name="tip_activity_prgoress_complete_todo">Tip has been marked as a to-do!</string>
   <string name="tip_activity_prgoress_complete_done">Tip has been marked as done!</string>
+  <string name="sign_up_gender">Gender</string>
+  <string name="sign_up_progress_bar_message_send_request">Joining Foursquare...</string>
 </resources> 

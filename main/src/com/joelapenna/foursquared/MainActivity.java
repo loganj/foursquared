@@ -150,8 +150,10 @@ public class MainActivity extends TabActivity {
         setVisible(false);
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setAction(Intent.ACTION_MAIN);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
-                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(
+            Intent.FLAG_ACTIVITY_NO_HISTORY | 
+            Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | 
+            Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }

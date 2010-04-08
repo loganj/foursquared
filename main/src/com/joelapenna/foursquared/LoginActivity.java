@@ -123,8 +123,8 @@ public class LoginActivity extends Activity {
         mNewAccountTextView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent( //
-                        Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_MOBILE_SIGNUP)));
+                startActivity(new Intent(
+                    Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_MOBILE_SIGNUP)));
             }
         });
 
@@ -216,6 +216,7 @@ public class LoginActivity extends Activity {
             Foursquared foursquared = (Foursquared) getApplication();
 
             if (loggedIn) {
+
                 sendBroadcast(new Intent(Foursquared.INTENT_ACTION_LOGGED_IN));
                 Toast.makeText(LoginActivity.this, getString(R.string.login_welcome_toast),
                         Toast.LENGTH_LONG).show();

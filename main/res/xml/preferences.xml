@@ -12,7 +12,7 @@
       android:title="@string/preferences_immediate_checkin_title"
       android:summaryOn="@string/preferences_immediate_checkin_summary_on"
       android:summaryOff="@string/preferences_immediate_checkin_summary_off"
-      android:defaultValue="true" />
+      android:defaultValue="false" />
     <CheckBoxPreference
       android:key="share_checkin"
       android:persistent="true"
