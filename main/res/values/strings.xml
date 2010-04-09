@@ -183,4 +183,5 @@
   <string name="sign_up_gender">Gender</string>
   <string name="sign_up_progress_bar_message_send_request">Joining Foursquare...</string>
   <string name="venue_activity_checkin_button">CHECK-IN HERE</string>
+  <string name="venue_activity_checkin_button_quick">QUICK CHECK-IN HERE</string>
 </resources> 
