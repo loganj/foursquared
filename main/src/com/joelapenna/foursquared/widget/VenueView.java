@@ -6,11 +6,15 @@ package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.VenueActivity;
+import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -96,5 +100,17 @@ public class VenueView extends RelativeLayout {
     
     public void setSpecialOnClickListener(OnClickListener l) {
         mVenueSpecialIcon.setOnClickListener(l);
+    }
+    
+    public void updateCheckinButtonText() {
+        // If the user has enabled 'quick check-in', then update the text of the button
+        // to reflect this.
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(
+                getContext());
+        if (settings.getBoolean(Preferences.PREFERENCE_IMMEDIATE_CHECKIN, false)) {
+            mCheckinButton.setText(getContext().getString(R.string.venue_activity_checkin_button_quick));
+        } else {
+            mCheckinButton.setText(getContext().getString(R.string.venue_activity_checkin_button));
+        }
     }
 }
