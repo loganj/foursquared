@@ -126,6 +126,13 @@ public class VenueActivity extends TabActivity {
         super.onDestroy();
         unregisterReceiver(mLoggedOutReceiver);
     }
+    
+    @Override 
+    public void onResume() {
+        super.onResume();
+        
+        mVenueView.updateCheckinButtonText();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
