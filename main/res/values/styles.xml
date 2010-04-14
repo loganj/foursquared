@@ -224,6 +224,11 @@
     <item name="android:textStyle">bold</item>
   </style>
   
+  <style name="TextViewStyleUserReverseGeoLocation">
+    <item name="android:textSize">11dip</item>
+    <item name="android:textColor">#FFF</item>
+  </style>
+  
   <!-- Provides a transparent background for an activity. Without inheriting from this
        base theme style, 1.5 makes the background solid black instead of transparent.
    -->

@@ -359,8 +359,8 @@ public class UserDetailsActivity extends TabActivity {
         User user = mStateHolder.getUser();
         if (user != null && user.getId().equals(((Foursquared) getApplication()).getUserId())) {
             menu.add(Menu.NONE, MENU_FRIEND_REQUESTS, Menu.NONE, 
-                    R.string.preferences_friend_requests_title).setIcon(R.drawable.friends_tab_selected);
-            menu.add(Menu.NONE, MENU_SHOUT, Menu.NONE, 
+                    R.string.preferences_friend_requests_title).setIcon(R.drawable.ic_menu_friends);
+            menu.add(Menu.NONE, MENU_SHOUT, Menu.NONE,  
                     R.string.shout_action_label).setIcon(R.drawable.ic_menu_shout);
             MenuUtils.addPreferencesToMenu(this, menu);
         }
