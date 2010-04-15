@@ -55,7 +55,7 @@ public class CheckinExecuteActivity extends Activity {
     public static final String INTENT_EXTRA_TELL_FRIENDS = Foursquared.PACKAGE_NAME
             + ".CheckinExecuteActivity.INTENT_EXTRA_TELL_FRIENDS";
     public static final String INTENT_EXTRA_TELL_FOLLOWERS = Foursquared.PACKAGE_NAME
-    + ".CheckinExecuteActivity.INTENT_EXTRA_TELL_FOLLOWERS";
+            + ".CheckinExecuteActivity.INTENT_EXTRA_TELL_FOLLOWERS";
     public static final String INTENT_EXTRA_TELL_TWITTER = Foursquared.PACKAGE_NAME
             + ".CheckinExecuteActivity.INTENT_EXTRA_TELL_TWITTER";
     public static final String INTENT_EXTRA_TELL_FACEBOOK = Foursquared.PACKAGE_NAME
