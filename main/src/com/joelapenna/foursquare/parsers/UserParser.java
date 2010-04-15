@@ -76,10 +76,13 @@ public class UserParser extends AbstractParser<User> {
 
             } else if ("settings".equals(name)) {
                 user.setSettings(new SettingsParser().parse(parser));
-
+            
             } else if ("twitter".equals(name)) {
                 user.setTwitter(parser.nextText());
 
+            } else if ("types".equals(name)) {
+                user.setTypes(new TypesParser().parse(parser));
+                
             } else {
                 // Consume something we don't understand.
                 if (DEBUG) LOG.log(Level.FINE, "Found tag that we don't recognize: " + name);

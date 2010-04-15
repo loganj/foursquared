@@ -361,12 +361,14 @@ public class Foursquared extends Application {
                     try {
                         // Update user info
                         Log.d(TAG, "Updating user.");
+                        
                         // Use location when requesting user information, if we
                         // have it.
                         Foursquare.Location location = LocationUtils
                                 .createFoursquareLocation(getLastKnownLocation());
                         User user = getFoursquare().user(
                                 null, false, false, location);
+
                         Editor editor = mPrefs.edit();
                         Preferences.storeUser(editor, user);
                         editor.commit();

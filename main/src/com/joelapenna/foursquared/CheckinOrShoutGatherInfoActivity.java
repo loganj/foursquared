@@ -152,6 +152,11 @@ public class CheckinOrShoutGatherInfoActivity extends Activity {
         CheckBox cbTellFriends = (CheckBox)findViewById(R.id.checkboxTellFriends);
         cbTellFriends.setChecked(settings.getBoolean(Preferences.PREFERENCE_SHARE_CHECKIN, true));
         
+        CheckBox cbTellFollowers = (CheckBox)findViewById(R.id.checkboxTellFollowers);
+        if (settings.getBoolean(Preferences.PREFERENCE_CAN_HAVE_FOLLOWERS, false)) {
+            cbTellFollowers.setVisibility(View.VISIBLE);
+        }
+        
         CheckBox cbTellTwitter = (CheckBox)findViewById(R.id.checkboxTellTwitter);
         if (settings.getBoolean(Preferences.PREFERENCE_TWITTER_CHECKIN, false)) {
             cbTellTwitter.setChecked(true);
@@ -178,6 +183,7 @@ public class CheckinOrShoutGatherInfoActivity extends Activity {
     
     private void checkin() {
         CheckBox cbTellFriends = (CheckBox)findViewById(R.id.checkboxTellFriends);
+        CheckBox cbTellFollowers = (CheckBox)findViewById(R.id.checkboxTellFollowers);
         CheckBox cbTellTwitter = (CheckBox)findViewById(R.id.checkboxTellTwitter);
         CheckBox cbTellFacebook = (CheckBox)findViewById(R.id.checkboxTellFacebook);
         EditText editShout = (EditText)findViewById(R.id.editTextShout);
@@ -191,6 +197,7 @@ public class CheckinOrShoutGatherInfoActivity extends Activity {
             intent.putExtra(CheckinExecuteActivity.INTENT_EXTRA_VENUE_ID, mStateHolder.getVenueId());
             intent.putExtra(CheckinExecuteActivity.INTENT_EXTRA_SHOUT, editShout.getText().toString());
             intent.putExtra(CheckinExecuteActivity.INTENT_EXTRA_TELL_FRIENDS, cbTellFriends.isChecked());
+            intent.putExtra(CheckinExecuteActivity.INTENT_EXTRA_TELL_FOLLOWERS, cbTellFollowers.isChecked());
             intent.putExtra(CheckinExecuteActivity.INTENT_EXTRA_TELL_TWITTER, cbTellTwitter.isChecked());
             intent.putExtra(CheckinExecuteActivity.INTENT_EXTRA_TELL_FACEBOOK, cbTellFacebook.isChecked());
         }
@@ -198,6 +205,7 @@ public class CheckinOrShoutGatherInfoActivity extends Activity {
             intent.setClass(this, ShoutExecuteActivity.class);
             intent.putExtra(ShoutExecuteActivity.INTENT_EXTRA_SHOUT, editShout.getText().toString());
             intent.putExtra(ShoutExecuteActivity.INTENT_EXTRA_TELL_FRIENDS, cbTellFriends.isChecked());
+            intent.putExtra(ShoutExecuteActivity.INTENT_EXTRA_TELL_FOLLOWERS, cbTellFollowers.isChecked());
             intent.putExtra(ShoutExecuteActivity.INTENT_EXTRA_TELL_TWITTER, cbTellTwitter.isChecked());
             intent.putExtra(ShoutExecuteActivity.INTENT_EXTRA_TELL_FACEBOOK, cbTellFacebook.isChecked());
         }

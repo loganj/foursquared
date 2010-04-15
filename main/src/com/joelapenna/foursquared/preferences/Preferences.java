@@ -11,6 +11,7 @@ import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.util.UserUtils;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -58,6 +59,9 @@ public class Preferences {
     
     // Extra info about the user, their gender, to control icon used for 'me' in the UI.
     private static final String PREFERENCE_GENDER = "gender";
+    
+    // Extra info, can the user have followers or not.
+    public static final String PREFERENCE_CAN_HAVE_FOLLOWERS = "can_have_followers";
 
     // Not-in-XML preferences for dumpcatcher
     public static final String PREFERENCE_DUMPCATCHER_CLIENT = "dumpcatcher_client";
@@ -163,6 +167,7 @@ public class Preferences {
             editor.putBoolean(PREFERENCE_TWITTER_CHECKIN, user.getSettings().sendtotwitter());
             editor.putBoolean(PREFERENCE_FACEBOOK_CHECKIN, user.getSettings().sendtofacebook());
             editor.putString(PREFERENCE_GENDER, user.getGender());
+            editor.putBoolean(PREFERENCE_CAN_HAVE_FOLLOWERS, UserUtils.getCanHaveFollowers(user));
             if (DEBUG) Log.d(TAG, "Setting user info");
         } else {
             if (Preferences.DEBUG) Log.d(Preferences.TAG, "Unable to lookup user.");

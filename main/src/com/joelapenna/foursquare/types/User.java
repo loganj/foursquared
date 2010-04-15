@@ -30,6 +30,7 @@ public class User implements FoursquareType, Parcelable {
     private String mPhone;
     private String mPhoto;
     private Settings mSettings;
+    private Types mTypes;
     private String mTwitter;
     private Group<Venue> mMayorships;
 
@@ -69,6 +70,13 @@ public class User implements FoursquareType, Parcelable {
         for (int i = 0; i < numMayorships; i++) {
             Venue venue = in.readParcelable(Venue.class.getClassLoader());
             mMayorships.add(venue);
+        }
+        
+        mTypes = new Types();
+        int numTypes = in.readInt();
+        for (int i = 0; i < numTypes; i++) {
+            String type = in.readString();
+            mTypes.add(type);
         }
     }
     
@@ -194,6 +202,14 @@ public class User implements FoursquareType, Parcelable {
     public void setSettings(Settings settings) {
         mSettings = settings;
     }
+    
+    public Types getTypes() {
+        return mTypes;
+    }
+
+    public void setTypes(Types types) {
+        mTypes = types;
+    }
 
     public String getTwitter() {
         return mTwitter;
@@ -216,7 +232,7 @@ public class User implements FoursquareType, Parcelable {
         ParcelUtils.writeStringToParcel(out, mPhone);
         ParcelUtils.writeStringToParcel(out, mPhoto);
         ParcelUtils.writeStringToParcel(out, mTwitter);
-
+        
         if (mBadges != null) {
             out.writeInt(mBadges.size());
             for (int i = 0; i < mBadges.size(); i++) {
@@ -244,6 +260,15 @@ public class User implements FoursquareType, Parcelable {
             out.writeInt(mMayorships.size());
             for (int i = 0; i < mMayorships.size(); i++) {
                 out.writeParcelable(mMayorships.get(i), flags);
+            }
+        } else {
+            out.writeInt(0);
+        }
+
+        if (mTypes != null) {
+            out.writeInt(mTypes.size());
+            for (int i = 0; i < mTypes.size(); i++) {
+                out.writeString(mTypes.get(i));
             }
         } else {
             out.writeInt(0);

@@ -54,6 +54,8 @@ public class CheckinExecuteActivity extends Activity {
             + ".CheckinExecuteActivity.INTENT_EXTRA_SHOUT";
     public static final String INTENT_EXTRA_TELL_FRIENDS = Foursquared.PACKAGE_NAME
             + ".CheckinExecuteActivity.INTENT_EXTRA_TELL_FRIENDS";
+    public static final String INTENT_EXTRA_TELL_FOLLOWERS = Foursquared.PACKAGE_NAME
+    + ".CheckinExecuteActivity.INTENT_EXTRA_TELL_FOLLOWERS";
     public static final String INTENT_EXTRA_TELL_TWITTER = Foursquared.PACKAGE_NAME
             + ".CheckinExecuteActivity.INTENT_EXTRA_TELL_TWITTER";
     public static final String INTENT_EXTRA_TELL_FACEBOOK = Foursquared.PACKAGE_NAME
@@ -107,6 +109,7 @@ public class CheckinExecuteActivity extends Activity {
                 location,
                 getIntent().getExtras().getString(INTENT_EXTRA_SHOUT),
                 getIntent().getExtras().getBoolean(INTENT_EXTRA_TELL_FRIENDS, false),
+                getIntent().getExtras().getBoolean(INTENT_EXTRA_TELL_FOLLOWERS, false),
                 getIntent().getExtras().getBoolean(INTENT_EXTRA_TELL_TWITTER, false),
                 getIntent().getExtras().getBoolean(INTENT_EXTRA_TELL_FACEBOOK, false)
             );
@@ -205,6 +208,7 @@ public class CheckinExecuteActivity extends Activity {
         private Location mLocation;
         private String mShout;
         private boolean mTellFriends;
+        private boolean mTellFollowers;
         private boolean mTellTwitter;
         private boolean mTellFacebook;
         private Exception mReason;
@@ -214,6 +218,7 @@ public class CheckinExecuteActivity extends Activity {
                            Location location,
                            String shout,
                            boolean tellFriends, 
+                           boolean tellFollowers,
                            boolean tellTwitter,
                            boolean tellFacebook) {
             mActivity = activity;
@@ -221,6 +226,7 @@ public class CheckinExecuteActivity extends Activity {
             mLocation = location;
             mShout = shout;
             mTellFriends = tellFriends;
+            mTellFollowers = tellFollowers;
             mTellTwitter = tellTwitter;
             mTellFacebook = tellFacebook;
         }
@@ -249,6 +255,7 @@ public class CheckinExecuteActivity extends Activity {
                     LocationUtils.createFoursquareLocation(mLocation), 
                     mShout, 
                    !mTellFriends, // (isPrivate) 
+                    mTellFollowers,
                     mTellTwitter, 
                     mTellFacebook);
                 
@@ -305,10 +312,13 @@ public class CheckinExecuteActivity extends Activity {
                               Location location,
                               String shout,
                               boolean tellFriends, 
+                              boolean tellFollowers,
                               boolean tellTwitter,
                               boolean tellFacebook) {
             mIsRunning = true;
-            mTask = new CheckinTask(activity, venueId, location, shout, tellFriends, tellTwitter, tellFacebook);
+            mTask = new CheckinTask(
+                    activity, venueId, location, shout, tellFriends, 
+                    tellFollowers, tellTwitter, tellFacebook);
             mTask.execute();
         }
 

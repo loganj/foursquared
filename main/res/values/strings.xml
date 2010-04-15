@@ -110,6 +110,7 @@
   <string name="tell_facebook">Tell Facebook</string>
   <string name="tell_my_friends">Tell my Friends</string>
   <string name="tell_twitter">Tell Twitter</string>
+  <string name="tell_followers">Send to followers</string>
   <string name="tip_add_spinner_prompt">Select a List</string>
   <string name="tip_says">%s says</string>
   <string name="tips_activity_label">foursquare Venue Tips</string>

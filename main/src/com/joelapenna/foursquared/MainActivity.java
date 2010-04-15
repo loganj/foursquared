@@ -56,6 +56,8 @@ public class MainActivity extends TabActivity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.main_activity);
         initTabHost();
+        
+        ((Foursquared) getApplication()).requestUpdateUser();
     }
 
     @Override

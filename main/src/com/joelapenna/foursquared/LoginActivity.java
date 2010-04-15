@@ -189,7 +189,7 @@ public class LoginActivity extends Activity {
                 Foursquare.Location location = null;
                 location = LocationUtils.createFoursquareLocation(
                     foursquared.getLastKnownLocation());
-
+Log.e("WWWW", "Well we're trying to log ya in freind...");  
                 boolean loggedIn = Preferences.loginUser(foursquare, phoneNumber, password,
                         location, editor);
 

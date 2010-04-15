@@ -116,4 +116,14 @@ public class UserUtils {
             return R.drawable.ic_menu_myinfo_boy;
         }
     }
+    
+    public static boolean getCanHaveFollowers(User user) {
+        if (user.getTypes() != null && user.getTypes().size() > 0) {
+            if (user.getTypes().contains("canHaveFollowers")) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 }

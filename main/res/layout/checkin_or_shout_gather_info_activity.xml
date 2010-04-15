@@ -24,6 +24,15 @@
       />
   
     <CheckBox  
+      android:id="@+id/checkboxTellFollowers" 
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content"
+      android:text="@string/tell_followers"
+      android:textColor="#333"
+      android:visibility="gone"
+      />
+      
+    <CheckBox  
       android:id="@+id/checkboxTellTwitter" 
       android:layout_width="fill_parent" 
       android:layout_height="wrap_content"
