@@ -12,6 +12,7 @@ import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.error.LocationException;
 import com.joelapenna.foursquared.location.BestLocationListener;
 import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
@@ -25,6 +26,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -33,6 +35,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -278,6 +281,12 @@ public class NearbyVenuesActivity extends LoadableListActivity {
 
         private Exception mReason = null;
         private String mReverseGeoLoc;
+        private boolean mClearGeolocationOnSearch;
+        
+        public SearchTask(boolean clearGeolocationOnSearch) {
+            super();
+            mClearGeolocationOnSearch = clearGeolocationOnSearch;
+        }
 
         @Override
         public void onPreExecute() {
@@ -285,13 +294,28 @@ public class NearbyVenuesActivity extends LoadableListActivity {
             setProgressBarIndeterminateVisibility(true);
             ensureTitle(false);
             setLoadingView();
+
+            if (mClearGeolocationOnSearch) {
+                Foursquared foursquared = ((Foursquared) getApplication());
+                foursquared.clearLastKnownLocation();
+                foursquared.removeLocationUpdates(mSearchLocationObserver);
+                foursquared.requestLocationUpdates(mSearchLocationObserver);
+            }
         }
 
         @Override
         public Group<Group<Venue>> doInBackground(Void... params) {
             
             Foursquare foursquare = ((Foursquared) getApplication()).getFoursquare();
+            
             try {
+                // If the user has chosen to clear their geolocation on each search, wait briefly
+                // for a new fix to come in. The two-second wait time is arbitrary and can be 
+                // changed to something more intelligent.
+                if (mClearGeolocationOnSearch) {
+                    Thread.sleep(2000);
+                }
+                
                 Location location = ((Foursquared) getApplication()).getLastKnownLocationOrThrow();
                 
                 Group<Group<Venue>> results = search(foursquare, location);
@@ -381,7 +405,8 @@ public class NearbyVenuesActivity extends LoadableListActivity {
 
             switch (msg.what) {
                 case MESSAGE_FORCE_SEARCH:
-                    mSearchTask = (SearchTask) new SearchTask().execute();
+                    mSearchTask = (SearchTask) new SearchTask(
+                            getClearGeolocationOnSearch()).execute();
                     return;
 
                 case MESSAGE_STOP_SEARCH:
@@ -396,15 +421,21 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                             || AsyncTask.Status.FINISHED.equals(mSearchTask.getStatus())
                             && !mFirstSearchCompleted) {
                         mFirstSearchCompleted = true;
-                        mSearchTask = (SearchTask) new SearchTask().execute();
+                        mSearchTask = (SearchTask) new SearchTask(
+                                getClearGeolocationOnSearch()).execute();
                     }
                     return;
 
                 default:
             }
         }
-
     }
+    
+    private boolean getClearGeolocationOnSearch() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean cacheGeolocation = settings.getBoolean(Preferences.PREFERENCE_CACHE_GEOLOCATION_FOR_SEARCHES, true);
+        return !cacheGeolocation;
+    } 
 
     private class SearchResultsObservable extends Observable {
 

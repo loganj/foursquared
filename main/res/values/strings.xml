@@ -65,6 +65,9 @@
   <string name="preference_activity_label">Foursquare Preferences</string>
   <string name="preferences_additional_settings">Additional Settings</string>
   <string name="preferences_additional_settings_summary">Modify additional settings with foursquare.com.</string>
+  <string name="preferences_cache_geo_loc_for_searches_title">Geolocation Caching</string>
+  <string name="preferences_cache_geo_loc_for_searches_on">Cache geolocation between venue searches.</string>
+  <string name="preferences_cache_geo_loc_for_searches_off">Clear your geolocation on each venue search.</string>
   <string name="preferences_category_checkin_defaults">Check-in Defaults</string>
   <string name="preferences_category_friends">Friends</string>
   <string name="preferences_category_startup">Startup</string>

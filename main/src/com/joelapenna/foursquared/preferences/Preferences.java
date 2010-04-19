@@ -69,6 +69,10 @@ public class Preferences {
     // Keeps track of the last changelog version shown to the user at startup.
     private static final String PREFERENCE_LAST_SEEN_CHANGELOG_VERSION 
         = "last_seen_changelog_version";
+
+    // User can choose to clear geolocation on each search.
+    public static final String PREFERENCE_CACHE_GEOLOCATION_FOR_SEARCHES
+        = "cache_geolocation_for_searches";
     
     
     /**
@@ -80,6 +84,9 @@ public class Preferences {
         if (!preferences.contains(PREFERENCE_STARTUP_TAB)) {
             String[] startupTabValues = resources.getStringArray(R.array.startup_tabs_values);
             editor.putString(PREFERENCE_STARTUP_TAB, startupTabValues[0]);
+        }
+        if (!preferences.contains(PREFERENCE_CACHE_GEOLOCATION_FOR_SEARCHES)) {
+            editor.putBoolean(PREFERENCE_CACHE_GEOLOCATION_FOR_SEARCHES, true);
         }
         editor.commit();
     }

@@ -192,6 +192,10 @@ public class Foursquared extends Application {
         }
         return location;
     }
+    
+    public void clearLastKnownLocation() {
+        mBestLocationListener.clearLastKnownLocation();
+    }
 
     public void requestStartService() {
         mTaskHandler.sendMessage( //

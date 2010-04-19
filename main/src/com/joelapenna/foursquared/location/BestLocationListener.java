@@ -65,6 +65,10 @@ public class BestLocationListener extends Observable implements LocationListener
     synchronized public Location getLastKnownLocation() {
         return mLastLocation;
     }
+    
+    synchronized public void clearLastKnownLocation() {
+        mLastLocation = null;
+    }
 
     public void updateLocation(Location location) {
         if (DEBUG) {
