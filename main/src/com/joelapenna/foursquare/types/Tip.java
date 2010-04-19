@@ -4,12 +4,18 @@
 
 package com.joelapenna.foursquare.types;
 
+import com.joelapenna.foursquare.util.ParcelUtils;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Auto-generated: 2009-11-12 21:45:35.385718
  *
  * @author Joe LaPenna (joe@joelapenna.com)
+ * @author Mark Wyszomierski (markww@gmail.com), implemented Parcelable.
  */
-public class Tip implements FoursquareType {
+public class Tip implements FoursquareType, Parcelable {
 
     private String mCreated;
     private String mDistance;
@@ -21,6 +27,32 @@ public class Tip implements FoursquareType {
     public Tip() {
     }
 
+    private Tip(Parcel in) {
+        mCreated = ParcelUtils.readStringFromParcel(in);
+        mDistance = ParcelUtils.readStringFromParcel(in);
+        mId = ParcelUtils.readStringFromParcel(in);
+        mText = ParcelUtils.readStringFromParcel(in);
+        
+        if (in.readInt() == 1) {
+            mUser = in.readParcelable(User.class.getClassLoader());
+        }
+        
+        if (in.readInt() == 1) {
+            mUser = in.readParcelable(Venue.class.getClassLoader());
+        }
+    }
+    
+    public static final Parcelable.Creator<Tip> CREATOR = new Parcelable.Creator<Tip>() {
+        public Tip createFromParcel(Parcel in) {
+            return new Tip(in);
+        }
+
+        @Override
+        public Tip[] newArray(int size) {
+            return new Tip[size];
+        }
+    };
+    
     public String getCreated() {
         return mCreated;
     }
@@ -69,4 +101,30 @@ public class Tip implements FoursquareType {
         mVenue = venue;
     }
 
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        ParcelUtils.writeStringToParcel(out, mCreated);
+        ParcelUtils.writeStringToParcel(out, mDistance);
+        ParcelUtils.writeStringToParcel(out, mId);
+        ParcelUtils.writeStringToParcel(out, mText);
+        
+        if (mUser != null) {
+            out.writeInt(1); 
+            out.writeParcelable(mUser, flags);
+        } else {
+            out.writeInt(0);
+        }
+         
+        if (mVenue != null) {
+            out.writeInt(1);
+            out.writeParcelable(mVenue, flags);
+        } else {
+            out.writeInt(0);
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 }

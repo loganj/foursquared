@@ -11,6 +11,7 @@ import com.joelapenna.foursquare.http.AbstractHttpApi;
 import com.joelapenna.foursquare.http.HttpApi;
 import com.joelapenna.foursquare.http.HttpApiWithBasicAuth;
 import com.joelapenna.foursquare.http.HttpApiWithOAuth;
+import com.joelapenna.foursquare.parsers.CategoryParser;
 import com.joelapenna.foursquare.parsers.CheckinParser;
 import com.joelapenna.foursquare.parsers.CheckinResultParser;
 import com.joelapenna.foursquare.parsers.CityParser;
@@ -19,6 +20,7 @@ import com.joelapenna.foursquare.parsers.GroupParser;
 import com.joelapenna.foursquare.parsers.TipParser;
 import com.joelapenna.foursquare.parsers.UserParser;
 import com.joelapenna.foursquare.parsers.VenueParser;
+import com.joelapenna.foursquare.types.Category;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.City;
@@ -66,7 +68,11 @@ class FoursquareHttpApiV1 {
     private static final String URL_API_FIND_FRIENDS_BY_NAME = "/findfriends/byname";
     private static final String URL_API_FIND_FRIENDS_BY_PHONE = "/findfriends/byphone";
     private static final String URL_API_FIND_FRIENDS_BY_TWITTER = "/findfriends/bytwitter";
-
+    private static final String URL_API_CATEGORIES = "/categories";
+    private static final String URL_API_HISTORY = "/history";
+    private static final String URL_API_TIP_TODO = "/tip/marktodo";
+    private static final String URL_API_TIP_DONE = "/tip/markdone";
+    
     private final DefaultHttpClient mHttpClient = AbstractHttpApi.createHttpClient();
     private HttpApi mHttpApi;
 
@@ -165,7 +171,7 @@ class FoursquareHttpApiV1 {
      * @throws IOException
      */
     Venue addvenue(String name, String address, String crossstreet, String city, String state,
-            String zip, String phone, String geolat, String geolong, String geohacc,
+            String zip, String phone, String categoryId, String geolat, String geolong, String geohacc,
             String geovacc, String geoalt) throws FoursquareException,
             FoursquareCredentialsException, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_ADDVENUE), //
@@ -176,6 +182,7 @@ class FoursquareHttpApiV1 {
                 new BasicNameValuePair("state", state), //
                 new BasicNameValuePair("zip", zip), //
                 new BasicNameValuePair("phone", phone), //
+                new BasicNameValuePair("primarycategoryid", categoryId), //
                 new BasicNameValuePair("geolat", geolat), //
                 new BasicNameValuePair("geolong", geolong), //
                 new BasicNameValuePair("geohacc", geohacc), //
@@ -228,7 +235,8 @@ class FoursquareHttpApiV1 {
                 new BasicNameValuePair("shout", shout), //
                 new BasicNameValuePair("private", (isPrivate) ? "1" : "0"), //
                 new BasicNameValuePair("twitter", (twitter) ? "1" : "0"), //
-                new BasicNameValuePair("facebook", (facebook) ? "1" : "0"));
+                new BasicNameValuePair("facebook", (facebook) ? "1" : "0"), //
+                new BasicNameValuePair("markup", "android")); // used only by android for checkin result 'extras'.
         return (CheckinResult) mHttpApi.doHttpRequest(httpPost, new CheckinResultParser());
     }
 
@@ -393,7 +401,47 @@ class FoursquareHttpApiV1 {
                 new BasicNameValuePair("q", text));
         return (Group<User>) mHttpApi.doHttpRequest(httpGet, new GroupParser(new UserParser()));
     }
+    
+    /**
+     * /categories
+     */
+    @SuppressWarnings("unchecked")
+    public Group<Category> categories() throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
+        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_CATEGORIES));
+        return (Group<Category>) mHttpApi.doHttpRequest(httpGet, new GroupParser(new CategoryParser()));
+    }
 
+    /**
+     * /history
+     */
+    @SuppressWarnings("unchecked")
+    public Group<Checkin> history(int limit) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
+        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_HISTORY));
+        return (Group<Checkin>) mHttpApi.doHttpRequest(httpGet, new GroupParser(new CheckinParser()));
+    }
+    
+    /**
+     * /tip/marktodo
+     */
+    public Tip tipMarkTodo(String tipId) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
+        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_TIP_TODO), //
+                new BasicNameValuePair("tid", tipId));
+        return (Tip) mHttpApi.doHttpRequest(httpPost, new TipParser());
+    }
+    
+    /**
+     * /tip/markdone
+     */
+    public Tip tipMarkDone(String tipId) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
+        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_TIP_DONE), //
+                new BasicNameValuePair("tid", tipId));
+        return (Tip) mHttpApi.doHttpRequest(httpPost, new TipParser());
+    }
+    
     private String fullUrl(String url) {
         return mApiBaseUrl + url;
     }

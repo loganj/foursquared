@@ -68,6 +68,12 @@ public class VenueParser extends AbstractParser<Venue> {
             } else if ("phone".equals(name)) {
                 venue.setPhone(parser.nextText());
 
+            } else if ("primarycategory".equals(name)) {
+                venue.setCategory(new CategoryParser().parse(parser));
+
+            } else if ("specials".equals(name)) {
+                venue.setSpecials(new GroupParser(new SpecialParser()).parse(parser));
+
             } else if ("state".equals(name)) {
                 venue.setState(parser.nextText());
 

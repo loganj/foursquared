@@ -12,7 +12,7 @@ import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.MainActivity;
 import com.joelapenna.foursquared.R;
-import com.joelapenna.foursquared.UserActivity;
+import com.joelapenna.foursquared.UserDetailsActivity;
 import com.joelapenna.foursquared.app.FoursquaredService;
 import com.joelapenna.foursquared.util.DumpcatcherHelper;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
@@ -129,8 +129,8 @@ public class FriendsAppWidgetProvider extends AppWidgetProvider {
 
         views.setViewVisibility(viewId, View.VISIBLE);
         Intent baseIntent;
-        baseIntent = new Intent(context, UserActivity.class);
-        baseIntent.putExtra(UserActivity.EXTRA_USER, checkin.getUser().getId());
+        baseIntent = new Intent(context, UserDetailsActivity.class);
+        baseIntent.putExtra(UserDetailsActivity.EXTRA_USER_ID, checkin.getUser().getId());
         baseIntent.setData(Uri.parse("http://foursquare.com/user/" + checkin.getUser().getId()));
         views.setOnClickPendingIntent(viewId, PendingIntent.getActivity(context, 0, baseIntent, 0));
 

@@ -4,12 +4,18 @@
 
 package com.joelapenna.foursquare.types;
 
+import com.joelapenna.foursquare.util.ParcelUtils;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Auto-generated: 2009-11-12 21:45:35.140783
  *
  * @author Joe LaPenna (joe@joelapenna.com)
+ * @author Mark Wyszomierski (markww@gmail.com), implemented Parcelable.
  */
-public class Mayor implements FoursquareType {
+public class Mayor implements FoursquareType, Parcelable {
 
     private String mCheckins;
     private String mCount;
@@ -19,6 +25,28 @@ public class Mayor implements FoursquareType {
 
     public Mayor() {
     }
+    
+    private Mayor(Parcel in) {
+        mCheckins = ParcelUtils.readStringFromParcel(in);
+        mCount = ParcelUtils.readStringFromParcel(in);
+        mMessage = ParcelUtils.readStringFromParcel(in);
+        mType = ParcelUtils.readStringFromParcel(in);
+        
+        if (in.readInt() == 1) {
+            mUser = in.readParcelable(User.class.getClassLoader());
+        }
+    }
+    
+    public static final Parcelable.Creator<Mayor> CREATOR = new Parcelable.Creator<Mayor>() {
+        public Mayor createFromParcel(Parcel in) {
+            return new Mayor(in);
+        }
+
+        @Override
+        public Mayor[] newArray(int size) {
+            return new Mayor[size];
+        }
+    };
 
     public String getCheckins() {
         return mCheckins;
@@ -60,4 +88,23 @@ public class Mayor implements FoursquareType {
         mUser = user;
     }
 
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        ParcelUtils.writeStringToParcel(out, mCheckins);
+        ParcelUtils.writeStringToParcel(out, mCount);
+        ParcelUtils.writeStringToParcel(out, mMessage);
+        ParcelUtils.writeStringToParcel(out, mType);
+        
+        if (mUser != null) {
+            out.writeInt(1);
+            out.writeParcelable(mUser, flags);
+        } else {
+            out.writeInt(0);
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 }

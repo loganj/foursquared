@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+  <!-- Copyright 2010 Mark Wyszomierski -->
+
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+
+  <!-- This is the top header, contains user's picture etc. -->
+  <LinearLayout 
+    android:id="@+id/tipActivityHeaderView"
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content"
+    android:background="@color/blue_start"
+    android:paddingLeft="5dip" 
+    android:paddingRight="5dip" 
+    android:paddingTop="10dip" 
+    android:paddingBottom="10dip" 
+    android:orientation="horizontal"
+    >
+
+    <ImageView
+      android:id="@+id/tipActivityPhoto"
+      android:layout_width="60dip"
+      android:layout_height="60dip"
+      android:padding="3dip"
+      android:background="@drawable/photo_background"
+      android:src="@drawable/blank_boy"
+      android:scaleType="fitCenter"  
+      android:gravity="center_vertical" />
+      
+    <TextView 
+      android:id="@+id/tipActivityName" 
+      android:layout_width="0dip" 
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:paddingLeft="8dip"
+      android:textAppearance="@style/TextViewStyleUserDetailsActivityTitle" />
+      
+    <LinearLayout 
+      android:layout_width="wrap_content" 
+      android:layout_height="fill_parent"
+      android:gravity="center_vertical"  
+      >
+      
+      <ImageView
+        android:layout_width="9dip"
+        android:layout_height="13dip"
+        android:src="@drawable/arrow_white"
+        android:scaleType="fitCenter"  
+        android:gravity="center_vertical" 
+        android:layout_marginLeft="3dip"
+        android:layout_marginRight="3dip" />
+        
+    </LinearLayout>
+        
+  </LinearLayout>
+ 
+  <ListView 
+    android:id="@+id/tipActivityListView"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent" />
+        
+</LinearLayout>

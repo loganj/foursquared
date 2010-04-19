@@ -83,6 +83,12 @@ abstract public class AbstractHttpApi implements HttpApi {
                 } finally {
                     is.close();
                 }
+                
+            case 400:
+                if (DEBUG) LOG.log(Level.FINE, "HTTP Code: 400");
+                throw new FoursquareException(
+                        response.getStatusLine().toString(),
+                        EntityUtils.toString(response.getEntity()));
 
             case 401:
                 response.getEntity().consumeContent();
@@ -91,6 +97,7 @@ abstract public class AbstractHttpApi implements HttpApi {
 
             case 404:
                 response.getEntity().consumeContent();
+                if (DEBUG) LOG.log(Level.FINE, "HTTP Code: 404");
                 throw new FoursquareException(response.getStatusLine().toString());
 
             case 500:

@@ -41,6 +41,9 @@ public class StatsParser extends AbstractParser<Stats> {
             } else if ("checkins".equals(name)) {
                 stats.setCheckins(parser.nextText());
 
+            } else if ("herenow".equals(name)) {
+                stats.setHereNow(parser.nextText());
+                
             } else if ("mayor".equals(name)) {
                 stats.setMayor(new MayorParser().parse(parser));
 

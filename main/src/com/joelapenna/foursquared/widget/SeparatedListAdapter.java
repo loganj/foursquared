@@ -8,6 +8,7 @@ package com.joelapenna.foursquared.widget;
 import com.joelapenna.foursquared.R;
 
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
@@ -17,23 +18,39 @@ import android.widget.BaseAdapter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class SeparatedListAdapter extends BaseAdapter {
+public class SeparatedListAdapter extends BaseAdapter implements ObservableAdapter {
 
     public final Map<String, Adapter> sections = new LinkedHashMap<String, Adapter>();
     public final ArrayAdapter<String> headers;
     public final static int TYPE_SECTION_HEADER = 0;
 
     public SeparatedListAdapter(Context context) {
+        super();
         headers = new ArrayAdapter<String>(context, R.layout.list_header);
     }
 
     public SeparatedListAdapter(Context context, int layoutId) {
+        super();
         headers = new ArrayAdapter<String>(context, layoutId);
     }
 
     public void addSection(String section, Adapter adapter) {
         this.headers.add(section);
         this.sections.put(section, adapter);
+        
+        // Register an observer so we can call notifyDataSetChanged() when our
+        // children adapters are modified, otherwise no change will be visible.
+        adapter.registerDataSetObserver(mDataSetObserver);
+    }
+    
+    public void removeObserver() {
+        // Notify all our children that they should release their observers too.
+        for (Map.Entry<String, Adapter> it : sections.entrySet()) {
+            if (it.getValue() instanceof ObservableAdapter) {
+                ObservableAdapter adapter = (ObservableAdapter)it.getValue();
+                adapter.removeObserver();
+            }
+        }
     }
 
     public void clear() {
@@ -116,9 +133,8 @@ public class SeparatedListAdapter extends BaseAdapter {
             Adapter adapter = sections.get(section);
             int size = adapter.getCount() + 1;
 
-            // The second argument is null because if it were convertView, things crash.
-            if (position == 0) return headers.getView(sectionnum, null, parent);
-            if (position < size) return adapter.getView(position - 1, null, parent);
+            if (position == 0) return headers.getView(sectionnum, convertView, parent);
+            if (position < size) return adapter.getView(position - 1, convertView, parent);
 
             // otherwise jump into next section
             position -= size;
@@ -136,4 +152,11 @@ public class SeparatedListAdapter extends BaseAdapter {
     public boolean hasStableIds() {
         return false;
     }
+    
+    private DataSetObserver mDataSetObserver = new DataSetObserver() {
+        @Override
+        public void onChanged() {
+            notifyDataSetChanged();   
+        }
+    };
 }

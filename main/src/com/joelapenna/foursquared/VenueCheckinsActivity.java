@@ -64,6 +64,15 @@ public class VenueCheckinsActivity extends LoadableListActivity {
             ((VenueActivity)getParent()).venueObservable.addObserver(mParentDataObserver);
         }
     }
+    
+    @Override
+    public void onPause() {
+        super.onPause();
+        
+        if (isFinishing()) {
+            mListAdapter.removeObserver();
+        }
+    }
 
     @Override
     public int getNoSearchResultsStringId() {
@@ -90,8 +99,9 @@ public class VenueCheckinsActivity extends LoadableListActivity {
 
     private void startItemActivity(User user) {
         if (DEBUG) Log.d(TAG, "firing venue activity for venue");
-        Intent intent = new Intent(VenueCheckinsActivity.this, UserActivity.class);
-        intent.putExtra(UserActivity.EXTRA_USER, user.getId());
+        Intent intent = new Intent(VenueCheckinsActivity.this, UserDetailsActivity.class);
+  // zebra      intent.putExtra(UserActivity.EXTRA_USER, user.getId());
+        intent.putExtra(UserDetailsActivity.EXTRA_USER_PARCEL, user);
         startActivity(intent);
     }
 
@@ -103,6 +113,9 @@ public class VenueCheckinsActivity extends LoadableListActivity {
             if (DEBUG) Log.d(TAG, "Received update from: " + observable.toString());
             VenueActivity parent = (VenueActivity)getParent();
             Venue venue = parent.venueObservable.getVenue();
+
+            mListAdapter.removeObserver();
+            mListAdapter = new SeparatedListAdapter(VenueCheckinsActivity.this);
 
             boolean hasMayor = venue.getStats() != null && venue.getStats().getMayor() != null;
             if (hasMayor) {
@@ -117,10 +130,10 @@ public class VenueCheckinsActivity extends LoadableListActivity {
                 Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
                 putCheckinsInAdapter(checkins);
             }
+            
+            getListView().setAdapter(mListAdapter);
 
-            if (hasMayor || hasCheckins) {
-                mListAdapter.notifyDataSetInvalidated();
-            } else {
+            if (!hasMayor && !hasCheckins) {
                 if (DEBUG) Log.d(TAG, "No data. Setting empty");
                 setEmptyView();
             }

@@ -38,6 +38,7 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -71,6 +72,9 @@ public class Foursquared extends Application {
     private Foursquare mFoursquare;
 
     private BestLocationListener mBestLocationListener = new BestLocationListener();
+    
+    private boolean mIsFirstRun;
+    
 
     @Override
     public void onCreate() {
@@ -79,10 +83,16 @@ public class Foursquared extends Application {
         Log.i(TAG, "Using Debug Log:\t" + DEBUG);
 
         mVersion = getVersionString(this);
+        
+        // Check if this is a new install by seeing if our preference file exists on disk.
+        mIsFirstRun = checkIfIsFirstRun();
 
         // Setup Prefs (to load dumpcatcher)
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-
+        
+        // Setup some defaults in our preferences if not set yet.
+        Preferences.setupDefaults(mPrefs, getResources());
+         
         // Setup Dumpcatcher - We've outgrown this infrastructure but we'll
         // leave its calls in place for the day that someone pays for some
         // appengine quota.
@@ -90,7 +100,7 @@ public class Foursquared extends Application {
         // Resources resources = getResources();
         // new DumpcatcherHelper(Preferences.createUniqueId(mPrefs), resources);
         // }
-
+ 
         // Sometimes we want the application to do some work on behalf of the
         // Activity. Lets do that
         // asynchronously.
@@ -122,7 +132,11 @@ public class Foursquared extends Application {
     public String getUserId() {
         return Preferences.getUserId(mPrefs);
     }
-
+    
+    public String getUserGender() {
+        return Preferences.getUserGender(mPrefs);
+    }
+    
     public String getVersion() {
 
         if (mVersion != null) {
@@ -131,7 +145,15 @@ public class Foursquared extends Application {
             return "";
         }
     }
-
+    
+    public String getLastSeenChangelogVersion() {
+        return Preferences.getLastSeenChangelogVersion(mPrefs);
+    }
+    
+    public void storeLastSeenChangelogVersion(String version) {
+        Preferences.storeLastSeenChangelogVersion(mPrefs.edit(), version); 
+    }
+    
     public RemoteResourceManager getRemoteResourceManager() {
         return mRemoteResourceManager;
     }
@@ -250,6 +272,16 @@ public class Foursquared extends Application {
         }
     }
 
+    public boolean getIsFirstRun() {
+        return mIsFirstRun;
+    }
+
+    private boolean checkIfIsFirstRun() {
+        File file = new File(
+            "/data/data/com.joelapenna.foursquared/shared_prefs/com.joelapenna.foursquared_preferences.xml");
+        return !file.exists();
+    }
+
     /**
      * Set up resource managers on the application depending on SD card state.
      * 
@@ -333,7 +365,8 @@ public class Foursquared extends Application {
                         // have it.
                         Foursquare.Location location = LocationUtils
                                 .createFoursquareLocation(getLastKnownLocation());
-                        User user = getFoursquare().user(null, false, false, location);
+                        User user = getFoursquare().user(
+                                null, false, false, location);
                         Editor editor = mPrefs.edit();
                         Preferences.storeUser(editor, user);
                         editor.commit();

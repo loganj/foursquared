@@ -6,7 +6,6 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.app.LoadableListActivity;
@@ -16,6 +15,7 @@ import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
+import com.joelapenna.foursquared.util.UserUtils;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
 
@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -50,7 +51,10 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     static final String TAG = "NearbyVenuesActivity";
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    public static final long DELAY_TIME_IN_MS = 4000;
+    public static final String INTENT_EXTRA_STARTUP_GEOLOC_DELAY = Foursquared.PACKAGE_NAME
+            + ".NearbyVenuesActivity.INTENT_EXTRA_STARTUP_GEOLOC_DELAY";
+
+    private long mDelayTimeInMS = 1L;
 
     private static final int MENU_REFRESH = 0;
     private static final int MENU_ADD_VENUE = 1;
@@ -106,8 +110,14 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 setSearchResults(holder.results);
             }
         }
+        
+        // We can reparse the delay startup time each onCreate().
+        if (getIntent().getExtras() != null) {
+            mDelayTimeInMS = getIntent().getLongExtra(
+                    INTENT_EXTRA_STARTUP_GEOLOC_DELAY, 1L);
+        }
     }
-
+ 
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -121,7 +131,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         ((Foursquared) getApplication()).requestLocationUpdates(mSearchLocationObserver);
 
         if (mSearchHolder.results == null) {
-            mSearchHandler.sendEmptyMessageDelayed(SearchHandler.MESSAGE_SEARCH, DELAY_TIME_IN_MS);
+            mSearchHandler.sendEmptyMessageDelayed(SearchHandler.MESSAGE_SEARCH, mDelayTimeInMS);
         }
     }
 
@@ -129,6 +139,10 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     public void onPause() {
         super.onPause();
         ((Foursquared) getApplication()).removeLocationUpdates(mSearchLocationObserver);
+
+        if (isFinishing()) {
+            mListAdapter.removeObserver();
+        }
     }
 
     @Override
@@ -141,14 +155,20 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.search_label) //
-                .setIcon(android.R.drawable.ic_search_category_default) //
+                .setIcon(R.drawable.ic_menu_search) //
                 .setAlphabeticShortcut(SearchManager.MENU_KEY);
         menu.add(Menu.NONE, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
                 .setIcon(R.drawable.ic_menu_refresh);
         menu.add(Menu.NONE, MENU_ADD_VENUE, Menu.NONE, R.string.add_venue_label) //
-                .setIcon(android.R.drawable.ic_menu_add);
-        menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
-                .setIcon(R.drawable.ic_menu_myinfo);
+                .setIcon(R.drawable.ic_menu_add);
+
+        int sdk = new Integer(Build.VERSION.SDK).intValue();
+        if (sdk < 4) {
+            int menuIcon = UserUtils.getDrawableForMeMenuItemByGender(
+                ((Foursquared) getApplication()).getUserGender());
+            menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
+                    .setIcon(menuIcon);
+        }
 
         MenuUtils.addPreferencesToMenu(this, menu);
 
@@ -170,7 +190,10 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 startActivity(new Intent(NearbyVenuesActivity.this, AddVenueActivity.class));
                 return true;
             case MENU_MYINFO:
-                startActivity(new Intent(NearbyVenuesActivity.this, UserActivity.class));
+                Intent intentUser = new Intent(NearbyVenuesActivity.this, UserDetailsActivity.class);
+                intentUser.putExtra(UserDetailsActivity.EXTRA_USER_ID,
+                        ((Foursquared) getApplication()).getUserId());
+                startActivity(intentUser);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -187,21 +210,24 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     }
 
     public void putSearchResultsInAdapter(Group<Group<Venue>> searchResults) {
-        Log.d(TAG, "putSearchResultsInAdapter");
+        if (DEBUG) Log.d(TAG, "putSearchResultsInAdapter");
+
+        mListAdapter.removeObserver();
+        mListAdapter = new SeparatedListAdapter(this);
         if (searchResults != null) {
-            mListAdapter.clear();
             int groupCount = searchResults.size();
             for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
                 Group<Venue> group = searchResults.get(groupsIndex);
                 if (group.size() > 0) {
-                    VenueListAdapter groupAdapter = new VenueListAdapter(this);
+                    VenueListAdapter groupAdapter = new VenueListAdapter(this,
+                            ((Foursquared) getApplication()).getRemoteResourceManager());
                     groupAdapter.setGroup(group);
                     if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
                     mListAdapter.addSection(group.getType(), groupAdapter);
                 }
             }
         }
-        mListAdapter.notifyDataSetInvalidated();
+        mListView.setAdapter(mListAdapter);
     }
 
     public void setSearchResults(Group<Group<Venue>> searchResults) {

@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -26,7 +27,10 @@ public class NotificationsUtil {
     public static void ToastReasonForFailure(Context context, Exception e) {
         if (DEBUG) Log.d(TAG, "Toasting for exception: ", e);
 
-        if (e instanceof SocketException) {
+        if (e instanceof SocketTimeoutException) {
+            Toast.makeText(context, "Foursquare server request timed out", Toast.LENGTH_SHORT).show();
+            
+        } else if (e instanceof SocketException) {
             Toast.makeText(context, "Foursquare server not responding", Toast.LENGTH_SHORT).show();
 
         } else if (e instanceof IOException) {

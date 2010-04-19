@@ -1,56 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge
-  xmlns:android="http://schemas.android.com/apk/res/android">
+
   <ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scrollView"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
+        
     <LinearLayout
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
-      android:orientation="vertical">
+      android:orientation="vertical"
+      android:paddingTop="10dip">
 
+      <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+       
       <EditText
         android:id="@+id/nameEditText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="textCapWords"
         android:imeOptions="actionNext"
-        android:hint="@string/venue_name" />
+        android:hint="@string/venue_name"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:layout_marginBottom="10dip" />
 
       <TextView
         android:id="@+id/addressLabel"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/address"
-        style="@style/listSeparatorTextViewStyle" />
+        style="@style/listSeparatorTextViewStyle"
+        android:layout_marginBottom="4dip" />
 
       <EditText
         android:id="@+id/addressEditText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:imeOptions="actionNext"
-        android:hint="@string/address" />
+        android:hint="@string/address"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip" />
 
       <EditText
         android:id="@+id/crossstreetEditText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:imeOptions="actionNext"
-        android:hint="@string/cross_street" />
+        android:hint="@string/cross_street"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip" />
 
       <EditText
         android:id="@+id/cityEditText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:imeOptions="actionNext"
-        android:hint="@string/city" />
+        android:hint="@string/city"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip" />
 
 
       <TableLayout
         android:id="@+id/buttonBar"
         android:layout_height="wrap_content"
-        android:layout_width="fill_parent">
+        android:layout_width="fill_parent"
+        android:layout_marginBottom="10dip">
         <TableRow>
           <EditText
             android:id="@+id/stateEditText"
@@ -58,14 +77,18 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:imeOptions="actionNext"
-            android:hint="@string/state" />
+            android:hint="@string/state"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip" />
           <EditText
             android:id="@+id/zipEditText"
             android:layout_width="0dip"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:imeOptions="actionNext"
-            android:hint="@string/zip_code" />
+            android:hint="@string/zip_code"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip" />
         </TableRow>
       </TableLayout>
 
@@ -74,8 +97,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         style="@style/listSeparatorTextViewStyle"
-
-        android:text="@string/phone_number" />
+        android:text="@string/phone_number"
+        android:layout_marginBottom="4dip" />
 
       <EditText
         android:id="@+id/phoneEditText"
@@ -83,13 +106,73 @@
         android:layout_height="wrap_content"
         android:phoneNumber="true"
         android:imeOptions="actionDone"
-        android:hint="555-2368" />
+        android:hint="555-2368"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:layout_marginBottom="10dip" />
+      
+      <TextView
+        android:id="@+id/categoryLabel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        style="@style/listSeparatorTextViewStyle"
+        android:text="Venue Category"
+        android:layout_marginBottom="4dip" />
+        
+      <LinearLayout
+        android:id="@+id/addVenueCategoryLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:layout_marginBottom="15dip"
+        android:enabled="false"
+        android:focusable="true"
+        android:background="@drawable/border_round_rect_selector"
+        >  
+   
+        <ImageView
+          android:id="@+id/addVenueCategoryIcon"
+          android:layout_width="32dip"
+          android:layout_height="32dip"
+          android:src="@drawable/category_none"
+          android:scaleType="fitCenter"  
+          android:gravity="center_horizontal"
+          android:layout_marginLeft="5dip" />
+	
+        <TextView
+          android:id="@+id/addVenueCategoryTextView"
+          android:layout_width="0dip"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:textColor="@color/black_end"
+          android:textAppearance="@android:style/TextAppearance.Small" 
+          android:singleLine="true"
+          android:ellipsize="marquee"
+          android:layout_gravity="center_vertical" 
+          android:paddingLeft="9dip" 
+          android:text="Loading categories..." />
+          
+        <ProgressBar
+          android:id="@+id/addVenueCategoryProgressBar"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="right"
+          style="?android:attr/progressBarStyleSmall" 
+          />
+  
+      </LinearLayout>
+        
       <Button
         android:id="@+id/addVenueButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:enabled="false"
-        android:text="@string/add_venue_label" />
+        android:text="@string/add_venue_label"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip" />
+        
     </LinearLayout>
   </ScrollView>
-</merge>

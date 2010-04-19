@@ -11,6 +11,9 @@ syntax: regexp
 
 ^main/src/com/joelapenna/foursquared/FoursquaredSettings.java
 
+^main/src/com/joelapenna/foursquared/SignupActivityPrivate.java
+^main/res/layout/signup_private_activity.xml
+
 ^main/res/values/credentials.xml
 ^tests/src/com/joelapenna/foursquare/TestCredentials.java
 

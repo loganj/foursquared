@@ -109,7 +109,11 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
 
         } else if (Preferences.PREFERENCE_FRIEND_REQUESTS.equals(key)) {
         	startActivity(new Intent(this, FriendRequestsActivity.class));
+        
+        } else if (Preferences.PREFERENCE_CHANGELOG.equals(key)) {
+            startActivity(new Intent(this, ChangelogActivity.class));
         }
+        
         return true;
     }
 
@@ -128,8 +132,9 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                 Location location = foursquared.getLastKnownLocation();
 
                 Foursquare foursquare = foursquared.getFoursquare();
-                return foursquare.user(null, false, false, LocationUtils
-                        .createFoursquareLocation(location));
+                return foursquare.user(
+                        null, false, false, LocationUtils
+                            .createFoursquareLocation(location));
 
             } catch (Exception e) {
                 mReason = e;

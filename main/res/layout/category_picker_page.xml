@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Copyright 2010 Mark Wyszomierski -->
+
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical" 
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:padding="2dip"
+  android:background="@color/white"
+  >
+  
+  <LinearLayout
+    android:id="@+id/categoryPickerRootCategoryButton"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingTop="5dip"
+    android:paddingBottom="5dip"
+    android:focusable="true"
+    android:background="@drawable/border_round_rect_selector"
+    >  
+   
+    <ImageView
+      android:id="@+id/categoryPickerIcon"
+      android:layout_width="32dip"
+      android:layout_height="32dip"
+      android:src="@drawable/category_none"
+      android:scaleType="fitCenter"  
+      android:gravity="center_horizontal"
+      android:layout_marginLeft="5dip" />
+	
+    <TextView
+      android:id="@+id/categoryPickerName"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:textColor="@color/black_end"
+      android:textAppearance="@android:style/TextAppearance.Small" 
+      android:singleLine="true"
+      android:ellipsize="marquee"
+      android:layout_gravity="center_vertical" 
+      android:paddingLeft="9dip" />
+  
+  </LinearLayout>
+  
+  <LinearLayout
+    android:id="@+id/categoryPickerRootCategoryButton"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+	android:minHeight="10dip"
+    />   
+
+  <ListView
+    android:id="@+id/categoryPickerListView"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:dividerHeight="1dip" 
+    android:divider="#444"
+    android:drawSelectorOnTop="false"
+    android:scrollbars="vertical" 
+    android:cacheColorHint="#FFF" />
+    
+</LinearLayout>

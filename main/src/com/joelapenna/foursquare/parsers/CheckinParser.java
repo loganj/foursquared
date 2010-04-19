@@ -41,6 +41,9 @@ public class CheckinParser extends AbstractParser<Checkin> {
             } else if ("display".equals(name)) {
                 checkin.setDisplay(parser.nextText());
 
+            } else if ("distance".equals(name)) {
+                checkin.setDistance(parser.nextText());
+
             } else if ("id".equals(name)) {
                 checkin.setId(parser.nextText());
 

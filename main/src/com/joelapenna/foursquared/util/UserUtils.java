@@ -14,6 +14,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -82,5 +83,37 @@ public class UserUtils {
                 }
             }
         });
+    }
+    
+    public static boolean isFriend(User user) {
+        if (user == null) {
+            return false;
+        } else if (TextUtils.isEmpty(user.getFriendstatus())) {
+            return false;
+        } else if (user.getFriendstatus().equals("friend")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public static int getDrawableForMeTabByGender(String gender) {
+        if (gender == null) {
+            return R.drawable.me_tab_boy;
+        } else if (gender.equals("female")) {
+            return R.drawable.me_tab_girl;
+        } else {
+            return R.drawable.me_tab_boy;
+        }
+    }
+    
+    public static int getDrawableForMeMenuItemByGender(String gender) {
+        if (gender == null) {
+            return R.drawable.ic_menu_myinfo_boy;
+        } else if (gender.equals("female")) {
+            return R.drawable.ic_menu_myinfo_girl;
+        } else {
+            return R.drawable.ic_menu_myinfo_boy;
+        }
     }
 }

@@ -5,56 +5,57 @@
   android:layout_width="fill_parent"
   android:layout_height="?android:attr/listPreferredItemHeight"
   style="@style/listItemStyle">
-
+ 
+  <!-- 
+    The category icons come down to us from foursquare at 32x32 pixel size.
+    To support high-density screens, we want to scale the icons up to the
+    same relative size for all devices, otherwise on droid/nexusone, these
+    icons will appear really small.
+   -->
   <ImageView
     android:id="@+id/icon"
-    android:layout_width="30dip"
-    android:layout_height="fill_parent"
-
+    android:layout_width="32dip"
+    android:layout_height="32dip"
     android:layout_alignParentTop="true"
     android:layout_alignParentBottom="true"
-    android:paddingLeft="7dip"
-    android:paddingTop="5dip"
-
-    android:scaleType="matrix"
-
-    android:src="@drawable/map_marker_blue" />
+    android:src="@drawable/category_none"
+    android:scaleType="fitCenter"  
+    android:gravity="center_horizontal"
+    android:layout_marginTop="4dip"
+    android:layout_marginLeft="5dip" />
 
   <TextView
     android:id="@+id/venueName"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-
     android:layout_toRightOf="@id/icon"
     android:layout_alignParentRight="true"
     android:layout_alignParentTop="true"
     android:layout_alignWithParentIfMissing="true"
     android:paddingLeft="7dip"
-    android:textColor="@color/black_end"
-    android:textAppearance="@android:style/TextAppearance.Medium" />
+    android:textAppearance="@style/TextViewStyleVenueNameListItem"
+    />
 
   <TextView
     android:id="@+id/venueLocationLine1"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-
     android:layout_toRightOf="@id/icon"
     android:layout_alignParentRight="true"
     android:layout_below="@id/venueName"
     android:paddingLeft="7dip"
-    android:textColor="@color/black_end"
-    android:textAppearance="@android:style/TextAppearance.Small" />
+    android:textAppearance="@style/TextViewStyleVenueAddressListItem"
+    android:singleLine="true"
+    android:ellipsize="marquee" />
 
   <TextView
     android:id="@+id/venueLocationLine2"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-
     android:layout_toRightOf="@id/icon"
     android:layout_alignParentRight="true"
     android:layout_below="@id/venueLocationLine1"
     android:paddingLeft="7dip"
-    android:textColor="@color/black_end"
-    android:textAppearance="@android:style/TextAppearance.Small" />
+    android:textAppearance="@style/TextViewStyleVenueAddressListItem" />
 
 </RelativeLayout>

@@ -12,7 +12,7 @@
       android:title="@string/preferences_immediate_checkin_title"
       android:summaryOn="@string/preferences_immediate_checkin_summary_on"
       android:summaryOff="@string/preferences_immediate_checkin_summary_off"
-      android:defaultValue="true" />
+      android:defaultValue="false" />
     <CheckBoxPreference
       android:key="share_checkin"
       android:persistent="true"
@@ -21,6 +21,7 @@
       android:summaryOff="@string/preferences_share_summary_off"
       android:defaultValue="true" />
   </PreferenceCategory>
+   
   <PreferenceCategory
     android:title="@string/preferences_category_friends">
     <com.joelapenna.foursquared.preferences.ClickPreference
@@ -40,6 +41,18 @@
       android:key="advanced_settings"
       android:title="@string/preferences_additional_settings"
       android:summary="@string/preferences_additional_settings_summary" />
+    <ListPreference
+      android:key="startup_tab" 
+      android:persistent="true"
+      android:title="@string/preferences_startup_tab"
+      android:summary="@string/preferences_startup_tab_summary"
+      android:entries="@array/startup_tabs" 
+      android:entryValues="@array/startup_tabs_values"
+      android:defaultValue="Friends" />
+    <com.joelapenna.foursquared.preferences.ClickPreference
+      android:key="changelog"
+      android:title="@string/preferences_changelog"
+      android:summary="@string/preferences_changelog_summary" />
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="send_feedback"
       android:title="@string/feedback_label"

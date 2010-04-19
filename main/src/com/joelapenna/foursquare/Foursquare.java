@@ -7,6 +7,7 @@ package com.joelapenna.foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.types.Category;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.Credentials;
@@ -100,10 +101,11 @@ public class Foursquare {
     @V1
     @LocationRequired
     public Venue addVenue(String name, String address, String crossstreet, String city,
-            String state, String zip, String phone, Location location) throws FoursquareException,
+            String state, String zip, String phone, String categoryId, Location location) 
+            throws FoursquareException,
             FoursquareError, IOException {
         return mFoursquareV1.addvenue(name, address, crossstreet, city, state, zip, phone,
-                location.geolat, location.geolong, location.geohacc, location.geovacc,
+                categoryId, location.geolat, location.geolong, location.geohacc, location.geovacc,
                 location.geoalt);
     }
 
@@ -205,6 +207,30 @@ public class Foursquare {
     	return mFoursquareV1.findFriendsByTwitter(text);
     }
 
+    @V1
+    public Group<Category> categories() 
+        throws FoursquareException, FoursquareError, IOException {
+        return mFoursquareV1.categories();
+    }
+    
+    @V1
+    public Group<Checkin> history(int limit) 
+        throws FoursquareException, FoursquareError, IOException {
+        return mFoursquareV1.history(limit);
+    }
+    
+    @V1
+    public Tip tipMarkTodo(String tipId) 
+        throws FoursquareException, FoursquareError, IOException {
+        return mFoursquareV1.tipMarkTodo(tipId);
+    }
+    
+    @V1
+    public Tip tipMarkDone(String tipId) 
+        throws FoursquareException, FoursquareError, IOException {
+        return mFoursquareV1.tipMarkDone(tipId);
+    }
+    
     public static final FoursquareHttpApiV1 createHttpApi(String domain, String clientVersion,
             boolean useOAuth) {
         LOG.log(Level.INFO, "Using foursquare.com for requests.");

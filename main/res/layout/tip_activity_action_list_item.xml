@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Copyright 2010 Mark Wyszomierski -->
+
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:gravity="center_vertical"
+  android:padding="10dip"
+  > 
+  
+  <ImageView
+    android:id="@+id/tipActivityActionListItemIcon"
+    android:layout_height="26dip"
+    android:layout_width="26dip"
+    android:scaleType="fitCenter" 
+    android:gravity="center_vertical" 
+    android:layout_marginRight="10dip" />
+      
+  <TextView
+    android:id="@+id/tipActivityActionListItemLabel"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:textColor="@color/black_end"
+    android:textAppearance="@android:style/TextAppearance.Small" 
+    android:singleLine="true"
+    android:ellipsize="marquee"
+    android:layout_gravity="center_vertical" />
+   
+</LinearLayout>

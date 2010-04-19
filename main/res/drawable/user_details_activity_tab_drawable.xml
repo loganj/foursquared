@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+  <!-- Copyright (c) Mark Wyszomierski, 2010. -->
+  
+<selector  
+ xmlns:android="http://schemas.android.com/apk/res/android"
+ android:id="@+id/user_friends_tab_selector" >
+   
+  <!-- Non focused states -->
+  <item 
+    android:state_focused="false" 
+    android:state_selected="false" 
+    android:state_pressed="false"
+    android:state_enabled="true"
+    android:drawable="@color/lgrey_end" />
+        
+  <item 
+    android:state_focused="false" 
+    android:state_selected="true"
+    android:state_pressed="false"
+    android:state_enabled="true"
+    android:drawable="@color/vlgrey" />
+
+  <!-- Focused states -->
+  <item 
+    android:state_focused="true" 
+    android:state_selected="false"
+    android:state_pressed="false" 
+    android:state_enabled="true"
+    android:drawable="@color/lgrey_end" />
+    
+  <item 
+    android:state_focused="true" 
+    android:state_selected="true"
+    android:state_pressed="false" 
+    android:state_enabled="true"
+    android:drawable="@color/vlgrey" />
+
+  <!-- Pressed -->
+  <item 
+    android:state_pressed="true" 
+    android:drawable="@color/lgrey_end" />
+     
+  <!-- Disabled -->
+  <item 
+    android:state_enabled="false" 
+    android:drawable="@color/lgrey_end" />
+
+</selector>

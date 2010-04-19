@@ -6,4 +6,18 @@
     <item>Tip</item>
     <item>Todo</item>
   </string-array>
+  
+  <string-array
+    name="startup_tabs">
+    <item>Friends</item>
+    <item>Places</item>
+  </string-array>
+  
+  <!-- Don't change these for localization. -->
+  <string-array
+    name="startup_tabs_values">
+    <item>Friends</item>
+    <item>Places</item>
+  </string-array>
+  
 </resources>

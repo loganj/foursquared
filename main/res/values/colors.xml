@@ -8,10 +8,12 @@
         name="purple_start">#9b256b</color>
     <color
         name="purple_end">#5d2761</color>
+        
+    <!-- 427BBA, 0f93b8 -->
     <color
-        name="blue_start">#176bb4</color>
+        name="blue_start">#0f93b8</color>
     <color
-        name="blue_end">#7eddfc</color>
+        name="blue_end">#0f93b8</color>
     <color
         name="lgrey_start">#BFC0C0</color>
     <color
@@ -32,4 +34,13 @@
         name="grey_start">#CBCBCB</color>
     <color
         name="grey_end">#8C9DAE</color>
+    <color
+        name="blue_badges_mayor">#095b72</color>
+    <color
+        name="vlgrey">#EEEEEE</color>
+    <color
+        name="color_score_list_adapter_highlight">#EEEEEE</color>
+    <color
+        name="color_score_mayor_section_background">#DDDDDD</color>
+        
 </resources>

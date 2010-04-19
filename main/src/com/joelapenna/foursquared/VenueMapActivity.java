@@ -45,7 +45,7 @@ public class VenueMapActivity extends MapActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.venue_map_activity);
 
-        Button yelpButton = (Button)findViewById(R.id.yelpButton);
+        Button yelpButton = (Button) findViewById(R.id.yelpButton);
         yelpButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,7 +58,7 @@ public class VenueMapActivity extends MapActivity {
             }
         });
 
-        Button mapsButton = (Button)findViewById(R.id.mapsButton);
+        Button mapsButton = (Button) findViewById(R.id.mapsButton);
         mapsButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,14 +72,14 @@ public class VenueMapActivity extends MapActivity {
 
         initMap();
 
-        Venue venue = ((VenueActivity)getParent()).venueObservable.getVenue();
+        Venue venue = ((VenueActivity) getParent()).venueObservable.getVenue();
         if (venue != null) {
             setVenue(venue);
             updateMap();
 
         } else {
             mVenueObserver = new VenueObserver();
-            ((VenueActivity)getParent()).venueObservable.addObserver(mVenueObserver);
+            ((VenueActivity) getParent()).venueObservable.addObserver(mVenueObserver);
         }
     }
 
@@ -87,7 +87,8 @@ public class VenueMapActivity extends MapActivity {
     public void onResume() {
         super.onResume();
         mMyLocationOverlay.enableMyLocation();
-        // mMyLocationOverlay.enableCompass(); // Disabled due to a sdk 1.5 emulator bug
+        // mMyLocationOverlay.enableCompass(); // Disabled due to a sdk 1.5
+        // emulator bug
     }
 
     @Override
@@ -103,7 +104,7 @@ public class VenueMapActivity extends MapActivity {
     }
 
     private void initMap() {
-        mMapView = (MapView)findViewById(R.id.mapView);
+        mMapView = (MapView) findViewById(R.id.mapView);
         mMapView.setBuiltInZoomControls(true);
         mMapController = mMapView.getController();
 
@@ -139,7 +140,7 @@ public class VenueMapActivity extends MapActivity {
     private final class VenueObserver implements Observer {
         @Override
         public void update(Observable observable, Object data) {
-            setVenue((Venue)data);
+            setVenue((Venue) data);
             updateMap();
         }
     }

@@ -2,7 +2,7 @@
 <manifest
   xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.joelapenna.foursquared"
-  android:versionName="2010-02-02" android:versionCode="2010020200">
+  android:versionName="2010-04-09" android:versionCode="2010040900">
 
   <uses-permission
     android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -28,7 +28,7 @@
     android:name="Foursquared"
     android:icon="@drawable/icon"
     android:label="@string/app_name"
-    android:theme="@style/FoursquareTheme">
+    android:theme="@style/FoursquareTheme" >
 
     <meta-data
       android:name="android.app.default_searchable"
@@ -199,23 +199,6 @@
       android:name=".SearchVenuesMapActivity">
     </activity>
 
-
-    <activity
-      android:name=".ShoutActivity"
-      android:label="@string/shout_activity_label"
-      android:configChanges="keyboardHidden|orientation"
-      android:theme="@android:style/Theme.Dialog">
-      <intent-filter>
-        <action
-          android:name="android.intent.action.MAIN" />
-      </intent-filter>
-      <intent-filter>
-        <action
-          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
-      </intent-filter>
-    </activity>
-
-
     <activity
       android:name=".StatsActivity">
       <intent-filter>
@@ -227,21 +210,6 @@
           android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
       </intent-filter>
     </activity>
-
-
-    <activity
-      android:name=".UserActivity"
-      android:theme="@android:style/Theme.Dialog">
-      <intent-filter>
-        <action
-          android:name="android.intent.action.MAIN" />
-      </intent-filter>
-      <intent-filter>
-        <action
-          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
-      </intent-filter>
-    </activity>
-
 
     <activity
       android:name=".VenueActivity">
@@ -275,18 +243,130 @@
     <activity
       android:name=".AddFriendsByUserInputActivity"
       android:label="@string/add_friends_activity_label">
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
     </activity>
     
     <activity
       android:name=".FriendRequestsActivity"
       android:label="@string/friend_requests_activity_label">
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
     </activity>
     
     <activity
       android:name=".FetchImageForViewIntent"
       android:theme="@style/ThemeTransparentDialogBase.TransparentDialog">
     </activity> 
+    
+    <activity
+      android:name=".UserDetailsActivity"
+      android:label="@string/app_name">
+      <intent-filter>
+        <action
+          android:name="android.intent.action.MAIN" />
+      </intent-filter>
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
+    </activity>
+    
+    <activity
+      android:name=".UserFriendsActivity">
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
+    </activity>
 
+    <activity
+      android:name=".UserActionsActivity">
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
+    </activity>
+    
+    <activity
+      android:name=".UserHistoryActivity">
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
+    </activity>
+    
+    <activity
+      android:name=".BadgesActivity"
+      android:label="@string/app_name">
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
+    </activity>
+    
+    <activity
+      android:name=".CheckinOrShoutGatherInfoActivity"
+      android:theme="@style/ThemeCustomDlgBase.ThemeCustomDlg"
+      android:configChanges="keyboardHidden|orientation" >
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+      </intent-filter>
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
+    </activity>
+    
+    <activity
+      android:name=".CheckinExecuteActivity"
+      android:theme="@style/ThemeTransparentDialogBase.TransparentDialog" >
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
+    </activity>
+    
+    <activity
+      android:name=".ShoutExecuteActivity"
+      android:theme="@style/ThemeTransparentDialogBase.TransparentDialog" >
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
+    </activity>
+    
+    <activity
+      android:name=".UserMayorshipsActivity"
+      android:label="@string/app_name" >
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
+    </activity>
+    
+    <activity
+      android:name=".TipActivity"
+      android:label="@string/app_name" >
+      <intent-filter>
+        <action
+          android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
+      </intent-filter>
+    </activity>
+    
+    <activity
+      android:name=".ChangelogActivity"
+      android:theme="@android:style/Theme.Dialog"
+      android:label="@string/changelog_activity_title" />
+
+    <activity
+      android:name=".SpecialWebViewActivity" >
+    </activity> 
+    
     <receiver
       android:name=".appwidget.FriendsAppWidgetProvider"
       android:label="@string/friends_appwidget_3x3_label">

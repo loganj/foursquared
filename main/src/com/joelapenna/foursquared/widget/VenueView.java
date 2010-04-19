@@ -6,15 +6,20 @@ package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.VenueActivity;
+import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,6 +35,8 @@ public class VenueView extends RelativeLayout {
     private TextView mVenueName;
     private TextView mVenueLocationLine1;
     private TextView mVenueLocationLine2;
+    private ImageView mVenueSpecialIcon;
+    
 
     public VenueView(Context context) {
         super(context);
@@ -51,6 +58,7 @@ public class VenueView extends RelativeLayout {
         mVenueName = (TextView)findViewById(R.id.internal_venueName);
         mVenueLocationLine1 = (TextView)findViewById(R.id.internal_venueLocationLine1);
         mVenueLocationLine2 = (TextView)findViewById(R.id.internal_venueLocationLine2);
+        mVenueSpecialIcon = (ImageView)findViewById(R.id.internal_specialImageView);
     }
 
     public void setCheckinButtonEnabled(boolean enabled) {
@@ -76,9 +84,33 @@ public class VenueView extends RelativeLayout {
         if (mCheckinButtonVisible) {
             mCheckinButton.setVisibility(View.VISIBLE);
         }
+        
+        // Don't show the special unless it's linked to this venue!
+        if (venue.getSpecials() != null && venue.getSpecials().size() > 0) {
+            Venue specialVenue = venue.getSpecials().get(0).getVenue();
+            if (specialVenue == null || specialVenue.getId().equals(venue.getId())) {
+                mVenueSpecialIcon.setVisibility(View.VISIBLE);
+            }
+        }
     };
 
     public void setCheckinButtonOnClickListener(OnClickListener l) {
         mCheckinButton.setOnClickListener(l);
+    }
+    
+    public void setSpecialOnClickListener(OnClickListener l) {
+        mVenueSpecialIcon.setOnClickListener(l);
+    }
+    
+    public void updateCheckinButtonText() {
+        // If the user has enabled 'quick check-in', then update the text of the button
+        // to reflect this.
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(
+                getContext());
+        if (settings.getBoolean(Preferences.PREFERENCE_IMMEDIATE_CHECKIN, false)) {
+            mCheckinButton.setText(getContext().getString(R.string.venue_activity_checkin_button_quick));
+        } else {
+            mCheckinButton.setText(getContext().getString(R.string.venue_activity_checkin_button));
+        }
     }
 }

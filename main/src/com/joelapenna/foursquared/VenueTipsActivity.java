@@ -9,14 +9,11 @@ import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.util.Comparators;
-import com.joelapenna.foursquared.util.StringFormatters;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.TipListAdapter;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -27,19 +24,23 @@ import java.util.Observer;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
+ * @author Mark Wyszomierski (markww@gmail.com)
+ *   -modified to start TipActivity on tip click (2010-03-25)
+ *   -added photos for tips (2010-03-25)
  */
 public class VenueTipsActivity extends LoadableListActivity {
     public static final String TAG = "VenueTipsActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    private static final int DIALOG_TIP = 0;
     private static final String STATE_CLICKED_TIP = "com.joelapenna.foursquared.VenueTipsActivity.CLICKED_TIP";
     private static final String STATE_CLICKED_TIP_AUTHOR = "com.joelapenna.foursquared.VenueTipsActivity.CLICKED_TIP_AUTHOR";
 
     private Observer mVenueObserver = new VenueObserver();
     private String mClickedTip = null;
     private String mClickedTipAuthor = null;
+    private SeparatedListAdapter mListAdapter;
 
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,14 +53,18 @@ public class VenueTipsActivity extends LoadableListActivity {
         setListAdapter(new SeparatedListAdapter(this));
         getListView().setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Tip tip = (Tip)parent.getAdapter().getItem(position);
-                mClickedTip = Html.fromHtml(tip.getText()).toString();
-                mClickedTipAuthor = StringFormatters.getUserAbbreviatedName(tip.getUser());
-                showDialog(DIALOG_TIP);
+            public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
+                VenueActivity parent = (VenueActivity)getParent();
+                Tip tip = (Tip)adapter.getItemAtPosition(position);
+                Intent intent = new Intent(VenueTipsActivity.this, TipActivity.class);
+                intent.putExtra(TipActivity.EXTRA_TIP_PARCEL, tip);
+                if (parent.venueObservable.getVenue() != null) {
+                    intent.putExtra(TipActivity.EXTRA_VENUE_NAME, parent.venueObservable.getVenue().getName());
+                }
+                startActivity(intent);
             }
         });
-
+        
         VenueActivity parent = (VenueActivity)getParent();
         if (parent.venueObservable.getVenue() != null) {
             mVenueObserver.update(parent.venueObservable, parent.venueObservable.getVenue());
@@ -74,27 +79,13 @@ public class VenueTipsActivity extends LoadableListActivity {
         outState.putString(STATE_CLICKED_TIP, mClickedTip);
         outState.putString(STATE_CLICKED_TIP_AUTHOR, mClickedTipAuthor);
     }
-
+    
     @Override
-    public Dialog onCreateDialog(int id) {
-        switch (id) {
-            case DIALOG_TIP:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Tip") // If not called with a value, the title isn't rendered.
-                        .setIcon(android.R.drawable.ic_dialog_info) //
-                        .setMessage("") // If not called, the textview isn't rendered.
-                        .setCancelable(true);
-                return builder.create();
-        }
-        return null;
-    }
-
-    @Override
-    public void onPrepareDialog(int id, Dialog dialog) {
-        switch (id) {
-            case DIALOG_TIP:
-                ((AlertDialog)dialog).setMessage(mClickedTip);
-                dialog.setTitle(getString(R.string.tip_says, mClickedTipAuthor));
+    public void onPause() {
+        super.onPause();
+        
+        if (isFinishing() && mListAdapter != null) {
+            mListAdapter.removeObserver();
         }
     }
 
@@ -103,7 +94,6 @@ public class VenueTipsActivity extends LoadableListActivity {
         return R.string.no_tips_be_the_first;
     }
 
-    @SuppressWarnings("unchecked")
     private Group<Group<Tip>> getVenueTipsAndTodos(Venue venue) {
         Group<Group<Tip>> tipsAndTodos = new Group<Group<Tip>>();
 
@@ -124,18 +114,21 @@ public class VenueTipsActivity extends LoadableListActivity {
     }
 
     private void putGroupsInAdapter(Group<Group<Tip>> groups) {
-        SeparatedListAdapter mainAdapter = (SeparatedListAdapter)getListAdapter();
-        mainAdapter.clear();
+        mListAdapter = (SeparatedListAdapter)getListAdapter();
+        mListAdapter.removeObserver();
+        mListAdapter.clear();
         setEmptyView();
 
         int groupCount = groups.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
             Group<Tip> group = groups.get(groupsIndex);
-            TipListAdapter groupAdapter = new TipListAdapter(this);
+            TipListAdapter groupAdapter = new TipListAdapter(
+                this, ((Foursquared)getApplication()).getRemoteResourceManager());
             groupAdapter.setGroup(group);
-            mainAdapter.addSection(group.getType(), groupAdapter);
+            mListAdapter.addSection(group.getType(), groupAdapter);
         }
-        mainAdapter.notifyDataSetInvalidated();
+        mListAdapter.notifyDataSetInvalidated();
+        getListView().setAdapter(mListAdapter);
     }
 
     private final class VenueObserver implements Observer {

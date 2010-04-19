@@ -5,25 +5,30 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.types.Category;
+import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
-import com.joelapenna.foursquare.util.VenueUtils;
-import com.joelapenna.foursquared.error.LocationException;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.DialogInterface.OnCancelListener;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +36,12 @@ import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import java.io.IOException;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -40,8 +51,10 @@ public class AddVenueActivity extends Activity {
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private static final double MINIMUM_ACCURACY_FOR_ADDRESS = 100.0;
+    
+    private static final int DIALOG_PICK_CATEGORY = 1;
 
-    final private StateHolder mStateHolder = new StateHolder();
+    private StateHolder mStateHolder;
 
     private EditText mNameEditText;
     private EditText mAddressEditText;
@@ -51,7 +64,15 @@ public class AddVenueActivity extends Activity {
     private EditText mZipEditText;
     private EditText mPhoneEditText;
     private Button mAddVenueButton;
+    private LinearLayout mCategoryLayout;
+    private ImageView mCategoryImageView;
+    private TextView mCategoryTextView;
+    private ProgressBar mCategoryProgressBar;
 
+    private ProgressDialog mDlgProgress;
+    
+    
+    
     private TextWatcher mNameFieldWatcher = new TextWatcher() {
         @Override
         public void afterTextChanged(Editable s) {
@@ -63,7 +84,7 @@ public class AddVenueActivity extends Activity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            mAddVenueButton.setEnabled(!TextUtils.isEmpty(s));
+            mAddVenueButton.setEnabled(canEnableSaveButton());
         }
     };
 
@@ -91,21 +112,57 @@ public class AddVenueActivity extends Activity {
         mStateEditText = (EditText) findViewById(R.id.stateEditText);
         mZipEditText = (EditText) findViewById(R.id.zipEditText);
         mPhoneEditText = (EditText) findViewById(R.id.phoneEditText);
-
-        mAddVenueButton.setOnClickListener(new OnClickListener() {
-
+        mCategoryLayout = (LinearLayout) findViewById(R.id.addVenueCategoryLayout);
+        mCategoryImageView = (ImageView) findViewById(R.id.addVenueCategoryIcon);
+        mCategoryTextView = (TextView) findViewById(R.id.addVenueCategoryTextView);
+        mCategoryProgressBar = (ProgressBar) findViewById(R.id.addVenueCategoryProgressBar);
+        
+        mCategoryLayout.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                new AddVenueTask().execute();
+            public void onClick(View view) {
+                showDialog(DIALOG_PICK_CATEGORY);
             }
         });
-
+        mCategoryLayout.setEnabled(false);
+        
+        mAddVenueButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mStateHolder.startTaskAddVenue(
+                    AddVenueActivity.this,
+                    new String[] {
+                        mNameEditText.getText().toString(),
+                        mAddressEditText.getText().toString(),
+                        mCrossstreetEditText.getText().toString(),
+                        mCityEditText.getText().toString(),
+                        mStateEditText.getText().toString(),
+                        mZipEditText.getText().toString(),
+                        mPhoneEditText.getText().toString(),
+                        mStateHolder.getChosenCategory() != null ? 
+                                mStateHolder.getChosenCategory().getId() : ""
+                    });
+            }
+        });
+        
         mNameEditText.addTextChangedListener(mNameFieldWatcher);
 
-        if (getLastNonConfigurationInstance() != null) {
-            setFields((StateHolder) getLastNonConfigurationInstance());
+        Object retained = getLastNonConfigurationInstance();
+        if (retained != null && retained instanceof StateHolder) {
+            mStateHolder = (StateHolder) retained;
+            mStateHolder.setActivityForTaskGetCategories(this);
+            mStateHolder.setActivityForTaskAddressLookup(this);
+            mStateHolder.setActivityForTaskAddVenue(this);
+            
+            setFields(mStateHolder.getAddressLookup());
+            setChosenCategory(mStateHolder.getChosenCategory());
+            if (mStateHolder.getCategories() != null && mStateHolder.getCategories().size() > 0) {
+                mCategoryLayout.setEnabled(true);
+                mCategoryProgressBar.setVisibility(View.GONE);
+            }
         } else {
-            new AddressLookupTask().execute();
+            mStateHolder = new StateHolder();
+            mStateHolder.startTaskAddressLookup(this);
+            mStateHolder.startTaskGetCategories(this);
         }
     }
 
@@ -113,12 +170,20 @@ public class AddVenueActivity extends Activity {
     public void onResume() {
         super.onResume();
         ((Foursquared) getApplication()).requestLocationUpdates(true);
+        
+        if (mStateHolder.getIsRunningTaskAddVenue()) {
+            startProgressBar(
+                getResources().getString(R.string.add_venue_label),
+                getResources().getString(R.string.add_venue_progress_bar_message));
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         ((Foursquared) getApplication()).removeLocationUpdates();
+        
+        stopProgressBar();
     }
 
     @Override
@@ -132,68 +197,152 @@ public class AddVenueActivity extends Activity {
         return mStateHolder;
     }
 
-    private void setFields(StateHolder fields) {
-        mStateHolder.geocodedAddress = fields.geocodedAddress;
-        mStateHolder.location = fields.location;
-
-        if (fields.geocodedAddress != null) {
+    private void setFields(AddressLookup addressLookup) {
+        if (addressLookup != null && addressLookup.getAddress() != null) {
 
             // Don't fill in the street unless we're reasonably confident we
             // know where the user is.
-            String address = fields.geocodedAddress.getAddressLine(0);
-            double accuracy = fields.location.getAccuracy();
+            String address = addressLookup.getAddress().getAddressLine(0);
+            double accuracy = addressLookup.getLocation().getAccuracy();
             if (address != null && (accuracy > 0.0 && accuracy < MINIMUM_ACCURACY_FOR_ADDRESS)) {
                 if (DEBUG) Log.d(TAG, "Accuracy good enough, setting address field.");
                 mAddressEditText.setText(address);
             }
 
-            String city = fields.geocodedAddress.getLocality();
+            String city = addressLookup.getAddress().getLocality();
             if (city != null) {
                 mCityEditText.setText(city);
             }
 
-            String state = fields.geocodedAddress.getAdminArea();
+            String state = addressLookup.getAddress().getAdminArea();
             if (state != null) {
                 mStateEditText.setText(state);
             }
 
-            String zip = fields.geocodedAddress.getPostalCode();
+            String zip = addressLookup.getAddress().getPostalCode();
             if (zip != null) {
                 mZipEditText.setText(zip);
             }
 
-            String phone = fields.geocodedAddress.getPhone();
+            String phone = addressLookup.getAddress().getPhone();
             if (phone != null) {
                 mPhoneEditText.setText(phone);
             }
         }
     }
+    
+    private void startProgressBar(String title, String message) {
+        if (mDlgProgress == null) {
+            mDlgProgress = ProgressDialog.show(this, title, message);
+        }
+        mDlgProgress.show();
+    }
 
-    class AddVenueTask extends AsyncTask<Void, Void, Venue> {
+    private void stopProgressBar() {
+        if (mDlgProgress != null) {
+            mDlgProgress.dismiss();
+            mDlgProgress = null;
+        }
+    }
+    
+    private void onGetCategoriesTaskComplete(Group<Category> categories, Exception ex) {
+        mStateHolder.setIsRunningTaskGetCategories(false);
+        try {
+            // Populate the categories list now.
+            if (categories != null) {
+                mStateHolder.setCategories(categories);
+                mCategoryLayout.setEnabled(true);
+                mCategoryTextView.setText("Pick a category");
+                mCategoryProgressBar.setVisibility(View.GONE);
+            } else {
+                // If error, feed list adapter empty user group.
+                mStateHolder.setCategories(new Group<Category>());
+                NotificationsUtil.ToastReasonForFailure(this, ex);
+            }
+        } finally {
+        }
+        stopIndeterminateProgressBar();
+    }
+    
+    private void ooGetAddressLookupTaskComplete(AddressLookup addressLookup, Exception ex) {
+        mStateHolder.setIsRunningTaskAddressLookup(false);
+        try {
+            // We can prepopulate some of the fields for them now.
+            if (addressLookup != null) {
+                mStateHolder.setAddressLookup(addressLookup);
+                setFields(addressLookup);
+            } else {
+                NotificationsUtil.ToastReasonForFailure(this, ex);
+            }
+        } finally {
+        }
+        stopIndeterminateProgressBar();
+    }
 
+    private void onAddVenueTaskComplete(Venue venue, Exception ex) {
+        mStateHolder.setIsRunningTaskAddVenue(false);
+        try {
+            // If they added the venue ok, then send them to an activity displaying it
+            // so they can play around with it.
+            if (venue != null) {
+                Intent intent = new Intent(AddVenueActivity.this, VenueActivity.class);
+                intent.putExtra(Foursquared.EXTRA_VENUE_ID, venue.getId());
+                startActivity(intent);
+                finish();
+            } else {
+                NotificationsUtil.ToastReasonForFailure(this, ex);
+            }
+        } finally {
+        }
+        stopProgressBar();
+    }
+    
+    private void stopIndeterminateProgressBar() {
+        if (mStateHolder.getIsRunningTaskAddressLookup() == false &&
+            mStateHolder.getIsRunningTaskGetCategories() == false) {
+            setProgressBarIndeterminateVisibility(false);
+        }
+    }
+
+    private static class AddVenueTask extends AsyncTask<Void, Void, Venue> {
+
+        private AddVenueActivity mActivity;
+        private String[] mParams;
         private Exception mReason;
 
+        public AddVenueTask(AddVenueActivity activity, String[] params) {
+            mActivity = activity;
+            mParams = params;
+        }
+
+        public void setActivity(AddVenueActivity activity) {
+            mActivity = activity;
+        }
+        
         @Override
         protected void onPreExecute() {
-            setProgressBarIndeterminateVisibility(true);
+            mActivity.startProgressBar(
+                mActivity.getResources().getString(R.string.add_venue_label),
+                mActivity.getResources().getString(R.string.add_venue_progress_bar_message));
         }
 
         @Override
         protected Venue doInBackground(Void... params) {
             try {
-                Foursquared foursquared = (Foursquared) getApplication();
+                Foursquared foursquared = (Foursquared) mActivity.getApplication();
                 Foursquare foursquare = foursquared.getFoursquare();
                 Location location = foursquared.getLastKnownLocationOrThrow();
 
-                return foursquare.addVenue( //
-                        mNameEditText.getText().toString(), //
-                        mAddressEditText.getText().toString(), //
-                        mCrossstreetEditText.getText().toString(), //
-                        mCityEditText.getText().toString(), //
-                        mStateEditText.getText().toString(), //
-                        mZipEditText.getText().toString(), //
-                        mPhoneEditText.getText().toString(), LocationUtils
-                                .createFoursquareLocation(location));
+                return foursquare.addVenue(
+                        mParams[0], // name
+                        mParams[1], // address
+                        mParams[2], // cross street
+                        mParams[3], // city
+                        mParams[4], // state,
+                        mParams[5], // zip
+                        mParams[6], // phone
+                        mParams[7], // category id
+                        LocationUtils.createFoursquareLocation(location));
             } catch (Exception e) {
                 if (DEBUG) Log.d(TAG, "Exception doing add venue", e);
                 mReason = e;
@@ -204,80 +353,292 @@ public class AddVenueActivity extends Activity {
         @Override
         protected void onPostExecute(Venue venue) {
             if (DEBUG) Log.d(TAG, "onPostExecute()");
-            try {
-                if (VenueUtils.isValid(venue)) {
-                    Intent intent = new Intent(AddVenueActivity.this, VenueActivity.class);
-                    intent.putExtra(Foursquared.EXTRA_VENUE_ID, venue.getId());
-                    startActivity(intent);
-                    finish();
-                } else {
-                    NotificationsUtil.ToastReasonForFailure(AddVenueActivity.this, mReason);
-                }
-            } finally {
-                setProgressBarIndeterminateVisibility(false);
+            if (mActivity != null) {
+                mActivity.onAddVenueTaskComplete(venue, mReason);
             }
         }
 
         @Override
         protected void onCancelled() {
-            setProgressBarIndeterminateVisibility(false);
+            if (mActivity != null) {
+                mActivity.onAddVenueTaskComplete(null, mReason);
+            }
         }
     }
 
-    class AddressLookupTask extends AsyncTask<Void, Void, StateHolder> {
+    private static class AddressLookupTask extends AsyncTask<Void, Void, AddressLookup> {
 
+        private AddVenueActivity mActivity;
         private Exception mReason;
 
+        public AddressLookupTask(AddVenueActivity activity) {
+            mActivity = activity;
+        }
+
+        public void setActivity(AddVenueActivity activity) {
+            mActivity = activity;
+        }
+        
         @Override
         protected void onPreExecute() {
-            setProgressBarIndeterminateVisibility(true);
+            mActivity.setProgressBarIndeterminateVisibility(true);
         }
 
         @Override
-        protected StateHolder doInBackground(Void... params) {
-            StateHolder stateHolder = new StateHolder();
-
+        protected AddressLookup doInBackground(Void... params) {
             try {
-                stateHolder.location = ((Foursquared)
-                        getApplication()).getLastKnownLocationOrThrow();
-                if (DEBUG) Log.d(TAG, stateHolder.location.toString());
-
-                Geocoder geocoder = new Geocoder(AddVenueActivity.this);
-                stateHolder.geocodedAddress = geocoder.getFromLocation(
-                        stateHolder.location.getLatitude(), stateHolder.location.getLongitude(), 1)
-                        .get(0);
+                Location location = ((Foursquared)mActivity.getApplication()).getLastKnownLocationOrThrow();
+                Geocoder geocoder = new Geocoder(mActivity);
+                return new AddressLookup(
+                    location,
+                    geocoder.getFromLocation(
+                        location.getLatitude(), 
+                        location.getLongitude(), 1).get(0));
 
             } catch (Exception e) {
                 mReason = e;
             }
-            return stateHolder;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(StateHolder fields) {
-            setProgressBarIndeterminateVisibility(false);
-
-            try {
-                if (fields == null) {
-                    NotificationsUtil.ToastReasonForFailure(AddVenueActivity.this, mReason);
-                    finish();
-                } else {
-                    setFields(fields);
-                }
-            } finally {
-                setProgressBarIndeterminateVisibility(false);
-
+        protected void onPostExecute(AddressLookup address) {
+            if (mActivity != null) {
+                mActivity.ooGetAddressLookupTaskComplete(address, mReason);
             }
         }
 
         @Override
         protected void onCancelled() {
-            setProgressBarIndeterminateVisibility(false);
+            if (mActivity != null) {
+                mActivity.ooGetAddressLookupTaskComplete(null, mReason);
+            }
+        }
+    }
+
+    private static class GetCategoriesTask extends AsyncTask<Void, Void, Group<Category>> {
+
+        private AddVenueActivity mActivity;
+        private Exception mReason;
+
+        public GetCategoriesTask(AddVenueActivity activity) {
+            mActivity = activity;
+        }
+
+        public void setActivity(AddVenueActivity activity) {
+            mActivity = activity;
+        }
+        
+        @Override
+        protected void onPreExecute() {
+            mActivity.setProgressBarIndeterminateVisibility(true);
+        }
+
+        @Override
+        protected Group<Category> doInBackground(Void... params) {
+            try {
+                Foursquared foursquared = (Foursquared) mActivity.getApplication();
+                Foursquare foursquare = foursquared.getFoursquare();
+                return foursquare.categories();
+            } catch (Exception e) {
+                if (DEBUG)
+                    Log.d(TAG, "GetCategoriesTask: Exception doing send friend request.", e);
+                mReason = e;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Group<Category> categories) {
+            if (DEBUG) Log.d(TAG, "GetCategoriesTask: onPostExecute()");
+            if (mActivity != null) {
+                mActivity.onGetCategoriesTaskComplete(categories, mReason);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            if (mActivity != null) {
+                mActivity.onGetCategoriesTaskComplete(null,
+                        new Exception("Get categories task request cancelled."));
+            }
         }
     }
 
     private static class StateHolder {
-        Location location = null;
-        Address geocodedAddress = null;
+        
+        private AddressLookupTask mTaskGetAddress;
+        private AddressLookup mAddressLookup;
+        private boolean mIsRunningTaskAddressLookup;
+        private GetCategoriesTask mTaskGetCategories;
+        private Group<Category> mCategories;
+        private boolean mIsRunningTaskGetCategories;
+        private AddVenueTask mTaskAddVenue;
+        private boolean mIsRunningTaskAddVenue;
+        private Category mChosenCategory;
+        
+        
+        public StateHolder() {
+            mCategories = new Group<Category>();
+            mIsRunningTaskAddressLookup = false;
+            mIsRunningTaskGetCategories = false;
+            mIsRunningTaskAddVenue = false;
+        }
+
+        public void setCategories(Group<Category> categories) {
+            mCategories = categories;
+        }
+
+        public void setAddressLookup(AddressLookup addressLookup) {
+            mAddressLookup = addressLookup;
+        }
+        
+        public Group<Category> getCategories() {
+            return mCategories;
+        }
+        
+        public AddressLookup getAddressLookup() {
+            return mAddressLookup;
+        }
+
+        public void startTaskGetCategories(AddVenueActivity activity) {
+            mIsRunningTaskGetCategories = true;
+            mTaskGetCategories = new GetCategoriesTask(activity);
+            mTaskGetCategories.execute();
+        }
+
+        public void startTaskAddressLookup(AddVenueActivity activity) {
+            mIsRunningTaskAddressLookup = true;
+            mTaskGetAddress = new AddressLookupTask(activity);
+            mTaskGetAddress.execute();
+        }
+
+        public void startTaskAddVenue(AddVenueActivity activity, String[] params) {
+            mIsRunningTaskAddVenue = true;
+            mTaskAddVenue = new AddVenueTask(activity, params);
+            mTaskAddVenue.execute();
+        }
+
+        public void setActivityForTaskGetCategories(AddVenueActivity activity) {
+            if (mTaskGetCategories != null) {
+                mTaskGetCategories.setActivity(activity);
+            }
+        }
+
+        public void setActivityForTaskAddressLookup(AddVenueActivity activity) {
+            if (mTaskGetAddress != null) {
+                mTaskGetAddress.setActivity(activity);
+            }
+        }
+
+        public void setActivityForTaskAddVenue(AddVenueActivity activity) {
+            if (mTaskAddVenue != null) {
+                mTaskAddVenue.setActivity(activity);
+            }
+        }
+        
+        public void setIsRunningTaskAddressLookup(boolean isRunning) {
+            mIsRunningTaskAddressLookup = isRunning;
+        }
+        
+        public void setIsRunningTaskGetCategories(boolean isRunning) {
+            mIsRunningTaskGetCategories = isRunning;
+        }
+
+        public void setIsRunningTaskAddVenue(boolean isRunning) {
+            mIsRunningTaskAddVenue = isRunning;
+        }
+        
+        public boolean getIsRunningTaskAddressLookup() {
+            return mIsRunningTaskAddressLookup;
+        }
+
+        public boolean getIsRunningTaskGetCategories() {
+            return mIsRunningTaskGetCategories;
+        }
+        
+        public boolean getIsRunningTaskAddVenue() {
+            return mIsRunningTaskAddVenue;
+        }
+        
+        public Category getChosenCategory() {
+            return mChosenCategory;
+        }
+        
+        public void setChosenCategory(Category category) {
+            mChosenCategory = category;
+        }
+    }
+    
+    private static class AddressLookup {
+        private Location mLocation;
+        private Address mAddress;
+        
+        public AddressLookup(Location location, Address address) {
+            mLocation = location;
+            mAddress = address;
+        }
+        
+        public Location getLocation() {
+            return mLocation;
+        }
+        
+        public Address getAddress() {
+            return mAddress;
+        }
+    }
+    
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DIALOG_PICK_CATEGORY:
+                // When the user cancels the dialog (by hitting the 'back' key), we
+                // finish this activity. We don't listen to onDismiss() for this
+                // action, because a device rotation will fire onDismiss(), and our
+                // dialog would not be re-displayed after the rotation is complete.
+                CategoryPickerDialog dlg = new CategoryPickerDialog(
+                    this, 
+                    mStateHolder.getCategories(), 
+                    ((Foursquared)getApplication()));
+                dlg.setOnCancelListener(new OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        CategoryPickerDialog dlg = (CategoryPickerDialog)dialog;
+                        setChosenCategory(dlg.getChosenCategory());
+                        removeDialog(DIALOG_PICK_CATEGORY);
+                    }
+                });
+                return dlg;
+        }
+        return null;
+    } 
+    
+    private void setChosenCategory(Category category) {
+        if (category == null) {
+            mCategoryTextView.setText("Pick a category");
+            return;
+        }
+        
+        try {
+            Bitmap bitmap = BitmapFactory.decodeStream(
+                ((Foursquared)getApplication()).getRemoteResourceManager().getInputStream(
+                    Uri.parse(category.getIconUrl())));
+            mCategoryImageView.setImageBitmap(bitmap);
+        } catch (IOException e) {
+            if (DEBUG) Log.e(TAG, "Error loading category icon.", e);
+        }
+        
+        mCategoryTextView.setText(category.getNodeName());
+        
+        // Record the chosen category.
+        mStateHolder.setChosenCategory(category);
+        
+        if (canEnableSaveButton()) {
+            mAddVenueButton.setEnabled(canEnableSaveButton());
+        }
+    }
+    
+    private boolean canEnableSaveButton() {
+        return mNameEditText.getText().length() > 0;
     }
 }

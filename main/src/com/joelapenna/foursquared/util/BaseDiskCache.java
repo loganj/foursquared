@@ -34,7 +34,8 @@ public class BaseDiskCache implements DiskCache {
         File storageDirectory = new File(baseDirectory, name);
         createDirectory(storageDirectory);
         mStorageDirectory = storageDirectory;
-        cleanup(); // Remove invalid files that may have shown up.
+        // cleanup(); // Remove invalid files that may have shown up.
+        cleanupSimple();
     }
 
     /*
@@ -104,6 +105,28 @@ public class BaseDiskCache implements DiskCache {
                 if (!child.equals(new File(mStorageDirectory, NOMEDIA))
                         && child.length() <= MIN_FILE_SIZE_IN_BYTES) {
                     if (DEBUG) Log.d(TAG, "Deleting: " + child);
+                    child.delete();
+                }
+            }
+        }
+    }
+    
+    /**
+     * Temporary fix until we rework this disk cache. We delete the first 50 youngest files
+     * if we find the cache has more than 1000 images in it.
+     */
+    public void cleanupSimple() {
+        final int maxNumFiles = 1000;
+        final int numFilesToDelete = 50;
+        
+        String[] children = mStorageDirectory.list();
+        if (children != null) {
+            if (DEBUG) Log.d(TAG, "Found disk cache length to be: " + children.length);
+            if (children.length > maxNumFiles) {
+                if (DEBUG) Log.d(TAG, "Disk cache found to : " + children);
+                for (int i = children.length - 1, m = i - numFilesToDelete; i > m; i--) {
+                    File child = new File(mStorageDirectory, children[i]);
+                    if (DEBUG) Log.d(TAG, "  deleting: " + child.getName());
                     child.delete();
                 }
             }

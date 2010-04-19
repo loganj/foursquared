@@ -77,14 +77,14 @@ public class BrowsableActivity extends Activity {
                 break;
             case URI_PATH_SHOUT:
                 if (DEBUG) Log.d(TAG, "Matched: URI_PATH_SHOUT");
-                intent = new Intent(this, ShoutActivity.class);
-                intent.putExtra(ShoutActivity.EXTRA_SHOUT, true);
+                intent = new Intent(this, CheckinOrShoutGatherInfoActivity.class);
+                intent.putExtra(CheckinOrShoutGatherInfoActivity.INTENT_EXTRA_IS_SHOUT, true);
                 startActivity(intent);
                 break;
             case URI_PATH_USER:
                 if (DEBUG) Log.d(TAG, "Matched: URI_PATH_USER");
-                intent = new Intent(this, UserActivity.class);
-                intent.putExtra(UserActivity.EXTRA_USER, uri.getQueryParameter("uid"));
+                intent = new Intent(this, UserDetailsActivity.class);
+                intent.putExtra(UserDetailsActivity.EXTRA_USER_ID, uri.getQueryParameter("uid"));
                 startActivity(intent);
                 break;
             case URI_PATH_VENUE:
@@ -98,5 +98,4 @@ public class BrowsableActivity extends Activity {
         }
         finish();
     }
-
 }

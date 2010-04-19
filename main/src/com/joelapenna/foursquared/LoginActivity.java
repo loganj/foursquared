@@ -6,7 +6,6 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquared.error.LocationException;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
@@ -16,7 +15,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -125,8 +123,8 @@ public class LoginActivity extends Activity {
         mNewAccountTextView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent( //
-                        Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_MOBILE_SIGNUP)));
+                startActivity(new Intent(
+                    Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_MOBILE_SIGNUP)));
             }
         });
 
@@ -218,6 +216,7 @@ public class LoginActivity extends Activity {
             Foursquared foursquared = (Foursquared) getApplication();
 
             if (loggedIn) {
+
                 sendBroadcast(new Intent(Foursquared.INTENT_ACTION_LOGGED_IN));
                 Toast.makeText(LoginActivity.this, getString(R.string.login_welcome_toast),
                         Toast.LENGTH_LONG).show();

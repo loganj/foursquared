@@ -6,14 +6,12 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.error.LocationException;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
 import com.joelapenna.foursquared.util.Comparators;
-import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
@@ -134,6 +132,10 @@ public class SearchVenuesActivity extends TabActivity {
     public void onPause() {
         super.onPause();
         ((Foursquared) getApplication()).removeLocationUpdates();
+        
+        if (isFinishing()) {
+            mListAdapter.removeObserver();
+        }
     }
 
     @Override
@@ -150,14 +152,14 @@ public class SearchVenuesActivity extends TabActivity {
 
         // Always show these.
         menu.add(MENU_GROUP_SEARCH, MENU_SEARCH, Menu.NONE, R.string.search_label) //
-                .setIcon(android.R.drawable.ic_search_category_default) //
+                .setIcon(R.drawable.ic_menu_search) //
                 .setAlphabeticShortcut(SearchManager.MENU_KEY);
         menu.add(MENU_GROUP_SEARCH, MENU_NEARBY, Menu.NONE, R.string.nearby_label) //
-                .setIcon(android.R.drawable.ic_menu_compass);
+                .setIcon(R.drawable.ic_menu_places);
         menu.add(MENU_GROUP_SEARCH, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
                 .setIcon(R.drawable.ic_menu_refresh);
         menu.add(MENU_GROUP_SEARCH, MENU_ADD_VENUE, Menu.NONE, R.string.add_venue_label) //
-                .setIcon(android.R.drawable.ic_menu_add);
+                .setIcon(R.drawable.ic_menu_add);
 
         return true;
     }
@@ -210,18 +212,20 @@ public class SearchVenuesActivity extends TabActivity {
     }
 
     public void putSearchResultsInAdapter(Group<Group<Venue>> searchResults) {
-        mListAdapter.clear();
+        mListAdapter.removeObserver();
+        mListAdapter = new SeparatedListAdapter(this);
         int groupCount = searchResults.size();
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
             Group<Venue> group = searchResults.get(groupsIndex);
             if (group.size() > 0) {
-                VenueListAdapter groupAdapter = new VenueListAdapter(this);
+                VenueListAdapter groupAdapter = new VenueListAdapter(this,
+                        ((Foursquared) getApplication()).getRemoteResourceManager());
                 groupAdapter.setGroup(group);
                 if (DEBUG) Log.d(TAG, "Adding Section: " + group.getType());
                 mListAdapter.addSection(group.getType(), groupAdapter);
             }
         }
-        mListAdapter.notifyDataSetInvalidated();
+        mListView.setAdapter(mListAdapter);
     }
 
     public void setSearchResults(Group<Group<Venue>> searchResults) {

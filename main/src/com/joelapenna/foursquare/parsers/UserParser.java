@@ -47,6 +47,9 @@ public class UserParser extends AbstractParser<User> {
             } else if ("email".equals(name)) {
                 user.setEmail(parser.nextText());
 
+            } else if ("facebook".equals(name)) {
+                user.setFacebook(parser.nextText());
+
             } else if ("firstname".equals(name)) {
                 user.setFirstname(parser.nextText());
 
@@ -61,6 +64,9 @@ public class UserParser extends AbstractParser<User> {
 
             } else if ("lastname".equals(name)) {
                 user.setLastname(parser.nextText());
+
+            } else if ("mayor".equals(name)) {
+                user.setMayorships(new GroupParser(new VenueParser()).parse(parser));
 
             } else if ("phone".equals(name)) {
                 user.setPhone(parser.nextText());

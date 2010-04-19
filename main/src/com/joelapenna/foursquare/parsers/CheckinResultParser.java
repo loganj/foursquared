@@ -44,6 +44,9 @@ public class CheckinResultParser extends AbstractParser<CheckinResult> {
             } else if ("id".equals(name)) {
                 checkin_result.setId(parser.nextText());
 
+            } else if ("markup".equals(name)) {
+                checkin_result.setMarkup(parser.nextText());
+
             } else if ("mayor".equals(name)) {
                 checkin_result.setMayor(new MayorParser().parse(parser));
 

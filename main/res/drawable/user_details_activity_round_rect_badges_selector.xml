@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+  <!-- Copyright (c) Mark Wyszomierski, 2010. -->
+  
+<selector  
+ xmlns:android="http://schemas.android.com/apk/res/android"
+ android:id="@+id/user_details_activity_round_rect_badges_selector" >
+   
+  <!-- Non focused states -->
+  <item 
+    android:state_focused="false" 
+    android:state_selected="false" 
+    android:state_pressed="false"
+    android:state_enabled="true"
+    android:drawable="@drawable/user_details_activity_round_rect_badges" />
+     
+  <item 
+    android:state_focused="false" 
+    android:state_selected="true"
+    android:state_pressed="false"
+    android:state_enabled="true"
+    android:drawable="@drawable/user_details_activity_round_rect_badges" />
+
+  <!-- Focused states -->
+  <item 
+    android:state_focused="true" 
+    android:state_selected="false"
+    android:state_pressed="false" 
+    android:state_enabled="true"
+    android:drawable="@drawable/user_details_activity_round_rect_badges_on" />
+    
+  <item 
+    android:state_focused="true" 
+    android:state_selected="true"
+    android:state_pressed="false" 
+    android:state_enabled="true"
+    android:drawable="@drawable/user_details_activity_round_rect_badges_on" />
+
+  <!-- Pressed -->
+  <item 
+    android:state_pressed="true" 
+    android:drawable="@drawable/user_details_activity_round_rect_badges_on" />
+    
+  <!-- Disabled -->
+  <item 
+    android:state_enabled="false" 
+    android:drawable="@drawable/user_details_activity_round_rect_badges" />
+ 
+</selector>

@@ -1,53 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-    <!-- android:layout_height="?android:attr/listPreferredItemHeight" -->
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content" >
+  
+  <LinearLayout
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:padding="10dip"
-    android:layout_marginBottom="6dip"
->
-    <TextView
+    android:background="@color/white"
+    android:paddingLeft="7dip"
+    android:paddingTop="10dip"
+    android:paddingBottom="10dip"
+    android:paddingRight="7dip"
+    android:layout_marginBottom="6dip" >
+  
+    <LinearLayout
+     android:layout_width="0dip"
+     android:layout_height="wrap_content"
+     android:layout_weight="1"
+  	 android:orientation="vertical" >
+	
+      <TextView
         android:id="@+id/internal_venueName"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/icon"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignWithParentIfMissing="true"
         android:textColor="@color/black_end"
-        android:textAppearance="@android:style/TextAppearance.Medium" />
-    <TextView
+        android:textAppearance="@style/TextViewStyleVenueActivityVenueName" />
+      <TextView
         android:id="@+id/internal_venueLocationLine1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/internal_venueName"
-        android:layout_alignWithParentIfMissing="true"
         android:textColor="@color/black_end"
         android:textAppearance="@android:style/TextAppearance.Small" />
-    <Button
-        android:id="@+id/internal_checkinButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/venueQuickCheckinStyle"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/internal_venueLocationLine1"
-        android:layout_centerVertical="true"
-        android:gravity="center_vertical"
-        android:enabled="false"
-        android:visibility="gone" />
-    <TextView
+      <TextView
         android:id="@+id/internal_venueLocationLine2"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/black_end"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/internal_venueLocationLine1"
-        android:layout_toLeftOf="@id/internal_checkinButton"
         android:textAppearance="@android:style/TextAppearance.Small" />
-</RelativeLayout>
+        
+      <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+  	    android:orientation="horizontal"
+  	    android:paddingTop="5dip" >
+  	    
+        <Button
+          android:id="@+id/internal_checkinButton"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:enabled="false"
+          android:visibility="gone" 
+          style="@style/venueQuickCheckinStyle" />
+          
+      </LinearLayout>
+      
+    </LinearLayout>
+  
+  </LinearLayout>
+  
+  
+  <LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="right" >
+    
+    <ImageView
+      android:id="@+id/internal_specialImageView"
+      android:layout_width="80dip"
+      android:layout_height="53dip"
+      android:src="@drawable/special_banners"
+      android:scaleType="fitCenter" 
+      android:visibility="gone"
+      android:layout_marginRight="7dip"
+      />
+      
+  </LinearLayout>
+
+</FrameLayout>
+    

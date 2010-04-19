@@ -4,12 +4,18 @@
 
 package com.joelapenna.foursquare.types;
 
+import com.joelapenna.foursquare.util.ParcelUtils;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Auto-generated: 2010-01-25 20:40:14.399949
  *
  * @author Joe LaPenna (joe@joelapenna.com)
+ * @author Mark Wyszomierski (markww@gmail.com), implemented Parcelable.
  */
-public class Settings implements FoursquareType {
+public class Settings implements FoursquareType, Parcelable {
 
     private String mFeedsKey;
     private String mPings;
@@ -18,6 +24,24 @@ public class Settings implements FoursquareType {
 
     public Settings() {
     }
+    
+    private Settings(Parcel in) {
+        mFeedsKey = ParcelUtils.readStringFromParcel(in);
+        mPings = ParcelUtils.readStringFromParcel(in);
+        mSendtofacebook = in.readInt() == 1;
+        mSendtotwitter = in.readInt() == 1;
+    }
+    
+    public static final Parcelable.Creator<Settings> CREATOR = new Parcelable.Creator<Settings>() {
+        public Settings createFromParcel(Parcel in) {
+            return new Settings(in);
+        }
+
+        @Override
+        public Settings[] newArray(int size) {
+            return new Settings[size];
+        }
+    };
 
     public String getFeedsKey() {
         return mFeedsKey;
@@ -51,4 +75,16 @@ public class Settings implements FoursquareType {
         mSendtotwitter = sendtotwitter;
     }
 
-}
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        ParcelUtils.writeStringToParcel(out, mFeedsKey);
+        ParcelUtils.writeStringToParcel(out, mPings);
+        out.writeInt(mSendtofacebook ? 1 : 0);
+        out.writeInt(mSendtotwitter ? 1 : 0);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+} 
