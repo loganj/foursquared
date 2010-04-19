@@ -7,12 +7,14 @@
   android:layout_height="fill_parent"
   android:background="#444"
   android:orientation="horizontal"
-  android:visibility="gone" >
+  android:visibility="gone"
+  android:gravity="center_vertical" >
     
     <TextView 
       android:id="@+id/footerTextView"
-      android:layout_width="wrap_content"
+      android:layout_width="0dip"
       android:layout_height="wrap_content"
+      android:layout_weight="1"
       android:text=""
       android:textAppearance="@style/TextViewStyleUserReverseGeoLocation"
       android:textColor="@color/white"
@@ -20,5 +22,14 @@
 	  android:paddingBottom="2dip"
 	  android:paddingLeft="3dip"
       />
+      
+    <ImageView
+      android:id="@+id/geoicon"
+	  android:layout_height="14dip"
+	  android:layout_width="14dip"
+      android:src="@drawable/geoicon"
+      android:scaleType="fitXY"
+      android:layout_marginRight="4dip"
+      android:layout_marginTop="1dip" /> 
    
 </LinearLayout>
