@@ -100,14 +100,12 @@ public class VenueCheckinsActivity extends LoadableListActivity {
     private void startItemActivity(User user) {
         if (DEBUG) Log.d(TAG, "firing venue activity for venue");
         Intent intent = new Intent(VenueCheckinsActivity.this, UserDetailsActivity.class);
-  // zebra      intent.putExtra(UserActivity.EXTRA_USER, user.getId());
         intent.putExtra(UserDetailsActivity.EXTRA_USER_PARCEL, user);
         startActivity(intent);
     }
 
     private final class ParentDataObserver implements Observer {
 
-        @SuppressWarnings("unchecked")
         @Override
         public void update(Observable observable, Object data) {
             if (DEBUG) Log.d(TAG, "Received update from: " + observable.toString());
