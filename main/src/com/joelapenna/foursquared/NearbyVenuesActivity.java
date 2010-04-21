@@ -36,6 +36,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -367,19 +368,26 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                         location.getLatitude(), location.getLongitude(), 1);
                 if (addresses.size() > 0) {
                     Address address = addresses.get(0);
-                    
+
                     StringBuilder sb = new StringBuilder(128);
                     sb.append("Near ");
                     sb.append(address.getAddressLine(0));
                     if (addresses.size() > 1) {
                         sb.append(", ");
                         sb.append(address.getAddressLine(1));
-                    }
+                    } 
                     if (addresses.size() > 2) {
                         sb.append(", ");
                         sb.append(address.getAddressLine(2));
                     }
                     
+                    if (!TextUtils.isEmpty(address.getLocality())) {
+                        if (sb.length() > 0) {
+                            sb.append(", ");
+                        }  
+                        sb.append(address.getLocality());
+                    }
+
                     return sb.toString();
                 }
             } catch (Exception ex) {

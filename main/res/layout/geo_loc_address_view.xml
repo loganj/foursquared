@@ -15,12 +15,14 @@
       android:layout_width="0dip"
       android:layout_height="wrap_content"
       android:layout_weight="1"
+      android:singleLine="true"
       android:text=""
       android:textAppearance="@style/TextViewStyleUserReverseGeoLocation"
       android:textColor="@color/white"
 	  android:paddingTop="4dip"
 	  android:paddingBottom="2dip"
 	  android:paddingLeft="3dip"
+      android:ellipsize="end"
       />
       
     <ImageView
@@ -29,6 +31,7 @@
 	  android:layout_width="14dip"
       android:src="@drawable/geoicon"
       android:scaleType="fitXY"
+      android:layout_marginLeft="4dip"
       android:layout_marginRight="4dip"
       android:layout_marginTop="1dip" /> 
    
