@@ -12,23 +12,14 @@
     android:clickable="true" />
 
   <Button
-    android:id="@+id/yelpButton"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentTop="true"
-    android:layout_alignParentRight="true"
-    android:layout_marginTop="10dip"
-    android:layout_marginRight="10dip"
-    android:background="@drawable/venue_map_button_right" />
-
-  <Button
     android:id="@+id/mapsButton"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_alignParentTop="true"
-    android:layout_toLeftOf="@id/yelpButton"
-    android:layout_marginTop="10dip"
-    android:background="@drawable/venue_map_button_left" />
+    android:background="@drawable/venue_map_more" 
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:layout_marginBottom="4dip"
+    android:layout_marginRight="7dip"/>
 
   <LinearLayout
     android:id="@+id/zoomView"
