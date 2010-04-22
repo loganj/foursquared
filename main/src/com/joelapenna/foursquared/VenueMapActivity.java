@@ -16,6 +16,7 @@ import com.joelapenna.foursquared.maps.CrashFixMyLocationOverlay;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
 
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -44,19 +45,6 @@ public class VenueMapActivity extends MapActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.venue_map_activity);
-
-        Button yelpButton = (Button) findViewById(R.id.yelpButton);
-        yelpButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                // TODO(jlapenna): Construct a useful Yelp URI!
-                String yelpUrl = "http://yelp.com/biz/" + mVenue.getName() + "-" + mVenue.getCity();
-                intent.setData(Uri.parse(yelpUrl.replace(" ", "-")));
-                startActivity(intent);
-
-            }
-        });
 
         Button mapsButton = (Button) findViewById(R.id.mapsButton);
         mapsButton.setOnClickListener(new OnClickListener() {
@@ -134,7 +122,7 @@ public class VenueMapActivity extends MapActivity {
             return;
         }
         mMapController.animateTo(center);
-        mMapController.setZoom(12);
+        mMapController.setZoom(17);
     }
 
     private final class VenueObserver implements Observer {
