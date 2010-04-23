@@ -15,7 +15,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -123,8 +122,9 @@ public class LoginActivity extends Activity {
         mNewAccountTextView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(
-                    Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_MOBILE_SIGNUP)));
+                //startActivity(new Intent(
+                //    Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_MOBILE_SIGNUP)));
+                startActivity(new Intent(LoginActivity.this, SignupActivityPrivate.class));
             }
         });
 
