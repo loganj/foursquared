@@ -24,15 +24,5 @@
 	  android:paddingLeft="3dip"
       android:ellipsize="end"
       />
-      
-    <ImageView
-      android:id="@+id/geoicon"
-	  android:layout_height="14dip"
-	  android:layout_width="14dip"
-      android:src="@drawable/geoicon"
-      android:scaleType="fitXY"
-      android:layout_marginLeft="4dip"
-      android:layout_marginRight="4dip"
-      android:layout_marginTop="1dip" /> 
    
 </LinearLayout>
