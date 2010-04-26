@@ -54,7 +54,7 @@
   <string name="nearby_label">Places</string>
   <string name="need_an_account">Need an account?</string>
   <string name="no_checkins_be_the_first">No recent checkins here!</string>
-  <string name="no_friend_checkins">No recent friend checkins. Find cooler friends!</string>
+  <string name="no_friend_checkins">No recent friend checkins!</string>
   <string name="no_location_providers">Unable to determine location. Please Enable GPS or Network Location</string>
   <string name="no_nearby_venues">No nearby venues!</string>
   <string name="no_search_results">No search results.</string>

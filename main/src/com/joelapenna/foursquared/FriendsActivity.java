@@ -8,7 +8,7 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquared.app.LoadableListActivity;
+import com.joelapenna.foursquared.app.LoadableListActivityWithView;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.CheckinTimestampSort;
 import com.joelapenna.foursquared.util.Comparators;
@@ -28,11 +28,15 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -50,7 +54,7 @@ import java.util.Observer;
  *          links to new user activity (3/10/2010).
  *         -Sorting checkins by distance/time. (3/18/2010)
  */
-public class FriendsActivity extends LoadableListActivity {
+public class FriendsActivity extends LoadableListActivityWithView {
     static final String TAG = "FriendsActivity";
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
@@ -71,6 +75,8 @@ public class FriendsActivity extends LoadableListActivity {
     private SearchHolder mSearchHolder = new SearchHolder();
     private SeparatedListAdapter mListAdapter;
     private SearchLocationObserver mSearchLocationObserver = new SearchLocationObserver();
+    
+    private LinearLayout mLayoutEmpty;
 
     
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
@@ -99,6 +105,9 @@ public class FriendsActivity extends LoadableListActivity {
                 mSearchHolder.query = holder.query;
                 setSearchResults(holder.results);
                 putSearchResultsInAdapter(holder.results);
+                if (holder.results.size() < 1) {
+                    setEmptyView(mLayoutEmpty);
+                }
             }
         } else {
             onNewIntent(getIntent());
@@ -223,6 +232,18 @@ public class FriendsActivity extends LoadableListActivity {
                 return false;
             }
         });
+
+        // Prepare our no-results view.
+        mLayoutEmpty = (LinearLayout)LayoutInflater.from(this).inflate(
+                R.layout.friends_activity_empty, null);
+        Button btnEmpty = (Button)mLayoutEmpty.findViewById(R.id.friendsActivityEmptyButton);
+        btnEmpty.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FriendsActivity.this, AddFriendsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void setSearchResults(Group<Checkin> searchResults) {
@@ -256,7 +277,6 @@ public class FriendsActivity extends LoadableListActivity {
         } else {
             setTitle(R.string.friendsactivity_title_searching);
         }
-
     }
 
     private class SearchTask extends AsyncTask<Void, Void, Group<Checkin>> {
@@ -293,7 +313,10 @@ public class FriendsActivity extends LoadableListActivity {
             } finally {
                 setProgressBarIndeterminateVisibility(false);
                 ensureTitle(true);
-                setEmptyView();
+//setEmptyView(); 
+                if (checkins.size() < 1) {
+                    setEmptyView(mLayoutEmpty);
+                }
             }
         }
 
