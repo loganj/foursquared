@@ -4,14 +4,11 @@
 
 package com.joelapenna.foursquared.app;
 
-import com.joelapenna.foursquare.error.FoursquareError;
-import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.appwidget.FriendsAppWidgetProvider;
-import com.joelapenna.foursquared.error.LocationException;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.Comparators;
 
@@ -24,7 +21,6 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.util.Log;
 
-import java.io.IOException;
 import java.util.Collections;
 
 /**

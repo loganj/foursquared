@@ -38,6 +38,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -76,7 +77,7 @@ public class FriendsActivity extends LoadableListActivityWithView {
     private SeparatedListAdapter mListAdapter;
     private SearchLocationObserver mSearchLocationObserver = new SearchLocationObserver();
     
-    private LinearLayout mLayoutEmpty;
+    private ScrollView mLayoutEmpty;
 
     
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
@@ -233,14 +234,30 @@ public class FriendsActivity extends LoadableListActivityWithView {
             }
         });
 
-        // Prepare our no-results view.
-        mLayoutEmpty = (LinearLayout)LayoutInflater.from(this).inflate(
+        // Prepare our no-results view. Something odd is going on with the layout parameters though.
+        // If we don't explicitly set the layout to be fill/fill after inflating, the layout jumps
+        // to a wrap/wrap layout.
+        mLayoutEmpty = (ScrollView)LayoutInflater.from(this).inflate(
                 R.layout.friends_activity_empty, null);
-        Button btnEmpty = (Button)mLayoutEmpty.findViewById(R.id.friendsActivityEmptyButton);
-        btnEmpty.setOnClickListener(new OnClickListener() {
+        mLayoutEmpty.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
+        
+        Button btnAddFriends = (Button)mLayoutEmpty.findViewById(
+                R.id.friendsActivityEmptyBtnAddFriends);
+        btnAddFriends.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FriendsActivity.this, AddFriendsActivity.class);
+                startActivity(intent);
+            }
+        });
+        
+        Button btnFriendRequests = (Button)mLayoutEmpty.findViewById(
+                R.id.friendsActivityEmptyBtnFriendRequests);
+        btnFriendRequests.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FriendsActivity.this, FriendRequestsActivity.class);
                 startActivity(intent);
             }
         });
@@ -313,10 +330,10 @@ public class FriendsActivity extends LoadableListActivityWithView {
             } finally {
                 setProgressBarIndeterminateVisibility(false);
                 ensureTitle(true);
-//setEmptyView(); 
-                if (checkins.size() < 1) {
+
+                if (checkins == null || checkins.size() < 1) {
                     setEmptyView(mLayoutEmpty);
-                }
+                }  
             }
         }
 

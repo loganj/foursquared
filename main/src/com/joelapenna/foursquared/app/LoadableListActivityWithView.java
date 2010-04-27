@@ -21,6 +21,10 @@ import android.widget.TextView;
  * to show a button like 'Find some friends!' when the list is empty (in the case that
  * they are a new user and have no friends initially).
  * 
+ * By default, loadable_list_activity_with_view is used as the intial empty view with
+ * a progress bar and textview description. The owner can then call setEmptyView()
+ * with their own view to show if there are no results.
+ *  
  * @date April 25, 2010
  * @author Mark Wyszomierski (markww@gmail.com)
  */
@@ -36,11 +40,12 @@ public class LoadableListActivityWithView extends ListActivity {
         setContentView(R.layout.loadable_list_activity_with_view);
         mEmptyProgress = (ProgressBar)findViewById(R.id.emptyProgress);
         mEmptyText = (TextView)findViewById(R.id.emptyText);
-        setLoadingView();
-    }
 
+        setLoadingView(); 
+    }
+ 
     public void setEmptyView(View view) {
-        LinearLayout parent = (LinearLayout)findViewById(R.id.loadableListEmpty);
+        LinearLayout parent = (LinearLayout)findViewById(R.id.loadableListHolder);
         parent.removeAllViews();
         parent.addView(view);
     }
