@@ -64,5 +64,17 @@ public class AddFriendsActivity extends Activity {
                 startActivity(intent);
             }
         });
+        
+        Button btnInviteFriends = (Button) findViewById(R.id.findFriendsInvite);
+        btnInviteFriends.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AddFriendsActivity.this,
+                        AddFriendsByUserInputActivity.class);
+                intent.putExtra(AddFriendsByUserInputActivity.INPUT_TYPE,
+                        AddFriendsByUserInputActivity.INPUT_TYPE_ADDRESSBOOK_INVITE);
+                startActivity(intent);
+            }
+        });
     }
 }

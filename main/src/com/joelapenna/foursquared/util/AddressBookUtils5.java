@@ -31,4 +31,18 @@ public class AddressBookUtils5 extends AddressBookUtils {
          * return sb.toString();
          */
     }
+    
+    @Override
+    public String getAllContactsEmailAddresses(Activity activity) {
+
+        throw new IllegalStateException(
+                "AddressBookUtils5.getAllContactsEmailAddresses() not implemented.");
+    }
+    
+    @Override
+    public AddressBookEmailBuilder getAllContactsEmailAddressesInfo(Activity activity) {
+
+        throw new IllegalStateException(
+                "AddressBookUtils5.getAllContactsEmailAddressesInfo() not implemented.");
+    }
 }

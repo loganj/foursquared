@@ -12,6 +12,7 @@ import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Response;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
@@ -230,6 +231,18 @@ public class Foursquare {
     public Tip tipMarkDone(String tipId) 
         throws FoursquareException, FoursquareError, IOException {
         return mFoursquareV1.tipMarkDone(tipId);
+    }
+    
+    @V1
+    public Group<User> findFriendsByPhoneOrEmail(String phones, String emails)
+        throws FoursquareException, FoursquareCredentialsException, FoursquareError, IOException {
+        return mFoursquareV1.findFriendsByPhoneOrEmail(phones, emails);
+    }
+    
+    @V1
+    public Response inviteByEmail(String emails) 
+        throws FoursquareException, FoursquareCredentialsException, FoursquareError, IOException {
+        return mFoursquareV1.inviteByEmail(emails);
     }
     
     public static final FoursquareHttpApiV1 createHttpApi(String domain, String clientVersion,

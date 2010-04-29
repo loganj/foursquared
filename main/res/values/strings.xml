@@ -136,6 +136,7 @@
   <string name="add_friends_by_name_or_phone_btn_label">Find by name or phone number</string>
   <string name="add_friends_by_twitter_btn_label">Find Twitter friends</string>
   <string name="add_friends_by_address_book_btn_label">Scan my address book</string>
+  <string name="add_friends_invite_btn_label">Invite friends to Foursquare</string>
   <string name="add_friends_by_name_or_phone_instructions">Find friends by name or phone number</string>
   <string name="add_friends_by_name_or_phone_hint">Enter a name or phone number</string>
   <string name="add_friends_by_twitter_instructions">Find a friend by Twitter handle</string>
@@ -144,8 +145,11 @@
   <string name="add_friends_by_addressbook_additional_instructions">We\'re scanning your list of contacts in hopes of finding you some foursquare friends. This may take a few seconds so thanks for your patience!</string>
   <string name="add_friends_progress_bar_message_find">Searching for friends...</string> 
   <string name="add_friends_progress_bar_message_send_request">Sending friend invitation...</string>
+  <string name="add_friends_progress_bar_message_send_invite">Sending invitation...</string>
   <string name="add_friends_by_facebook">Find Facebook friends</string>
   <string name="add_friends_request_sent_ok">Friend request sent ok!</string>
+  <string name="add_friends_invite_sent_ok">Invite sent ok!</string>
+  <string name="add_friends_invites_sent_ok">Invites sent ok!</string>
   <string name="add_friends_no_matches">No matches found.</string>
   <string name="friend_requests_activity_label">Foursquare Friend Requests</string>
   <string name="friend_requests_approved">You are now friends with</string>

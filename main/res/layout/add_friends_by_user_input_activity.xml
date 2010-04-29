@@ -46,19 +46,22 @@
       
   </LinearLayout>
 
+  <!-- 
   <TextView
     android:id="@+id/addFriendResultsMatchesTitleTextView"
     android:text="Matches"  
     android:visibility="gone"
     style="@style/listSeparatorTextViewStyle" />
-    
+  
+    android:paddingTop=""
+   android:paddingLeft="8dip"
+    android:paddingRight="8dip"
+    -->
+     
   <LinearLayout
     android:orientation="vertical" 
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:paddingLeft="8dip"
-    android:paddingRight="8dip"
-    android:paddingTop="8dip"
     >
    
     <ListView

@@ -42,6 +42,13 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/add_friends_by_name_or_phone_btn_label" />
+     
+      <Button
+        android:id="@+id/findFriendsInvite"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_friends_invite_btn_label"
+        android:layout_marginTop="35dip" />
       
     </LinearLayout>
   </ScrollView>

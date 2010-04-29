@@ -15,7 +15,10 @@ import android.app.Activity;
  */
 public abstract class AddressBookUtils {
     public abstract String getAllContactsPhoneNumbers(Activity activity);
-
+    public abstract String getAllContactsEmailAddresses(Activity activity);
+    public abstract AddressBookEmailBuilder getAllContactsEmailAddressesInfo(
+            Activity activity);
+ 
     public static AddressBookUtils addressBookUtils() {
 
         // TODO: Reenable use of AddressBookUtils5 when project level updated.
