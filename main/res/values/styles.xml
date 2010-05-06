@@ -99,6 +99,28 @@
     <item
       name="android:textStyle">bold</item>
   </style>
+  
+  <style
+    name="sendInviteStyle">
+    <item
+      name="android:background">@drawable/send_invite_button</item>
+    <item
+      name="android:text">@string/send_invite_button</item>
+    <item
+      name="android:textAppearance">@android:style/TextAppearance.Small</item>
+    <item
+      name="android:shadowColor">#111111</item>
+    <item
+      name="android:shadowRadius">1</item>
+    <item
+      name="android:shadowDy">1</item>
+    <item
+      name="android:textColor">@android:color/white</item>
+    <item
+      name="android:padding">5dip</item> 
+    <item
+      name="android:textStyle">bold</item>
+  </style>
 
   <style
     name="TextStyleWhite">
@@ -228,6 +250,13 @@
     <item name="android:textSize">11dip</item>
     <item name="android:textColor">#FFF</item>
   </style>
+ 
+  <style name="TextViewStyleInviteNonFoursquareUserListItem">
+    <item name="android:textSize">15dip</item>
+    <item name="android:textColor">@color/black_end</item>
+    <item name="android:textStyle">bold</item>
+  </style>
+  
   
   <!-- Provides a transparent background for an activity. Without inheriting from this
        base theme style, 1.5 makes the background solid black instead of transparent.
