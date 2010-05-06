@@ -77,7 +77,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="#b8d324"
-    android:visibility="visible"
+    android:visibility="gone"
     android:paddingLeft="7dip"
     android:paddingRight="7dip"
     android:paddingTop="9dip"
