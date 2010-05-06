@@ -84,33 +84,42 @@ public class CheckinResultDialog extends Dialog
     
         setContentView(R.layout.checkin_result_dialog);
         setTitle("Checked in!");
-        
+
         TextView tvMessage = (TextView)findViewById(R.id.textViewCheckinMessage);
-        tvMessage.setText(mCheckinResult.getMessage());
+        if (mCheckinResult != null) {
         
-        SeparatedListAdapter adapter = new SeparatedListAdapter(getContext());
+            tvMessage.setText(mCheckinResult.getMessage());
+            
+            SeparatedListAdapter adapter = new SeparatedListAdapter(getContext());
+             
+            // Add any badges the user unlocked as a result of this checkin.
+            addBadges(mCheckinResult.getBadges(), adapter, mApplication.getRemoteResourceManager());
+            
+            // Add whatever points they got as a result of this checkin.
+            addScores(mCheckinResult.getScoring(), adapter, mApplication.getRemoteResourceManager());
+            
+            // Add any specials that are nearby.
+            addSpecials(mCheckinResult.getSpecials(), adapter);
+    
+            // Add a button below the mayor section which will launch a new webview if
+            // we have additional content from the server. This is base64 encoded and
+            // is supposed to be just dumped into a webview.
+            addExtras(mCheckinResult.getMarkup());
+            
+            // List items construction complete.
+            ListView listview = (ListView)findViewById(R.id.listViewCheckinBadgesAndScores);
+            listview.setAdapter(adapter);
+            listview.setOnItemClickListener(mOnItemClickListener);
+    
+            // Show mayor info if any.
+            addMayor(mCheckinResult.getMayor(), mApplication.getRemoteResourceManager());
         
-        // Add any badges the user unlocked as a result of this checkin.
-        addBadges(mCheckinResult.getBadges(), adapter, mApplication.getRemoteResourceManager());
-        
-        // Add whatever points they got as a result of this checkin.
-        addScores(mCheckinResult.getScoring(), adapter, mApplication.getRemoteResourceManager());
-        
-        // Add any specials that are nearby.
-        addSpecials(mCheckinResult.getSpecials(), adapter);
-
-        // Add a button below the mayor section which will launch a new webview if
-        // we have additional content from the server. This is base64 encoded and
-        // is supposed to be just dumped into a webview.
-        addExtras(mCheckinResult.getMarkup());
-        
-        // List items construction complete.
-        ListView listview = (ListView)findViewById(R.id.listViewCheckinBadgesAndScores);
-        listview.setAdapter(adapter);
-        listview.setOnItemClickListener(mOnItemClickListener);
-
-        // Show mayor info if any.
-        addMayor(mCheckinResult.getMayor(), mApplication.getRemoteResourceManager());
+        } else {
+            // This shouldn't be possible but we've gotten a few crash reports showing that
+            // mCheckinResult is null on entry of this method.
+            Log.e(TAG, "Checkin result object was null on dialog creation.");  
+            tvMessage.setText("Checked-in!");
+        }
     }
     
     @Override
