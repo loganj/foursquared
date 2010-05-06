@@ -36,6 +36,8 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Displays information on a user. If the user is the logged-in user, we can
@@ -71,6 +73,10 @@ public class UserDetailsActivity extends TabActivity {
 
     private StateHolder mStateHolder;
     private boolean mIsUsersPhotoSet;
+    
+    private RemoteResourceManager mRrm;
+    private RemoteResourceManagerObserver mResourcesObserver;
+    
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
@@ -120,6 +126,10 @@ public class UserDetailsActivity extends TabActivity {
 
             mStateHolder.startTaskUserDetails(this, userId);
         }
+        
+        mRrm = ((Foursquared) getApplication()).getRemoteResourceManager();
+        mResourcesObserver = new RemoteResourceManagerObserver();
+        mRrm.addObserver(mResourcesObserver);
 
         ensureUi();
         populateUi();
@@ -136,6 +146,9 @@ public class UserDetailsActivity extends TabActivity {
         if (isFinishing()) {
             mStateHolder.cancelTasks();
             unregisterReceiver(mLoggedOutReceiver);
+
+            RemoteResourceManager rrm = ((Foursquared) getApplication()).getRemoteResourceManager();
+            rrm.deleteObserver(mResourcesObserver);
         }
     }
 
@@ -199,7 +212,6 @@ public class UserDetailsActivity extends TabActivity {
     }
 
     private void populateUi() {
-        RemoteResourceManager rrm = ((Foursquared) getApplication()).getRemoteResourceManager();
         User user = mStateHolder.getUser();
 
         // User photo.
@@ -210,12 +222,17 @@ public class UserDetailsActivity extends TabActivity {
                 mImageViewPhoto.setImageResource(R.drawable.blank_girl);
             }
             if (user != null) {
-                try {
-                    Bitmap bitmap = BitmapFactory.decodeStream(rrm.getInputStream(Uri.parse(user
-                            .getPhoto())));
-                    mImageViewPhoto.setImageBitmap(bitmap);
-                    mIsUsersPhotoSet = true;
-                } catch (IOException e) {
+                Uri uriPhoto = Uri.parse(user.getPhoto());
+                if (mRrm.exists(uriPhoto)) {
+                    try {
+                        Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(Uri.parse(user
+                                .getPhoto())));
+                        mImageViewPhoto.setImageBitmap(bitmap);
+                        mIsUsersPhotoSet = true;
+                    } catch (IOException e) {
+                    }
+                } else {
+                    mRrm.request(uriPhoto);
                 }
             }
         }
@@ -504,6 +521,27 @@ public class UserDetailsActivity extends TabActivity {
                 mTaskUserDetails.setActivity(null);
                 mTaskUserDetails.cancel(true);
             }
+        }
+    }
+    
+    private class RemoteResourceManagerObserver implements Observer {
+        @Override
+        public void update(Observable observable, Object data) {
+            mImageViewPhoto.getHandler().post(new Runnable() {
+                @Override
+                public void run() {
+                    Uri uriPhoto = Uri.parse(mStateHolder.getUser().getPhoto());
+                    if (mRrm.exists(uriPhoto)) {
+                        try {
+                            Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(uriPhoto));
+                            mImageViewPhoto.setImageBitmap(bitmap);
+                            mIsUsersPhotoSet = true;
+                            mImageViewPhoto.setImageBitmap(bitmap);
+                        } catch (IOException e) {
+                        }
+                    }
+                }
+            });
         }
     }
 }
