@@ -47,11 +47,12 @@
    
    </LinearLayout>  
       
+  
   <Button
     android:id="@+id/addFriendListItemAddButton"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:textAppearance="@android:style/TextAppearance.Small" 
-    android:text="Add" />
-    
+    android:text=" Add  " 
+    style="@style/sendInviteStyle" />
+
 </LinearLayout>
