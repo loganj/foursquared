@@ -22,7 +22,7 @@
   <string name="checkins_label">Friends</string>
   <string name="city">City</string>
   <string name="cross_street">Cross Street</string>
-  <string name="feedback_error">Couldn't find configured email client.</string>
+  <string name="feedback_error">Couldn\'t find configured email client.</string>
   <string name="feedback_label">Send Feedback</string>
   <string name="feedback_more">If you are reporting problem please answer the questions below:</string>
   <string name="feedback_question_additional_information">Please provide any additional information below.</string>
@@ -88,11 +88,11 @@
   <string name="preferences_logout_title">Logout</string>
   <string name="preferences_other_settings">Other Settings</string>
   <string name="preferences_share_checkin_title">Tell my friends</string>
-  <string name="preferences_share_summary_off">By default, don't tell my friends when I check-in.</string>
+  <string name="preferences_share_summary_off">By default, don\'t tell my friends when I check-in.</string>
   <string name="preferences_share_summary_on">By default, tell my friends when I check-in.</string>
   <string name="preferences_startup_tab">Startup Tab</string>
   <string name="preferences_startup_tab_summary">Select which tab to display at startup.</string>
-  <string name="preferences_twitter_checkin_summary_off">By default, don't tweet my checkins.</string>
+  <string name="preferences_twitter_checkin_summary_off">By default, don\'t tweet my checkins.</string>
   <string name="preferences_twitter_checkin_summary_on">By default, tweet my checkins.</string>
   <string name="preferences_twitter_checkin_title">Tell Twitter</string>
   <string name="preferences_unable_to_find_city_toast">Unable to update your city.</string>
@@ -192,4 +192,5 @@
   <string name="sign_up_progress_bar_message_send_request">Joining Foursquare...</string>
   <string name="venue_activity_checkin_button">CHECK-IN HERE</string>
   <string name="venue_activity_checkin_button_quick">QUICK CHECK-IN HERE</string>
+  <string name="send_invite_button">Invite</string>
 </resources> 
