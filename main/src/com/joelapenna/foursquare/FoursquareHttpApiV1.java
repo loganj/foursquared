@@ -16,6 +16,7 @@ import com.joelapenna.foursquare.parsers.CheckinParser;
 import com.joelapenna.foursquare.parsers.CheckinResultParser;
 import com.joelapenna.foursquare.parsers.CityParser;
 import com.joelapenna.foursquare.parsers.CredentialsParser;
+import com.joelapenna.foursquare.parsers.FriendInvitesResultParser;
 import com.joelapenna.foursquare.parsers.GroupParser;
 import com.joelapenna.foursquare.parsers.ResponseParser;
 import com.joelapenna.foursquare.parsers.TipParser;
@@ -26,6 +27,7 @@ import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.Credentials;
+import com.joelapenna.foursquare.types.FriendInvitesResult;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Response;
 import com.joelapenna.foursquare.types.Tip;
@@ -450,13 +452,12 @@ class FoursquareHttpApiV1 {
     /**
      * /findfriends/byphoneoremail?p=comma-sep-list-of-phones&e=comma-sep-list-of-emails
      */
-    @SuppressWarnings("unchecked")
-    public Group<User> findFriendsByPhoneOrEmail(String phones, String emails) throws FoursquareException,
+    public FriendInvitesResult findFriendsByPhoneOrEmail(String phones, String emails) throws FoursquareException,
             FoursquareCredentialsException, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_FIND_FRIENDS_BY_PHONE_OR_EMAIL), //
                 new BasicNameValuePair("p", phones),
                 new BasicNameValuePair("e", emails));
-        return (Group<User>) mHttpApi.doHttpRequest(httpPost, new GroupParser(new UserParser()));
+        return (FriendInvitesResult) mHttpApi.doHttpRequest(httpPost, new FriendInvitesResultParser());
     }
     
     /**

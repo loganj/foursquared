@@ -5,9 +5,9 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.types.FriendInvitesResult;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
-import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.AddressBookEmailBuilder;
 import com.joelapenna.foursquared.util.AddressBookUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
@@ -17,11 +17,15 @@ import com.joelapenna.foursquared.widget.FriendSearchInviteNonFoursquareUserAdap
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.DialogInterface.OnDismissListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -54,10 +58,10 @@ import java.util.List;
  * type of friend search the activity will perform. Pass in one of the following
  * values:
  * <ul>
- * <li>INPUT_TYPE_USERNAMES</li>
- * <li>INPUT_TYPE_PHONENUMBERS</li>
+ * <li>INPUT_TYPE_NAME_OR_PHONE</li>
  * <li>INPUT_TYPE_TWITTERNAME</li>
  * <li>INPUT_TYPE_ADDRESSBOOK</li>
+ * <li>INPUT_TYPE_ADDRESSBOOK_INVITE</li>
  * </ul>
  * 
  * @date February 11, 2010
@@ -66,6 +70,8 @@ import java.util.List;
 public class AddFriendsByUserInputActivity extends Activity {
     private static final String TAG = "AddFriendsByUserInputActivity";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
+    
+    private static final int DIALOG_ID_CONFIRM_INVITE_ALL = 1;
 
     public static final String INPUT_TYPE = "com.joelapenna.foursquared.AddFriendsByUserInputActivity.INPUT_TYPE";
     public static final int INPUT_TYPE_NAME_OR_PHONE = 0;
@@ -85,6 +91,7 @@ public class AddFriendsByUserInputActivity extends Activity {
 
     private StateHolder mStateHolder;
 
+    
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -241,7 +248,14 @@ public class AddFriendsByUserInputActivity extends Activity {
     private void userInvite(ContactSimple contact) {
         startProgressBar(getResources().getString(R.string.add_friends_activity_label),
                 getResources().getString(R.string.add_friends_progress_bar_message_send_invite));
-        mStateHolder.startTaskSendInvite(AddFriendsByUserInputActivity.this, contact.mEmail);
+        mStateHolder.startTaskSendInvite(AddFriendsByUserInputActivity.this, contact.mEmail, false);
+    }
+    
+    private void inviteAll() {
+        startProgressBar(getResources().getString(R.string.add_friends_activity_label),
+                getResources().getString(R.string.add_friends_progress_bar_message_send_invite));
+        mStateHolder.startTaskSendInvite(
+                AddFriendsByUserInputActivity.this, mStateHolder.getUsersNotOnFoursquareAsCommaSepString(), true);
     }
     
     private void startSearch(String input) {
@@ -268,6 +282,41 @@ public class AddFriendsByUserInputActivity extends Activity {
             mDlgProgress = null;
         }
     }
+     
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DIALOG_ID_CONFIRM_INVITE_ALL:
+                AlertDialog dlgInfo = new AlertDialog.Builder(this)
+                    .setTitle("Invite All")
+                    .setIcon(0)
+                    .setPositiveButton("Yes", 
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    inviteAll();
+                                }
+                            })
+                    .setNegativeButton("No", 
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                    .setMessage("Are you sure you want to send invites to " 
+                            + mStateHolder.getUsersNotOnFoursquare().size() 
+                            + " contacts?").create();
+                dlgInfo.setOnDismissListener(new OnDismissListener() {
+                    public void onDismiss(DialogInterface dialog) {
+                        removeDialog(DIALOG_ID_CONFIRM_INVITE_ALL);
+                    }
+                });
+                
+                return dlgInfo;
+        }
+        return null;
+    }
 
     private void populateListFromStateHolder() {
         mListAdapter.removeObserver();
@@ -289,7 +338,7 @@ public class AddFriendsByUserInputActivity extends Activity {
                 FriendSearchInviteNonFoursquareUserAdapter adapter = 
                     new FriendSearchInviteNonFoursquareUserAdapter(
                         this,
-                        mButtonRowClickHandlerInvite);
+                        mAdapterListenerInvites);
                 adapter.setContacts(mStateHolder.getUsersNotOnFoursquare());
                 mListAdapter.addSection(
                     "Found " + mStateHolder.getUsersNotOnFoursquare().size() + " friends not on Foursquare",
@@ -351,23 +400,33 @@ public class AddFriendsByUserInputActivity extends Activity {
         stopProgressBar();
     }
     
-    private void onSendInviteTaskComplete(String email, Exception ex) {
+    private void onSendInviteTaskComplete(String email, boolean isAllEmails, Exception ex) {
         if (email != null) {
-            // We do a linear search to find the row to remove, ouch.
-            int position = 0;
-            for (ContactSimple it : mStateHolder.getUsersNotOnFoursquare()) {
-                if (it.mEmail.equals(email)) {
-                    mStateHolder.getUsersNotOnFoursquare().remove(position);
-                    break;
+            if (isAllEmails) {
+                mStateHolder.getUsersNotOnFoursquare().clear();
+                
+                Toast.makeText(AddFriendsByUserInputActivity.this,
+                        getResources().getString(R.string.add_friends_invites_sent_ok),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // We do a linear search to find the row to remove, ouch.
+                int position = 0;
+                for (ContactSimple it : mStateHolder.getUsersNotOnFoursquare()) {
+                    if (it.mEmail.equals(email)) {
+                        mStateHolder.getUsersNotOnFoursquare().remove(position);
+                        break;
+                    }
+                    position++;
                 }
-                position++;
+                
+                Toast.makeText(AddFriendsByUserInputActivity.this,
+                        getResources().getString(R.string.add_friends_invite_sent_ok),
+                        Toast.LENGTH_SHORT).show();
             }
             
             mListAdapter.notifyDataSetChanged();
             
-            Toast.makeText(AddFriendsByUserInputActivity.this,
-                    getResources().getString(R.string.add_friends_invite_sent_ok),
-                    Toast.LENGTH_SHORT).show();
+            
         } else {
             NotificationsUtil.ToastReasonForFailure(AddFriendsByUserInputActivity.this, ex);
         }
@@ -441,22 +500,21 @@ public class AddFriendsByUserInputActivity extends Activity {
             AddressBookEmailBuilder bld = addr.getAllContactsEmailAddressesInfo(mActivity);
             String phones = addr.getAllContactsPhoneNumbers(mActivity);
             String emails = bld.getEmailsCommaSeparated();
+            
             if (!TextUtils.isEmpty(phones) || !TextUtils.isEmpty(emails)) {
-                Group<User> users = foursquare.findFriendsByPhoneOrEmail(phones, emails);
-                result.setUsersOnFoursquare(users);
+                FriendInvitesResult xml = foursquare.findFriendsByPhoneOrEmail(phones, emails);
+                result.setUsersOnFoursquare(xml.getContactsOnFoursquare());
                 if (invites) {
-                    // Prune out people that are already foursquare users.
-                    bld.pruneEmailsAndNames(users);
                     
-                    // We need to prune out usrs which are already foursquare users, and also
-                    // already our friends.
-                    Group<User> friends = foursquare.friends(null, 
-                            LocationUtils.createFoursquareLocation(foursquared.getLastKnownLocation()));
-                    bld.pruneEmailsAndNames(friends);
-                    
-                    // Finally we should be left with only email addresses of people not 
-                    // on foursquare and not already our friends.
-                    result.setUsersNotOnFoursquare(bld.getEmailsAndNamesAsList());
+                    // Get a contact name for each email address we can send an invite to.
+                    List<ContactSimple> contactsNotOnFoursquare = new ArrayList<ContactSimple>();
+                    for (String it : xml.getContactEmailsNotOnFoursquare()) {
+                        ContactSimple contact = new ContactSimple();
+                        contact.mEmail = it;
+                        contact.mName  = bld.getNameForEmail(it);
+                        contactsNotOnFoursquare.add(contact);
+                    }
+                    result.setUsersNotOnFoursquare(contactsNotOnFoursquare);
                 }
             }
         }
@@ -534,10 +592,12 @@ public class AddFriendsByUserInputActivity extends Activity {
     private static class SendInviteTask extends AsyncTask<String, Void, String> {
 
         private AddFriendsByUserInputActivity mActivity;
+        private boolean mIsAllEmails;
         private Exception mReason;
 
-        public SendInviteTask(AddFriendsByUserInputActivity activity) {
+        public SendInviteTask(AddFriendsByUserInputActivity activity, boolean isAllEmails) {
             mActivity = activity;
+            mIsAllEmails = isAllEmails;
         }
 
         public void setActivity(AddFriendsByUserInputActivity activity) {
@@ -570,15 +630,15 @@ public class AddFriendsByUserInputActivity extends Activity {
         protected void onPostExecute(String email) {
             if (DEBUG) Log.d(TAG, "SendInviteTask: onPostExecute()");
             if (mActivity != null) {
-                mActivity.onSendInviteTaskComplete(email, mReason);
+                mActivity.onSendInviteTaskComplete(email, mIsAllEmails, mReason);
             }
         }
 
         @Override
         protected void onCancelled() {
-            if (mActivity != null) {
-                mActivity.onSendFriendRequestTaskComplete(null, new Exception(
-                        "Invite send cancelled."));
+            if (mActivity != null) { 
+                mActivity.onSendInviteTaskComplete(null, mIsAllEmails, 
+                        new Exception("Invite send cancelled."));
             }
         }
     }
@@ -632,12 +692,12 @@ public class AddFriendsByUserInputActivity extends Activity {
             mTaskSendFriendRequest.execute(userId);
         }
         
-        public void startTaskSendInvite(AddFriendsByUserInputActivity activity, String email) {
+        public void startTaskSendInvite(AddFriendsByUserInputActivity activity, String email, boolean isAllEmails) {
             mIsRunningTaskSendInvite = true;
-            mTaskSendInvite = new SendInviteTask(activity);
+            mTaskSendInvite = new SendInviteTask(activity, isAllEmails);
             mTaskSendInvite.execute(email);
         }
-
+        
         public void setActivityForTaskFindFriends(AddFriendsByUserInputActivity activity) {
             if (mTaskFindFriends != null) {
                 mTaskFindFriends.setActivity(activity);
@@ -683,6 +743,17 @@ public class AddFriendsByUserInputActivity extends Activity {
         public boolean getRanOnce() {
             return mRanOnce;
         }
+        
+        public String getUsersNotOnFoursquareAsCommaSepString() {
+            StringBuilder sb = new StringBuilder(2048);
+            for (ContactSimple it : mUsersNotOnFoursquare) {
+                if (sb.length() > 0) {
+                    sb.append(",");
+                }
+                sb.append(it.mEmail);
+            }
+            return sb.toString();
+        }
     }
 
     private TextWatcher mNamesFieldWatcher = new TextWatcher() {
@@ -717,8 +788,8 @@ public class AddFriendsByUserInputActivity extends Activity {
             }
     };
     
-    private FriendSearchInviteNonFoursquareUserAdapter.ButtonRowClickHandler mButtonRowClickHandlerInvite = 
-        new FriendSearchInviteNonFoursquareUserAdapter.ButtonRowClickHandler() {
+    private FriendSearchInviteNonFoursquareUserAdapter.AdapterListener mAdapterListenerInvites = 
+        new FriendSearchInviteNonFoursquareUserAdapter.AdapterListener() {
             @Override
             public void onBtnClickInvite(ContactSimple contact) {
                 userInvite(contact);
@@ -728,6 +799,11 @@ public class AddFriendsByUserInputActivity extends Activity {
             public void onInfoAreaClick(ContactSimple contact) {
                 // We could popup an intent for this contact so they can see 
                 // who we're talking about?
+            }
+
+            @Override
+            public void onInviteAll() {
+                showDialog(DIALOG_ID_CONFIRM_INVITE_ALL);
             }
     };
     
@@ -744,9 +820,9 @@ public class AddFriendsByUserInputActivity extends Activity {
             return mUsersOnFoursquare;
         }
         
-        public void setUsersOnFoursquare(Group<User> group) {
-            if (group != null) {
-                mUsersOnFoursquare = group;
+        public void setUsersOnFoursquare(Group<User> users) {
+            if (users != null) {
+                mUsersOnFoursquare = users;
             }
         }
 

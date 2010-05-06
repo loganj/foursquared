@@ -11,6 +11,7 @@ import com.joelapenna.foursquare.types.Category;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.CheckinResult;
 import com.joelapenna.foursquare.types.Credentials;
+import com.joelapenna.foursquare.types.FriendInvitesResult;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Response;
 import com.joelapenna.foursquare.types.Tip;
@@ -234,7 +235,7 @@ public class Foursquare {
     }
     
     @V1
-    public Group<User> findFriendsByPhoneOrEmail(String phones, String emails)
+    public FriendInvitesResult findFriendsByPhoneOrEmail(String phones, String emails)
         throws FoursquareException, FoursquareCredentialsException, FoursquareError, IOException {
         return mFoursquareV1.findFriendsByPhoneOrEmail(phones, emails);
     }

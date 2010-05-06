@@ -28,17 +28,18 @@ public class FriendSearchInviteNonFoursquareUserAdapter extends BaseAdapter
 
     private LayoutInflater mInflater;
     private int mLayoutToInflate;
-    private ButtonRowClickHandler mClickListener;
+    private AdapterListener mAdapterListener;
     
     private List<ContactSimple> mEmailsAndNames;
 
+    
     public FriendSearchInviteNonFoursquareUserAdapter(
             Context context,
-            ButtonRowClickHandler clickListener) {
+            AdapterListener adapterListener) {
         super();
         mInflater = LayoutInflater.from(context);
         mLayoutToInflate = R.layout.add_friends_invite_non_foursquare_user_list_item;
-        mClickListener = clickListener;
+        mAdapterListener = adapterListener;
         mEmailsAndNames = new ArrayList<ContactSimple>();
     }
 
@@ -53,39 +54,45 @@ public class FriendSearchInviteNonFoursquareUserAdapter extends BaseAdapter
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // A ViewHolder keeps references to children views to avoid unnecessary
-        // calls to findViewById() on each row.
-        ViewHolder holder;
 
-        // When convertView is not null, we can reuse it directly, there is no
-        // need to re-inflate it. We only inflate a new View when the
-        // convertView supplied by ListView is null.
-        if (convertView == null) {
-            convertView = mInflater.inflate(mLayoutToInflate, null);
-
-            // Creates a ViewHolder and store references to the two children
-            // views we want to bind data to.
-            holder = new ViewHolder();
-            //holder.clickable = (LinearLayout) convertView
-            //        .findViewById(R.id.addFriendListItemClickableArea);
-            holder.name = (TextView) convertView.findViewById(R.id.addFriendNonFoursquareUserListItemName);
-            holder.email = (TextView) convertView.findViewById(R.id.addFriendNonFoursquareUserListItemEmail);
-            holder.add = (Button) convertView.findViewById(R.id.addFriendNonFoursquareUserListItemBtn);
-
-            convertView.setTag(holder);
-
-            //holder.clickable.setOnClickListener(mOnClickListenerInfo);
-            holder.add.setOnClickListener(mOnClickListenerInvite);
-        } else {
-            // Get the ViewHolder back to get fast access to the TextView
-            // and the ImageView.
-            holder = (ViewHolder) convertView.getTag();
+        if (position == 0) {
+            ViewHolderInviteAll holder;
+            if (convertView == null) {
+                convertView = mInflater.inflate(R.layout.add_friends_invite_non_foursquare_all_list_item, null);
+                holder = new ViewHolderInviteAll();
+                holder.addAll = (Button) convertView.findViewById(R.id.addFriendNonFoursquareAllListItemBtn);
+                
+                convertView.setTag(holder);
+                
+            } else {
+                holder = (ViewHolderInviteAll) convertView.getTag();
+            }
+            
+            holder.addAll.setOnClickListener(mOnClickListenerInviteAll);
         }
+        else {
+            ViewHolder holder;
+            if (convertView == null) {
+                convertView = mInflater.inflate(mLayoutToInflate, null);
+    
+                // Creates a ViewHolder and store references to the two children
+                // views we want to bind data to.
+                holder = new ViewHolder();
+                holder.name = (TextView) convertView.findViewById(R.id.addFriendNonFoursquareUserListItemName);
+                holder.email = (TextView) convertView.findViewById(R.id.addFriendNonFoursquareUserListItemEmail);
+                holder.add = (Button) convertView.findViewById(R.id.addFriendNonFoursquareUserListItemBtn);
+    
+                convertView.setTag(holder);
+    
+                holder.add.setOnClickListener(mOnClickListenerInvite);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
 
-        //holder.clickable.setTag(new Integer(position));
-        holder.name.setText(mEmailsAndNames.get(position).mName);
-        holder.email.setText(mEmailsAndNames.get(position).mEmail);
-        holder.add.setTag(new Integer(position));
+            holder.name.setText(mEmailsAndNames.get(position - 1).mName);
+            holder.email.setText(mEmailsAndNames.get(position - 1).mEmail);
+            holder.add.setTag(new Integer(position));
+        }
 
         return convertView;
     }
@@ -94,10 +101,17 @@ public class FriendSearchInviteNonFoursquareUserAdapter extends BaseAdapter
         @Override
         public void onClick(View v) {
             Integer position = (Integer) v.getTag();
-            mClickListener.onBtnClickInvite((ContactSimple) getItem(position));
+            mAdapterListener.onBtnClickInvite((ContactSimple) getItem(position));
         }
     };
 
+    private OnClickListener mOnClickListenerInviteAll = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mAdapterListener.onInviteAll();
+        }
+    };
+    
     public void removeItem(int position) throws IndexOutOfBoundsException {
         mEmailsAndNames.remove(position);
         notifyDataSetInvalidated();
@@ -108,29 +122,52 @@ public class FriendSearchInviteNonFoursquareUserAdapter extends BaseAdapter
     }
 
     static class ViewHolder {
-        //LinearLayout clickable;
         TextView name;
         TextView email;
         Button add;
     }
+    
+    static class ViewHolderInviteAll {
+        Button addAll;
+    }
 
-    public interface ButtonRowClickHandler {
+    public interface AdapterListener {
         public void onBtnClickInvite(ContactSimple contact);
         public void onInfoAreaClick(ContactSimple contact);
+        public void onInviteAll();
     }
 
     @Override
     public int getCount() {
-        return mEmailsAndNames.size();
+        if (mEmailsAndNames.size() > 0) {
+            return mEmailsAndNames.size() + 1;
+        }
+        return 0;
     }
 
     @Override
     public Object getItem(int position) {
-        return mEmailsAndNames.get(position);
+        if (position == 0) {
+            return "";
+        }
+        return mEmailsAndNames.get(position - 1);
     }
 
     @Override
     public long getItemId(int position) {
         return position;
+    }
+    
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+    
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return 0;
+        }
+        return 1;
     }
 }
