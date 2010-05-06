@@ -62,8 +62,8 @@ public class AddressBookEmailBuilder {
         // Keep building the comma separated flat list of email addresses.
         if (mEmailsCommaSeparated.length() > 0) {
             mEmailsCommaSeparated.append(",");
-            mEmailsCommaSeparated.append(contactEmail);
         }
+        mEmailsCommaSeparated.append(contactEmail);
     }
     
     public String getEmailsCommaSeparated() {
@@ -99,6 +99,10 @@ public class AddressBookEmailBuilder {
         }
         
         return list;
+    }
+    
+    public String getNameForEmail(String email) {
+        return mEmailsToNames.get(email);
     }
     
     public String toStringCurrentEmails() {
