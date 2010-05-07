@@ -304,7 +304,7 @@ public class AddFriendsByUserInputActivity extends Activity {
                                     dialog.dismiss();
                                 }
                             })
-                    .setMessage("Are you sure you want to send invites to " 
+                    .setMessage("Are you sure you want to send invites to all " 
                             + mStateHolder.getUsersNotOnFoursquare().size() 
                             + " contacts?").create();
                 dlgInfo.setOnDismissListener(new OnDismissListener() {
@@ -331,7 +331,7 @@ public class AddFriendsByUserInputActivity extends Activity {
                         ((Foursquared)getApplication()).getRemoteResourceManager());
                 adapter.setGroup(mStateHolder.getUsersOnFoursquare());
                 mListAdapter.addSection(
-                    "Found " + mStateHolder.getUsersOnFoursquare().size() + " friends on Foursquare",
+                    "Found " + mStateHolder.getUsersOnFoursquare().size() + " contacts on Foursquare",
                     adapter);
             }
             if (mStateHolder.getUsersNotOnFoursquare().size() > 0) {
@@ -341,7 +341,7 @@ public class AddFriendsByUserInputActivity extends Activity {
                         mAdapterListenerInvites);
                 adapter.setContacts(mStateHolder.getUsersNotOnFoursquare());
                 mListAdapter.addSection(
-                    "Found " + mStateHolder.getUsersNotOnFoursquare().size() + " friends not on Foursquare",
+                    "Found " + mStateHolder.getUsersNotOnFoursquare().size() + " contacts not on Foursquare",
                     adapter);
             }
         } else {
