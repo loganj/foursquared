@@ -530,14 +530,16 @@ public class UserDetailsActivity extends TabActivity {
             mImageViewPhoto.getHandler().post(new Runnable() {
                 @Override
                 public void run() {
-                    Uri uriPhoto = Uri.parse(mStateHolder.getUser().getPhoto());
-                    if (mRrm.exists(uriPhoto)) {
-                        try {
-                            Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(uriPhoto));
-                            mImageViewPhoto.setImageBitmap(bitmap);
-                            mIsUsersPhotoSet = true;
-                            mImageViewPhoto.setImageBitmap(bitmap);
-                        } catch (IOException e) {
+                    if (mStateHolder.getUser() != null) {
+                        Uri uriPhoto = Uri.parse(mStateHolder.getUser().getPhoto());
+                        if (mRrm.exists(uriPhoto)) {
+                            try {
+                                Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(uriPhoto));
+                                mImageViewPhoto.setImageBitmap(bitmap);
+                                mIsUsersPhotoSet = true;
+                                mImageViewPhoto.setImageBitmap(bitmap);
+                            } catch (IOException e) {
+                            }
                         }
                     }
                 }
