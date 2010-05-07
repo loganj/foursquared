@@ -105,6 +105,8 @@
     <item
       name="android:background">@drawable/send_invite_button</item>
     <item
+      name="android:drawablePadding">8dip</item>
+    <item
       name="android:text">@string/send_invite_button</item>
     <item
       name="android:textAppearance">@android:style/TextAppearance.Small</item>
@@ -117,9 +119,15 @@
     <item
       name="android:textColor">@android:color/white</item>
     <item
-      name="android:padding">5dip</item> 
-    <item
       name="android:textStyle">bold</item>
+    <item
+      name="android:paddingLeft">7dip</item>
+    <item
+      name="android:paddingRight">7dip</item>
+    <item
+      name="android:paddingTop">6dip</item>
+    <item
+      name="android:paddingBottom">6dip</item>
   </style>
 
   <style

@@ -47,6 +47,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="Invite" 
-    style="@style/sendInviteStyle" />
+    style="@style/sendInviteStyle"
+    android:drawableLeft="@drawable/invite_contact" />
      
 </LinearLayout>
