@@ -151,6 +151,8 @@
   <string name="add_friends_invite_sent_ok">Invite sent ok!</string>
   <string name="add_friends_invites_sent_ok">Invites sent ok!</string>
   <string name="add_friends_no_matches">No matches found.</string>
+  <string name="add_friends_contacts_found_on_foursqare">Contacts found on Foursquare</string>
+  <string name="add_friends_contacts_not_found_on_foursqare">Contacts not found on Foursquare</string>
   <string name="friend_requests_activity_label">Foursquare Friend Requests</string>
   <string name="friend_requests_approved">You are now friends with</string>
   <string name="friend_requests_no_new_requests">You have no new friend requests.</string>

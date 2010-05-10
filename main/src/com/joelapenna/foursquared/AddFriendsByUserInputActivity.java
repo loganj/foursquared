@@ -331,7 +331,7 @@ public class AddFriendsByUserInputActivity extends Activity {
                         ((Foursquared)getApplication()).getRemoteResourceManager());
                 adapter.setGroup(mStateHolder.getUsersOnFoursquare());
                 mListAdapter.addSection(
-                    "Found " + mStateHolder.getUsersOnFoursquare().size() + " contacts on Foursquare",
+                    getResources().getString(R.string.add_friends_contacts_found_on_foursqare),
                     adapter);
             }
             if (mStateHolder.getUsersNotOnFoursquare().size() > 0) {
@@ -341,7 +341,7 @@ public class AddFriendsByUserInputActivity extends Activity {
                         mAdapterListenerInvites);
                 adapter.setContacts(mStateHolder.getUsersNotOnFoursquare());
                 mListAdapter.addSection(
-                    "Found " + mStateHolder.getUsersNotOnFoursquare().size() + " contacts not on Foursquare",
+                    getResources().getString(R.string.add_friends_contacts_not_found_on_foursqare),
                     adapter);
             }
         } else {
@@ -416,7 +416,7 @@ public class AddFriendsByUserInputActivity extends Activity {
                         mStateHolder.getUsersNotOnFoursquare().remove(position);
                         break;
                     }
-                    position++;
+                    position++;  
                 }
                 
                 Toast.makeText(AddFriendsByUserInputActivity.this,
@@ -425,8 +425,6 @@ public class AddFriendsByUserInputActivity extends Activity {
             }
             
             mListAdapter.notifyDataSetChanged();
-            
-            
         } else {
             NotificationsUtil.ToastReasonForFailure(AddFriendsByUserInputActivity.this, ex);
         }
