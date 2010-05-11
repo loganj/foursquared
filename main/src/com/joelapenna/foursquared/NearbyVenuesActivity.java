@@ -354,9 +354,13 @@ public class NearbyVenuesActivity extends LoadableListActivity {
 
             Group<Group<Venue>> groups = foursquare.venues(LocationUtils
                     .createFoursquareLocation(location), mSearchHolder.query, 30);
-            for (int i = 0; i < groups.size(); i++) {
-                Collections.sort(groups.get(i), Comparators.getVenueDistanceComparator());
-            }
+            
+            // We can sort the returned venues by distance, but now the foursquare api should
+            // do a smart-sort for us by popularity and distance, see here for more info:
+            // http://blog.foursquare.com/post/589698188/weve-just-made-the-places-screen-smarter
+            //for (int i = 0; i < groups.size(); i++) {
+            //      Collections.sort(groups.get(i), Comparators.getVenueDistanceComparator());
+            //}
             
             return groups;
         }
