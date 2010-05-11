@@ -36,6 +36,7 @@ import android.widget.Toast;
  */
 public class LoginActivity extends Activity {
     public static final String TAG = "LoginActivity";
+    public static final String LAUNCH_MAIN_WHEN_FINISHED = "LAUNCH_MAIN_WHEN_FINISHED";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private AsyncTask<Void, Void, Boolean> mLoginTask;
@@ -224,10 +225,12 @@ public class LoginActivity extends Activity {
                 // Launch the service to update any widgets, etc.
                 foursquared.requestStartService();
 
+                if ( getIntent().getBooleanExtra(LAUNCH_MAIN_WHEN_FINISHED, false) ) {
                 // Launch the main activity to let the user do anything.
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
 
                 // Be done with the activity.
                 finish();

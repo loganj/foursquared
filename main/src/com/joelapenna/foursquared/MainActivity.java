@@ -119,6 +119,7 @@ public class MainActivity extends TabActivity {
         setVisible(false);
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setAction(Intent.ACTION_MAIN);
+        intent.putExtra(LoginActivity.LAUNCH_MAIN_WHEN_FINISHED, true);
         intent.setFlags(
             Intent.FLAG_ACTIVITY_NO_HISTORY | 
             Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | 
