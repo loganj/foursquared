@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquared.preferences.Preferences;
+import com.joelapenna.foursquared.util.TabsUtil;
 import com.joelapenna.foursquared.util.UserUtils;
 
 import android.app.Activity;
@@ -80,14 +81,19 @@ public class MainActivity extends TabActivity {
         String[] startupTabValues = getResources().getStringArray(R.array.startup_tabs_values);
         String startupTab = settings.getString(
                 Preferences.PREFERENCE_STARTUP_TAB, startupTabValues[0]);
+        Intent intent = new Intent(this, NearbyVenuesActivity.class);
         if (startupTab.equals(startupTabValues[0])) {
-            addTabFriends();
-            addTabPlaces(false);
+            TabsUtil.addNativeLookingTab(this, mTabHost, "t1", getString(R.string.checkins_label), 
+                    R.drawable.friends_tab, new Intent(this, FriendsActivity.class));
+            TabsUtil.addNativeLookingTab(this, mTabHost, "t2", getString(R.string.nearby_label), 
+                    R.drawable.places_tab, intent);
         } else {
-            addTabPlaces(true);
-            addTabFriends();
+            intent.putExtra(NearbyVenuesActivity.INTENT_EXTRA_STARTUP_GEOLOC_DELAY, 4000L);
+            TabsUtil.addNativeLookingTab(this, mTabHost, "t1", getString(R.string.nearby_label), 
+                    R.drawable.places_tab, intent);
+            TabsUtil.addNativeLookingTab(this, mTabHost, "t2", getString(R.string.checkins_label), 
+                    R.drawable.friends_tab, new Intent(this, FriendsActivity.class));
         } 
-        
         
         // 1.5 can't display tabs within tabs, so we won't have the 'me' tab for
         // 1.5 users. They can access the 'me' page through the context menu.
@@ -102,50 +108,13 @@ public class MainActivity extends TabActivity {
             Intent intentTabMe = new Intent(this, UserDetailsActivity.class);
             intentTabMe.putExtra(UserDetailsActivity.EXTRA_USER_ID, userId == null ? "unknown"
                     : userId);
-            mTabHost.addTab(mTabHost.newTabSpec("me") //
-                    .setIndicator(getString(R.string.main_activity_tab_title_me),
-                            getResources().getDrawable(
-                                    UserUtils.getDrawableForMeTabByGender(
-                                            userGender))) // the
-                                                          // tab
-                                                          // icon
-                    .setContent(intentTabMe) // The contained activity
-                    );
-        } 
+            TabsUtil.addNativeLookingTab(this, mTabHost, "t3", getString(R.string.main_activity_tab_title_me), 
+                    UserUtils.getDrawableForMeTabByGender(userGender), intentTabMe);
+        }
         
         mTabHost.setCurrentTab(0);
     }
     
-    private void addTabFriends() {
-         // Friends tab
-        mTabHost.addTab(mTabHost.newTabSpec("friends") //
-                .setIndicator(getString(R.string.checkins_label),
-                        getResources().getDrawable(R.drawable.friends_tab)) // the
-                                                                            // tab
-                // icon
-                .setContent(new Intent(this, FriendsActivity.class)) // The
-                                                                     // contained
-                                                                     // activity
-                );
-    }
-    
-    private void addTabPlaces(boolean delayLocationFetch) {
-        // Places tab
-        Intent intent = new Intent(this, NearbyVenuesActivity.class);
-        if (delayLocationFetch) {
-            intent.putExtra(NearbyVenuesActivity.INTENT_EXTRA_STARTUP_GEOLOC_DELAY, 4000L);
-        }
-        mTabHost.addTab(mTabHost.newTabSpec("places") //
-                .setIndicator(getString(R.string.nearby_label),
-                        getResources().getDrawable(R.drawable.places_tab)) // the
-                                                                           // tab
-                                                                           // icon
-                .setContent(intent) // The
-                                    // contained
-                                    // activity
-                );
-    }
-
     private void redirectToLoginActivity() {
         setVisible(false);
         Intent intent = new Intent(this, LoginActivity.class);

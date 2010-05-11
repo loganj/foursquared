@@ -11,6 +11,7 @@ import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
+import com.joelapenna.foursquared.util.TabsUtil;
 import com.joelapenna.foursquared.util.UserUtils;
 import com.joelapenna.foursquared.widget.VenueView;
 
@@ -24,7 +25,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -283,27 +283,20 @@ public class VenueActivity extends TabActivity {
 
     private void initTabHost() {
         final TabHost tabHost = this.getTabHost();
-        Resources resources = getResources();
         String tag;
         Intent intent;
 
-        tag = (String) this.getText(R.string.venue_checkin_activity_label);
+        tag = (String) this.getText(R.string.venue_checkins_tab);
         intent = new Intent(this, VenueCheckinsActivity.class);
-        tabHost.addTab(tabHost.newTabSpec(tag) //
-                .setIndicator(getString(R.string.venue_checkins_tab),
-                        resources.getDrawable(R.drawable.friends_tab)).setContent(intent));
+        TabsUtil.addNativeLookingTab(this, tabHost, "t1", tag, R.drawable.friends_tab, intent);
 
-        tag = (String) this.getText(R.string.venue_info_activity_label);
+        tag = (String) this.getText(R.string.map_label);
         intent = new Intent(this, VenueMapActivity.class);
-        tabHost.addTab(tabHost.newTabSpec(tag) //
-                .setIndicator(getString(R.string.map_label),
-                        resources.getDrawable(R.drawable.map_tab)).setContent(intent));
-
-        tag = (String) this.getText(R.string.venue_tips_activity_label);
+        TabsUtil.addNativeLookingTab(this, tabHost, "t2", tag, R.drawable.map_tab, intent);
+        
+        tag = (String) this.getText(R.string.venue_info_tab);
         intent = new Intent(this, VenueTipsActivity.class);
-        tabHost.addTab(tabHost.newTabSpec(tag) //
-                .setIndicator(getString(R.string.venue_info_tab),
-                        resources.getDrawable(R.drawable.tips_tab)).setContent(intent));
+        TabsUtil.addNativeLookingTab(this, tabHost, "t3", tag, R.drawable.tips_tab, intent);
     }
 
     private void onVenueSet() {
