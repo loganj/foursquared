@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="account_type">org.joelapenna.foursquared.account</string>
   <string name="add_a_tip">Add a Tip</string>
   <string name="add_friends_activity_label">Foursquare Add Friends</string>
   <string name="add_venue_activity_label_add_venue">Foursquare Add a New Venue</string>

@@ -10,8 +10,13 @@ import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
+import android.accounts.Account;
+import android.accounts.AccountAuthenticatorActivity;
+import android.accounts.AccountAuthenticatorResponse;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -34,7 +39,7 @@ import android.widget.Toast;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class LoginActivity extends Activity {
+public class LoginActivity extends AccountAuthenticatorActivity {
     public static final String TAG = "LoginActivity";
     public static final String LAUNCH_MAIN_WHEN_FINISHED = "LAUNCH_MAIN_WHEN_FINISHED";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
@@ -65,7 +70,7 @@ public class LoginActivity extends Activity {
         mLoginTask = (LoginTask) getLastNonConfigurationInstance();
         if (mLoginTask != null && mLoginTask.isCancelled()) {
             if (DEBUG) Log.d(TAG, "LoginTask previously cancelled, trying again.");
-            mLoginTask = new LoginTask().execute();
+            mLoginTask = new LoginTask(this).execute();
         }
     }
 
@@ -116,7 +121,7 @@ public class LoginActivity extends Activity {
         button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mLoginTask = new LoginTask().execute();
+                mLoginTask = new LoginTask(LoginActivity.this).execute();
             }
         });
 
@@ -167,7 +172,12 @@ public class LoginActivity extends Activity {
         private static final String TAG = "LoginTask";
         private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
+        final private Context mContext;
         private Exception mReason;
+        
+        LoginTask(Context context) {
+            mContext = context;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -200,6 +210,17 @@ public class LoginActivity extends Activity {
                     if (DEBUG) Log.d(TAG, "Preference store calls failed");
                     throw new FoursquareException(getResources().getString(
                             R.string.login_failed_login_toast));
+                } else {
+                    Account account = new Account(userId, mContext.getString(R.string.account_type));
+                    AccountManager am = AccountManager.get(mContext);
+                    boolean accountCreated = am.addAccountExplicitly(account, password, null);
+                    Bundle extras = getIntent().getExtras();
+                    if ( extras != null && accountCreated ) {
+                        Bundle result = new Bundle();
+                        result.putString(AccountManager.KEY_ACCOUNT_NAME, phoneNumber);
+                        result.putString(AccountManager.KEY_ACCOUNT_TYPE, getString(R.string.account_type));
+                        setAccountAuthenticatorResult(result);
+                    }
                 }
                 return loggedIn;
 
