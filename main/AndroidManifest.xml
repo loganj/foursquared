@@ -141,7 +141,8 @@
 
     <activity
       android:name=".LoginActivity"
-      android:launchMode="singleInstance">
+      android:launchMode="singleInstance"
+      android:exported="true">
     </activity>
 
 
