@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="account_type">org.joelapenna.foursquared.account</string>
   <string name="add_a_tip">Add a Tip</string>
   <string name="add_friends_activity_label">Foursquare Add Friends</string>
   <string name="add_venue_activity_label_add_venue">Foursquare Add a New Venue</string>
@@ -18,6 +17,7 @@
   <string name="add_venue_activity_progress_loading_categories">Loading categories...</string>
   <string name="address">Address</string> 
   <string name="app_name">Foursquare</string>
+  <string name="authtoken_type">com.joelapenna.foursquared.account</string>
   <string name="badges_header">Badges</string>
   <string name="call">Call</string>
   <string name="checkin_action_label">Check-in!</string>

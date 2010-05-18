@@ -6,9 +6,11 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
+import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
@@ -211,14 +213,15 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                     throw new FoursquareException(getResources().getString(
                             R.string.login_failed_login_toast));
                 } else {
-                    Account account = new Account(userId, mContext.getString(R.string.account_type));
+                    Account account = new Account(userId, AuthenticatorService.ACCOUNT_TYPE);
                     AccountManager am = AccountManager.get(mContext);
                     boolean accountCreated = am.addAccountExplicitly(account, password, null);
                     Bundle extras = getIntent().getExtras();
                     if ( extras != null && accountCreated ) {
                         Bundle result = new Bundle();
                         result.putString(AccountManager.KEY_ACCOUNT_NAME, phoneNumber);
-                        result.putString(AccountManager.KEY_ACCOUNT_TYPE, getString(R.string.account_type));
+                        result.putString(AccountManager.KEY_ACCOUNT_TYPE, AuthenticatorService.ACCOUNT_TYPE);
+                        result.putString(AccountManager.KEY_AUTHTOKEN, password);
                         setAccountAuthenticatorResult(result);
                     }
                 }

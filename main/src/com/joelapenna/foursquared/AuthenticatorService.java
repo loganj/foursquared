@@ -10,6 +10,7 @@ import static com.joelapenna.foursquared.FoursquaredSettings.DEBUG;
 
 public final class AuthenticatorService extends Service {
     
+    public static final String ACCOUNT_TYPE = "com.joelapenna.foursquared";
     private static final String TAG = "AuthenticatorService";
 	
 	private Authenticator mAuthenticator = null;
