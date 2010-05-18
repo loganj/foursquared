@@ -14,7 +14,7 @@ public class ContactsSyncService extends Service {
     public void onCreate() {
         synchronized(sSyncAdapterLock) {
             if (sSyncAdapter == null) {
-                sSyncAdapter = new ContactsSyncAdapter(getApplicationContext(), true);
+                sSyncAdapter = new ContactsSyncAdapter((Foursquared)getApplication(), getApplicationContext(), true);
             }
         }
     }
