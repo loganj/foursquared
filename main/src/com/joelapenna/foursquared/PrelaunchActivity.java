@@ -17,6 +17,21 @@ import android.widget.Button;
 import android.widget.CheckBox;
 
 /**
+ * Used to show a prompt to the user before the app runs. Some new marketplace vendors have 
+ * been asking this so they can prompt the user and tell them that the app uses internet 
+ * connections, which is not unlimited usage under many plans. This really should be handled
+ * by the install screen which shows other permissions used.
+ * 
+ * To enable this activity, just set it as the LAUNCHER in the manifest file. If the tag is
+ * not added in the manifest file, this activity is never used.
+ * 
+ * You can modify these text items in strings.xml to modify the appearance of the activity:
+ * <ul>
+ *   <li>prelaunch_text</li>
+ *   <li>prelaunch_button</li>
+ *   <li>prelaunch_checkbox_dont_show_again</li>
+ * </ul>
+ * 
  * @date May 15, 2010
  * @author Mark Wyszomierski (markww@gmail.com)
  */
