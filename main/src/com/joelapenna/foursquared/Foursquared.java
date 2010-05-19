@@ -343,7 +343,6 @@ public class Foursquared extends Application {
             intentFilter.addAction(INTENT_ACTION_LOGGED_OUT);
             registerReceiver(this, intentFilter);
         }
-
     }
 
     private class TaskHandler extends Handler {

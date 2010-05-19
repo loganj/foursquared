@@ -73,20 +73,31 @@ public class Preferences {
     // User can choose to clear geolocation on each search.
     public static final String PREFERENCE_CACHE_GEOLOCATION_FOR_SEARCHES
         = "cache_geolocation_for_searches";
-    
+
+    // If we're compiled to show the prelaunch activity, flag stating whether to skip
+    // showing it on startup.
+    public static final String PREFERENCE_SHOW_PRELAUNCH_ACTIVITY = "show_prelaunch_activity";
     
     /**
      * Gives us a chance to set some default preferences if this is the first install
      * of the application.
      */
     public static void setupDefaults(SharedPreferences preferences, Resources resources) {
+        Log.e("EEE", "Umm in setupdefaults...");
+        
         Editor editor = preferences.edit();
         if (!preferences.contains(PREFERENCE_STARTUP_TAB)) {
             String[] startupTabValues = resources.getStringArray(R.array.startup_tabs_values);
             editor.putString(PREFERENCE_STARTUP_TAB, startupTabValues[0]);
+            Log.e("EEE", "Umm in aaaa...");
         }
         if (!preferences.contains(PREFERENCE_CACHE_GEOLOCATION_FOR_SEARCHES)) {
             editor.putBoolean(PREFERENCE_CACHE_GEOLOCATION_FOR_SEARCHES, true);
+            Log.e("EEE", "Umm in bbbb...");
+        }
+        if (!preferences.contains(PREFERENCE_SHOW_PRELAUNCH_ACTIVITY)) {
+            editor.putBoolean(PREFERENCE_SHOW_PRELAUNCH_ACTIVITY, true);
+            Log.e("EEE", "Umm in cccc...");
         }
         editor.commit();
     }
