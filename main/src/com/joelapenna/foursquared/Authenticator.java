@@ -51,8 +51,19 @@ final class Authenticator extends AbstractAccountAuthenticator {
     @Override
     public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType,
             Bundle options) throws NetworkErrorException {
-        // TODO Auto-generated method stub
-        return null;
+        Log.i(TAG, "getAuthToken()");
+        final AccountManager am = AccountManager.get(mContext);
+        final String password = am.getPassword(account);
+        Log.i(TAG, "password is " + password);
+        
+        // assume the password is present and non-null
+        // TODO: confirm that password is valid, as in Sample Sync Adapter's Authenticator
+        // TODO: if password is missing or invalid, fire LoginActivity Intent
+        final Bundle result = new Bundle();
+        result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
+        result.putString(AccountManager.KEY_ACCOUNT_TYPE, AuthenticatorService.ACCOUNT_TYPE);
+        result.putString(AccountManager.KEY_AUTHTOKEN, password);
+        return result;
     }
 
     @Override

@@ -51,7 +51,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
         
         try {
-            Group<User> friends = mFoursquared.getFoursquare().friends(mFoursquared.getUserId());
+            Group<User> friends = mFoursquared.getFoursquare().friends(mFoursquared.getUserId(), LocationUtils.createFoursquareLocation(mFoursquared.getLastKnownLocation()));
         } catch (FoursquareError e) {
             Log.e(TAG, "error fetching friends", e);
         } catch (FoursquareException e) {
