@@ -55,6 +55,7 @@ public class FriendsAppWidgetProvider extends AppWidgetProvider {
             }
     };
 
+    @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         if (DEBUG) Log.d(TAG, "onUpdate()");
         Intent intent = new Intent(context, FoursquaredService.class);
