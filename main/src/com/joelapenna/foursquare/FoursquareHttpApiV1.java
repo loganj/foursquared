@@ -19,6 +19,7 @@ import com.joelapenna.foursquare.parsers.CredentialsParser;
 import com.joelapenna.foursquare.parsers.FriendInvitesResultParser;
 import com.joelapenna.foursquare.parsers.GroupParser;
 import com.joelapenna.foursquare.parsers.ResponseParser;
+import com.joelapenna.foursquare.parsers.SettingsParser;
 import com.joelapenna.foursquare.parsers.TipParser;
 import com.joelapenna.foursquare.parsers.UserParser;
 import com.joelapenna.foursquare.parsers.VenueParser;
@@ -30,6 +31,7 @@ import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.FriendInvitesResult;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Response;
+import com.joelapenna.foursquare.types.Settings;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
@@ -78,6 +80,7 @@ class FoursquareHttpApiV1 {
     private static final String URL_API_TIP_DONE = "/tip/markdone";
     private static final String URL_API_FIND_FRIENDS_BY_PHONE_OR_EMAIL = "/findfriends/byphoneoremail";
     private static final String URL_API_INVITE_BY_EMAIL = "/invite/byemail";
+    private static final String URL_API_SETPINGS = "/settings/setpings";
     
     private final DefaultHttpClient mHttpClient = AbstractHttpApi.createHttpClient();
     private HttpApi mHttpApi;
@@ -470,6 +473,26 @@ class FoursquareHttpApiV1 {
         return (Response) mHttpApi.doHttpRequest(httpPost, new ResponseParser());
     }
     
+    /**
+     * /settings/setpings?self=[on|off]
+     */
+    public Settings setpings(boolean on) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
+        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_SETPINGS), //
+                new BasicNameValuePair("self", on ? "on" : "off"));
+        return (Settings) mHttpApi.doHttpRequest(httpPost, new SettingsParser());
+    }
+    
+    /**
+     * /settings/setpings?uid=userid
+     */
+    public Settings setpings(String userid, boolean on) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
+        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_SETPINGS), //
+                new BasicNameValuePair(userid, on ? "on" : "off"));
+        return (Settings) mHttpApi.doHttpRequest(httpPost, new SettingsParser());
+    }
+
     private String fullUrl(String url) {
         return mApiBaseUrl + url;
     }

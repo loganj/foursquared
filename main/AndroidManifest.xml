@@ -16,6 +16,10 @@
     android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <uses-permission 
     android:name="android.permission.READ_CONTACTS" /> 
+  <uses-permission 
+    android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> 
+  <uses-permission 
+    android:name="android.permission.WAKE_LOCK" /> 
   <uses-sdk
     android:minSdkVersion="3"
     android:targetSdkVersion="6" />
@@ -49,6 +53,8 @@
       <intent-filter>
         <action
           android:name="android.intent.action.MAIN" />
+        <category
+          android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity> 
     
@@ -58,8 +64,6 @@
       <intent-filter>
         <action
           android:name="android.intent.action.MAIN" />
-        <category
-          android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
 
@@ -390,6 +394,19 @@
     <service
       android:name=".app.FoursquaredService">
     </service>
+    
+    <receiver android:name=".app.OnBootReceiver"> 
+      <intent-filter> 
+        <action android:name="android.intent.action.BOOT_COMPLETED" /> 
+      </intent-filter> 
+    </receiver> 
+    
+    <receiver android:name=".app.OnAlarmReceiver"> 
+    </receiver> 
+    
+    <service android:name=".app.NotificationsService"> 
+    </service> 
+    
 
   </application>
 </manifest>

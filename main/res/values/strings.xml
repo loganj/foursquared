@@ -195,8 +195,16 @@
   <string name="venue_activity_checkin_button">CHECK-IN HERE</string>
   <string name="venue_activity_checkin_button_quick">QUICK CHECK-IN HERE</string>
   <string name="send_invite_button">Invite</string>
-  <string name="prelaunch_text">Prelaunch Text</string>
-  <string name="prelaunch_button">OK</string>
-  <string name="prelaunch_checkbox_dont_show_again">" Don\'t remind me again."</string>
-        
+  <string name="prelaunch_text">본 어플리케이션은 사용중 데이터통화료가 발생할 수 있습니다. WiFi를 사용하시거나 데이터존 프리에 가입하실 것을 권장 드립니다.</string>
+  <string name="prelaunch_button">확인</string>
+  <string name="prelaunch_checkbox_dont_show_again">" 안내문 다시보지 않기"</string>
+  <string name="preferences_category_notifications">Notifications</string>
+  <string name="preferences_notifications_title">Notifications</string>
+  <string name="preferences_notifications_summary_on">Check status of friends in the background.</string>
+  <string name="preferences_notifications_summary_off">Don\'t do any background updates of friends etc.</string>
+  <string name="preferences_notifications_refresh_interval_in_minutes_title">Notifications Rate</string>
+  <string name="preferences_notifications_refresh_interval_in_minutes_summary">Choose how often to update notifications in the background.</string>
+  <string name="preferences_progressbar_title_notifications">Notifications</string>
+  <string name="preferences_progressbar_message_notifications">Updating notification settings...</string>
+      
 </resources> 

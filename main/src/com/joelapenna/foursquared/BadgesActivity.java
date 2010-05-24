@@ -26,7 +26,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.AdapterView.OnItemClickListener;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -147,7 +146,7 @@ public class BadgesActivity extends Activity {
                     Uri icon = Uri.parse(mStateHolder.getDlgInfoBadgeIconUrl());
                     dlgInfo.setIcon(new BitmapDrawable(((Foursquared) getApplication())
                             .getRemoteResourceManager().getInputStream(icon)));
-                } catch (IOException e) {
+                } catch (Exception e) {
                     Log.e(TAG, "Error loading badge dialog!", e);
                     dlgInfo.setIcon(R.drawable.default_on);
                 }

@@ -14,6 +14,7 @@ import com.joelapenna.foursquare.types.Credentials;
 import com.joelapenna.foursquare.types.FriendInvitesResult;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Response;
+import com.joelapenna.foursquare.types.Settings;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
@@ -244,6 +245,18 @@ public class Foursquare {
     public Response inviteByEmail(String emails) 
         throws FoursquareException, FoursquareCredentialsException, FoursquareError, IOException {
         return mFoursquareV1.inviteByEmail(emails);
+    }
+    
+    @V1
+    public Settings setpings(boolean on) 
+        throws FoursquareException, FoursquareCredentialsException, FoursquareError, IOException {
+        return mFoursquareV1.setpings(on);
+    }
+    
+    @V1
+    public Settings setpings(String userid, boolean on) 
+        throws FoursquareException, FoursquareCredentialsException, FoursquareError, IOException {
+        return mFoursquareV1.setpings(userid, on);
     }
     
     public static final FoursquareHttpApiV1 createHttpApi(String domain, String clientVersion,

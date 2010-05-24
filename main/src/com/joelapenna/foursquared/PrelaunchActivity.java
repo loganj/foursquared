@@ -46,6 +46,10 @@ public class PrelaunchActivity extends Activity {
         if (DEBUG) Log.d(TAG, "onCreate()");
         setContentView(R.layout.prelaunch_activity);
         
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.edit().putBoolean(Preferences.PREFERENCE_SHOW_PRELAUNCH_ACTIVITY, true).commit();
+        
         // If user doesn't want to be reminded anymore, just go to main activity.
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
                 Preferences.PREFERENCE_SHOW_PRELAUNCH_ACTIVITY, false) == false) {

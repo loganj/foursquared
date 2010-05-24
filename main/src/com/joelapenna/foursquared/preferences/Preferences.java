@@ -43,6 +43,8 @@ public class Preferences {
     public static final String PREFERENCE_CITY_NAME = "city_name";
     public static final String PREFERENCE_LOGOUT = "logout";
     public static final String PREFERENCE_SEND_FEEDBACK = "send_feedback";
+    public static final String PREFERENCE_NOTIFICATIONS = "notifications_on";
+    public static final String PREFERENCE_NOTIFICATIONS_INTERVAL = "notifications_refresh_interval_in_minutes";
 
     // Credentials related preferences
     public static final String PREFERENCE_LOGIN = "phone";
@@ -83,21 +85,19 @@ public class Preferences {
      * of the application.
      */
     public static void setupDefaults(SharedPreferences preferences, Resources resources) {
-        Log.e("EEE", "Umm in setupdefaults...");
-        
         Editor editor = preferences.edit();
         if (!preferences.contains(PREFERENCE_STARTUP_TAB)) {
             String[] startupTabValues = resources.getStringArray(R.array.startup_tabs_values);
             editor.putString(PREFERENCE_STARTUP_TAB, startupTabValues[0]);
-            Log.e("EEE", "Umm in aaaa...");
         }
         if (!preferences.contains(PREFERENCE_CACHE_GEOLOCATION_FOR_SEARCHES)) {
             editor.putBoolean(PREFERENCE_CACHE_GEOLOCATION_FOR_SEARCHES, true);
-            Log.e("EEE", "Umm in bbbb...");
         }
         if (!preferences.contains(PREFERENCE_SHOW_PRELAUNCH_ACTIVITY)) {
             editor.putBoolean(PREFERENCE_SHOW_PRELAUNCH_ACTIVITY, true);
-            Log.e("EEE", "Umm in cccc...");
+        }
+        if (!preferences.contains(PREFERENCE_NOTIFICATIONS_INTERVAL)) {
+            editor.putString(PREFERENCE_NOTIFICATIONS_INTERVAL, "30");
         }
         editor.commit();
     }
