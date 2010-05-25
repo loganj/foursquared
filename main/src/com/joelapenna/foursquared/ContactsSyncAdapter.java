@@ -1,12 +1,10 @@
 package com.joelapenna.foursquared;
 
-import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.location.LocationUtils;
-import com.joelapenna.foursquared.preferences.Preferences;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -18,12 +16,15 @@ import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SyncResult;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.RawContacts;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
@@ -44,6 +45,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider,
             SyncResult syncResult) {
+        
         String password = null;
         try {
             Log.i(TAG, "getting password from account manager");
@@ -91,8 +93,46 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, 0);
         builder.withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
         builder.withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, friend.getFirstname()+" "+friend.getLastname());
+        builder.withValue(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, friend.getFirstname());
+        builder.withValue(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME, friend.getLastname());
         opList.add(builder.build());
         
+        builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
+        builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, 0);
+        builder.withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+        builder.withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, friend.getPhone());
+        opList.add(builder.build());
+        
+        builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
+        builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, 0);
+        builder.withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
+        builder.withValue(ContactsContract.CommonDataKinds.Email.DATA, friend.getEmail());
+        opList.add(builder.build());
+
+        builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
+        builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, 0);
+        builder.withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
+        
+        try {
+            Uri photoUri = Uri.parse(friend.getPhoto());
+            InputStream photoIn = mFoursquared.getRemoteResourceManager().getInputStream(photoUri);
+            ByteArrayOutputStream photoOut = new ByteArrayOutputStream();
+            byte[] buf = new byte[64];
+            int r = 0;
+            while ( (r = photoIn.read(buf)) >= 0) {
+                photoOut.write(buf, 0, r);
+            }
+            byte[] photoBytes = photoOut.toByteArray();
+            builder.withValue(ContactsContract.CommonDataKinds.Photo.PHOTO, photoBytes);
+        } catch (IOException e) {
+            Log.w(TAG, "failed to fetch or read friend photo", e);
+        }
+        opList.add(builder.build());
+
+
+//        friend.getFacebook();
+//        friend.getTwitter();
+
         // create a Data record with custom type to point at Foursquare profile
         builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
         builder.withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0);
