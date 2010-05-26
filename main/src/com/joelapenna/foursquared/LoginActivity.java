@@ -44,6 +44,7 @@ import android.widget.Toast;
 public class LoginActivity extends AccountAuthenticatorActivity {
     public static final String TAG = "LoginActivity";
     public static final String LAUNCH_MAIN_WHEN_FINISHED = "LAUNCH_MAIN_WHEN_FINISHED";
+    public static final String PARAM_CONFIRMCREDENTIALS = "confirmCredentials";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private AsyncTask<Void, Void, Boolean> mLoginTask;
@@ -212,7 +213,8 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                     if (DEBUG) Log.d(TAG, "Preference store calls failed");
                     throw new FoursquareException(getResources().getString(
                             R.string.login_failed_login_toast));
-                } else {
+                } else if (getIntent().getBooleanExtra(PARAM_CONFIRMCREDENTIALS, false)){
+                    Log.i(TAG, "uid is " + getApplicationInfo().uid);
                     Account account = new Account(userId, AuthenticatorService.ACCOUNT_TYPE);
                     AccountManager am = AccountManager.get(mContext);
                     boolean accountCreated = am.addAccountExplicitly(account, password, null);
@@ -223,6 +225,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                         result.putString(AccountManager.KEY_ACCOUNT_TYPE, AuthenticatorService.ACCOUNT_TYPE);
                         result.putString(AccountManager.KEY_AUTHTOKEN, password);
                         setAccountAuthenticatorResult(result);
+                        setResult(RESULT_OK);
                     }
                 }
                 return loggedIn;

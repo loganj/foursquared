@@ -16,6 +16,7 @@ public final class AuthenticatorService extends Service {
 	private Authenticator mAuthenticator = null;
 	
 	public IBinder onBind(Intent intent) {
+	    Log.i(TAG, "uid is " + this.getApplicationInfo().uid);
 	    if (DEBUG) Log.d(TAG, "onBind()");
 	    if (intent.getAction().equals(android.accounts.AccountManager.ACTION_AUTHENTICATOR_INTENT)) {
 	        IBinder binder = mAuthenticator.getIBinder();
