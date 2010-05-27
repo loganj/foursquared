@@ -39,6 +39,8 @@ final class Authenticator extends AbstractAccountAuthenticator {
         if ( DEBUG ) Log.d(TAG, "addAccount()");
         Log.i(TAG, "uid is " + mContext.getApplicationInfo().uid);
         final Intent intent = new Intent(mContext, LoginActivity.class);
+        intent.putExtra(LoginActivity.PARAM_LAUNCHMAIN, false);
+        intent.putExtra(LoginActivity.PARAM_ADDACCOUNT, true);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         final Bundle reply = new Bundle();
         reply.putParcelable(AccountManager.KEY_INTENT, intent);
@@ -64,6 +66,7 @@ final class Authenticator extends AbstractAccountAuthenticator {
         final Intent intent = new Intent(mContext, LoginActivity.class);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         //intent.putExtra(AuthenticatorActivity.PARAM_USERNAME, account.name);
+        intent.putExtra(LoginActivity.PARAM_LAUNCHMAIN, false);
         intent.putExtra(LoginActivity.PARAM_CONFIRMCREDENTIALS, true);
         final Bundle reply = new Bundle();
         reply.putParcelable(AccountManager.KEY_INTENT, intent);
@@ -76,14 +79,14 @@ final class Authenticator extends AbstractAccountAuthenticator {
         Editor editor = prefs.edit();
         Foursquare.Location location = LocationUtils.createFoursquareLocation(mFoursquared.getLastKnownLocation());
         try {
-        return Preferences.loginUser(mFoursquared.getFoursquare(), phoneNumber, password, location, editor);
+            return Preferences.loginUser(mFoursquared.getFoursquare(), phoneNumber, password, location, editor);
         } catch (Exception e) {
             // TODO: this is not great; the user will not see until LoginActivity fails that this is a network problem
             Log.w(TAG, "exception while attempting to verify password with server", e);
             return false;
         }
     }
-
+    
     @Override
     public Bundle editProperties(AccountAuthenticatorResponse response, String accountType) {
         Log.i(TAG, "editProperties()");
@@ -96,16 +99,21 @@ final class Authenticator extends AbstractAccountAuthenticator {
         Log.i(TAG, "getAuthToken()");
         final AccountManager am = AccountManager.get(mContext);
         final String password = am.getPassword(account);
-        Log.i(TAG, "password is " + password);
         
-        // assume the password is present and non-null
-        // TODO: confirm that password is valid, as in Sample Sync Adapter's Authenticator
-        // TODO: if password is missing or invalid, fire LoginActivity Intent
-        final Bundle result = new Bundle();
-        result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
-        result.putString(AccountManager.KEY_ACCOUNT_TYPE, AuthenticatorService.ACCOUNT_TYPE);
-        result.putString(AccountManager.KEY_AUTHTOKEN, password);
-        return result;
+        if (password != null) {
+            boolean confirmed = confirmPasswordWithServer(account.name, password);
+            if (confirmed) {
+                final Bundle result = new Bundle();
+                result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
+                result.putString(AccountManager.KEY_ACCOUNT_TYPE, AuthenticatorService.ACCOUNT_TYPE);
+                result.putString(AccountManager.KEY_AUTHTOKEN, password);
+                return result;
+            }
+        }
+        
+        // TODO: this isn't (always? ever?) going to be quite right, because the account already exists
+        return addAccount(response, AuthenticatorService.ACCOUNT_TYPE, authTokenType, new String[0], options);
+        
     }
 
     @Override

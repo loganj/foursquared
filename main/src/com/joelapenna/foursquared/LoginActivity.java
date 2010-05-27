@@ -18,6 +18,7 @@ import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,6 +27,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -43,8 +45,9 @@ import android.widget.Toast;
  */
 public class LoginActivity extends AccountAuthenticatorActivity {
     public static final String TAG = "LoginActivity";
-    public static final String LAUNCH_MAIN_WHEN_FINISHED = "LAUNCH_MAIN_WHEN_FINISHED";
+    public static final String PARAM_ADDACCOUNT = "addAccount";
     public static final String PARAM_CONFIRMCREDENTIALS = "confirmCredentials";
+    public static final String PARAM_LAUNCHMAIN = "launchMain";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private AsyncTask<Void, Void, Boolean> mLoginTask;
@@ -207,17 +210,34 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                 boolean loggedIn = Preferences.loginUser(foursquare, phoneNumber, password,
                         location, editor);
 
+                
+                Account account = null;
+                AccountManager am = null;
                 // Make sure prefs make a round trip.
                 String userId = Preferences.getUserId(prefs);
                 if (TextUtils.isEmpty(userId)) {
                     if (DEBUG) Log.d(TAG, "Preference store calls failed");
                     throw new FoursquareException(getResources().getString(
                             R.string.login_failed_login_toast));
-                } else if (getIntent().getBooleanExtra(PARAM_CONFIRMCREDENTIALS, false)){
-                    Log.i(TAG, "uid is " + getApplicationInfo().uid);
-                    Account account = new Account(userId, AuthenticatorService.ACCOUNT_TYPE);
-                    AccountManager am = AccountManager.get(mContext);
+                } else {
+                    account = new Account(userId, AuthenticatorService.ACCOUNT_TYPE);
+                    am = AccountManager.get(mContext);
+                }
+                
+                final Intent intent = new Intent();
+
+                if (getIntent().getBooleanExtra(PARAM_CONFIRMCREDENTIALS, false)){
+                    am.setPassword(account, password);
+                    intent.putExtra(AccountManager.KEY_BOOLEAN_RESULT, loggedIn);
+                    setAccountAuthenticatorResult(intent.getExtras());
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } else if (getIntent().getBooleanExtra(PARAM_ADDACCOUNT, false)) {
                     boolean accountCreated = am.addAccountExplicitly(account, password, null);
+                    
+                    // TODO: this should be optional
+                    ContentResolver.setSyncAutomatically(account, ContactsContract.AUTHORITY, true);
+                    
                     Bundle extras = getIntent().getExtras();
                     if ( extras != null && accountCreated ) {
                         Bundle result = new Bundle();
@@ -225,7 +245,8 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                         result.putString(AccountManager.KEY_ACCOUNT_TYPE, AuthenticatorService.ACCOUNT_TYPE);
                         result.putString(AccountManager.KEY_AUTHTOKEN, password);
                         setAccountAuthenticatorResult(result);
-                        setResult(RESULT_OK);
+                        setResult(RESULT_OK, intent);
+                        finish();
                     }
                 }
                 return loggedIn;
@@ -252,7 +273,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                 // Launch the service to update any widgets, etc.
                 foursquared.requestStartService();
 
-                if ( getIntent().getBooleanExtra(LAUNCH_MAIN_WHEN_FINISHED, false) ) {
+                if ( getIntent().getBooleanExtra(PARAM_LAUNCHMAIN, true) ) {
                 // Launch the main activity to let the user do anything.
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

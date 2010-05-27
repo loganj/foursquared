@@ -29,7 +29,8 @@ public final class AuthenticatorService extends Service {
 
 	public void onCreate() {
 	    if (DEBUG) Log.d(TAG, "onCreate()");
-	    mAuthenticator = new Authenticator(this);
+	    Foursquared foursquared = (Foursquared)getApplication();
+	    mAuthenticator = new Authenticator(this, foursquared);
 	}
 	
 }
