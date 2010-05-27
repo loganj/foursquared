@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.types.Settings;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.util.NotificationsUtil;
@@ -90,6 +91,7 @@ public class UserActionsActivity extends LoadableListActivity {
             mStateHolder = (StateHolder) retained;
             mStateHolder.setActivityForTaskFriendRequest(this);
             mStateHolder.setActivityForTaskSendDecision(this);
+            mStateHolder.setActivityForTaskPings(this);
         } else {
             mStateHolder = new StateHolder();
             if (verifyIntent(getIntent())) {
@@ -180,6 +182,14 @@ public class UserActionsActivity extends LoadableListActivity {
                         // Nothing to do, we have to wait for the other user to
                         // accept our invitation!
                         break;
+                    case ActionsAdapter.ACTION_ID_PINGS_ON:
+                        mStateHolder.startTaskPings(UserActionsActivity.this, mStateHolder
+                                .getUser().getId(), false);
+                        break;
+                    case ActionsAdapter.ACTION_ID_PINGS_OFF:
+                        mStateHolder.startTaskPings(UserActionsActivity.this, mStateHolder
+                                .getUser().getId(), true);
+                        break;
                     default:
                         break;
                 }
@@ -196,6 +206,9 @@ public class UserActionsActivity extends LoadableListActivity {
             startProgressBar(getResources().getString(R.string.add_friends_activity_label),
                     getResources()
                             .getString(R.string.add_friends_progress_bar_message_send_request));
+        } else if (mStateHolder.getIsRunningPings()) {
+            startProgressBar(getResources().getString(R.string.friend_requests_activity_label),
+                    getResources().getString(R.string.friend_requests_progress_bar_ignore_request));
         }
 
         if (mListAdapter.getCount() == 0) {
@@ -219,6 +232,8 @@ public class UserActionsActivity extends LoadableListActivity {
         public static final int ACTION_ID_TWITTER = 3;
         public static final int ACTION_ID_FACEBOOK = 4;
         public static final int ACTION_ID_LAST_SEEN_AT = 5; // Going to go away eventually.
+        public static final int ACTION_ID_PINGS_ON = 6;
+        public static final int ACTION_ID_PINGS_OFF = 7;
         public static final int ACTION_ID_SEND_FRIEND_REQUEST = 100;
         public static final int ACTION_ID_SEND_APPROVE_FRIEND_REQUEST = 101;
         public static final int ACTION_ID_SEND_READONLY_FRIEND_REQUEST = 102;
@@ -242,6 +257,15 @@ public class UserActionsActivity extends LoadableListActivity {
                             R.drawable.map_marker_blue, ACTION_ID_LAST_SEEN_AT, false));
                 }
                 if (UserUtils.isFriend(user)) {
+                    if (mUser.getSettings().getGetPings().equals("true")) {
+                        mActions.add(new Action(context.getResources().getString(
+                                R.string.user_actions_activity_action_pings_on),
+                                R.drawable.user_action_text, ACTION_ID_PINGS_ON, false));
+                    } else {
+                        mActions.add(new Action(context.getResources().getString(
+                                R.string.user_actions_activity_action_pings_off),
+                                R.drawable.user_action_text, ACTION_ID_PINGS_OFF, false));
+                    }
                     if (TextUtils.isEmpty(mUser.getPhone()) == false) {
                         mActions.add(new Action(context.getResources().getString(
                                 R.string.user_actions_activity_action_sms),
@@ -411,7 +435,6 @@ public class UserActionsActivity extends LoadableListActivity {
     private void startWebIntent(String url) {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            ;
             startActivity(intent);
         } catch (Exception ex) {
             Log.e(TAG, "Error starting url intent.", ex);
@@ -469,6 +492,17 @@ public class UserActionsActivity extends LoadableListActivity {
         }
     }
 
+    private void onPingsTaskComplete(Settings settings, boolean on, Exception ex) {
+        stopProgressBar();
+        mStateHolder.setIsRunningPings(false);
+        if (settings != null) {
+            mStateHolder.getUser().getSettings().setGetPings(on ? "true" : "false");
+            ensureUi();
+        } else {
+            NotificationsUtil.ToastReasonForFailure(this, ex);
+        }
+    }
+    
     private static class SendFriendRequestDecisionTask extends AsyncTask<Void, Void, User> {
 
         private UserActionsActivity mActivity;
@@ -590,6 +624,63 @@ public class UserActionsActivity extends LoadableListActivity {
             }
         }
     }
+    
+    private static class PingsTask extends AsyncTask<Void, Void, Settings> {
+
+        private UserActionsActivity mActivity;
+        private Exception mReason;
+        private String mUserId;
+        private boolean mOn;
+
+        public PingsTask(UserActionsActivity activity, String userId, boolean on) {
+            mActivity = activity;
+            mUserId = userId;
+            mOn = on;
+        }
+
+        public void setActivity(UserActionsActivity activity) {
+            mActivity = activity;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mActivity.startProgressBar(mActivity.getResources().getString(
+                    R.string.add_friends_progress_bar_title_pings), mActivity.getResources().getString(
+                    R.string.add_friends_progress_bar_message_pings));
+        }
+
+        @Override
+        protected Settings doInBackground(Void... params) {
+            try {
+                Foursquared foursquared = (Foursquared) mActivity.getApplication();
+                Foursquare foursquare = foursquared.getFoursquare();
+
+                Settings settings = foursquare.setpings(mUserId, mOn);
+                return settings;
+            } catch (Exception e) {
+                if (DEBUG)
+                    Log.d(TAG, "PingsTask: Exception setting new ping status.", e);
+                mReason = e;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Settings settings) {
+            if (DEBUG) Log.d(TAG, "PingsTask: onPostExecute()");
+            if (mActivity != null) {
+                mActivity.onPingsTaskComplete(settings, mOn, mReason);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            if (mActivity != null) {
+                mActivity.onSendFriendRequestTaskComplete(null, new Exception(
+                        "Pings update cancelled."));
+            }
+        }
+    }
 
     private static class StateHolder {
 
@@ -602,12 +693,17 @@ public class UserActionsActivity extends LoadableListActivity {
         private SendFriendRequestDecisionTask mTaskSendDecision;
         private boolean mIsRunningApproval;
         private boolean mIsRunningIgnore;
+        
+        private PingsTask mTaskPings;
+        private boolean mIsRunningTaskPings;
 
+        
         public StateHolder() {
             mShowAddFriendOptions = false;
             mIsRunningTaskSendFriendRequest = false;
             mIsRunningApproval = false;
             mIsRunningIgnore = false;
+            mIsRunningTaskPings = false;
         }
 
         public User getUser() {
@@ -639,6 +735,12 @@ public class UserActionsActivity extends LoadableListActivity {
             mTaskSendDecision = new SendFriendRequestDecisionTask(activity, userId, approve);
             mTaskSendDecision.execute();
         }
+        
+        public void startTaskPings(UserActionsActivity activity, String userId, boolean on) {
+            mIsRunningTaskPings = true;
+            mTaskPings = new PingsTask(activity, userId, on);
+            mTaskPings.execute();
+        }
 
         public void setActivityForTaskFriendRequest(UserActionsActivity activity) {
             if (mTaskSendFriendRequest != null) {
@@ -652,6 +754,12 @@ public class UserActionsActivity extends LoadableListActivity {
             }
         }
 
+        public void setActivityForTaskPings(UserActionsActivity activity) {
+            if (mTaskPings != null) {
+                mTaskPings.setActivity(activity);
+            }
+        }
+        
         public void setIsRunningTaskSendFriendRequest(boolean isRunning) {
             mIsRunningTaskSendFriendRequest = isRunning;
         }
@@ -676,6 +784,14 @@ public class UserActionsActivity extends LoadableListActivity {
             mIsRunningIgnore = isRunning;
         }
 
+        public boolean getIsRunningPings() {
+            return mIsRunningTaskPings;
+        }
+
+        public void setIsRunningPings(boolean isRunning) {
+            mIsRunningTaskPings = isRunning;
+        }
+        
         public void cancelTasks() {
             if (mTaskSendFriendRequest != null) {
                 mTaskSendFriendRequest.setActivity(null);
@@ -684,6 +800,10 @@ public class UserActionsActivity extends LoadableListActivity {
             if (mTaskSendDecision != null) {
                 mTaskSendDecision.setActivity(null);
                 mTaskSendDecision.cancel(true);
+            }
+            if (mTaskPings != null) {
+                mTaskPings.setActivity(null);
+                mTaskPings.cancel(true);
             }
         }
     }

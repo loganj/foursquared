@@ -45,6 +45,7 @@ public class Preferences {
     public static final String PREFERENCE_SEND_FEEDBACK = "send_feedback";
     public static final String PREFERENCE_NOTIFICATIONS = "notifications_on";
     public static final String PREFERENCE_NOTIFICATIONS_INTERVAL = "notifications_refresh_interval_in_minutes";
+    public static final String PREFERENCE_NOTIFICATIONS_VIBRATE = "notifications_vibrate";
 
     // Credentials related preferences
     public static final String PREFERENCE_LOGIN = "phone";

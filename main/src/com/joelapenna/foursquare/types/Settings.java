@@ -18,6 +18,7 @@ import android.os.Parcelable;
 public class Settings implements FoursquareType, Parcelable {
 
     private String mFeedsKey;
+    private String mGetPings;
     private String mPings;
     private boolean mSendtofacebook;
     private boolean mSendtotwitter;
@@ -27,6 +28,7 @@ public class Settings implements FoursquareType, Parcelable {
     
     private Settings(Parcel in) {
         mFeedsKey = ParcelUtils.readStringFromParcel(in);
+        mGetPings = ParcelUtils.readStringFromParcel(in);
         mPings = ParcelUtils.readStringFromParcel(in);
         mSendtofacebook = in.readInt() == 1;
         mSendtotwitter = in.readInt() == 1;
@@ -49,6 +51,14 @@ public class Settings implements FoursquareType, Parcelable {
 
     public void setFeedsKey(String feedsKey) {
         mFeedsKey = feedsKey;
+    }
+    
+    public String getGetPings() {
+        return mGetPings;
+    }
+
+    public void setGetPings(String getPings) {
+        mGetPings = getPings;
     }
 
     public String getPings() {
@@ -78,6 +88,7 @@ public class Settings implements FoursquareType, Parcelable {
     @Override
     public void writeToParcel(Parcel out, int flags) {
         ParcelUtils.writeStringToParcel(out, mFeedsKey);
+        ParcelUtils.writeStringToParcel(out, mGetPings);
         ParcelUtils.writeStringToParcel(out, mPings);
         out.writeInt(mSendtofacebook ? 1 : 0);
         out.writeInt(mSendtotwitter ? 1 : 0);

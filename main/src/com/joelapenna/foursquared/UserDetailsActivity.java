@@ -278,6 +278,7 @@ public class UserDetailsActivity extends TabActivity {
         // User object may still be unavailable.
         User user = mStateHolder.getUser();
         if (user == null) {
+            Log.e(TAG, "Umm user is nul, sorrry....");
             return;
         }
 

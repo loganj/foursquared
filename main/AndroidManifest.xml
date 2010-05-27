@@ -20,6 +20,8 @@
     android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> 
   <uses-permission 
     android:name="android.permission.WAKE_LOCK" /> 
+  <uses-permission 
+    android:name="android.permission.VIBRATE" /> 
   <uses-sdk
     android:minSdkVersion="3"
     android:targetSdkVersion="6" />
@@ -53,8 +55,6 @@
       <intent-filter>
         <action
           android:name="android.intent.action.MAIN" />
-        <category
-          android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity> 
     
@@ -64,6 +64,8 @@
       <intent-filter>
         <action
           android:name="android.intent.action.MAIN" />
+        <category
+          android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
 
@@ -401,8 +403,8 @@
       </intent-filter> 
     </receiver> 
     
-    <receiver android:name=".app.OnAlarmReceiver"> 
-    </receiver> 
+    <receiver android:name=".app.NotificationsOnAlarmReceiver"> 
+    </receiver>  
     
     <service android:name=".app.NotificationsService"> 
     </service> 

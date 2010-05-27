@@ -154,7 +154,7 @@ public class User implements FoursquareType, Parcelable {
     public void setGender(String gender) {
         mGender = gender;
     }
-
+    
     public String getId() {
         return mId;
     }

@@ -52,6 +52,13 @@
       android:entries="@array/notifications_refresh_interval_in_minutes" 
       android:entryValues="@array/notifications_refresh_interval_in_minutes_values"
       android:defaultValue="30" />
+    <CheckBoxPreference
+      android:key="notifications_vibrate"
+      android:persistent="true"
+      android:title="@string/preferences_notifications_vibrate_title"
+      android:summaryOn="@string/preferences_notifications_vibrate_summary_on"
+      android:summaryOff="@string/preferences_notifications_vibrate_summary_off"
+      android:defaultValue="false" />
   </PreferenceCategory>
 
   <PreferenceCategory

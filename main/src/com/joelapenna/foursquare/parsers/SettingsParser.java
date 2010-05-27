@@ -38,6 +38,9 @@ public class SettingsParser extends AbstractParser<Settings> {
             if ("feeds_key".equals(name)) {
                 settings.setFeedsKey(parser.nextText());
 
+            } else if ("get_pings".equals(name)) {
+                settings.setGetPings(parser.nextText());
+
             } else if ("pings".equals(name)) {
                 settings.setPings(parser.nextText());
 

@@ -129,4 +129,47 @@ public class StringFormatters {
             return created;
         }
     }
+    
+    public static String getNotificationMessageTitle(Checkin checkin) {
+        StringBuilder sb = new StringBuilder(1024);
+        sb.append(getUserAbbreviatedName(checkin.getUser()));
+        if (checkin.getVenue() != null) {
+            sb.append(" @ ");
+            sb.append(checkin.getVenue().getName());
+        } else if (checkin.getShout() != null) {
+            sb.append(" shouted: '");
+            sb.append(checkin.getShout());
+            sb.append("'");
+        }
+        
+        return sb.toString();
+    }
+    
+    public static String getNotificationMessageInfo(Checkin checkin) {
+        String time = getTodayTimeString(checkin.getCreated());
+        
+        StringBuilder sb = new StringBuilder(1024);
+        if (checkin.getVenue() != null) {
+            if (checkin.getVenue().getCrossstreet() != null) {
+                sb.append("(");
+                sb.append(checkin.getVenue().getCrossstreet());
+                sb.append(") ");
+            }
+            sb.append("at ");
+            sb.append(time);
+            if (checkin.getVenue().getCheckins() != null &&
+                    checkin.getVenue().getCheckins().size() > 2) {
+                sb.append(" (w/");
+                sb.append(checkin.getVenue().getCheckins().size());
+                sb.append(" others)");
+            }
+            sb.append(".");
+        } else {
+            sb.append("at ");
+            sb.append(time);
+            sb.append(".");
+        }
+        
+        return sb.toString();
+    }
 }

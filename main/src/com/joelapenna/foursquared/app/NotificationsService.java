@@ -25,6 +25,7 @@ import android.location.LocationManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -39,14 +40,16 @@ import java.util.List;
  */
 public class NotificationsService extends WakefulIntentService { 
     public static final String TAG = "NotificationsService";
+    private static final boolean DEBUG = false;
     private static final String SHARED_PREFS_NAME = "SharedPrefsNotificationsService";
     private static final String SHARED_PREFS_KEY_LAST_RUN_TIME = "SharedPrefsKeyLastRunTime";
+    private static final int MAX_AGE_CHECKINS_IN_MINUTES = 50;
 
     private SharedPreferences mSharedPrefs;
   
     
     public NotificationsService() { 
-        super(TAG); 
+        super("NotificationsService"); 
     }
     
     @Override
@@ -57,8 +60,6 @@ public class NotificationsService extends WakefulIntentService {
     
     @Override
     protected void doWakefulWork(Intent intent) {
-        
-        Log.e(TAG, "NotificationsService::doWakefulWork()...");
         
         // The user must have logged in once previously for this to work,
         // and not leave the app in a logged-out state.
@@ -83,7 +84,6 @@ public class NotificationsService extends WakefulIntentService {
         }
         
         if (checkins != null) {
-            Log.e(TAG, "  Got " + checkins.size() + " checkins back, examing all now!");
             
             // Don't accept any checkins that are older than the last time we ran.
             long lastRunTime = mSharedPrefs.getLong(SHARED_PREFS_KEY_LAST_RUN_TIME, 0L);
@@ -91,32 +91,39 @@ public class NotificationsService extends WakefulIntentService {
             
             // Don't accept any checkins that are older than some reasonable threshold.
             // For example, if our interval is 2 hours, we may not really want to show
-            // checkins that are 1.9 hours hold, it just doesn't really make sense.
+            // checkins that are 1.9 hours hold, it just doesn't really make sense. 
+            // We'll have to refine this.
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date());        
-            cal.add(Calendar.MINUTE, -50);
+            cal.add(Calendar.MINUTE, -(MAX_AGE_CHECKINS_IN_MINUTES));
             Date dateRecent = cal.getTime();                  
 
             // Now build the list of 'new' checkins.
             List<Checkin> newCheckins = new ArrayList<Checkin>();
             for (Checkin it : checkins) {
-                Log.d(TAG, "  examining new checkin: " + it.getDisplay());
+                // Ignore ourselves.
+                if (it.getUser() != null && it.getUser().getId().equals(foursquared.getUserId())) {
+                    continue;
+                }
                 
-                // We haven't shown this checkin within the lifetime of our service.
-                // If this is the first run, also discard checkins that are older
-                // than some threshold.
+                // TODO: Check that our user wanted to see notifications from this user.
+                
+                // Check against date times.
                 try {
                     Date date = StringFormatters.DATE_FORMAT.parse(it.getCreated()); 
 
-                    Log.d(TAG, "  " + dateLast.toLocaleString());
-                    Log.d(TAG, "  " + dateRecent.toLocaleString());
-                    Log.d(TAG, "  " + date.toLocaleString());
+                    if (DEBUG) {
+                        Log.d(TAG, dateLast.toLocaleString());
+                        Log.d(TAG, dateRecent.toLocaleString());
+                        Log.d(TAG, date.toLocaleString());
+                    }
                     
                     if (date.after(dateLast)) {
-                        Log.d(TAG, "  checkin is younger than last run time...");
+                        if (DEBUG) Log.d(TAG, "Checkin is younger than our last run time...");
                         if (date.after(dateRecent)) {
-                            Log.d(TAG, "  checkin is younger than recent threshold...");
-                            Log.d(TAG, "  checkin is 'new', adding for notification...");
+                            if (DEBUG) {
+                                Log.d(TAG, "Checkin is younger than 'recent' threshold...");
+                            }
                             newCheckins.add(it);
                         }
                     }
@@ -134,12 +141,14 @@ public class NotificationsService extends WakefulIntentService {
     private Location getLastGeolocation() {
         LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         List<String> providers = manager.getAllProviders();
-        
+         
         Location bestLocation = null;
         for (String it : providers) {
             Location location = manager.getLastKnownLocation(it);
-            if (bestLocation == null || location.getAccuracy() < bestLocation.getAccuracy()) {
-                bestLocation = location;
+            if (location != null) {
+                if (bestLocation == null || location.getAccuracy() < bestLocation.getAccuracy()) {
+                    bestLocation = location;
+                }
             }
         }
         
@@ -147,22 +156,45 @@ public class NotificationsService extends WakefulIntentService {
     }
     
     private void notifyUser(List<Checkin> newCheckins) {
-        NotificationManager mgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE); 
-        PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, FriendsActivity.class), 0); 
         
+        // If we have no new checkins to show, nothing to do.
+        if (newCheckins.size() < 1) {
+            return;
+        }
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean vibrate = prefs.getBoolean(Preferences.PREFERENCE_NOTIFICATIONS_VIBRATE, false);
+        boolean vibratedOnce = false;
+        
+        // Clear all previous notifications before showing new ones.
+        NotificationManager mgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE); 
+        mgr.cancelAll();
+        
+        PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, FriendsActivity.class), 0); 
+        int nextNotificationId = 0;
         for (Checkin it : newCheckins) {
-            Notification note = new Notification(R.drawable.icon, 
-                                                 "Foursquare Checkin", 
-                                                 System.currentTimeMillis()); 
-            note.setLatestEventInfo(this, "Foursquare Checkin", it.getDisplay(), pi); 
-            //note.number = 88; 
-            mgr.notify(1337, note); 
+            RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.notification_list_item);
+            contentView.setTextViewText(R.id.text1, StringFormatters.getNotificationMessageTitle(it));
+            contentView.setTextViewText(R.id.text2, StringFormatters.getNotificationMessageInfo(it));
+            
+            Notification notification = new Notification(
+                    R.drawable.icon, 
+                    "Foursquare Checkin", 
+                    System.currentTimeMillis()); 
+            notification.contentView = contentView;
+            notification.contentIntent = pi;
+            if (vibrate && !vibratedOnce) {
+                notification.defaults |= Notification.DEFAULT_VIBRATE;
+                vibratedOnce = true;
+            }
+            mgr.notify(nextNotificationId++, notification);
         }
     }
     
     public static void setupNotifications(Context context) {
+
         // If the user has notifications on, set an alarm every N minutes, where N is their
-        // requested refresh rate.
+        // requested refresh rate. We default to 30 if some problem reading set interval.
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         if (prefs.getBoolean(Preferences.PREFERENCE_NOTIFICATIONS, false)) {
 
@@ -174,7 +206,10 @@ public class NotificationsService extends WakefulIntentService {
                 Log.e(TAG, "Error parsing notification interval time, defaulting to: " + refreshRateInMinutes);
             }
 
-            Log.d(TAG, "User has notifications on, attempting to setup alarm with interval: " + refreshRateInMinutes + "..");
+            if (DEBUG) {
+                Log.d(TAG, "User has notifications on, attempting to setup alarm with interval: " 
+                        + refreshRateInMinutes + "..");
+            }
             
             AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE); 
             mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 
@@ -191,5 +226,24 @@ public class NotificationsService extends WakefulIntentService {
     
     private static PendingIntent makePendingIntentAlarm(Context context) {
         return PendingIntent.getBroadcast(context, 0, new Intent(context, NotificationsOnAlarmReceiver.class), 0); 
+    }
+    
+    public static void generateNotificationTest(Context context) {
+        PendingIntent pi = PendingIntent.getActivity(context, 0, new Intent(context, FriendsActivity.class), 0); 
+        
+        NotificationManager mgr = (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE); 
+        
+        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_list_item);
+        contentView.setTextViewText(R.id.text1, "Notification title line");
+        contentView.setTextViewText(R.id.text2, "Notification message line");
+        
+        Notification notification = new Notification(
+                R.drawable.icon, 
+                "Foursquare Checkin", 
+                System.currentTimeMillis()); 
+        notification.contentView = contentView;
+        notification.contentIntent = pi;
+        notification.defaults |= Notification.DEFAULT_VIBRATE;
+        mgr.notify(-1, notification);
     }
 }

@@ -22,7 +22,7 @@ public abstract class WakefulIntentService extends IntentService {
     
     public static void acquireStaticLock(Context context) { 
         getLock(context).acquire(); 
-    } 
+    }
   
     private synchronized static PowerManager.WakeLock getLock(Context context) { 
         if (lockStatic == null) { 

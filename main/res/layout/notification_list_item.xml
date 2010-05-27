@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+  <!-- Copyright (c) Mark Wyszomierski, 2010. -->
+  
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/notification_list_item"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="@color/white"
+  android:padding="3dip"
+  >
+  
+  <ImageView 
+    android:id="@+id/image"
+    android:layout_width="26dip"
+    android:layout_height="26dip"
+    android:layout_marginRight="8dip"
+    android:src="@drawable/icon"
+    android:scaleType="fitXY" 
+    />
+    
+  <LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+    
+    <TextView android:id="@+id/text1"
+      android:layout_width="wrap_content"
+      android:layout_height="fill_parent"
+      android:textAppearance="@style/TextViewStyleNotificationTitle"
+      android:text="dfsfdsfdfsdfd"
+      />
+      
+    <TextView android:id="@+id/text2"
+      android:layout_width="wrap_content"
+      android:layout_height="fill_parent"
+      android:textAppearance="@style/TextViewStyleNotificationOther"
+      android:text="dfsfdsfdfsdfd"
+      />
+      
+  </LinearLayout>
+  
+</LinearLayout>
