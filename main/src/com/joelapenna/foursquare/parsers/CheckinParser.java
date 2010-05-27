@@ -12,6 +12,8 @@ import com.joelapenna.foursquare.types.Checkin;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,6 +51,9 @@ public class CheckinParser extends AbstractParser<Checkin> {
 
             } else if ("ismayor".equals(name)) {
                 checkin.setIsmayor(Boolean.valueOf(parser.nextText()));
+
+            } else if ("ping".equals(name)) {
+                checkin.setPing(Boolean.valueOf(parser.nextText()));
 
             } else if ("shout".equals(name)) {
                 checkin.setShout(parser.nextText());

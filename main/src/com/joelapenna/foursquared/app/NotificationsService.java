@@ -6,6 +6,7 @@ package com.joelapenna.foursquared.app;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.FriendsActivity;
 import com.joelapenna.foursquared.R;
@@ -40,7 +41,7 @@ import java.util.List;
  */
 public class NotificationsService extends WakefulIntentService { 
     public static final String TAG = "NotificationsService";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private static final String SHARED_PREFS_NAME = "SharedPrefsNotificationsService";
     private static final String SHARED_PREFS_KEY_LAST_RUN_TIME = "SharedPrefsKeyLastRunTime";
     private static final int MAX_AGE_CHECKINS_IN_MINUTES = 50;
@@ -64,14 +65,29 @@ public class NotificationsService extends WakefulIntentService {
         // The user must have logged in once previously for this to work,
         // and not leave the app in a logged-out state.
         Foursquared foursquared = (Foursquared) getApplication();
+        Foursquare foursquare = foursquared.getFoursquare();
         if (!foursquared.isReady()) {
-            Log.e(TAG, "  User not logged in, cannot proceed.");
+            Log.e(TAG, "User not logged in, cannot proceed.");
+            return;
+        }
+        
+        // Before running, make sure the user still wants notifications on.
+        // For example, the user could have turned notifications on from
+        // this device, but then turned it off on a second device. This 
+        // service would continue running then, continuing to notify the
+        // user.
+        if (!checkUserStillWantsNotifications(foursquared.getUserId(), foursquare)) {
+            Log.e(TAG, "User doesnt want pings on anymore, probably turned them off from another location!!!!");
+            // Turn off locally.
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            prefs.edit().putBoolean(Preferences.PREFERENCE_NOTIFICATIONS, false).commit();
+            cancelNotifications(this);
             return;
         }
 
-        Foursquare foursquare = foursquared.getFoursquare();
-        Location location = getLastGeolocation();
+        // Get the users current location and then request nearby checkins.
         Group<Checkin> checkins = null;
+        Location location = getLastGeolocation();
         if (location != null) {
             try {
                 checkins = foursquare.checkins(
@@ -84,6 +100,8 @@ public class NotificationsService extends WakefulIntentService {
         }
         
         if (checkins != null) {
+            
+            if (DEBUG) Log.e(TAG, "Checking " + checkins.size() + " checkins for notifications.");
             
             // Don't accept any checkins that are older than the last time we ran.
             long lastRunTime = mSharedPrefs.getLong(SHARED_PREFS_KEY_LAST_RUN_TIME, 0L);
@@ -106,7 +124,10 @@ public class NotificationsService extends WakefulIntentService {
                     continue;
                 }
                 
-                // TODO: Check that our user wanted to see notifications from this user.
+                // Check that our user wanted to see notifications from this user.
+                if (!it.getPing()) {
+                    continue;
+                }
                 
                 // Check against date times.
                 try {
@@ -189,6 +210,19 @@ public class NotificationsService extends WakefulIntentService {
             }
             mgr.notify(nextNotificationId++, notification);
         }
+    }
+    
+    private boolean checkUserStillWantsNotifications(String userId, Foursquare foursquare) {
+        try {
+            User user = foursquare.user(userId, false, false, null);
+            if (user != null) {
+                return user.getSettings().getPings().equals("on");
+            }
+        } catch (Exception ex) {
+            // Assume they still want it on.
+        }
+        
+        return true;
     }
     
     public static void setupNotifications(Context context) {

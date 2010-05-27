@@ -22,11 +22,13 @@ public class Checkin implements FoursquareType, Parcelable {
     private String mDistance;
     private String mId;
     private boolean mIsmayor;
+    private boolean mPing;
     private String mShout;
     private User mUser;
     private Venue mVenue;
 
     public Checkin() {
+        mPing = false;
     }
     
     private Checkin(Parcel in) {
@@ -35,6 +37,7 @@ public class Checkin implements FoursquareType, Parcelable {
         mDistance = ParcelUtils.readStringFromParcel(in);
         mId = ParcelUtils.readStringFromParcel(in);
         mIsmayor = in.readInt() == 1;
+        mPing = in.readInt() == 1;
         mShout = ParcelUtils.readStringFromParcel(in);
         
         if (in.readInt() == 1) {
@@ -96,6 +99,14 @@ public class Checkin implements FoursquareType, Parcelable {
     public void setIsmayor(boolean ismayor) {
         mIsmayor = ismayor;
     }
+    
+    public boolean getPing() {
+        return mPing;
+    }
+    
+    public void setPing(boolean ping) {
+        mPing = ping;
+    }
 
     public String getShout() {
         return mShout;
@@ -128,6 +139,7 @@ public class Checkin implements FoursquareType, Parcelable {
         ParcelUtils.writeStringToParcel(out, mDistance);
         ParcelUtils.writeStringToParcel(out, mId);
         out.writeInt(mIsmayor ? 1 : 0);
+        out.writeInt(mPing ? 1 : 0);
         ParcelUtils.writeStringToParcel(out, mShout);
         
         if (mUser != null) {

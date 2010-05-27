@@ -260,11 +260,11 @@ public class UserActionsActivity extends LoadableListActivity {
                     if (mUser.getSettings().getGetPings().equals("true")) {
                         mActions.add(new Action(context.getResources().getString(
                                 R.string.user_actions_activity_action_pings_on),
-                                R.drawable.user_action_text, ACTION_ID_PINGS_ON, false));
+                                R.drawable.user_action_pings, ACTION_ID_PINGS_ON, false));
                     } else {
                         mActions.add(new Action(context.getResources().getString(
                                 R.string.user_actions_activity_action_pings_off),
-                                R.drawable.user_action_text, ACTION_ID_PINGS_OFF, false));
+                                R.drawable.user_action_pings, ACTION_ID_PINGS_OFF, false));
                     }
                     if (TextUtils.isEmpty(mUser.getPhone()) == false) {
                         mActions.add(new Action(context.getResources().getString(
