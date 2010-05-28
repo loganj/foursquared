@@ -40,7 +40,7 @@ final class Authenticator extends AbstractAccountAuthenticator {
         Log.i(TAG, "uid is " + mContext.getApplicationInfo().uid);
         final Intent intent = new Intent(mContext, LoginActivity.class);
         intent.putExtra(LoginActivity.PARAM_LAUNCHMAIN, false);
-        intent.putExtra(LoginActivity.PARAM_ADDACCOUNT, true);
+        intent.putExtra(LoginActivity.PARAM_SETAUTHTOKEN, true);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         final Bundle reply = new Bundle();
         reply.putParcelable(AccountManager.KEY_INTENT, intent);
@@ -111,9 +111,15 @@ final class Authenticator extends AbstractAccountAuthenticator {
             }
         }
         
-        // TODO: this isn't (always? ever?) going to be quite right, because the account already exists
-        return addAccount(response, AuthenticatorService.ACCOUNT_TYPE, authTokenType, new String[0], options);
-        
+        final Intent intent = new Intent(mContext, LoginActivity.class);
+        intent.putExtra(LoginActivity.PARAM_LAUNCHMAIN, false);
+        intent.putExtra(LoginActivity.PARAM_PHONENUMBER, account.name);
+        intent.putExtra(LoginActivity.PARAM_SETAUTHTOKEN, true);
+        intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+        final Bundle reply = new Bundle();
+        reply.putParcelable(AccountManager.KEY_INTENT, intent);
+        return reply;
+           
     }
 
     @Override

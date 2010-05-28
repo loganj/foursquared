@@ -45,7 +45,8 @@ import android.widget.Toast;
  */
 public class LoginActivity extends AccountAuthenticatorActivity {
     public static final String TAG = "LoginActivity";
-    public static final String PARAM_ADDACCOUNT = "addAccount";
+    public static final String PARAM_PHONENUMBER = "phoneNumber";
+    public static final String PARAM_SETAUTHTOKEN = "setAuthToken";
     public static final String PARAM_CONFIRMCREDENTIALS = "confirmCredentials";
     public static final String PARAM_LAUNCHMAIN = "launchMain";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
@@ -232,22 +233,21 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                     setAccountAuthenticatorResult(intent.getExtras());
                     setResult(RESULT_OK, intent);
                     finish();
-                } else if (getIntent().getBooleanExtra(PARAM_ADDACCOUNT, false)) {
-                    boolean accountCreated = am.addAccountExplicitly(account, password, null);
+                } else if (getIntent().getBooleanExtra(PARAM_SETAUTHTOKEN, false)) {
                     
-                    // TODO: this should be optional
-                    ContentResolver.setSyncAutomatically(account, ContactsContract.AUTHORITY, true);
-                    
-                    Bundle extras = getIntent().getExtras();
-                    if ( extras != null && accountCreated ) {
-                        Bundle result = new Bundle();
-                        result.putString(AccountManager.KEY_ACCOUNT_NAME, phoneNumber);
-                        result.putString(AccountManager.KEY_ACCOUNT_TYPE, AuthenticatorService.ACCOUNT_TYPE);
-                        result.putString(AccountManager.KEY_AUTHTOKEN, password);
-                        setAccountAuthenticatorResult(result);
-                        setResult(RESULT_OK, intent);
-                        finish();
+                    if ( phoneNumber.equalsIgnoreCase(getIntent().getStringExtra(PARAM_PHONENUMBER))) {
+                        am.setPassword(account, password);
+                    } else {
+                        am.addAccountExplicitly(account, password, null);
+                        ContentResolver.setSyncAutomatically(account, ContactsContract.AUTHORITY, true);
                     }
+                    
+                    intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, phoneNumber);
+                    intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, AuthenticatorService.ACCOUNT_TYPE);
+                    intent.putExtra(AccountManager.KEY_AUTHTOKEN, password);
+                    setAccountAuthenticatorResult(intent.getExtras());
+                    setResult(RESULT_OK, intent);
+                    finish();
                 }
                 return loggedIn;
 

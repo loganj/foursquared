@@ -16,6 +16,7 @@ import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SyncResult;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -73,11 +74,55 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         
         Log.i(TAG, "got " + friends.size() + " friends from server");
         
+        ContentResolver resolver = getContext().getContentResolver();
+        // TODO: sync correctly
+        // TODO: double check that we're fetching *all* friends from foursquare
+        // partition friend and contact sets into three sets:
+        // contacts - friends: need to be deleted
+        // intersection: need to be updated
+        
         for ( User friend : friends ) {
-            Log.i(TAG, "adding friend " + friend.getId() + " (" + friend.getFirstname() + " " + friend.getLastname() + ")");
-            addContact(account, friend);
+            long rawContactId = getRawContactId(resolver, friend);
+            if ( rawContactId == 0 ) {
+                Log.i(TAG, "adding friend " + friend.getId() + " (" + friend.getFirstname() + " " + friend.getLastname() + ")");
+                addContact(account, friend);
+            } else {
+                // updateContact()
+            }     
         }
         
+
+        // friends - contacts: need to be added
+        
+    }
+    
+    /**
+     * 
+     * @return raw contact id, or 0 if not found
+     */
+    private long getRawContactId(ContentResolver resolver, User friend) {
+        long rawContactId = 0;
+        Cursor c = resolver.query(RawContacts.CONTENT_URI, 
+                                  RawContactIdQuery.PROJECTION, 
+                                  RawContactIdQuery.SELECTION, 
+                                  new String[] { friend.getId() }, null);
+        try {
+            if (c.moveToFirst()) {
+                rawContactId = c.getLong(RawContactIdQuery.COLUMN_ID);
+            }
+        } finally {
+            if ( c != null) {
+                c.close();
+            }
+        }
+        return rawContactId;
+    }
+    
+    private static class RawContactIdQuery {
+        static final String[] PROJECTION = new String[] { RawContacts._ID };
+        static final String SELECTION = RawContacts.ACCOUNT_TYPE+"='"+AuthenticatorService.ACCOUNT_TYPE+"'"
+                                        + " AND " + RawContacts.SOURCE_ID+"=?";
+        public final static int COLUMN_ID = 0;
     }
     
     private void addContact(Account account, User friend) {
