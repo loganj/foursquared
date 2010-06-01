@@ -236,6 +236,7 @@ public class NotificationsService extends WakefulIntentService {
                     System.currentTimeMillis()); 
             notification.contentView = contentView;
             notification.contentIntent = pi;
+            notification.flags |= Notification.FLAG_AUTO_CANCEL;
             if (vibrate && !vibratedOnce) {
                 notification.defaults |= Notification.DEFAULT_VIBRATE;
                 vibratedOnce = true;
