@@ -14,19 +14,27 @@ import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.RawContacts;
+import android.provider.ContactsContract.CommonDataKinds.Email;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
 
@@ -81,15 +89,26 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         // contacts - friends: need to be deleted
         // intersection: need to be updated
         
+        ArrayList<ContentProviderOperation> opList = new ArrayList<ContentProviderOperation>();
         for ( User friend : friends ) {
             long rawContactId = getRawContactId(resolver, friend);
             if ( rawContactId == 0 ) {
                 Log.i(TAG, "adding friend " + friend.getId() + " (" + friend.getFirstname() + " " + friend.getLastname() + ")");
-                addContact(account, friend);
+                opList.addAll(addContact(account, friend));
             } else {
-                // updateContact()
+                 opList.addAll(updateContact(resolver, rawContactId, friend));
             }     
         }
+        
+        // TODO: just need to do deletes now
+        
+        try {
+            mContentResolver.applyBatch(ContactsContract.AUTHORITY, opList);
+        } catch (Exception e) {
+            Log.e(TAG, "Something went wrong during creation! " + e);
+            e.printStackTrace();
+        }        
+        
         
 
         // friends - contacts: need to be added
@@ -125,7 +144,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         public final static int COLUMN_ID = 0;
     }
     
-    private void addContact(Account account, User friend) {
+    private List<ContentProviderOperation> addContact(Account account, User friend) {
         ArrayList<ContentProviderOperation> opList = new ArrayList<ContentProviderOperation>();
  
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(RawContacts.CONTENT_URI);
@@ -187,13 +206,73 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         builder.withValue(ContactsContract.Data.DATA3, "View profile");
         opList.add(builder.build());
         
-        try {
-            mContentResolver.applyBatch(ContactsContract.AUTHORITY, opList);
-        } catch (Exception e) {
-            Log.e(TAG, "Something went wrong during creation! " + e);
-            e.printStackTrace();
-        }        
+        return opList;
         
+    }
+    
+    private List<ContentProviderOperation> updateContact(ContentResolver resolver, long rawContactId, User friend) {
+        Cursor c = resolver.query(ContactsContract.Data.CONTENT_URI, 
+                                  RawContactDataQuery.PROJECTION, 
+                                  RawContactDataQuery.SELECTION, 
+                                  new String[] { String.valueOf(rawContactId) }, 
+                                  null);
+        ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+        
+        try {
+            while (c.moveToNext()) {
+                Uri uri = ContentUris.withAppendedId(Data.CONTENT_URI, rawContactId);
+                long id = c.getLong(RawContactDataQuery.COLUMN_ID);
+                String mimeType = c.getString(RawContactDataQuery.COLUMN_MIMETYPE);
+                ContentValues values = new ContentValues();
+                if ( StructuredName.CONTENT_ITEM_TYPE.equals(mimeType)) {
+                    
+                    // TODO: will this ever be null?  what if it's null, and we want to clear the column?
+                    if ( friend.getLastname() != null &&
+                         !friend.getLastname().equals(c.getString(RawContactDataQuery.COLUMN_FAMILY_NAME))) {
+                        values.put(StructuredName.FAMILY_NAME, friend.getLastname());
+                    }
+                    
+                    if ( friend.getFirstname() != null &&
+                         !friend.getFirstname().equals(c.getString(RawContactDataQuery.COLUMN_GIVEN_NAME))) {
+                        values.put(StructuredName.GIVEN_NAME, friend.getFirstname());
+                    }
+                } else if ( Phone.CONTENT_ITEM_TYPE.equals(mimeType) ) {
+                    
+                    if ( friend.getPhone() != null && !friend.getPhone().equals(c.getString(RawContactDataQuery.COLUMN_PHONE_NUMBER))) {
+                        values.put(Phone.NUMBER, friend.getPhone());
+                    }
+                } else if ( Email.CONTENT_ITEM_TYPE.equals(mimeType)) {
+                    if ( friend.getEmail() != null && !friend.getEmail().equals(c.getString(RawContactDataQuery.COLUMN_EMAIL_ADDRESS))) {
+                        values.put(Email.CONTENT_ITEM_TYPE, friend.getEmail());
+                    }
+                }
+                
+                if ( values.size() > 0) {
+                    ContentProviderOperation.Builder op = ContentProviderOperation.newUpdate(uri);
+                    op.withValues(values);
+                    ops.add(op.build());
+                }
+            }
+        } finally {
+            c.close();
+        }
+        return ops;
+    }
+    
+    private static class RawContactDataQuery {
+        final static String[] PROJECTION = new String[] { Data._ID, Data.MIMETYPE, Data.DATA1, Data.DATA2, Data.DATA3 };
+        final static String SELECTION = Data.RAW_CONTACT_ID + "=?";
+
+        final static int COLUMN_ID = 0;
+        final static int COLUMN_MIMETYPE = 1;
+        final static int COLUMN_DATA1 = 2;
+        final static int COLUMN_DATA2 = 3;
+        final static int COLUMN_DATA3 = 4;
+        final static int COLUMN_PHONE_NUMBER = COLUMN_DATA1;
+        final static int COLUMN_EMAIL_ADDRESS = COLUMN_DATA1;
+        final static int COLUMN_GIVEN_NAME = COLUMN_DATA2;
+        final static int COLUMN_FAMILY_NAME = COLUMN_DATA3;
+
     }
 
 }
