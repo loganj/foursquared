@@ -287,6 +287,7 @@ public class CheckinResultDialog extends Dialog
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), UserDetailsActivity.class);
                 intent.putExtra(UserDetailsActivity.EXTRA_USER_ID, userId);
+                intent.putExtra(UserDetailsActivity.EXTRA_SHOW_ADD_FRIEND_OPTIONS, true);
                 v.getContext().startActivity(intent);
             }
         });

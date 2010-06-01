@@ -228,6 +228,7 @@ public class TipActivity extends Activity {
     private void showUserDetailsActivity(String userId) {
         Intent intent = new Intent(this, UserDetailsActivity.class);
         intent.putExtra(UserDetailsActivity.EXTRA_USER_ID, userId);
+        intent.putExtra(UserDetailsActivity.EXTRA_SHOW_ADD_FRIEND_OPTIONS, true);
         startActivity(intent);
     }
     

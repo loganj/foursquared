@@ -101,6 +101,7 @@ public class VenueCheckinsActivity extends LoadableListActivity {
         if (DEBUG) Log.d(TAG, "firing venue activity for venue");
         Intent intent = new Intent(VenueCheckinsActivity.this, UserDetailsActivity.class);
         intent.putExtra(UserDetailsActivity.EXTRA_USER_PARCEL, user);
+        intent.putExtra(UserDetailsActivity.EXTRA_SHOW_ADD_FRIEND_OPTIONS, true);
         startActivity(intent);
     }
 
