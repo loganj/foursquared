@@ -118,13 +118,18 @@ public class NotificationsService extends WakefulIntentService {
             // Now build the list of 'new' checkins.
             List<Checkin> newCheckins = new ArrayList<Checkin>();
             for (Checkin it : checkins) {
+                
+                if (DEBUG) Log.d(TAG, "Checking checkin of " + it.getUser().getFirstname());
+                
                 // Ignore ourselves.
                 if (it.getUser() != null && it.getUser().getId().equals(foursquared.getUserId())) {
+                    if (DEBUG) Log.d(TAG, "  Ignoring checkin of ourselves.");
                     continue;
                 }
                 
                 // Check that our user wanted to see notifications from this user.
                 if (!it.getPing()) {
+                    if (DEBUG) Log.d(TAG, "  Pings are off for this user.");
                     continue;
                 }
                 
@@ -133,17 +138,22 @@ public class NotificationsService extends WakefulIntentService {
                     Date date = StringFormatters.DATE_FORMAT.parse(it.getCreated()); 
 
                     if (DEBUG) {
-                        Log.d(TAG, dateLast.toLocaleString());
-                        Log.d(TAG, dateRecent.toLocaleString());
-                        Log.d(TAG, date.toLocaleString());
+                        Log.d(TAG, "  Comaring date times for checkin.");
+                        Log.d(TAG, "    Last run time: " + dateLast.toLocaleString());
+                        Log.d(TAG, "    Recent time:   " + dateRecent.toLocaleString());
+                        Log.d(TAG, "    Checkin time:  " + date.toLocaleString());
                     }
                     
                     if (date.after(dateLast)) {
-                        if (DEBUG) Log.d(TAG, "Checkin is younger than our last run time...");
+                        if (DEBUG) Log.d(TAG, "  Checkin is younger than our last run time...");
                         if (date.after(dateRecent)) {
-                            if (DEBUG) Log.d(TAG, "Checkin is younger than 'recent' threshold...");
+                            if (DEBUG) Log.d(TAG, "  Checkin is younger than 'recent' threshold...");
                             newCheckins.add(it);
+                        } else {
+                            if (DEBUG) Log.d(TAG, "  Checkin is older than 'recent' threshold.");
                         }
+                    } else {
+                        if (DEBUG) Log.d(TAG, "  Checkin is older than last run time.");
                     }
                 } catch (ParseException ex) {
                 }
