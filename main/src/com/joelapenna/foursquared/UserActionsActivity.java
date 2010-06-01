@@ -257,7 +257,7 @@ public class UserActionsActivity extends LoadableListActivity {
                             R.drawable.map_marker_blue, ACTION_ID_LAST_SEEN_AT, false));
                 }
                 if (UserUtils.isFriend(user)) {
-                    if (mUser.getSettings().getGetPings().equals("true")) {
+                    if (Boolean.parseBoolean(mUser.getSettings().getGetPings())) {
                         mActions.add(new Action(context.getResources().getString(
                                 R.string.user_actions_activity_action_pings_on),
                                 R.drawable.user_action_pings, ACTION_ID_PINGS_ON, false));

@@ -44,7 +44,7 @@ public class NotificationsService extends WakefulIntentService {
     private static final boolean DEBUG = true;
     private static final String SHARED_PREFS_NAME = "SharedPrefsNotificationsService";
     private static final String SHARED_PREFS_KEY_LAST_RUN_TIME = "SharedPrefsKeyLastRunTime";
-    private static final int MAX_AGE_CHECKINS_IN_MINUTES = 50;
+    private static final int MAX_AGE_CHECKINS_IN_MINUTES = 20;
 
     private SharedPreferences mSharedPrefs;
   
@@ -67,7 +67,7 @@ public class NotificationsService extends WakefulIntentService {
         Foursquared foursquared = (Foursquared) getApplication();
         Foursquare foursquare = foursquared.getFoursquare();
         if (!foursquared.isReady()) {
-            Log.e(TAG, "User not logged in, cannot proceed.");
+            if (DEBUG) Log.d(TAG, "User not logged in, cannot proceed.");
             return;
         }
         
@@ -77,7 +77,6 @@ public class NotificationsService extends WakefulIntentService {
         // service would continue running then, continuing to notify the
         // user.
         if (!checkUserStillWantsNotifications(foursquared.getUserId(), foursquare)) {
-            Log.e(TAG, "User doesnt want pings on anymore, probably turned them off from another location!!!!");
             // Turn off locally.
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
             prefs.edit().putBoolean(Preferences.PREFERENCE_NOTIFICATIONS, false).commit();
@@ -93,10 +92,10 @@ public class NotificationsService extends WakefulIntentService {
                 checkins = foursquare.checkins(
                     LocationUtils.createFoursquareLocation(location));
             } catch (Exception ex) {
-                Log.e(TAG, "  Error getting checkins in notifications service.", ex);
+                Log.e(TAG, "Error getting checkins in notifications service.", ex);
             }
         } else {
-            Log.e(TAG, "  Could not find location in notifications service, cannot proceed.");
+            Log.e(TAG, "Could not find location in notifications service, cannot proceed.");
         }
         
         if (checkins != null) {
@@ -142,9 +141,7 @@ public class NotificationsService extends WakefulIntentService {
                     if (date.after(dateLast)) {
                         if (DEBUG) Log.d(TAG, "Checkin is younger than our last run time...");
                         if (date.after(dateRecent)) {
-                            if (DEBUG) {
-                                Log.d(TAG, "Checkin is younger than 'recent' threshold...");
-                            }
+                            if (DEBUG) Log.d(TAG, "Checkin is younger than 'recent' threshold...");
                             newCheckins.add(it);
                         }
                     }
@@ -178,7 +175,8 @@ public class NotificationsService extends WakefulIntentService {
     
     private void notifyUser(List<Checkin> newCheckins) {
         
-        // If we have no new checkins to show, nothing to do.
+        // If we have no new checkins to show, nothing to do. We would also be leaving the
+        // previous batch of notifications alive (if any) which is ok.
         if (newCheckins.size() < 1) {
             return;
         }

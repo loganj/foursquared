@@ -1,5 +1,6 @@
 /**
  * Copyright 2010 Mark Wyszomierski
+ * Portions Copyright (c) 2008-2010 CommonsWare, LLC
  */
 package com.joelapenna.foursquared.app;
 
@@ -9,6 +10,8 @@ import android.content.Intent;
 import android.os.PowerManager;
 
 /**
+ * This is based off the chapter 13 sample in Advanced Android Development, by Mark Murphy.
+ * 
  * @date May 21, 2010
  * @author Mark Wyszomierski (markww@gmail.com)
  */
