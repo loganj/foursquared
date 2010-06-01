@@ -36,6 +36,30 @@ import java.util.List;
 
 
 /**
+ * This service will run every N minutes (specified by the user in settings). An alarm 
+ * handles running the service. 
+ * 
+ * When the service runs, we call /checkins. From the list of checkins, we cut down the
+ * list of relevant checkins as follows:
+ * <ul>
+ *   <li>Not one of our own checkins.</li>
+ *   <li>We haven't turned pings off for the user. This can be toggled on/off in the
+ *       UserDetailsActivity activity, per user.</li>
+ *   <li>The checkin is younger than the last time we ran this service.</li>
+ *   <li>The checkin is younger than a static threshold in minutes (currently 20 minutes).</li>
+ * </ul>
+ * 
+ * The last criteria (the 20 minute threshold) exists for the higher refresh intervals. If
+ * the user is running notifications every 2 hours, they probably don't care about a checkin
+ * that is 1.9 hours old.
+ * 
+ * Note that the server might override the pings attribute to 'off' for certain checkins, 
+ * usually if the checkin is far away from our current location.
+ * 
+ * Notifications will not be cleared from the notification bar until a subsequent run can
+ * generate at least one new notification. A new batch of notifications will clear all 
+ * previous notifications so as to not clutter the notification bar.
+ * 
  * @date May 21, 2010
  * @author Mark Wyszomierski (markww@gmail.com)
  */
@@ -147,7 +171,7 @@ public class NotificationsService extends WakefulIntentService {
                     if (date.after(dateLast)) {
                         if (DEBUG) Log.d(TAG, "  Checkin is younger than our last run time...");
                         if (date.after(dateRecent)) {
-                            if (DEBUG) Log.d(TAG, "  Checkin is younger than 'recent' threshold...");
+                            if (DEBUG) Log.d(TAG, "  Checkin is younger than 'recent' threshold, passes all tests!");
                             newCheckins.add(it);
                         } else {
                             if (DEBUG) Log.d(TAG, "  Checkin is older than 'recent' threshold.");
