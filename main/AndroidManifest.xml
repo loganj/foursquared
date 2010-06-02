@@ -381,6 +381,10 @@
       android:name=".SpecialWebViewActivity" >
     </activity> 
     
+    <activity
+      android:name=".PingsSettingsActivity" >
+    </activity> 
+    
     <receiver
       android:name=".appwidget.FriendsAppWidgetProvider"
       android:label="@string/friends_appwidget_3x3_label">
