@@ -13,6 +13,7 @@ import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.providers.VenueQuerySuggestionsProvider;
 import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.util.NotificationsUtil;
+import com.joelapenna.foursquared.util.TabsUtil;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 import com.joelapenna.foursquared.widget.VenueListAdapter;
 
@@ -23,7 +24,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -346,24 +346,13 @@ public class SearchVenuesActivity extends TabActivity {
             throw new IllegalStateException("Trying to intialize already initializd TabHost");
         }
 
-        Resources resources = getResources();
-
-        mTabHost = getTabHost();
-
-        mTabHost.addTab(mTabHost.newTabSpec("results") //
-                .setIndicator(getString(R.string.search_venues_label),
-                        resources.getDrawable(R.drawable.places_tab)) // the tab
-                // icon
-                .setContent(R.id.listviewLayout) //
-                );
-
-        Intent intent = new Intent(this, SearchVenuesMapActivity.class);
-        mTabHost.addTab(mTabHost.newTabSpec("map") //
-                .setIndicator(getString(R.string.map_label),
-                        resources.getDrawable(R.drawable.map_tab)) // the tab
-                // icon
-                .setContent(intent) // The contained activity
-                );
+        mTabHost = getTabHost(); 
+        
+        TabsUtil.addNativeLookingTab(this, mTabHost, "results", getString(R.string.search_venues_label), 
+                R.drawable.places_tab, R.id.listviewLayout);
+        TabsUtil.addNativeLookingTab(this, mTabHost, "map", getString(R.string.map_label), 
+                R.drawable.map_tab, new Intent(this, SearchVenuesMapActivity.class));
+        
         mTabHost.setCurrentTab(0);
     }
 
