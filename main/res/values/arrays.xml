@@ -22,7 +22,6 @@
   
   <string-array
     name="notifications_refresh_interval_in_minutes">
-    <item>1 minutes</item>
     <item>10 minutes</item>
     <item>30 minutes</item>
     <item>1 hour</item>
@@ -32,7 +31,6 @@
   <!-- Don't change these for localization. -->
   <string-array
     name="notifications_refresh_interval_in_minutes_values">
-    <item>1</item>
     <item>10</item>
     <item>30</item>
     <item>60</item>
