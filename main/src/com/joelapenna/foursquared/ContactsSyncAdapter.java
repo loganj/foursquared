@@ -96,19 +96,22 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
                 Log.i(TAG, "adding friend " + friend.getId() + " (" + friend.getFirstname() + " " + friend.getLastname() + ")");
                 opList.addAll(addContact(account, friend));
             } else {
+                Log.i(TAG, "updating contact " + rawContactId + " for friend " + friend.getFirstname() + " " + friend.getLastname() + ")");
                  opList.addAll(updateContact(resolver, rawContactId, friend));
-            }     
+            }
+            
+            // can't do each friend as one go because of backreferences.  I think.
+            try {
+                mContentResolver.applyBatch(ContactsContract.AUTHORITY, opList);
+            } catch (Exception e) {
+                Log.e(TAG, "Something went wrong during creation! " + e);
+                e.printStackTrace();
+            }        
         }
         
         // TODO: just need to do deletes now
         
-        try {
-            mContentResolver.applyBatch(ContactsContract.AUTHORITY, opList);
-        } catch (Exception e) {
-            Log.e(TAG, "Something went wrong during creation! " + e);
-            e.printStackTrace();
-        }        
-        
+       
         
 
         // friends - contacts: need to be added
@@ -151,6 +154,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         builder.withValue(RawContacts.ACCOUNT_NAME, account.name);
         builder.withValue(RawContacts.ACCOUNT_TYPE, account.type);
         builder.withValue(RawContacts.SYNC1, friend.getId());
+        builder.withValue(RawContacts.SOURCE_ID, friend.getId());
         opList.add(builder.build());
         
         builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
@@ -217,9 +221,10 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
                                   new String[] { String.valueOf(rawContactId) }, 
                                   null);
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
-        
+        Log.i(TAG, "updateContact passed rawContactId=" + rawContactId);
         try {
             while (c.moveToNext()) {
+                Log.i(TAG, "processing row with raw_contact_id=" + c.getLong(5));
                 Uri uri = ContentUris.withAppendedId(Data.CONTENT_URI, rawContactId);
                 long id = c.getLong(RawContactDataQuery.COLUMN_ID);
                 String mimeType = c.getString(RawContactDataQuery.COLUMN_MIMETYPE);
@@ -227,22 +232,27 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
                 if ( StructuredName.CONTENT_ITEM_TYPE.equals(mimeType)) {
                     
                     // TODO: will this ever be null?  what if it's null, and we want to clear the column?
-                    if ( friend.getLastname() != null &&
-                         !friend.getLastname().equals(c.getString(RawContactDataQuery.COLUMN_FAMILY_NAME))) {
+                    String contactFamilyName = c.getString(RawContactDataQuery.COLUMN_FAMILY_NAME);
+                    if ( friend.getLastname() != null && !friend.getLastname().equals(contactFamilyName)) {
+                        Log.i(TAG, "updating family name from '" + contactFamilyName + "' to '" + friend.getLastname() + "'");
                         values.put(StructuredName.FAMILY_NAME, friend.getLastname());
                     }
                     
+                    String contactGivenName = c.getString(RawContactDataQuery.COLUMN_GIVEN_NAME);
                     if ( friend.getFirstname() != null &&
-                         !friend.getFirstname().equals(c.getString(RawContactDataQuery.COLUMN_GIVEN_NAME))) {
+                         !friend.getFirstname().equals(contactGivenName)) {
+                        Log.i(TAG, "updating given name from '" + contactGivenName + "' to '" + friend.getFirstname() + "'");
                         values.put(StructuredName.GIVEN_NAME, friend.getFirstname());
                     }
                 } else if ( Phone.CONTENT_ITEM_TYPE.equals(mimeType) ) {
                     
                     if ( friend.getPhone() != null && !friend.getPhone().equals(c.getString(RawContactDataQuery.COLUMN_PHONE_NUMBER))) {
+                        Log.i(TAG, "updating phone to '" + friend.getPhone() + "'");
                         values.put(Phone.NUMBER, friend.getPhone());
                     }
                 } else if ( Email.CONTENT_ITEM_TYPE.equals(mimeType)) {
                     if ( friend.getEmail() != null && !friend.getEmail().equals(c.getString(RawContactDataQuery.COLUMN_EMAIL_ADDRESS))) {
+                        Log.i(TAG, "updating email to '" + friend.getEmail() + "'");
                         values.put(Email.CONTENT_ITEM_TYPE, friend.getEmail());
                     }
                 }
@@ -250,6 +260,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
                 if ( values.size() > 0) {
                     ContentProviderOperation.Builder op = ContentProviderOperation.newUpdate(uri);
                     op.withValues(values);
+                    Log.i(TAG, "updating " + values.size() + " values; building op");
                     ops.add(op.build());
                 }
             }
@@ -260,7 +271,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
     }
     
     private static class RawContactDataQuery {
-        final static String[] PROJECTION = new String[] { Data._ID, Data.MIMETYPE, Data.DATA1, Data.DATA2, Data.DATA3 };
+        final static String[] PROJECTION = new String[] { Data._ID, Data.MIMETYPE, Data.DATA1, Data.DATA2, Data.DATA3, Data.RAW_CONTACT_ID };
         final static String SELECTION = Data.RAW_CONTACT_ID + "=?";
 
         final static int COLUMN_ID = 0;
