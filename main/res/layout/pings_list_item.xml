@@ -37,6 +37,12 @@
       android:layout_height="fill_parent"
       android:textAppearance="@style/TextViewStylePingsOther"
       />
+    
+    <TextView android:id="@+id/text3"
+      android:layout_width="wrap_content"
+      android:layout_height="fill_parent"
+      android:textAppearance="@style/TextViewStylePingsOther"
+      />
       
   </LinearLayout>
   

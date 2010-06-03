@@ -25,6 +25,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -148,21 +149,22 @@ public class PingsService extends WakefulIntentService {
                 
                 // Check against date times.
                 try {
-                    Date date = StringFormatters.DATE_FORMAT.parse(it.getCreated()); 
+                    Date dateCheckin = StringFormatters.DATE_FORMAT.parse(it.getCreated()); 
 
                     if (DEBUG) {
                         Log.d(TAG, "  Comaring date times for checkin.");
                         Log.d(TAG, "    Last run time: " + dateLast.toLocaleString());
-                        Log.d(TAG, "    Checkin time:  " + date.toLocaleString());
+                        Log.d(TAG, "    Checkin time:  " + dateCheckin.toLocaleString());
                     }
                     
-                    if (date.after(dateLast)) {
+                    if (dateCheckin.after(dateLast)) {
                         if (DEBUG) Log.d(TAG, "  Checkin is younger than our last run time, passes all tests!!");
                         newCheckins.add(it);
                     } else {
                         if (DEBUG) Log.d(TAG, "  Checkin is older than last run time.");
                     }
                 } catch (ParseException ex) {
+                    if (DEBUG) Log.e(TAG, "  Error parsing checkin timestamp: " + it.getCreated(), ex);
                 }
             }
 
@@ -209,9 +211,19 @@ public class PingsService extends WakefulIntentService {
         PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, FriendsActivity.class), 0); 
         int nextNotificationId = 0;
         for (Checkin it : newCheckins) {
+            
+            String checkinMsgLine1 = StringFormatters.getCheckinMessageLine1(it, true);
+            String checkinMsgLine2 = StringFormatters.getCheckinMessageLine2(it);
+            String checkinMsgLine3 = StringFormatters.getCheckinMessageLine3(it);
+            
             RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.pings_list_item);
-            contentView.setTextViewText(R.id.text1, StringFormatters.getPingMessageTitle(it));
-            contentView.setTextViewText(R.id.text2, StringFormatters.getPingMessageInfo(it));
+            contentView.setTextViewText(R.id.text1, checkinMsgLine1);
+            if (!TextUtils.isEmpty(checkinMsgLine2)) {
+                contentView.setTextViewText(R.id.text2, checkinMsgLine2);
+                contentView.setTextViewText(R.id.text3, checkinMsgLine3);
+            } else {
+                contentView.setTextViewText(R.id.text2, checkinMsgLine3);
+            }
             
             Notification notification = new Notification(
                     R.drawable.icon, 
@@ -276,7 +288,7 @@ public class PingsService extends WakefulIntentService {
     }
     
     public static void cancelPings(Context context) {
-        AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE); 
+        AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         mgr.cancel(makePendingIntentAlarm(context));
     }
     

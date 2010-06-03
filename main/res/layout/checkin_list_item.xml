@@ -41,24 +41,14 @@
       android:maxLines="1"
       android:ellipsize="end" />
     
-    <!-- Address, if present. -->
+    <!-- Shout if available, otherwise venue address, hidden if both are unavailable. -->
     <TextView
       android:id="@+id/secondLine"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textAppearance="@style/TextViewStyleCheckinListItemLineAddress"
-      android:maxLines="1"
-      android:scrollHorizontally="true"
-      android:ellipsize="end" />
+      android:paddingRight="3dip" />
 
-    <!-- Shout, if present. -->
-    <TextView
-      android:id="@+id/shoutTextView"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:paddingRight="3dip"
-      android:textAppearance="@style/TextViewStyleCheckinListItemLineShout" />
-    
     <!-- Timestamp. -->
     <TextView
       android:id="@+id/timeTextView"

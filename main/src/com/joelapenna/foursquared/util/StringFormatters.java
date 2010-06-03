@@ -49,17 +49,47 @@ public class StringFormatters {
         }
     }
 
-    public static String getCheckinMessage(Checkin checkin, boolean displayAtVenue) {
+    public static String getCheckinMessageLine1(Checkin checkin, boolean displayAtVenue) {
         if (checkin.getDisplay() != null) {
             return checkin.getDisplay();
 
         } else {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append(getUserAbbreviatedName(checkin.getUser()));
             if (checkin.getVenue() != null && displayAtVenue) {
                 sb.append(" @ " + checkin.getVenue().getName());
             }
             return sb.toString();
+        }
+    }
+    
+    public static String getCheckinMessageLine2(Checkin checkin) {
+        if (TextUtils.isEmpty(checkin.getShout()) == false) {
+            return checkin.getShout();
+        } else {
+            // No shout, show address instead.
+            if (checkin.getVenue() != null && checkin.getVenue().getAddress() != null) {
+                String address = checkin.getVenue().getAddress();
+                if (checkin.getVenue().getCrossstreet() != null
+                        && checkin.getVenue().getCrossstreet().length() > 0) {
+                    address += " (" + checkin.getVenue().getCrossstreet() + ")";
+                }
+                return address;
+            } else {
+                return "";
+            }
+        }
+    }
+    
+    public static String getCheckinMessageLine3(Checkin checkin) {
+        if (!TextUtils.isEmpty(checkin.getCreated())) {
+            try {
+                return getTodayTimeString(checkin.getCreated());
+            } catch (Exception ex) {
+                return checkin.getCreated();
+            }
+        } else {
+            return "";
         }
     }
 
@@ -128,47 +158,5 @@ public class StringFormatters {
         } catch (ParseException e) {
             return created;
         }
-    }
-    
-    public static String getPingMessageTitle(Checkin checkin) {
-        StringBuilder sb = new StringBuilder(1024);
-        sb.append(getUserAbbreviatedName(checkin.getUser()));
-        if (checkin.getVenue() != null) {
-            sb.append(checkin.getDisplay());
-        } else if (checkin.getShout() != null) {
-            sb.append(" shouted: '");
-            sb.append(checkin.getShout());
-            sb.append("'");
-        }
-        
-        return sb.toString();
-    }
-    
-    public static String getPingMessageInfo(Checkin checkin) {
-        String time = getTodayTimeString(checkin.getCreated());
-        
-        StringBuilder sb = new StringBuilder(1024);
-        if (checkin.getVenue() != null) {
-            if (checkin.getVenue().getCrossstreet() != null) {
-                sb.append("(");
-                sb.append(checkin.getVenue().getCrossstreet());
-                sb.append(") ");
-            }
-            sb.append("at ");
-            sb.append(time);
-            if (checkin.getVenue().getCheckins() != null &&
-                    checkin.getVenue().getCheckins().size() > 2) {
-                sb.append(" (w/");
-                sb.append(checkin.getVenue().getCheckins().size());
-                sb.append(" others)");
-            }
-            sb.append(".");
-        } else {
-            sb.append("at ");
-            sb.append(time);
-            sb.append(".");
-        }
-        
-        return sb.toString();
     }
 }

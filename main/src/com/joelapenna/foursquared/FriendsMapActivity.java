@@ -222,7 +222,7 @@ public class FriendsMapActivity extends MapActivity {
             Checkin checkin = item.getCheckin();
             mTappedVenue = checkin.getVenue();
             if (DEBUG) Log.d(TAG, "onTap: " + checkin.getVenue().getName());
-            mCheckinButton.setText(StringFormatters.getCheckinMessage(checkin, true));
+            mCheckinButton.setText(StringFormatters.getCheckinMessageLine1(checkin, true));
             mCheckinButton.setVisibility(View.VISIBLE);
             return true;
         }
