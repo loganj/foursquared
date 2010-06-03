@@ -30,7 +30,6 @@ import android.widget.RemoteViews;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -68,7 +67,6 @@ public class PingsService extends WakefulIntentService {
     private static final boolean DEBUG = true;
     private static final String SHARED_PREFS_NAME = "SharedPrefsPingsService";
     private static final String SHARED_PREFS_KEY_LAST_RUN_TIME = "SharedPrefsKeyLastRunTime";
-    private static final int MAX_AGE_CHECKINS_IN_MINUTES = 20;
 
     private SharedPreferences mSharedPrefs;
   
@@ -130,22 +128,13 @@ public class PingsService extends WakefulIntentService {
             long lastRunTime = mSharedPrefs.getLong(SHARED_PREFS_KEY_LAST_RUN_TIME, 0L);
             Date dateLast = new Date(lastRunTime);
             
-            // Don't accept any checkins that are older than some reasonable threshold.
-            // For example, if our interval is 2 hours, we may not really want to show
-            // checkins that are 1.9 hours hold, it just doesn't really make sense. 
-            // We'll have to refine this.
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(new Date());        
-            cal.add(Calendar.MINUTE, -(MAX_AGE_CHECKINS_IN_MINUTES));
-            Date dateRecent = cal.getTime();                  
-
             // Now build the list of 'new' checkins.
             List<Checkin> newCheckins = new ArrayList<Checkin>();
             for (Checkin it : checkins) {
                 
                 if (DEBUG) Log.d(TAG, "Checking checkin of " + it.getUser().getFirstname());
                 
-                // Ignore ourselves.
+                // Ignore ourselves. The server should handle this by setting the pings flag off but..
                 if (it.getUser() != null && it.getUser().getId().equals(foursquared.getUserId())) {
                     if (DEBUG) Log.d(TAG, "  Ignoring checkin of ourselves.");
                     continue;
@@ -164,18 +153,12 @@ public class PingsService extends WakefulIntentService {
                     if (DEBUG) {
                         Log.d(TAG, "  Comaring date times for checkin.");
                         Log.d(TAG, "    Last run time: " + dateLast.toLocaleString());
-                        Log.d(TAG, "    Recent time:   " + dateRecent.toLocaleString());
                         Log.d(TAG, "    Checkin time:  " + date.toLocaleString());
                     }
                     
                     if (date.after(dateLast)) {
-                        if (DEBUG) Log.d(TAG, "  Checkin is younger than our last run time...");
-                        if (date.after(dateRecent)) {
-                            if (DEBUG) Log.d(TAG, "  Checkin is younger than 'recent' threshold, passes all tests!");
-                            newCheckins.add(it);
-                        } else {
-                            if (DEBUG) Log.d(TAG, "  Checkin is older than 'recent' threshold.");
-                        }
+                        if (DEBUG) Log.d(TAG, "  Checkin is younger than our last run time, passes all tests!!");
+                        newCheckins.add(it);
                     } else {
                         if (DEBUG) Log.d(TAG, "  Checkin is older than last run time.");
                     }
@@ -278,6 +261,12 @@ public class PingsService extends WakefulIntentService {
                         + refreshRateInMinutes + "..");
             }
             
+            // Set the current time as the last run time. Just add 10 seconds difference because the
+            // service doesn't always get started at exactly the interval expected.
+            prefs.edit().putLong(SHARED_PREFS_KEY_LAST_RUN_TIME, 
+                    System.currentTimeMillis() - (60 * 1000 * 10)).commit();
+            
+            // Schedule the alarm.
             AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE); 
             mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 
                              SystemClock.elapsedRealtime() + (refreshRateInMinutes * 60 * 1000), 
