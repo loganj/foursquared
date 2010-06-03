@@ -17,10 +17,12 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.OperationApplicationException;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.RawContacts;
@@ -89,28 +91,31 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         // contacts - friends: need to be deleted
         // intersection: need to be updated
         
-        ArrayList<ContentProviderOperation> opList = new ArrayList<ContentProviderOperation>();
+        ArrayList<ContentProviderOperation> opList = null;
+        int backReference = 0;
         for ( User friend : friends ) {
             long rawContactId = getRawContactId(resolver, friend);
             if ( rawContactId == 0 ) {
                 Log.i(TAG, "adding friend " + friend.getId() + " (" + friend.getFirstname() + " " + friend.getLastname() + ")");
-                opList.addAll(addContact(account, friend));
+                opList = addContact(account, friend, backReference);
             } else {
                 Log.i(TAG, "updating contact " + rawContactId + " for friend " + friend.getFirstname() + " " + friend.getLastname() + ")");
-                 opList.addAll(updateContact(resolver, rawContactId, friend));
+                 opList = updateContact(resolver, rawContactId, friend);
             }
-            
-            // can't do each friend as one go because of backreferences.  I think.
+//            backReference++;
             try {
                 mContentResolver.applyBatch(ContactsContract.AUTHORITY, opList);
             } catch (Exception e) {
                 Log.e(TAG, "Something went wrong during creation! " + e);
                 e.printStackTrace();
             }        
+            
         }
         
         // TODO: just need to do deletes now
         
+
+        // can't do each friend as one go because of backreferences.  I think.
        
         
 
@@ -147,7 +152,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         public final static int COLUMN_ID = 0;
     }
     
-    private List<ContentProviderOperation> addContact(Account account, User friend) {
+    private ArrayList<ContentProviderOperation> addContact(Account account, User friend, int backReference) {
         ArrayList<ContentProviderOperation> opList = new ArrayList<ContentProviderOperation>();
  
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(RawContacts.CONTENT_URI);
@@ -158,7 +163,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         opList.add(builder.build());
         
         builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
-        builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, 0);
+        builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, backReference);
         builder.withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
         builder.withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, friend.getFirstname()+" "+friend.getLastname());
         builder.withValue(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, friend.getFirstname());
@@ -166,19 +171,19 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         opList.add(builder.build());
         
         builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
-        builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, 0);
+        builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, backReference);
         builder.withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
         builder.withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, friend.getPhone());
         opList.add(builder.build());
         
         builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
-        builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, 0);
+        builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, backReference);
         builder.withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
         builder.withValue(ContactsContract.CommonDataKinds.Email.DATA, friend.getEmail());
         opList.add(builder.build());
 
         builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
-        builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, 0);
+        builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, backReference);
         builder.withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
         
         try {
@@ -203,7 +208,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
 
         // create a Data record with custom type to point at Foursquare profile
         builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
-        builder.withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0);
+        builder.withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, backReference);
         builder.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/com.joelapenna.foursquared.profile");
         builder.withValue(ContactsContract.Data.DATA1, friend.getId());
         builder.withValue(ContactsContract.Data.DATA2, "Foursquare Profile");
@@ -214,7 +219,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         
     }
     
-    private List<ContentProviderOperation> updateContact(ContentResolver resolver, long rawContactId, User friend) {
+    private ArrayList<ContentProviderOperation> updateContact(ContentResolver resolver, long rawContactId, User friend) {
         Cursor c = resolver.query(ContactsContract.Data.CONTENT_URI, 
                                   RawContactDataQuery.PROJECTION, 
                                   RawContactDataQuery.SELECTION, 
