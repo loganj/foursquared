@@ -46,12 +46,7 @@ import java.util.List;
  *   <li>We haven't turned pings off for the user. This can be toggled on/off in the
  *       UserDetailsActivity activity, per user.</li>
  *   <li>The checkin is younger than the last time we ran this service.</li>
- *   <li>The checkin is younger than a static threshold in minutes (currently 20 minutes).</li>
  * </ul>
- * 
- * The last criteria (the 20 minute threshold) exists for the higher refresh intervals. If
- * the user is running pings every 2 hours, they probably don't care about a checkin
- * that is 1.9 hours old.
  * 
  * Note that the server might override the pings attribute to 'off' for certain checkins, 
  * usually if the checkin is far away from our current location.
