@@ -5,21 +5,15 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.types.User;
-import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.FeedbackUtils;
-import com.joelapenna.foursquared.util.NotificationsUtil;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.location.Location;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
@@ -29,6 +23,9 @@ import android.util.Log;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
+ * @author Mark Wyszomierski (markww@gmail.com)
+ *    -added notifications settings (May 21, 2010).
+ *    -removed user update, moved to NotificationSettingsActivity (June 2, 2010)
  */
 public class PreferenceActivity extends android.preference.PreferenceActivity {
     private static final String TAG = "PreferenceActivity";
@@ -36,6 +33,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private SharedPreferences mPrefs;
+    
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
@@ -63,24 +61,13 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
             }
         });
     }
-
+    
     @Override
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mLoggedOutReceiver);
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        new UpdateUserTask().execute();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
+    
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         if (DEBUG) Log.d(TAG, "onPreferenceTreeClick");
@@ -112,50 +99,11 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         
         } else if (Preferences.PREFERENCE_CHANGELOG.equals(key)) {
             startActivity(new Intent(this, ChangelogActivity.class));
+            
+        } else if (Preferences.PREFERENCE_PINGS.equals(key)) {
+            startActivity(new Intent(this, PingsSettingsActivity.class));
         }
         
         return true;
-    }
-
-    private class UpdateUserTask extends AsyncTask<Void, Void, User> {
-        private static final String TAG = "UpdateUserTask";
-
-        private static final boolean DEBUG = FoursquaredSettings.DEBUG;
-
-        private Exception mReason;
-
-        @Override
-        protected User doInBackground(Void... params) {
-            if (DEBUG) Log.d(TAG, "doInBackground()");
-            try {
-                Foursquared foursquared = (Foursquared) getApplication();
-                Location location = foursquared.getLastKnownLocation();
-
-                Foursquare foursquare = foursquared.getFoursquare();
-                return foursquare.user(
-                        null, false, false, LocationUtils
-                            .createFoursquareLocation(location));
-
-            } catch (Exception e) {
-                mReason = e;
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(User user) {
-            if (user == null) {
-                NotificationsUtil.ToastReasonForFailure(PreferenceActivity.this, mReason);
-            } else {
-                SharedPreferences prefs = PreferenceManager
-                        .getDefaultSharedPreferences(PreferenceActivity.this);
-                Editor editor = prefs.edit();
-                Preferences.storeUser(editor, user);
-                if (!editor.commit()) {
-                    if (DEBUG) Log.d(TAG, "storeUser commit failed");
-
-                }
-            }
-        }
     }
 }

@@ -32,6 +32,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
@@ -77,7 +78,7 @@ public class FriendsActivity extends LoadableListActivityWithView {
     private SeparatedListAdapter mListAdapter;
     private SearchLocationObserver mSearchLocationObserver = new SearchLocationObserver();
     
-    private ScrollView mLayoutEmpty;
+    private ViewGroup mLayoutEmpty;
 
     
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
@@ -236,9 +237,17 @@ public class FriendsActivity extends LoadableListActivityWithView {
 
         // Prepare our no-results view. Something odd is going on with the layout parameters though.
         // If we don't explicitly set the layout to be fill/fill after inflating, the layout jumps
-        // to a wrap/wrap layout.
-        mLayoutEmpty = (ScrollView)LayoutInflater.from(this).inflate(
-                R.layout.friends_activity_empty, null);
+        // to a wrap/wrap layout. Furthermore, sdk 3 crashes with the original layout using two
+        // buttons in a horizontal LinearLayout.
+        int sdk = new Integer(Build.VERSION.SDK).intValue(); 
+        if (sdk > 3) {
+            mLayoutEmpty = (ScrollView)LayoutInflater.from(this).inflate(
+                    R.layout.friends_activity_empty, null);
+        } else {
+            mLayoutEmpty = (ScrollView)LayoutInflater.from(this).inflate(
+                    R.layout.friends_activity_empty_sdk3, null);
+        }
+        
         mLayoutEmpty.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
         

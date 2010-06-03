@@ -34,6 +34,14 @@
       android:title="@string/preferences_friend_requests_title"
       android:summary="@string/preferences_friend_requests_summary" />
   </PreferenceCategory>
+  
+  <PreferenceCategory
+    android:title="@string/preferences_category_pings">
+    <com.joelapenna.foursquared.preferences.ClickPreference
+      android:key="pings_on"
+      android:title="@string/preferences_pings_title"
+      android:summary="@string/preferences_pings_summary" />
+  </PreferenceCategory>
 
   <PreferenceCategory
     android:title="@string/preferences_other_settings">

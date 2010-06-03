@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+  <!-- Copyright 2010 Mark Wyszomierski -->
+
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  >
+  
+  <ScrollView
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+    
+    <LinearLayout
+     android:orientation="vertical"
+     android:layout_width="fill_parent"
+     android:layout_height="fill_parent"
+     android:paddingTop="8dip"
+     android:paddingLeft="10dip"
+     android:paddingRight="10dip"
+     android:paddingBottom="8dip"
+     > 
+      
+	 <TextView
+	   android:layout_width="fill_parent"
+	   android:layout_height="wrap_content"
+	   android:text="@string/pings_settings_instructions" 
+       android:textAppearance="@android:style/TextAppearance.Small"  />
+	    
+	 <CheckBox 
+	   android:id="@+id/pings_on" 
+	   android:text="@string/pings_settings_on" 
+	   android:layout_width="wrap_content" 
+	   android:layout_height="wrap_content"
+       android:layout_marginTop="15dip"
+       android:textAppearance="@android:style/TextAppearance.Small"  />
+	   
+	 <CheckBox 
+	   android:id="@+id/pings_vibrate" 
+	   android:text="@string/pings_settings_vibrate" 
+	   android:layout_width="wrap_content" 
+	   android:layout_height="wrap_content"
+       android:layout_marginTop="10dip"
+       android:textAppearance="@android:style/TextAppearance.Small"  />
+       
+	 <TextView
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="10dip"
+       android:text="@string/pings_settings_interval"
+       android:textAppearance="@android:style/TextAppearance.Small"  />
+	 <Spinner 
+	   android:id="@+id/pings_interval" 
+	   android:layout_width="fill_parent" 
+	   android:layout_height="wrap_content"
+	   android:prompt="@string/pings_settings_spinner_interval_prompt" />
+
+    </LinearLayout>
+    
+  </ScrollView>
+
+</LinearLayout>

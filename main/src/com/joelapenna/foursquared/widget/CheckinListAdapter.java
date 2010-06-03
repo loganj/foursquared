@@ -85,7 +85,6 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
             holder.photo = (ImageView) convertView.findViewById(R.id.photo);
             holder.firstLine = (TextView) convertView.findViewById(R.id.firstLine);
             holder.secondLine = (TextView) convertView.findViewById(R.id.secondLine);
-            holder.shoutTextView = (TextView) convertView.findViewById(R.id.shoutTextView);
             holder.timeTextView = (TextView) convertView.findViewById(R.id.timeTextView);
 
             convertView.setTag(holder);
@@ -110,39 +109,19 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
             }
         }
 
-        // Always show the checkin message itself, this is server-generated.
-        holder.firstLine.setText(StringFormatters.getCheckinMessage(checkin, true));
-
-        // If we have a shout, we show that in place of the venue address.
-        if (TextUtils.isEmpty(checkin.getShout()) == false) {
-            holder.shoutTextView.setText(checkin.getShout());
-            holder.shoutTextView.setVisibility(View.VISIBLE);
+        String checkinMsgLine1 = StringFormatters.getCheckinMessageLine1(checkin, true);
+        String checkinMsgLine2 = StringFormatters.getCheckinMessageLine2(checkin);
+        String checkinMsgLine3 = StringFormatters.getCheckinMessageLine3(checkin);
+        
+        holder.firstLine.setText(checkinMsgLine1);
+        if (!TextUtils.isEmpty(checkinMsgLine2)) {
+            holder.secondLine.setVisibility(View.VISIBLE);
+            holder.secondLine.setText(checkinMsgLine2);
+        } else {
             holder.secondLine.setVisibility(View.GONE);
-        } else {
-            // No shout, show address instead.
-            holder.shoutTextView.setText("");
-            holder.shoutTextView.setVisibility(View.GONE);
-
-            if (checkin.getVenue() != null && checkin.getVenue().getAddress() != null) {
-                String address = checkin.getVenue().getAddress();
-                if (checkin.getVenue().getCrossstreet() != null
-                        && checkin.getVenue().getCrossstreet().length() > 0) {
-                    address += " (" + checkin.getVenue().getCrossstreet() + ")";
-                }
-                holder.secondLine.setText(address);
-                holder.secondLine.setVisibility(View.VISIBLE);
-            } else {
-                holder.secondLine.setVisibility(View.GONE);
-            }
         }
-
-        String timestamp = mCachedTimestamps.get(checkin.getId());
-        if (timestamp != null) {
-            holder.timeTextView.setText(timestamp);
-        } else {
-            holder.timeTextView.setText(checkin.getCreated());
-        }
-
+        holder.timeTextView.setText(checkinMsgLine3);
+        
         return convertView;
     }
 
@@ -190,7 +169,6 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
         ImageView photo;
         TextView firstLine;
         TextView secondLine;
-        TextView shoutTextView;
         TextView timeTextView;
     }
 }

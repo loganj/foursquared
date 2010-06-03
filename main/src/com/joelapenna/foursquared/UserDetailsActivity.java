@@ -275,6 +275,12 @@ public class UserDetailsActivity extends TabActivity {
     private void populateUiAfterFullUserObjectFetched() {
         populateUi();
 
+        // User object may still be unavailable.
+        User user = mStateHolder.getUser();
+        if (user == null) {
+            return;
+        }
+
         mLayoutProgressBar.setVisibility(View.GONE);
 
         mTabHost.clearAllTabs();

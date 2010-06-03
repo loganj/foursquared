@@ -71,8 +71,6 @@ public class UserFriendsActivity extends LoadableListActivity {
             }
             
             mStateHolder.setUserId(getIntent().getExtras().getString(EXTRA_USER_ID));
-            mStateHolder.setShowAddFriendOptions(getIntent().getBooleanExtra(
-                    EXTRA_SHOW_ADD_FRIEND_OPTIONS, false));
             mStateHolder.startTaskFriends(this, mStateHolder.getUserId());
         }
         
@@ -110,8 +108,7 @@ public class UserFriendsActivity extends LoadableListActivity {
                 User user = (User) parent.getAdapter().getItem(position);
                 Intent intent = new Intent(UserFriendsActivity.this, UserDetailsActivity.class);
                 intent.putExtra(UserDetailsActivity.EXTRA_USER_PARCEL, user);
-                intent.putExtra(UserDetailsActivity.EXTRA_SHOW_ADD_FRIEND_OPTIONS, 
-                    mStateHolder.getShowAddFriendOptions());
+                intent.putExtra(UserDetailsActivity.EXTRA_SHOW_ADD_FRIEND_OPTIONS, true);
                 startActivity(intent);
             }
         });
@@ -210,14 +207,11 @@ public class UserFriendsActivity extends LoadableListActivity {
         private boolean mIsRunningFriendsTask;
         private boolean mFetchedFriendsOnce;
         
-        private boolean mShowAddFriendOptions;
-
         
         public StateHolder() {
             mIsRunningFriendsTask = false;
             mFetchedFriendsOnce = false;
             mFriends = new Group<User>();
-            mShowAddFriendOptions = false;
         }
  
         public String getUserId() {
@@ -236,14 +230,6 @@ public class UserFriendsActivity extends LoadableListActivity {
             mFriends = friends;
         }
         
-        public void setShowAddFriendOptions(boolean showAddFriendOptions) {
-            mShowAddFriendOptions = showAddFriendOptions;
-        }
-        
-        public boolean getShowAddFriendOptions() {
-            return mShowAddFriendOptions;
-        }
-
         public void startTaskFriends(UserFriendsActivity activity,
                                      String userId) {
             mIsRunningFriendsTask = true;

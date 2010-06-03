@@ -146,6 +146,8 @@
   <string name="add_friends_progress_bar_message_find">Searching for friends...</string> 
   <string name="add_friends_progress_bar_message_send_request">Sending friend invitation...</string>
   <string name="add_friends_progress_bar_message_send_invite">Sending invitation...</string>
+  <string name="add_friends_progress_bar_message_pings">Updating pings status...</string>
+  <string name="add_friends_progress_bar_title_pings">Pings</string>
   <string name="add_friends_by_facebook">Find Facebook friends</string>
   <string name="add_friends_request_sent_ok">Friend request sent ok!</string>
   <string name="add_friends_invite_sent_ok">Invite sent ok!</string>
@@ -195,4 +197,23 @@
   <string name="venue_activity_checkin_button">CHECK-IN HERE</string>
   <string name="venue_activity_checkin_button_quick">QUICK CHECK-IN HERE</string>
   <string name="send_invite_button">Invite</string>
-</resources> 
+  <string name="prelaunch_text"></string>
+  <string name="prelaunch_button"></string>
+  <string name="prelaunch_checkbox_dont_show_again"></string>
+  <string name="preferences_category_pings">Pings</string>
+  <string name="preferences_pings_title">Pings</string>
+  <string name="preferences_pings_summary">Check status of friends in the background.</string>
+  <string name="user_actions_activity_action_pings_on">Pings on</string>
+  <string name="user_actions_activity_action_pings_off">Pings off</string>
+  <string name="pings_settings_instructions">Pings run in the background at the interval you choose below. When a friend checks-in nearby, you\'ll see a Foursquare icon appear on your notification bar.\n\nYou can turn pings off per user from their user details page.</string>
+  <string name="pings_settings_on">Enable pings</string>
+  <string name="pings_settings_interval">Set the refresh rate for pings:</string>
+  <string name="pings_settings_vibrate">Vibrate the phone when new pings are received</string>
+  <string name="pings_settings_btn_save_settings">Save Settings</string>
+  <string name="pings_settings_progressbar_title_pings">Pings</string>
+  <string name="pings_settings_progressbar_message_pings">Updating pings settings...</string>
+  <string name="pings_settings_spinner_interval_prompt">Pings Interval</string>
+  <string name="pings_settings_title">Foursquare Pings Settings</string>
+  <string name="pings_settings_progressbar_title_updateuser">Pings Settings</string>
+  <string name="pings_settings_progressbar_message_updateuser">Updating pings settings...</string>
+</resources>  
