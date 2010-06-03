@@ -134,8 +134,7 @@ public class StringFormatters {
         StringBuilder sb = new StringBuilder(1024);
         sb.append(getUserAbbreviatedName(checkin.getUser()));
         if (checkin.getVenue() != null) {
-            sb.append(" @ ");
-            sb.append(checkin.getVenue().getName());
+            sb.append(checkin.getDisplay());
         } else if (checkin.getShout() != null) {
             sb.append(" shouted: '");
             sb.append(checkin.getShout());
