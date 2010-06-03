@@ -14,11 +14,11 @@ import android.content.Intent;
  * @date May 21, 2010
  * @author Mark Wyszomierski (markww@gmail.com)
  */
-public class NotificationsOnAlarmReceiver extends BroadcastReceiver { 
+public class PingsOnAlarmReceiver extends BroadcastReceiver { 
     
     @Override 
     public void onReceive(Context context, Intent intent) { 
         WakefulIntentService.acquireStaticLock(context); 
-        context.startService(new Intent(context, NotificationsService.class)); 
+        context.startService(new Intent(context, PingsService.class)); 
     }
 } 

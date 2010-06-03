@@ -43,9 +43,9 @@ public class Preferences {
     public static final String PREFERENCE_CITY_NAME = "city_name";
     public static final String PREFERENCE_LOGOUT = "logout";
     public static final String PREFERENCE_SEND_FEEDBACK = "send_feedback";
-    public static final String PREFERENCE_NOTIFICATIONS = "notifications_on";
-    public static final String PREFERENCE_NOTIFICATIONS_INTERVAL = "notifications_refresh_interval_in_minutes";
-    public static final String PREFERENCE_NOTIFICATIONS_VIBRATE = "notifications_vibrate";
+    public static final String PREFERENCE_PINGS = "pings_on";
+    public static final String PREFERENCE_PINGS_INTERVAL = "pings_refresh_interval_in_minutes";
+    public static final String PREFERENCE_PINGS_VIBRATE = "pings_vibrate";
 
     // Credentials related preferences
     public static final String PREFERENCE_LOGIN = "phone";
@@ -76,7 +76,7 @@ public class Preferences {
     // User can choose to clear geolocation on each search.
     public static final String PREFERENCE_CACHE_GEOLOCATION_FOR_SEARCHES
         = "cache_geolocation_for_searches";
-
+ 
     // If we're compiled to show the prelaunch activity, flag stating whether to skip
     // showing it on startup.
     public static final String PREFERENCE_SHOW_PRELAUNCH_ACTIVITY = "show_prelaunch_activity";
@@ -97,8 +97,8 @@ public class Preferences {
         if (!preferences.contains(PREFERENCE_SHOW_PRELAUNCH_ACTIVITY)) {
             editor.putBoolean(PREFERENCE_SHOW_PRELAUNCH_ACTIVITY, true);
         }
-        if (!preferences.contains(PREFERENCE_NOTIFICATIONS_INTERVAL)) {
-            editor.putString(PREFERENCE_NOTIFICATIONS_INTERVAL, "30");
+        if (!preferences.contains(PREFERENCE_PINGS_INTERVAL)) {
+            editor.putString(PREFERENCE_PINGS_INTERVAL, "30");
         }
         editor.commit();
     }

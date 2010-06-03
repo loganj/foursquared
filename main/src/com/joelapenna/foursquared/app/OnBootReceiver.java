@@ -21,6 +21,6 @@ public class OnBootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) { 
         // If the user has notifications on, set an alarm every N minutes, where N is their
         // requested refresh rate.
-        NotificationsService.setupNotifications(context);
+        PingsService.setupPings(context);
     }
 }

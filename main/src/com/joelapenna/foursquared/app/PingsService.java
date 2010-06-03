@@ -50,31 +50,31 @@ import java.util.List;
  * </ul>
  * 
  * The last criteria (the 20 minute threshold) exists for the higher refresh intervals. If
- * the user is running notifications every 2 hours, they probably don't care about a checkin
+ * the user is running pings every 2 hours, they probably don't care about a checkin
  * that is 1.9 hours old.
  * 
  * Note that the server might override the pings attribute to 'off' for certain checkins, 
  * usually if the checkin is far away from our current location.
  * 
- * Notifications will not be cleared from the notification bar until a subsequent run can
- * generate at least one new notification. A new batch of notifications will clear all 
- * previous notifications so as to not clutter the notification bar.
+ * Pings will not be cleared from the notification bar until a subsequent run can
+ * generate at least one new ping. A new batch of pings will clear all 
+ * previous pings so as to not clutter the notification bar.
  * 
  * @date May 21, 2010
  * @author Mark Wyszomierski (markww@gmail.com)
  */
-public class NotificationsService extends WakefulIntentService { 
-    public static final String TAG = "NotificationsService";
+public class PingsService extends WakefulIntentService { 
+    public static final String TAG = "PingsService";
     private static final boolean DEBUG = true;
-    private static final String SHARED_PREFS_NAME = "SharedPrefsNotificationsService";
+    private static final String SHARED_PREFS_NAME = "SharedPrefsPingsService";
     private static final String SHARED_PREFS_KEY_LAST_RUN_TIME = "SharedPrefsKeyLastRunTime";
     private static final int MAX_AGE_CHECKINS_IN_MINUTES = 20;
 
     private SharedPreferences mSharedPrefs;
   
     
-    public NotificationsService() { 
-        super("NotificationsService"); 
+    public PingsService() { 
+        super("PingsService"); 
     }
     
     @Override
@@ -95,16 +95,16 @@ public class NotificationsService extends WakefulIntentService {
             return;
         }
         
-        // Before running, make sure the user still wants notifications on.
-        // For example, the user could have turned notifications on from
+        // Before running, make sure the user still wants pings on.
+        // For example, the user could have turned pings on from
         // this device, but then turned it off on a second device. This 
         // service would continue running then, continuing to notify the
         // user.
-        if (!checkUserStillWantsNotifications(foursquared.getUserId(), foursquare)) {
+        if (!checkUserStillWantsPings(foursquared.getUserId(), foursquare)) {
             // Turn off locally.
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            prefs.edit().putBoolean(Preferences.PREFERENCE_NOTIFICATIONS, false).commit();
-            cancelNotifications(this);
+            prefs.edit().putBoolean(Preferences.PREFERENCE_PINGS, false).commit();
+            cancelPings(this);
             return;
         }
 
@@ -116,15 +116,15 @@ public class NotificationsService extends WakefulIntentService {
                 checkins = foursquare.checkins(
                     LocationUtils.createFoursquareLocation(location));
             } catch (Exception ex) {
-                Log.e(TAG, "Error getting checkins in notifications service.", ex);
+                Log.e(TAG, "Error getting checkins in pings service.", ex);
             }
         } else {
-            Log.e(TAG, "Could not find location in notifications service, cannot proceed.");
+            Log.e(TAG, "Could not find location in pings service, cannot proceed.");
         }
         
         if (checkins != null) {
             
-            if (DEBUG) Log.e(TAG, "Checking " + checkins.size() + " checkins for notifications.");
+            if (DEBUG) Log.e(TAG, "Checking " + checkins.size() + " checkins for pings.");
             
             // Don't accept any checkins that are older than the last time we ran.
             long lastRunTime = mSharedPrefs.getLong(SHARED_PREFS_KEY_LAST_RUN_TIME, 0L);
@@ -151,7 +151,7 @@ public class NotificationsService extends WakefulIntentService {
                     continue;
                 }
                 
-                // Check that our user wanted to see notifications from this user.
+                // Check that our user wanted to see pings from this user.
                 if (!it.getPing()) {
                     if (DEBUG) Log.d(TAG, "  Pings are off for this user.");
                     continue;
@@ -210,25 +210,25 @@ public class NotificationsService extends WakefulIntentService {
     private void notifyUser(List<Checkin> newCheckins) {
         
         // If we have no new checkins to show, nothing to do. We would also be leaving the
-        // previous batch of notifications alive (if any) which is ok.
+        // previous batch of pings alive (if any) which is ok.
         if (newCheckins.size() < 1) {
             return;
         }
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean vibrate = prefs.getBoolean(Preferences.PREFERENCE_NOTIFICATIONS_VIBRATE, false);
+        boolean vibrate = prefs.getBoolean(Preferences.PREFERENCE_PINGS_VIBRATE, false);
         boolean vibratedOnce = false;
         
-        // Clear all previous notifications before showing new ones.
+        // Clear all previous pings before showing new ones.
         NotificationManager mgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE); 
         mgr.cancelAll();
         
         PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, FriendsActivity.class), 0); 
         int nextNotificationId = 0;
         for (Checkin it : newCheckins) {
-            RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.notification_list_item);
-            contentView.setTextViewText(R.id.text1, StringFormatters.getNotificationMessageTitle(it));
-            contentView.setTextViewText(R.id.text2, StringFormatters.getNotificationMessageInfo(it));
+            RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.pings_list_item);
+            contentView.setTextViewText(R.id.text1, StringFormatters.getPingMessageTitle(it));
+            contentView.setTextViewText(R.id.text2, StringFormatters.getPingMessageInfo(it));
             
             Notification notification = new Notification(
                     R.drawable.icon, 
@@ -245,7 +245,7 @@ public class NotificationsService extends WakefulIntentService {
         }
     }
     
-    private boolean checkUserStillWantsNotifications(String userId, Foursquare foursquare) {
+    private boolean checkUserStillWantsPings(String userId, Foursquare foursquare) {
         try {
             User user = foursquare.user(userId, false, false, null);
             if (user != null) {
@@ -258,23 +258,23 @@ public class NotificationsService extends WakefulIntentService {
         return true;
     }
     
-    public static void setupNotifications(Context context) {
+    public static void setupPings(Context context) {
 
-        // If the user has notifications on, set an alarm every N minutes, where N is their
+        // If the user has pings on, set an alarm every N minutes, where N is their
         // requested refresh rate. We default to 30 if some problem reading set interval.
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if (prefs.getBoolean(Preferences.PREFERENCE_NOTIFICATIONS, false)) {
+        if (prefs.getBoolean(Preferences.PREFERENCE_PINGS, false)) {
 
             int refreshRateInMinutes = 30;
             try {
                 refreshRateInMinutes = Integer.parseInt(prefs.getString(
-                        Preferences.PREFERENCE_NOTIFICATIONS_INTERVAL, String.valueOf(refreshRateInMinutes)));
+                        Preferences.PREFERENCE_PINGS_INTERVAL, String.valueOf(refreshRateInMinutes)));
             } catch (NumberFormatException ex) {
-                Log.e(TAG, "Error parsing notification interval time, defaulting to: " + refreshRateInMinutes);
+                Log.e(TAG, "Error parsing pings interval time, defaulting to: " + refreshRateInMinutes);
             }
 
             if (DEBUG) {
-                Log.d(TAG, "User has notifications on, attempting to setup alarm with interval: " 
+                Log.d(TAG, "User has pings on, attempting to setup alarm with interval: " 
                         + refreshRateInMinutes + "..");
             }
             
@@ -286,23 +286,23 @@ public class NotificationsService extends WakefulIntentService {
         }
     }
     
-    public static void cancelNotifications(Context context) {
+    public static void cancelPings(Context context) {
         AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE); 
         mgr.cancel(makePendingIntentAlarm(context));
     }
     
     private static PendingIntent makePendingIntentAlarm(Context context) {
-        return PendingIntent.getBroadcast(context, 0, new Intent(context, NotificationsOnAlarmReceiver.class), 0); 
+        return PendingIntent.getBroadcast(context, 0, new Intent(context, PingsOnAlarmReceiver.class), 0); 
     }
     
-    public static void generateNotificationTest(Context context) {
+    public static void generatePingsTest(Context context) {
         PendingIntent pi = PendingIntent.getActivity(context, 0, new Intent(context, FriendsActivity.class), 0); 
         
         NotificationManager mgr = (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE); 
         
-        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_list_item);
-        contentView.setTextViewText(R.id.text1, "Notification title line");
-        contentView.setTextViewText(R.id.text2, "Notification message line");
+        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.pings_list_item);
+        contentView.setTextViewText(R.id.text1, "Ping title line");
+        contentView.setTextViewText(R.id.text2, "Ping message line");
         
         Notification notification = new Notification(
                 R.drawable.icon, 

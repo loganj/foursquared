@@ -36,11 +36,11 @@
   </PreferenceCategory>
   
   <PreferenceCategory
-    android:title="@string/preferences_category_notifications">
+    android:title="@string/preferences_category_pings">
     <com.joelapenna.foursquared.preferences.ClickPreference
-      android:key="notifications_on"
-      android:title="@string/preferences_notifications_title"
-      android:summary="@string/preferences_notifications_summary" />
+      android:key="pings_on"
+      android:title="@string/preferences_pings_title"
+      android:summary="@string/preferences_pings_summary" />
   </PreferenceCategory>
 
   <PreferenceCategory

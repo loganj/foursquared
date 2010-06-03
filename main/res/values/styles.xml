@@ -265,13 +265,13 @@
     <item name="android:textStyle">bold</item>
   </style>
   
-  <style name="TextViewStyleNotificationTitle">
+  <style name="TextViewStylePingsTitle">
     <item name="android:textSize">13dip</item>
     <item name="android:textColor">@color/black_end</item>
     <item name="android:textStyle">bold</item>
   </style> 
   
-  <style name="TextViewStyleNotificationOther">
+  <style name="TextViewStylePingsOther">
     <item name="android:textSize">13dip</item>
     <item name="android:textColor">@color/black_end</item>
   </style>

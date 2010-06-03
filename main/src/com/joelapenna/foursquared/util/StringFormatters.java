@@ -130,7 +130,7 @@ public class StringFormatters {
         }
     }
     
-    public static String getNotificationMessageTitle(Checkin checkin) {
+    public static String getPingMessageTitle(Checkin checkin) {
         StringBuilder sb = new StringBuilder(1024);
         sb.append(getUserAbbreviatedName(checkin.getUser()));
         if (checkin.getVenue() != null) {
@@ -145,7 +145,7 @@ public class StringFormatters {
         return sb.toString();
     }
     
-    public static String getNotificationMessageInfo(Checkin checkin) {
+    public static String getPingMessageInfo(Checkin checkin) {
         String time = getTodayTimeString(checkin.getCreated());
         
         StringBuilder sb = new StringBuilder(1024);

@@ -100,7 +100,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         } else if (Preferences.PREFERENCE_CHANGELOG.equals(key)) {
             startActivity(new Intent(this, ChangelogActivity.class));
             
-        } else if (Preferences.PREFERENCE_NOTIFICATIONS.equals(key)) {
+        } else if (Preferences.PREFERENCE_PINGS.equals(key)) {
             startActivity(new Intent(this, PingsSettingsActivity.class));
         }
         

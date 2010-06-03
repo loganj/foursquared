@@ -6,7 +6,7 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Settings;
 import com.joelapenna.foursquare.types.User;
-import com.joelapenna.foursquared.app.NotificationsService;
+import com.joelapenna.foursquared.app.PingsService;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
@@ -38,14 +38,14 @@ import android.widget.AdapterView.OnItemSelectedListener;
  * @author Mark Wyszomierski (markww@gmail.com)
  */
 public class PingsSettingsActivity extends Activity {
-    private static final String TAG = "NotificationSettingsActivity";
+    private static final String TAG = "PingsSettingsActivity";
 
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private SharedPreferences mPrefs;
     private StateHolder mStateHolder;
     private ProgressDialog mDlgProgress;
-    private CheckBox mCheckBoxNotifications;
+    private CheckBox mCheckBoxPings;
     private Spinner mSpinnerInterval;
     private CheckBox mCheckBoxVibrate;
     
@@ -63,7 +63,7 @@ public class PingsSettingsActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.pings_settings_activity);
-        setTitle(getResources().getString(R.string.notification_settings_title));
+        setTitle(getResources().getString(R.string.pings_settings_title));
         registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -78,9 +78,9 @@ public class PingsSettingsActivity extends Activity {
             if (mStateHolder.getIsRunningTaskNotifications()) {
                 startProgressBar(
                     getResources().getString(
-                            R.string.notification_settings_progressbar_title_notifications), 
+                            R.string.pings_settings_progressbar_title_pings), 
                     getResources().getString(
-                            R.string.notification_settings_progressbar_message_notifications));
+                            R.string.pings_settings_progressbar_message_pings));
             }
         } else {
             // Get a fresh copy of the user object in an attempt to keep the notification
@@ -91,19 +91,19 @@ public class PingsSettingsActivity extends Activity {
     }
     
     private void ensureUi() {
-        mCheckBoxNotifications = (CheckBox)findViewById(R.id.notifications_on);
-        mCheckBoxNotifications.setChecked(mPrefs.getBoolean(Preferences.PREFERENCE_NOTIFICATIONS, false));
-        mCheckBoxNotifications.setOnClickListener(new OnClickListener() {
+        mCheckBoxPings = (CheckBox)findViewById(R.id.pings_on);
+        mCheckBoxPings.setChecked(mPrefs.getBoolean(Preferences.PREFERENCE_PINGS, false));
+        mCheckBoxPings.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 mStateHolder.startTaskNotifications(
-                        PingsSettingsActivity.this, mCheckBoxNotifications.isChecked());
+                        PingsSettingsActivity.this, mCheckBoxPings.isChecked());
             }
         });
         
-        mSpinnerInterval = (Spinner)findViewById(R.id.notifications_interval);
+        mSpinnerInterval = (Spinner)findViewById(R.id.pings_interval);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this, R.array.notifications_refresh_interval_in_minutes, 
+                this, R.array.pings_refresh_interval_in_minutes, 
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerInterval.setAdapter(adapter);
@@ -111,9 +111,9 @@ public class PingsSettingsActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> adapter, View view, int position, long id) {
                 String[] values = PingsSettingsActivity.this.getResources().getStringArray(
-                        R.array.notifications_refresh_interval_in_minutes_values);
+                        R.array.pings_refresh_interval_in_minutes_values);
                 mPrefs.edit().putString(
-                        Preferences.PREFERENCE_NOTIFICATIONS_INTERVAL, values[position]).commit();
+                        Preferences.PREFERENCE_PINGS_INTERVAL, values[position]).commit();
 
                 restartNotifications();
             }
@@ -124,21 +124,21 @@ public class PingsSettingsActivity extends Activity {
         });
         setIntervalSpinnerFromSettings();
         
-        mCheckBoxVibrate = (CheckBox)findViewById(R.id.notifications_vibrate);
-        mCheckBoxVibrate.setChecked(mPrefs.getBoolean(Preferences.PREFERENCE_NOTIFICATIONS_VIBRATE, false));
+        mCheckBoxVibrate = (CheckBox)findViewById(R.id.pings_vibrate);
+        mCheckBoxVibrate.setChecked(mPrefs.getBoolean(Preferences.PREFERENCE_PINGS_VIBRATE, false));
         mCheckBoxVibrate.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 mPrefs.edit().putBoolean(
-                        Preferences.PREFERENCE_NOTIFICATIONS_VIBRATE, mCheckBoxVibrate.isChecked()).commit();
+                        Preferences.PREFERENCE_PINGS_VIBRATE, mCheckBoxVibrate.isChecked()).commit();
             }
         });
     }
     
     private void setIntervalSpinnerFromSettings() {
-        String selected = mPrefs.getString(Preferences.PREFERENCE_NOTIFICATIONS_INTERVAL, "30");
+        String selected = mPrefs.getString(Preferences.PREFERENCE_PINGS_INTERVAL, "30");
         String[] values = getResources().getStringArray(
-                R.array.notifications_refresh_interval_in_minutes_values);
+                R.array.pings_refresh_interval_in_minutes_values);
         for (int i = 0; i < values.length; i++) {
             if (values[i].equals(selected)) {
                 mSpinnerInterval.setSelection(i);
@@ -167,15 +167,15 @@ public class PingsSettingsActivity extends Activity {
         if (mStateHolder.getIsRunningTaskNotifications()) {
             startProgressBar(
                 getResources().getString(
-                    R.string.notification_settings_progressbar_title_notifications), 
+                    R.string.pings_settings_progressbar_title_pings), 
                 getResources().getString(
-                    R.string.notification_settings_progressbar_message_notifications));
+                    R.string.pings_settings_progressbar_message_pings));
         } else if (mStateHolder.getIsRunningTaskUpdateUser()) {
             startProgressBar(
                     getResources().getString(
-                        R.string.notification_settings_progressbar_title_updateuser), 
+                        R.string.pings_settings_progressbar_title_updateuser), 
                     getResources().getString(
-                        R.string.notification_settings_progressbar_message_updateuser));
+                        R.string.pings_settings_progressbar_message_updateuser));
         }
     }
 
@@ -203,25 +203,25 @@ public class PingsSettingsActivity extends Activity {
         }
     }
 
-    private void onPostTaskNotification(Settings settings, boolean changeToState, Exception reason) {
+    private void onPostTaskPings(Settings settings, boolean changeToState, Exception reason) {
         if (settings == null) {
             NotificationsUtil.ToastReasonForFailure(this, reason);
             
             // Reset the checkbox.
-            mCheckBoxNotifications.setChecked(!changeToState);
+            mCheckBoxPings.setChecked(!changeToState);
             
         } else {
             Toast.makeText(
                     this, 
-                    "Notifications have been turned " + settings.getPings() + "!", 
+                    "Pings have been turned " + settings.getPings() + "!", 
                     Toast.LENGTH_SHORT).show();
             
             if (settings.getPings().equals("on")) {
-                NotificationsService.setupNotifications(this);
-                mPrefs.edit().putBoolean(Preferences.PREFERENCE_NOTIFICATIONS, true).commit();
+                PingsService.setupPings(this);
+                mPrefs.edit().putBoolean(Preferences.PREFERENCE_PINGS, true).commit();
             } else {
-                NotificationsService.cancelNotifications(this);
-                mPrefs.edit().putBoolean(Preferences.PREFERENCE_NOTIFICATIONS, false).commit();
+                PingsService.cancelPings(this);
+                mPrefs.edit().putBoolean(Preferences.PREFERENCE_PINGS, false).commit();
             }
             restartNotifications();
         }
@@ -243,11 +243,11 @@ public class PingsSettingsActivity extends Activity {
             }
     
             if (user.getSettings().getPings().equals("on")) {
-                mCheckBoxNotifications.setChecked(true);
-                mPrefs.edit().putBoolean(Preferences.PREFERENCE_NOTIFICATIONS, true).commit();
+                mCheckBoxPings.setChecked(true);
+                mPrefs.edit().putBoolean(Preferences.PREFERENCE_PINGS, true).commit();
             } else {
-                mCheckBoxNotifications.setChecked(false);
-                mPrefs.edit().putBoolean(Preferences.PREFERENCE_NOTIFICATIONS, false).commit();
+                mCheckBoxPings.setChecked(false);
+                mPrefs.edit().putBoolean(Preferences.PREFERENCE_PINGS, false).commit();
             }
             restartNotifications();
         }
@@ -255,26 +255,26 @@ public class PingsSettingsActivity extends Activity {
         stopProgressBar();
     }
     
-    private static class UpdateNotificationsTask extends AsyncTask<Void, Void, Settings> {
-        private static final String TAG = "UpdateNotificationsTask";
+    private static class UpdatePingsTask extends AsyncTask<Void, Void, Settings> {
+        private static final String TAG = "UpdatePingsTask";
         private static final boolean DEBUG = FoursquaredSettings.DEBUG;
         private Exception mReason;
-        private boolean mNotificationsOn;
+        private boolean mPingsOn;
         private PingsSettingsActivity mActivity;
 
         
-        public UpdateNotificationsTask(PingsSettingsActivity activity, boolean on) {
+        public UpdatePingsTask(PingsSettingsActivity activity, boolean on) {
             mActivity = activity;
-            mNotificationsOn = on;
+            mPingsOn = on;
         }
         
         @Override
         protected void onPreExecute() {
             mActivity.startProgressBar(
                     mActivity.getResources().getString(
-                            R.string.notification_settings_progressbar_title_notifications), 
+                            R.string.pings_settings_progressbar_title_pings), 
                     mActivity.getResources().getString(
-                            R.string.notification_settings_progressbar_message_notifications));
+                            R.string.pings_settings_progressbar_message_pings));
         }
         
         @Override
@@ -283,7 +283,7 @@ public class PingsSettingsActivity extends Activity {
             try {
                 Foursquared foursquared = (Foursquared) mActivity.getApplication();
                 Foursquare foursquare = foursquared.getFoursquare();
-                return foursquare.setpings(mNotificationsOn);
+                return foursquare.setpings(mPingsOn);
 
             } catch (Exception e) {
                 mReason = e;
@@ -294,7 +294,7 @@ public class PingsSettingsActivity extends Activity {
         @Override
         protected void onPostExecute(Settings settings) {
             if (mActivity != null) {
-                mActivity.onPostTaskNotification(settings, mNotificationsOn, mReason); 
+                mActivity.onPostTaskPings(settings, mPingsOn, mReason); 
             }
         }
 
@@ -339,12 +339,12 @@ public class PingsSettingsActivity extends Activity {
     }
     
     private void restartNotifications() {
-        NotificationsService.cancelNotifications(this);
-        NotificationsService.setupNotifications(this);
+        PingsService.cancelPings(this);
+        PingsService.setupPings(this);
     }
     
     private static class StateHolder {
-        private UpdateNotificationsTask mTaskNotifications;
+        private UpdatePingsTask mTaskNotifications;
         private UpdateUserTask mTaskUpdateUser;
         private boolean mIsRunningTaskNotifications;
         private boolean mIsRunningTaskUpdateUser;
@@ -358,7 +358,7 @@ public class PingsSettingsActivity extends Activity {
 
         public void startTaskNotifications(PingsSettingsActivity activity, boolean on) {
             mIsRunningTaskNotifications = true;
-            mTaskNotifications = new UpdateNotificationsTask(activity, on);
+            mTaskNotifications = new UpdatePingsTask(activity, on);
             mTaskNotifications.execute();
         }
 

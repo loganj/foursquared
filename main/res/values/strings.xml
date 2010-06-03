@@ -200,20 +200,20 @@
   <string name="prelaunch_text"></string>
   <string name="prelaunch_button"></string>
   <string name="prelaunch_checkbox_dont_show_again"></string>
-  <string name="preferences_category_notifications">Notifications</string>
-  <string name="preferences_notifications_title">Notifications</string>
-  <string name="preferences_notifications_summary">Check status of friends in the background.</string>
+  <string name="preferences_category_pings">Pings</string>
+  <string name="preferences_pings_title">Pings</string>
+  <string name="preferences_pings_summary">Check status of friends in the background.</string>
   <string name="user_actions_activity_action_pings_on">Pings on</string>
   <string name="user_actions_activity_action_pings_off">Pings off</string>
-  <string name="notification_settings_instructions">Notifications run in the background at the interval you choose below. When a friend checks-in nearby, you\'ll see a Foursquare icon appear on your notification bar.\n\nYou can turn notifications off per user from their user details page.</string>
-  <string name="notification_settings_on">Enable notifications</string>
-  <string name="notification_settings_interval">Set the refresh rate for notifications:</string>
-  <string name="notification_settings_vibrate">Vibrate the phone when new notifications are received</string>
-  <string name="notification_settings_btn_save_settings">Save Settings</string>
-  <string name="notification_settings_progressbar_title_notifications">Notifications</string>
-  <string name="notification_settings_progressbar_message_notifications">Updating notification settings...</string>
-  <string name="notification_settings_spinner_interval_prompt">Notification Interval</string>
-  <string name="notification_settings_title">Foursquare Notification Settings</string>
-  <string name="notification_settings_progressbar_title_updateuser">Notification Settings</string>
-  <string name="notification_settings_progressbar_message_updateuser">Updating notification settings...</string>
-</resources> 
+  <string name="pings_settings_instructions">Pings run in the background at the interval you choose below. When a friend checks-in nearby, you\'ll see a Foursquare icon appear on your notification bar.\n\nYou can turn pings off per user from their user details page.</string>
+  <string name="pings_settings_on">Enable pings</string>
+  <string name="pings_settings_interval">Set the refresh rate for pings:</string>
+  <string name="pings_settings_vibrate">Vibrate the phone when new pings are received</string>
+  <string name="pings_settings_btn_save_settings">Save Settings</string>
+  <string name="pings_settings_progressbar_title_pings">Pings</string>
+  <string name="pings_settings_progressbar_message_pings">Updating pings settings...</string>
+  <string name="pings_settings_spinner_interval_prompt">Pings Interval</string>
+  <string name="pings_settings_title">Foursquare Pings Settings</string>
+  <string name="pings_settings_progressbar_title_updateuser">Pings Settings</string>
+  <string name="pings_settings_progressbar_message_updateuser">Updating pings settings...</string>
+</resources>  

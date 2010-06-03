@@ -2,7 +2,7 @@
 <manifest
   xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.joelapenna.foursquared"
-  android:versionName="2010-06-01" android:versionCode="2010060100">
+  android:versionName="2010-06-02" android:versionCode="2010060200">
 
   <uses-permission
     android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -407,12 +407,11 @@
       </intent-filter> 
     </receiver> 
     
-    <receiver android:name=".app.NotificationsOnAlarmReceiver"> 
+    <receiver android:name=".app.PingsOnAlarmReceiver"> 
     </receiver>  
     
-    <service android:name=".app.NotificationsService"> 
+    <service android:name=".app.PingsService"> 
     </service> 
-    
 
   </application>
 </manifest>
