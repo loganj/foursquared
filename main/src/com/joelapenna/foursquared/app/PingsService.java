@@ -9,6 +9,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.FriendsActivity;
+import com.joelapenna.foursquared.MainActivity;
 import com.joelapenna.foursquared.R;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
@@ -61,6 +62,7 @@ import java.util.List;
 public class PingsService extends WakefulIntentService { 
     public static final String TAG = "PingsService";
     private static final boolean DEBUG = true;
+    public static final int NOTIFICATION_ID_CHECKINS = 15;
     private static final String SHARED_PREFS_NAME = "SharedPrefsPingsService";
     private static final String SHARED_PREFS_KEY_LAST_RUN_TIME = "SharedPrefsKeyLastRunTime";
 
@@ -127,7 +129,7 @@ public class PingsService extends WakefulIntentService {
             // Now build the list of 'new' checkins.
             List<Checkin> newCheckins = new ArrayList<Checkin>();
             for (Checkin it : checkins) {
-                
+                 
                 if (DEBUG) Log.d(TAG, "Checking checkin of " + it.getUser().getFirstname());
                 
                 // Ignore ourselves. The server should handle this by setting the pings flag off but..
@@ -196,43 +198,62 @@ public class PingsService extends WakefulIntentService {
         }
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean vibrate = prefs.getBoolean(Preferences.PREFERENCE_PINGS_VIBRATE, false);
-        boolean vibratedOnce = false;
         
-        // Clear all previous pings before showing new ones.
+        // Clear all previous pings notifications before showing new ones.
         NotificationManager mgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE); 
         mgr.cancelAll();
-        
-        PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, FriendsActivity.class), 0); 
-        int nextNotificationId = 0;
-        for (Checkin it : newCheckins) {
+
+        // We'll only ever show a single entry, so we collapse data depending on how many
+        // new checkins we received on this refresh.
+        RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.pings_list_item);
+        if (newCheckins.size() == 1) {
+            // A single checkin, show full checkin preview.
+            Checkin checkin = newCheckins.get(0);
+            String checkinMsgLine1 = StringFormatters.getCheckinMessageLine1(checkin, true);
+            String checkinMsgLine2 = StringFormatters.getCheckinMessageLine2(checkin);
+            String checkinMsgLine3 = StringFormatters.getCheckinMessageLine3(checkin);
             
-            String checkinMsgLine1 = StringFormatters.getCheckinMessageLine1(it, true);
-            String checkinMsgLine2 = StringFormatters.getCheckinMessageLine2(it);
-            String checkinMsgLine3 = StringFormatters.getCheckinMessageLine3(it);
-            
-            RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.pings_list_item);
             contentView.setTextViewText(R.id.text1, checkinMsgLine1);
             if (!TextUtils.isEmpty(checkinMsgLine2)) {
                 contentView.setTextViewText(R.id.text2, checkinMsgLine2);
                 contentView.setTextViewText(R.id.text3, checkinMsgLine3);
             } else {
                 contentView.setTextViewText(R.id.text2, checkinMsgLine3);
+            } 
+        } else {
+            // More than one new checkin, collapse them.
+            String checkinMsgLine1 = newCheckins.size() + " new Foursquare checkins!";
+            StringBuilder sbCheckinMsgLine2 = new StringBuilder(1024);
+            for (Checkin it : newCheckins) {
+                sbCheckinMsgLine2.append(StringFormatters.getUserAbbreviatedName(it.getUser()));
+                sbCheckinMsgLine2.append(", ");
             }
-            
-            Notification notification = new Notification(
-                    R.drawable.icon, 
-                    "Foursquare Checkin", 
-                    System.currentTimeMillis()); 
-            notification.contentView = contentView;
-            notification.contentIntent = pi;
-            notification.flags |= Notification.FLAG_AUTO_CANCEL;
-            if (vibrate && !vibratedOnce) {
-                notification.defaults |= Notification.DEFAULT_VIBRATE;
-                vibratedOnce = true;
-            }
-            mgr.notify(nextNotificationId++, notification);
+            if (sbCheckinMsgLine2.length() > 0) {
+                sbCheckinMsgLine2.delete(sbCheckinMsgLine2.length()-2, sbCheckinMsgLine2.length());
+            } 
+            String checkinMsgLine3 = "at " + StringFormatters.DATE_FORMAT_TODAY.format(new Date());
+
+            contentView.setTextViewText(R.id.text1, checkinMsgLine1);
+            contentView.setTextViewText(R.id.text2, sbCheckinMsgLine2.toString());
+            contentView.setTextViewText(R.id.text3, checkinMsgLine3);
         }
+        
+        PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, FriendsActivity.class), 0); 
+        Notification notification = new Notification(
+                R.drawable.notification_icon, 
+                "Foursquare Checkin", 
+                System.currentTimeMillis()); 
+        notification.contentView = contentView;
+        notification.contentIntent = pi;
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        if (prefs.getBoolean(Preferences.PREFERENCE_PINGS_VIBRATE, false)) {
+            notification.defaults |= Notification.DEFAULT_VIBRATE;
+        }
+        if (newCheckins.size() > 1) {
+            notification.number = newCheckins.size();
+        }
+        
+        mgr.notify(NOTIFICATION_ID_CHECKINS, notification);
     }
     
     private boolean checkUserStillWantsPings(String userId, Foursquare foursquare) {
@@ -286,27 +307,36 @@ public class PingsService extends WakefulIntentService {
         AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         mgr.cancel(makePendingIntentAlarm(context));
     }
-    
+     
     private static PendingIntent makePendingIntentAlarm(Context context) {
         return PendingIntent.getBroadcast(context, 0, new Intent(context, PingsOnAlarmReceiver.class), 0); 
     }
+     
+    public static void clearAllNotifications(Context context) {
+        NotificationManager mgr = (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE); 
+        mgr.cancelAll();
+    }
     
     public static void generatePingsTest(Context context) {
-        PendingIntent pi = PendingIntent.getActivity(context, 0, new Intent(context, FriendsActivity.class), 0); 
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pi = PendingIntent.getActivity(context, 0, intent, 0); 
         
         NotificationManager mgr = (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE); 
-        
+         
         RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.pings_list_item);
         contentView.setTextViewText(R.id.text1, "Ping title line");
         contentView.setTextViewText(R.id.text2, "Ping message line");
+        contentView.setTextViewText(R.id.text3, "Ping message line");
         
         Notification notification = new Notification(
-                R.drawable.icon, 
+                R.drawable.notification_icon, 
                 "Foursquare Checkin", 
                 System.currentTimeMillis()); 
         notification.contentView = contentView;
         notification.contentIntent = pi;
         notification.defaults |= Notification.DEFAULT_VIBRATE;
-        mgr.notify(-1, notification);
+        mgr.notify(-1, notification); 
     }
 }
