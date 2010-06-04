@@ -91,36 +91,23 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         // contacts - friends: need to be deleted
         // intersection: need to be updated
         
-        ArrayList<ContentProviderOperation> opList = null;
-        int backReference = 0;
+        ArrayList<ContentProviderOperation> opList = new ArrayList<ContentProviderOperation>();
         for ( User friend : friends ) {
             long rawContactId = getRawContactId(resolver, friend);
             if ( rawContactId == 0 ) {
                 Log.i(TAG, "adding friend " + friend.getId() + " (" + friend.getFirstname() + " " + friend.getLastname() + ")");
-                opList = addContact(account, friend, backReference);
+                opList.addAll(addContact(account, friend, opList.size()));
             } else {
                 Log.i(TAG, "updating contact " + rawContactId + " for friend " + friend.getFirstname() + " " + friend.getLastname() + ")");
-                 opList = updateContact(resolver, rawContactId, friend);
+                 opList.addAll(updateContact(resolver, rawContactId, friend));
             }
-//            backReference++;
-            try {
-                mContentResolver.applyBatch(ContactsContract.AUTHORITY, opList);
-            } catch (Exception e) {
-                Log.e(TAG, "Something went wrong during creation! " + e);
-                e.printStackTrace();
-            }        
-            
         }
-        
-        // TODO: just need to do deletes now
-        
-
-        // can't do each friend as one go because of backreferences.  I think.
-       
-        
-
-        // friends - contacts: need to be added
-        
+        try {
+            mContentResolver.applyBatch(ContactsContract.AUTHORITY, opList);
+        } catch (Exception e) {
+            Log.e(TAG, "Something went wrong during creation! " + e);
+            e.printStackTrace();
+        }        
     }
     
     /**
