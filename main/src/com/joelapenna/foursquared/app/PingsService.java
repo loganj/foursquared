@@ -270,7 +270,7 @@ public class PingsService extends WakefulIntentService {
     }
     
     public static void setupPings(Context context) {
-        
+
         // If the user has pings on, set an alarm every N minutes, where N is their
         // requested refresh rate. We default to 30 if some problem reading set interval.
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);

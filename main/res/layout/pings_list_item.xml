@@ -16,7 +16,7 @@
     android:layout_width="26dip"
     android:layout_height="26dip"
     android:layout_marginRight="8dip"
-    android:src="@drawable/icon"
+    android:src="@drawable/notification_icon"
     android:scaleType="fitXY" 
     />
     
