@@ -292,7 +292,7 @@ public class PingsService extends WakefulIntentService {
             // Set the current time as the last run time. Just add 10 seconds difference because the
             // service doesn't always get started at exactly the interval expected.
             prefs.edit().putLong(SHARED_PREFS_KEY_LAST_RUN_TIME, 
-                    System.currentTimeMillis() - (60 * 1000 * 10)).commit();
+                    System.currentTimeMillis() - (10 * 1000)).commit();
             
             // Schedule the alarm.
             AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE); 
