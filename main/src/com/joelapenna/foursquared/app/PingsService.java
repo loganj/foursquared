@@ -61,7 +61,7 @@ import java.util.List;
  */
 public class PingsService extends WakefulIntentService { 
     public static final String TAG = "PingsService";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     public static final int NOTIFICATION_ID_CHECKINS = 15;
     private static final String SHARED_PREFS_NAME = "SharedPrefsPingsService";
     private static final String SHARED_PREFS_KEY_LAST_RUN_TIME = "SharedPrefsKeyLastRunTime";
@@ -270,7 +270,7 @@ public class PingsService extends WakefulIntentService {
     }
     
     public static void setupPings(Context context) {
-
+        
         // If the user has pings on, set an alarm every N minutes, where N is their
         // requested refresh rate. We default to 30 if some problem reading set interval.
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -327,8 +327,8 @@ public class PingsService extends WakefulIntentService {
          
         RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.pings_list_item);
         contentView.setTextViewText(R.id.text1, "Ping title line");
-        contentView.setTextViewText(R.id.text2, "Ping message line");
-        contentView.setTextViewText(R.id.text3, "Ping message line");
+        contentView.setTextViewText(R.id.text2, "Ping message line 2");
+        contentView.setTextViewText(R.id.text3, "Ping message line 3");
         
         Notification notification = new Notification(
                 R.drawable.notification_icon, 

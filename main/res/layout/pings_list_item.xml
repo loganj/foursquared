@@ -30,18 +30,26 @@
       android:layout_width="wrap_content"
       android:layout_height="fill_parent"
       android:textAppearance="@style/TextViewStylePingsTitle"
+      android:maxLines="1"
+      android:ellipsize="end" 
       />
       
     <TextView android:id="@+id/text2"
       android:layout_width="wrap_content"
       android:layout_height="fill_parent"
       android:textAppearance="@style/TextViewStylePingsOther"
+      android:maxLines="1"
+      android:ellipsize="end" 
+      android:singleLine="true"
       />
     
     <TextView android:id="@+id/text3"
       android:layout_width="wrap_content"
       android:layout_height="fill_parent"
       android:textAppearance="@style/TextViewStylePingsOther"
+      android:maxLines="1"
+      android:ellipsize="end" 
+      android:singleLine="true"
       />
       
   </LinearLayout>
