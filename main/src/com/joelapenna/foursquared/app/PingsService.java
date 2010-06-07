@@ -63,11 +63,7 @@ public class PingsService extends WakefulIntentService {
     public static final String TAG = "PingsService";
     private static final boolean DEBUG = false;
     public static final int NOTIFICATION_ID_CHECKINS = 15;
-    private static final String SHARED_PREFS_NAME = "SharedPrefsPingsService";
-    private static final String SHARED_PREFS_KEY_LAST_RUN_TIME = "SharedPrefsKeyLastRunTime";
 
-    private SharedPreferences mSharedPrefs;
-  
     
     public PingsService() { 
         super("PingsService"); 
@@ -76,7 +72,6 @@ public class PingsService extends WakefulIntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-        mSharedPrefs = getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE);
     }
     
     @Override
@@ -86,11 +81,12 @@ public class PingsService extends WakefulIntentService {
         // and not leave the app in a logged-out state.
         Foursquared foursquared = (Foursquared) getApplication();
         Foursquare foursquare = foursquared.getFoursquare();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (!foursquared.isReady()) {
             if (DEBUG) Log.d(TAG, "User not logged in, cannot proceed.");
             return;
         }
-        
+
         // Before running, make sure the user still wants pings on.
         // For example, the user could have turned pings on from
         // this device, but then turned it off on a second device. This 
@@ -98,7 +94,6 @@ public class PingsService extends WakefulIntentService {
         // user.
         if (!checkUserStillWantsPings(foursquared.getUserId(), foursquare)) {
             // Turn off locally.
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
             prefs.edit().putBoolean(Preferences.PREFERENCE_PINGS, false).commit();
             cancelPings(this);
             return;
@@ -123,15 +118,16 @@ public class PingsService extends WakefulIntentService {
             if (DEBUG) Log.e(TAG, "Checking " + checkins.size() + " checkins for pings.");
             
             // Don't accept any checkins that are older than the last time we ran.
-            long lastRunTime = mSharedPrefs.getLong(SHARED_PREFS_KEY_LAST_RUN_TIME, 0L);
+            long lastRunTime = prefs.getLong(
+                    Preferences.PREFERENCE_PINGS_SERVICE_LAST_RUN_TIME, System.currentTimeMillis());
             Date dateLast = new Date(lastRunTime);
-            
+              
             // Now build the list of 'new' checkins.
             List<Checkin> newCheckins = new ArrayList<Checkin>();
             for (Checkin it : checkins) {
                  
                 if (DEBUG) Log.d(TAG, "Checking checkin of " + it.getUser().getFirstname());
-                
+                 
                 // Ignore ourselves. The server should handle this by setting the pings flag off but..
                 if (it.getUser() != null && it.getUser().getId().equals(foursquared.getUserId())) {
                     if (DEBUG) Log.d(TAG, "  Ignoring checkin of ourselves.");
@@ -169,7 +165,8 @@ public class PingsService extends WakefulIntentService {
         }
         
         // Record this as the last time we ran.
-        mSharedPrefs.edit().putLong(SHARED_PREFS_KEY_LAST_RUN_TIME, System.currentTimeMillis()).commit();
+        prefs.edit().putLong(
+                Preferences.PREFERENCE_PINGS_SERVICE_LAST_RUN_TIME, System.currentTimeMillis()).commit();
     }
 
     private Location getLastGeolocation() {
@@ -276,24 +273,17 @@ public class PingsService extends WakefulIntentService {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         if (prefs.getBoolean(Preferences.PREFERENCE_PINGS, false)) {
 
-            int refreshRateInMinutes = 30;
-            try {
-                refreshRateInMinutes = Integer.parseInt(prefs.getString(
-                        Preferences.PREFERENCE_PINGS_INTERVAL, String.valueOf(refreshRateInMinutes)));
-            } catch (NumberFormatException ex) {
-                Log.e(TAG, "Error parsing pings interval time, defaulting to: " + refreshRateInMinutes);
-            }
-
+            int refreshRateInMinutes = getRefreshIntervalInMinutes(prefs);
             if (DEBUG) {
                 Log.d(TAG, "User has pings on, attempting to setup alarm with interval: " 
                         + refreshRateInMinutes + "..");
             }
             
-            // Set the current time as the last run time. Just add 10 seconds difference because the
-            // service doesn't always get started at exactly the interval expected.
-            prefs.edit().putLong(SHARED_PREFS_KEY_LAST_RUN_TIME, 
-                    System.currentTimeMillis() - (10 * 1000)).commit();
-            
+            // We want to mark this as the last run time so we don't get any notifications
+            // before the service is started.
+            prefs.edit().putLong(
+                    Preferences.PREFERENCE_PINGS_SERVICE_LAST_RUN_TIME, System.currentTimeMillis()).commit();
+                 
             // Schedule the alarm.
             AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE); 
             mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 
@@ -338,5 +328,17 @@ public class PingsService extends WakefulIntentService {
         notification.contentIntent = pi;
         notification.defaults |= Notification.DEFAULT_VIBRATE;
         mgr.notify(-1, notification); 
+    }
+    
+    private static int getRefreshIntervalInMinutes(SharedPreferences prefs) {
+        int refreshRateInMinutes = 30;
+        try {
+            refreshRateInMinutes = Integer.parseInt(prefs.getString(
+                    Preferences.PREFERENCE_PINGS_INTERVAL, String.valueOf(refreshRateInMinutes)));
+        } catch (NumberFormatException ex) {
+            Log.e(TAG, "Error parsing pings interval time, defaulting to: " + refreshRateInMinutes);
+        }
+        
+        return refreshRateInMinutes;
     }
 }

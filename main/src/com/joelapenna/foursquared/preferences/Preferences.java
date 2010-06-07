@@ -81,6 +81,10 @@ public class Preferences {
     // showing it on startup.
     public static final String PREFERENCE_SHOW_PRELAUNCH_ACTIVITY = "show_prelaunch_activity";
     
+    // Last time pings service ran.
+    public static final String PREFERENCE_PINGS_SERVICE_LAST_RUN_TIME = "pings_service_last_run_time";
+    
+    
     /**
      * Gives us a chance to set some default preferences if this is the first install
      * of the application.
