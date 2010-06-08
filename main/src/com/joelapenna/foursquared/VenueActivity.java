@@ -181,9 +181,16 @@ public class VenueActivity extends TabActivity {
                 showDialog(DIALOG_TIPADD);
                 return true;
             case MENU_CALL:
-                Uri phoneUri = Uri.fromParts("tel", mStateHolder.venue.getPhone(), null);
-                startActivity(new Intent(Intent.ACTION_CALL, phoneUri));
-                // nothing sucka.
+                try {
+                    Intent dial = new Intent();
+                    dial.setAction(Intent.ACTION_DIAL);
+                    dial.setData(Uri.parse("tel:" + mStateHolder.venue.getPhone()));
+                    startActivity(dial);
+                } catch (Exception ex) {
+                    Log.e(TAG, "Error starting phone dialer intent.", ex);
+                    Toast.makeText(this, "Sorry, we couldn't find any app to place a phone call!",
+                            Toast.LENGTH_SHORT).show();
+                }
                 return true;
             case MENU_MYINFO:
                 Intent intentUser = new Intent(VenueActivity.this, UserDetailsActivity.class);
