@@ -124,6 +124,8 @@ public class PingsService extends WakefulIntentService {
             long lastRunTime = prefs.getLong(
                     Preferences.PREFERENCE_PINGS_SERVICE_LAST_RUN_TIME, System.currentTimeMillis());
             Date dateLast = new Date(lastRunTime);
+            
+            Log.i(TAG, "Last service run time: " + dateLast.toLocaleString() + " (" + lastRunTime + ").");
               
             // Now build the list of 'new' checkins.
             List<Checkin> newCheckins = new ArrayList<Checkin>();
@@ -164,6 +166,8 @@ public class PingsService extends WakefulIntentService {
                 }
             }
 
+            Log.i(TAG, "Found " + newCheckins.size() + " new checkins.");
+            
             notifyUser(newCheckins);
         }
         
