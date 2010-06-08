@@ -77,13 +77,15 @@ public class PingsService extends WakefulIntentService {
     @Override
     protected void doWakefulWork(Intent intent) {
         
+        Log.i(TAG, "Foursquare pings service running...");
+        
         // The user must have logged in once previously for this to work,
         // and not leave the app in a logged-out state.
         Foursquared foursquared = (Foursquared) getApplication();
         Foursquare foursquare = foursquared.getFoursquare();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (!foursquared.isReady()) {
-            if (DEBUG) Log.d(TAG, "User not logged in, cannot proceed.");
+            Log.i(TAG, "User not logged in, cannot proceed.");
             return;
         }
 
@@ -94,6 +96,7 @@ public class PingsService extends WakefulIntentService {
         // user.
         if (!checkUserStillWantsPings(foursquared.getUserId(), foursquare)) {
             // Turn off locally.
+            Log.i(TAG, "Pings have been turned off for user, cancelling service.");
             prefs.edit().putBoolean(Preferences.PREFERENCE_PINGS, false).commit();
             cancelPings(this);
             return;
@@ -115,7 +118,7 @@ public class PingsService extends WakefulIntentService {
         
         if (checkins != null) {
             
-            if (DEBUG) Log.e(TAG, "Checking " + checkins.size() + " checkins for pings.");
+            Log.i(TAG, "Checking " + checkins.size() + " checkins for pings.");
             
             // Don't accept any checkins that are older than the last time we ran.
             long lastRunTime = prefs.getLong(
