@@ -216,4 +216,11 @@
   <string name="pings_settings_title">Foursquare Pings Settings</string>
   <string name="pings_settings_progressbar_title_updateuser">Pings Settings</string>
   <string name="pings_settings_progressbar_message_updateuser">Updating pings settings...</string>
+  <string name="edit_venue_options_progress_title">Flag Venue</string>
+  <string name="edit_venue_options_progress_message">Submitting venue flag info...</string>
+  <string name="edit_venue_options_btn_edit_venue">Edit Venue Info</string>
+  <string name="edit_venue_options_btn_flag_as_mislocated">Flag As Mislocated</string>
+  <string name="edit_venue_options_btn_flag_as_duplicate">Flag As Duplicate</string>
+  <string name="edit_venue_options_btn_flag_as_closed">Flag As Closed</string>
+  <string name="edit_venue">Edit Venue</string>
 </resources>  

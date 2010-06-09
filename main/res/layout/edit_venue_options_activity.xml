@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Copyright 2010 Mark Wyszomierski -->
+
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:padding="10dip"
+  android:orientation="vertical"
+  > 
+   
+  <Button
+    android:id="@+id/btnEditVenue"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/edit_venue_options_btn_edit_venue" />
+    
+  <Button
+    android:id="@+id/btnFlagAsClosed"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/edit_venue_options_btn_flag_as_closed" />
+    
+  <Button
+    android:id="@+id/btnFlagAsMislocated"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/edit_venue_options_btn_flag_as_mislocated" />
+    
+  <Button
+    android:id="@+id/btnFlagAsDuplicate"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/edit_venue_options_btn_flag_as_duplicate" />
+    
+</LinearLayout>

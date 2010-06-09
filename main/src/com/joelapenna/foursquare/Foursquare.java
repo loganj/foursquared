@@ -259,6 +259,24 @@ public class Foursquare {
         return mFoursquareV1.setpings(userid, on);
     }
     
+    @V1
+    public Response flagclosed(String venueid) 
+        throws FoursquareException, FoursquareCredentialsException, FoursquareError, IOException {
+        return mFoursquareV1.flagclosed(venueid);
+    }
+
+    @V1
+    public Response flagmislocated(String venueid) 
+        throws FoursquareException, FoursquareCredentialsException, FoursquareError, IOException {
+        return mFoursquareV1.flagmislocated(venueid);
+    }
+
+    @V1
+    public Response flagduplicate(String venueid) 
+        throws FoursquareException, FoursquareCredentialsException, FoursquareError, IOException {
+        return mFoursquareV1.flagduplicate(venueid);
+    }
+    
     public static final FoursquareHttpApiV1 createHttpApi(String domain, String clientVersion,
             boolean useOAuth) {
         LOG.log(Level.INFO, "Using foursquare.com for requests.");

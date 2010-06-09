@@ -62,7 +62,8 @@ public class VenueActivity extends TabActivity {
     private static final int MENU_CHECKIN = 1;
     private static final int MENU_TIPADD = 2;
     private static final int MENU_CALL = 3;
-    private static final int MENU_MYINFO = 4;
+    private static final int MENU_EDIT_VENUE = 4;
+    private static final int MENU_MYINFO = 5;
 
     private static final int RESULT_CODE_ACTIVITY_CHECKIN_EXECUTE = 1;
 
@@ -146,6 +147,9 @@ public class VenueActivity extends TabActivity {
 
         menu.add(Menu.NONE, MENU_CALL, 3, R.string.call).setIcon(android.R.drawable.ic_menu_call);
 
+        menu.add(Menu.NONE, MENU_EDIT_VENUE, 4, R.string.edit_venue).setIcon(
+                android.R.drawable.ic_menu_edit);
+        
         int sdk = new Integer(Build.VERSION.SDK).intValue();
         if (sdk < 4) {
             int menuIcon = UserUtils.getDrawableForMeMenuItemByGender(
@@ -153,7 +157,7 @@ public class VenueActivity extends TabActivity {
             menu.add(Menu.NONE, MENU_MYINFO, Menu.NONE, R.string.myinfo_label) //
                     .setIcon(menuIcon);
         }
-
+        
         MenuUtils.addPreferencesToMenu(this, menu);
 
         return true;
@@ -191,6 +195,11 @@ public class VenueActivity extends TabActivity {
                     Toast.makeText(this, "Sorry, we couldn't find any app to place a phone call!",
                             Toast.LENGTH_SHORT).show();
                 }
+                return true;
+            case MENU_EDIT_VENUE:
+                Intent intentEditVenue = new Intent(this, EditVenueOptionsActivity.class);
+                intentEditVenue.putExtra(EditVenueOptionsActivity.EXTRA_VENUE_ID, mStateHolder.venueId);
+                startActivity(intentEditVenue);
                 return true;
             case MENU_MYINFO:
                 Intent intentUser = new Intent(VenueActivity.this, UserDetailsActivity.class);

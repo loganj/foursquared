@@ -81,6 +81,9 @@ class FoursquareHttpApiV1 {
     private static final String URL_API_FIND_FRIENDS_BY_PHONE_OR_EMAIL = "/findfriends/byphoneoremail";
     private static final String URL_API_INVITE_BY_EMAIL = "/invite/byemail";
     private static final String URL_API_SETPINGS = "/settings/setpings";
+    private static final String URL_API_VENUE_FLAG_CLOSED = "/venue/flagclosed";
+    private static final String URL_API_VENUE_FLAG_MISLOCATED = "/venue/flagmislocated";
+    private static final String URL_API_VENUE_FLAG_DUPLICATE = "/venue/flagduplicate";
     
     private final DefaultHttpClient mHttpClient = AbstractHttpApi.createHttpClient();
     private HttpApi mHttpApi;
@@ -491,6 +494,36 @@ class FoursquareHttpApiV1 {
         HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_SETPINGS), //
                 new BasicNameValuePair(userid, on ? "on" : "off"));
         return (Settings) mHttpApi.doHttpRequest(httpPost, new SettingsParser());
+    }
+    
+    /**
+     * /venue/flagclosed?vid=venueid
+     */
+    public Response flagclosed(String venueid) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
+        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_VENUE_FLAG_CLOSED), //
+                new BasicNameValuePair("vid", venueid));
+        return (Response) mHttpApi.doHttpRequest(httpPost, new ResponseParser());
+    }
+
+    /**
+     * /venue/flagmislocated?vid=venueid
+     */
+    public Response flagmislocated(String venueid) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
+        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_VENUE_FLAG_MISLOCATED), //
+                new BasicNameValuePair("vid", venueid));
+        return (Response) mHttpApi.doHttpRequest(httpPost, new ResponseParser());
+    }
+
+    /**
+     * /venue/flagduplicate?vid=venueid
+     */
+    public Response flagduplicate(String venueid) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
+        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_VENUE_FLAG_DUPLICATE), //
+                new BasicNameValuePair("vid", venueid));
+        return (Response) mHttpApi.doHttpRequest(httpPost, new ResponseParser());
     }
 
     private String fullUrl(String url) {
