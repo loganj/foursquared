@@ -173,12 +173,12 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
+        menu.add(Menu.NONE, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
+                .setIcon(R.drawable.ic_menu_refresh);
         menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.search_label) //
                 .setIcon(R.drawable.ic_menu_search) //
                 .setAlphabeticShortcut(SearchManager.MENU_KEY);
-        menu.add(Menu.NONE, MENU_REFRESH, Menu.NONE, R.string.refresh_label) //
-                .setIcon(R.drawable.ic_menu_refresh);
-        menu.add(Menu.NONE, MENU_ADD_VENUE, Menu.NONE, R.string.add_venue_label) //
+        menu.add(Menu.NONE, MENU_ADD_VENUE, Menu.NONE, R.string.nearby_menu_add_venue) //
                 .setIcon(R.drawable.ic_menu_add);
 
         int sdk = new Integer(Build.VERSION.SDK).intValue();
@@ -197,13 +197,13 @@ public class NearbyVenuesActivity extends LoadableListActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case MENU_REFRESH:
+                mSearchHandler.sendEmptyMessage(SearchHandler.MESSAGE_FORCE_SEARCH);
+                return true;
             case MENU_SEARCH:
                 Intent intent = new Intent(NearbyVenuesActivity.this, SearchVenuesActivity.class);
                 intent.setAction(Intent.ACTION_SEARCH);
                 startActivity(intent);
-                return true;
-            case MENU_REFRESH:
-                mSearchHandler.sendEmptyMessage(SearchHandler.MESSAGE_FORCE_SEARCH);
                 return true;
             case MENU_ADD_VENUE:
                 startActivity(new Intent(NearbyVenuesActivity.this, AddVenueActivity.class));
