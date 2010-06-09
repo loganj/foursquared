@@ -220,7 +220,6 @@ public class EditVenueOptionsActivity extends Activity {
             Foursquared foursquared = (Foursquared) mActivity.getApplication();
             Foursquare foursquare = foursquared.getFoursquare();
             try {
-                Thread.sleep(10000);
                 switch (mAction) {
                     case ACTION_FLAG_AS_CLOSED:
                         return foursquare.flagclosed(mVenueId);

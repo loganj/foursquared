@@ -46,6 +46,10 @@ import android.widget.Toast;
 import java.io.IOException;
 
 /**
+ * Allows the user to add a new venue. This activity can also be used to submit
+ * edits to an existing venue. Pass a venue parcelable using the EXTRA_VENUE_TO_EDIT
+ * key to put the activity into edit mode.
+ *  
  * @author Joe LaPenna (joe@joelapenna.com)
  * @author Mark Wyszomierski (markww@gmail.com)
  *   -Added support for using this activity to edit existing venues (June 8, 2010).
@@ -70,7 +74,7 @@ public class AddVenueActivity extends Activity {
     private EditText mStateEditText;
     private EditText mZipEditText;
     private EditText mPhoneEditText;
-    private Button mAddVenueButton;
+    private Button mAddOrEditVenueButton;
     private LinearLayout mCategoryLayout;
     private ImageView mCategoryImageView;
     private TextView mCategoryTextView;
@@ -91,7 +95,7 @@ public class AddVenueActivity extends Activity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            mAddVenueButton.setEnabled(canEnableSaveButton());
+            mAddOrEditVenueButton.setEnabled(canEnableSaveButton());
         }
     };
 
@@ -111,7 +115,7 @@ public class AddVenueActivity extends Activity {
         setContentView(R.layout.add_venue_activity);
         registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
-        mAddVenueButton = (Button) findViewById(R.id.addVenueButton);
+        mAddOrEditVenueButton = (Button) findViewById(R.id.addVenueButton);
         mNameEditText = (EditText) findViewById(R.id.nameEditText);
         mAddressEditText = (EditText) findViewById(R.id.addressEditText);
         mCrossstreetEditText = (EditText) findViewById(R.id.crossstreetEditText);
@@ -132,7 +136,7 @@ public class AddVenueActivity extends Activity {
         });
         mCategoryLayout.setEnabled(false);
         
-        mAddVenueButton.setOnClickListener(new OnClickListener() {
+        mAddOrEditVenueButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 mStateHolder.startTaskAddOrEditVenue(
@@ -148,6 +152,7 @@ public class AddVenueActivity extends Activity {
                         mStateHolder.getChosenCategory() != null ? 
                                 mStateHolder.getChosenCategory().getId() : ""
                     },
+                    // If editing a venue, pass in its id.
                     mStateHolder.getVenueBeingEdited() != null ? 
                             mStateHolder.getVenueBeingEdited().getId() : null);
             }
@@ -179,7 +184,7 @@ public class AddVenueActivity extends Activity {
                 
                     setTitle(getResources().getString(R.string.add_venue_activity_label_edit_venue));
                     
-                    mAddVenueButton.setText(getResources().getString(
+                    mAddOrEditVenueButton.setText(getResources().getString(
                             R.string.add_venue_activity_btn_submit_edits));
                 } else {
                     Log.e(TAG, "Null venue parcelable supplied at startup, will finish immediately.");
@@ -221,6 +226,10 @@ public class AddVenueActivity extends Activity {
         return mStateHolder;
     }
 
+    /**
+     * Set fields from an address lookup, only used when adding a venue. This is done
+     * to prepopulate some fields for the user.
+     */
     private void setFields(AddressLookup addressLookup) {
         if (mStateHolder.getVenueBeingEdited() == null &&
             addressLookup != null && 
@@ -257,6 +266,9 @@ public class AddVenueActivity extends Activity {
         }
     }
     
+    /**
+     * Set fields from an existing venue, this is only used when editing a venue.
+     */
     private void setFields(Venue venue) {
         mNameEditText.setText(venue.getName());
         mCrossstreetEditText.setText(venue.getCrossstreet());
@@ -300,7 +312,7 @@ public class AddVenueActivity extends Activity {
             if (categories != null) {
                 mStateHolder.setCategories(categories);
                 mCategoryLayout.setEnabled(true);
-                mCategoryTextView.setText("Pick a category");
+                mCategoryTextView.setText(getResources().getString(R.string.add_venue_activity_pick_category_label));
                 mCategoryProgressBar.setVisibility(View.GONE);
                 
                 // If we are editing a venue, set its category here.
@@ -354,7 +366,9 @@ public class AddVenueActivity extends Activity {
         } else {
             if (venue != null) {
                 // Editing the venue worked ok, just return to caller.
-                Toast.makeText(this, "Thank you for submitting your venue edits.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(
+                        R.string.add_venue_activity_edit_venue_success), 
+                        Toast.LENGTH_SHORT).show();
                 finish();
             } else {
                 // Error, let them hang out here.
@@ -376,6 +390,8 @@ public class AddVenueActivity extends Activity {
         private String[] mParams;
         private String mVenueIdIfEditing;
         private Exception mReason;
+        private Foursquared mFoursquared;
+        private String mErrorMsgForEditVenue;
 
         public AddOrEditVenueTask(AddVenueActivity activity, 
                             String[] params,
@@ -383,6 +399,9 @@ public class AddVenueActivity extends Activity {
             mActivity = activity;
             mParams = params;
             mVenueIdIfEditing = venueIdIfEditing;
+            mFoursquared = (Foursquared) activity.getApplication();
+            mErrorMsgForEditVenue = activity.getResources().getString(
+                    R.string.add_venue_activity_edit_venue_fail);
         }
 
         public void setActivity(AddVenueActivity activity) {
@@ -397,9 +416,8 @@ public class AddVenueActivity extends Activity {
         @Override
         protected Venue doInBackground(Void... params) {
             try {
-                Foursquared foursquared = (Foursquared) mActivity.getApplication();
-                Foursquare foursquare = foursquared.getFoursquare();
-                Location location = foursquared.getLastKnownLocationOrThrow();
+                Foursquare foursquare = mFoursquared.getFoursquare();
+                Location location = mFoursquared.getLastKnownLocationOrThrow();
 
                 if (mVenueIdIfEditing == null) {
                     return foursquare.addVenue(
@@ -429,14 +447,14 @@ public class AddVenueActivity extends Activity {
                         // TODO: Come up with a better method than returning an empty venue on success.
                         return new Venue();
                     } else {
-                        throw new Exception(
-                                "There was an error submitting your venue edits, please try again.");
+                        throw new Exception(mErrorMsgForEditVenue);
                     }
                 }
             } catch (Exception e) {
-                if (DEBUG) Log.d(TAG, "Exception during add venue.", e);
+                Log.e(TAG, "Exception during add or edit venue.", e);
                 mReason = e;
             }
+            
             return null;
         }
 
@@ -710,7 +728,8 @@ public class AddVenueActivity extends Activity {
     
     private void setChosenCategory(Category category) {
         if (category == null) {
-            mCategoryTextView.setText("Pick a category");
+            mCategoryTextView.setText(getResources().getString(
+                    R.string.add_venue_activity_pick_category_label));
             return;
         }
         
@@ -729,7 +748,7 @@ public class AddVenueActivity extends Activity {
         mStateHolder.setChosenCategory(category);
         
         if (canEnableSaveButton()) {
-            mAddVenueButton.setEnabled(canEnableSaveButton());
+            mAddOrEditVenueButton.setEnabled(canEnableSaveButton());
         }
     }
     

@@ -153,7 +153,7 @@
           android:ellipsize="marquee"
           android:layout_gravity="center_vertical" 
           android:paddingLeft="9dip" 
-          android:text="Loading categories..." />
+          android:text="@string/add_venue_activity_progress_loading_categories" />
           
         <ProgressBar
           android:id="@+id/addVenueCategoryProgressBar"
@@ -170,7 +170,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:enabled="false"
-        android:text="@string/add_venue_label"
+        android:text="@string/add_venue_activity_btn_add_venue"
         android:layout_marginLeft="5dip"
         android:layout_marginRight="5dip" />
         

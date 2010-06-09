@@ -384,7 +384,8 @@
     </activity> 
     
     <activity
-      android:name=".EditVenueOptionsActivity" >
+      android:name=".EditVenueOptionsActivity"
+      android:label="@string/edit_venue_options_label" >
     </activity> 
     
     <receiver

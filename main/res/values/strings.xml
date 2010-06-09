@@ -9,8 +9,13 @@
   <string name="add_venue_progress_bar_title_edit_venue">Submit Venue Edits</string>
   <string name="add_venue_progress_bar_message_add_venue">Adding venue...</string>
   <string name="add_venue_progress_bar_message_edit_venue">Submitting venue edits...</string>
+  <string name="add_venue_activity_btn_add_venue">Add Venue</string>
   <string name="add_venue_activity_btn_submit_edits">Submit Edits</string>
-  <string name="address">Address</string>
+  <string name="add_venue_activity_edit_venue_success">Thank you for submitting your venue edits.</string>
+  <string name="add_venue_activity_edit_venue_fail">There was an error submitting your venue edits, please try again.</string>
+  <string name="add_venue_activity_pick_category_label">Pick a category</string>
+  <string name="add_venue_activity_progress_loading_categories">Loading categories...</string>
+  <string name="address">Address</string> 
   <string name="app_name">Foursquare</string>
   <string name="badges_header">Badges</string>
   <string name="call">Call</string>
@@ -56,6 +61,7 @@
   <string name="mayor_header">Mayor</string>
   <string name="myinfo_label">My Info</string>
   <string name="nearby_label">Places</string>
+  <string name="nearby_menu_add_venue">Add Venue</string>
   <string name="need_an_account">Need an account?</string>
   <string name="no_checkins_be_the_first">No recent checkins here!</string>
   <string name="no_friend_checkins">No recent friend checkins!</string>
@@ -220,6 +226,7 @@
   <string name="pings_settings_title">Foursquare Pings Settings</string>
   <string name="pings_settings_progressbar_title_updateuser">Pings Settings</string>
   <string name="pings_settings_progressbar_message_updateuser">Updating pings settings...</string>
+  <string name="edit_venue_options_label">Foursquare Edit Venue</string>
   <string name="edit_venue_options_progress_title">Flag Venue</string>
   <string name="edit_venue_options_progress_message">Submitting venue flag info...</string>
   <string name="edit_venue_options_btn_edit_venue">Edit Venue Info</string>
