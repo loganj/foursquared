@@ -37,6 +37,8 @@ public class Preferences {
     public static final String PREFERENCE_ADVANCED_SETTINGS = "advanced_settings";
     public static final String PREFERENCE_TWITTER_CHECKIN = "twitter_checkin";
     public static final String PREFERENCE_FACEBOOK_CHECKIN = "facebook_checkin";
+    public static final String PREFERENCE_TWITTER_HANDLE = "twitter_handle";
+    public static final String PREFERENCE_FACEBOOK_HANDLE = "facebook_handle";
     public static final String PREFERENCE_FRIEND_REQUESTS = "friend_requests";
     public static final String PREFERENCE_FRIEND_ADD = "friend_add";
     public static final String PREFERENCE_CHANGELOG = "changelog";
@@ -189,6 +191,8 @@ public class Preferences {
             editor.putString(PREFERENCE_ID, user.getId());
             editor.putBoolean(PREFERENCE_TWITTER_CHECKIN, user.getSettings().sendtotwitter());
             editor.putBoolean(PREFERENCE_FACEBOOK_CHECKIN, user.getSettings().sendtofacebook());
+            editor.putString(PREFERENCE_TWITTER_HANDLE, user.getTwitter() != null ? user.getTwitter() : "");
+            editor.putString(PREFERENCE_FACEBOOK_HANDLE, user.getFacebook() != null ? user.getFacebook() : "");
             editor.putString(PREFERENCE_GENDER, user.getGender());
             editor.putBoolean(PREFERENCE_CAN_HAVE_FOLLOWERS, UserUtils.getCanHaveFollowers(user));
             if (DEBUG) Log.d(TAG, "Setting user info");

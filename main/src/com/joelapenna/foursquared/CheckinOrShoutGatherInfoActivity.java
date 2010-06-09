@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -158,12 +159,14 @@ public class CheckinOrShoutGatherInfoActivity extends Activity {
         }
         
         CheckBox cbTellTwitter = (CheckBox)findViewById(R.id.checkboxTellTwitter);
-        if (settings.getBoolean(Preferences.PREFERENCE_TWITTER_CHECKIN, false)) {
+        if (settings.getBoolean(Preferences.PREFERENCE_TWITTER_CHECKIN, false) &&
+            !TextUtils.isEmpty(settings.getString(Preferences.PREFERENCE_TWITTER_HANDLE, ""))) {
             cbTellTwitter.setChecked(true);
         }
         
         CheckBox cbTellFacebook = (CheckBox)findViewById(R.id.checkboxTellFacebook);
-        if (settings.getBoolean(Preferences.PREFERENCE_FACEBOOK_CHECKIN, false)) {
+        if (settings.getBoolean(Preferences.PREFERENCE_FACEBOOK_CHECKIN, false) &&
+            !TextUtils.isEmpty(settings.getString(Preferences.PREFERENCE_FACEBOOK_HANDLE, ""))) {
             cbTellFacebook.setChecked(true);
         }
         
@@ -172,7 +175,7 @@ public class CheckinOrShoutGatherInfoActivity extends Activity {
             btnCheckin.setText(getResources().getString(R.string.checkin_action_label));
         } else {
             btnCheckin.setText(getResources().getString(R.string.shout_action_label));
-        }
+        } 
         btnCheckin.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
