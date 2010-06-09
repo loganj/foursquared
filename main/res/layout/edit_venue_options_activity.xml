@@ -27,7 +27,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:text="@string/edit_venue_options_btn_flag_as_mislocated" />
-    
+   
   <Button
     android:id="@+id/btnFlagAsDuplicate"
     android:layout_width="fill_parent"

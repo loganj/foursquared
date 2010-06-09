@@ -6,6 +6,7 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Response;
+import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
 import android.app.Activity;
@@ -37,9 +38,10 @@ import android.widget.Toast;
  * @author Mark Wyszomierski (markww@gmail.com)
  */
 public class EditVenueOptionsActivity extends Activity {
-    public static final String EXTRA_VENUE_ID = "com.joelapenna.foursquared.VenueId";
+    public static final String EXTRA_VENUE_PARCELABLE = "com.joelapenna.foursquared.VenueParcelable";
     private static final String TAG = "EditVenueOptionsActivity";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
+    private static final int REQUEST_CODE_ACTIVITY_ADD_VENUE = 15;
 
     private StateHolder mStateHolder;
     private ProgressDialog mDlgProgress;
@@ -69,10 +71,16 @@ public class EditVenueOptionsActivity extends Activity {
             mStateHolder.setActivity(this);
         } else {
             if (getIntent().getExtras() != null) {
-                if (getIntent().getExtras().containsKey(EXTRA_VENUE_ID)) {
-                    mStateHolder = new StateHolder(getIntent().getExtras().getString(EXTRA_VENUE_ID));
+                if (getIntent().getExtras().containsKey(EXTRA_VENUE_PARCELABLE)) {
+                    Venue venue = (Venue)getIntent().getExtras().getParcelable(EXTRA_VENUE_PARCELABLE);
+                    if (venue != null) {
+                        mStateHolder = new StateHolder(venue);
+                    } else {
+                        Log.e(TAG, "EditVenueOptionsActivity supplied with null venue parcelable.");
+                        finish();
+                    }
                 } else {
-                    Log.e(TAG, "EditVenueOptionsActivity requires venueid in extras.");
+                    Log.e(TAG, "EditVenueOptionsActivity requires venue parcelable in extras.");
                     finish();
                 }
             } else {
@@ -120,7 +128,9 @@ public class EditVenueOptionsActivity extends Activity {
         btnEditVenue.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Launch edit intent.
+                Intent intent = new Intent(EditVenueOptionsActivity.this, AddVenueActivity.class);
+                intent.putExtra(AddVenueActivity.EXTRA_VENUE_TO_EDIT, mStateHolder.getVenue());
+                startActivityForResult(intent, REQUEST_CODE_ACTIVITY_ADD_VENUE);
             }
         });
         
@@ -129,8 +139,7 @@ public class EditVenueOptionsActivity extends Activity {
             @Override
             public void onClick(View v) {
                 mStateHolder.startTaskVenue(
-                        EditVenueOptionsActivity.this, 
-                        VenueTask.ACTION_FLAG_AS_CLOSED, mStateHolder.getVenueId());
+                        EditVenueOptionsActivity.this, VenueTask.ACTION_FLAG_AS_CLOSED);
             }
         });
         
@@ -139,8 +148,7 @@ public class EditVenueOptionsActivity extends Activity {
             @Override
             public void onClick(View v) {
                 mStateHolder.startTaskVenue(
-                        EditVenueOptionsActivity.this, 
-                        VenueTask.ACTION_FLAG_AS_MISLOCATED, mStateHolder.getVenueId());
+                        EditVenueOptionsActivity.this, VenueTask.ACTION_FLAG_AS_MISLOCATED);
             }
         });
         
@@ -149,8 +157,7 @@ public class EditVenueOptionsActivity extends Activity {
             @Override
             public void onClick(View v) {
                 mStateHolder.startTaskVenue(
-                        EditVenueOptionsActivity.this, 
-                        VenueTask.ACTION_FLAG_AS_DUPLICATE, mStateHolder.getVenueId());
+                        EditVenueOptionsActivity.this, VenueTask.ACTION_FLAG_AS_DUPLICATE);
             }
         });
     }
@@ -250,23 +257,23 @@ public class EditVenueOptionsActivity extends Activity {
 
     private static class StateHolder {
 
-        private String mVenueId;
+        private Venue mVenue;
         private VenueTask mTaskVenue;
         private boolean mIsRunningTaskVenue;
         
 
-        public StateHolder(String venueId) {
-            mVenueId = venueId;
+        public StateHolder(Venue venue) {
+            mVenue = venue;
             mIsRunningTaskVenue = false;
         }
         
-        public String getVenueId() {
-            return mVenueId;
+        public Venue getVenue() {
+            return mVenue;
         }
         
-        public void startTaskVenue(EditVenueOptionsActivity activity, int action, String venueId) {
+        public void startTaskVenue(EditVenueOptionsActivity activity, int action) {
             mIsRunningTaskVenue = true;
-            mTaskVenue = new VenueTask(activity, action, venueId);
+            mTaskVenue = new VenueTask(activity, action, mVenue.getId());
             mTaskVenue.execute();
         }
 

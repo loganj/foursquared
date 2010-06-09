@@ -84,6 +84,7 @@ class FoursquareHttpApiV1 {
     private static final String URL_API_VENUE_FLAG_CLOSED = "/venue/flagclosed";
     private static final String URL_API_VENUE_FLAG_MISLOCATED = "/venue/flagmislocated";
     private static final String URL_API_VENUE_FLAG_DUPLICATE = "/venue/flagduplicate";
+    private static final String URL_API_VENUE_PROPOSE_EDIT = "/venue/proposeedit";
     
     private final DefaultHttpClient mHttpClient = AbstractHttpApi.createHttpClient();
     private HttpApi mHttpApi;
@@ -499,33 +500,59 @@ class FoursquareHttpApiV1 {
     /**
      * /venue/flagclosed?vid=venueid
      */
-    public Response flagclosed(String venueid) throws FoursquareException,
+    public Response flagclosed(String venueId) throws FoursquareException,
             FoursquareCredentialsException, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_VENUE_FLAG_CLOSED), //
-                new BasicNameValuePair("vid", venueid));
+                new BasicNameValuePair("vid", venueId));
         return (Response) mHttpApi.doHttpRequest(httpPost, new ResponseParser());
     }
 
     /**
      * /venue/flagmislocated?vid=venueid
      */
-    public Response flagmislocated(String venueid) throws FoursquareException,
+    public Response flagmislocated(String venueId) throws FoursquareException,
             FoursquareCredentialsException, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_VENUE_FLAG_MISLOCATED), //
-                new BasicNameValuePair("vid", venueid));
+                new BasicNameValuePair("vid", venueId));
         return (Response) mHttpApi.doHttpRequest(httpPost, new ResponseParser());
     }
 
     /**
      * /venue/flagduplicate?vid=venueid
      */
-    public Response flagduplicate(String venueid) throws FoursquareException,
+    public Response flagduplicate(String venueId) throws FoursquareException,
             FoursquareCredentialsException, FoursquareError, IOException {
         HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_VENUE_FLAG_DUPLICATE), //
-                new BasicNameValuePair("vid", venueid));
+                new BasicNameValuePair("vid", venueId));
         return (Response) mHttpApi.doHttpRequest(httpPost, new ResponseParser());
     }
-
+    
+    /**
+     * /venue/prposeedit?vid=venueid&name=...
+     */
+    public Response proposeedit(String venueId, String name, String address, String crossstreet, 
+            String city, String state, String zip, String phone, String categoryId, String geolat, 
+            String geolong, String geohacc, String geovacc, String geoalt) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
+        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_VENUE_PROPOSE_EDIT), //
+                new BasicNameValuePair("vid", venueId), //
+                new BasicNameValuePair("name", name), //
+                new BasicNameValuePair("address", address), //
+                new BasicNameValuePair("crossstreet", crossstreet), //
+                new BasicNameValuePair("city", city), //
+                new BasicNameValuePair("state", state), //
+                new BasicNameValuePair("zip", zip), //
+                new BasicNameValuePair("phone", phone), //
+                new BasicNameValuePair("primarycategoryid", categoryId), //
+                new BasicNameValuePair("geolat", geolat), //
+                new BasicNameValuePair("geolong", geolong), //
+                new BasicNameValuePair("geohacc", geohacc), //
+                new BasicNameValuePair("geovacc", geovacc), //
+                new BasicNameValuePair("geoalt", geoalt) //
+                );
+        return (Response) mHttpApi.doHttpRequest(httpPost, new ResponseParser());
+    }
+    
     private String fullUrl(String url) {
         return mApiBaseUrl + url;
     }

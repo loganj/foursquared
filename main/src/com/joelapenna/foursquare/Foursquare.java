@@ -277,6 +277,15 @@ public class Foursquare {
         return mFoursquareV1.flagduplicate(venueid);
     }
     
+    @V1
+    public Response proposeedit(String venueId, String name, String address, String crossstreet, 
+        String city, String state, String zip, String phone, String categoryId, Location location) 
+        throws FoursquareException, FoursquareCredentialsException, FoursquareError, IOException {
+        return mFoursquareV1.proposeedit(venueId, name, address, crossstreet, city, state, zip, 
+                phone, categoryId, location.geolat, location.geolong, location.geohacc, 
+                location.geovacc, location.geoalt);
+    }    
+    
     public static final FoursquareHttpApiV1 createHttpApi(String domain, String clientVersion,
             boolean useOAuth) {
         LOG.log(Level.INFO, "Using foursquare.com for requests.");

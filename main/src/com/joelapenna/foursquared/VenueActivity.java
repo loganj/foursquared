@@ -198,7 +198,8 @@ public class VenueActivity extends TabActivity {
                 return true;
             case MENU_EDIT_VENUE:
                 Intent intentEditVenue = new Intent(this, EditVenueOptionsActivity.class);
-                intentEditVenue.putExtra(EditVenueOptionsActivity.EXTRA_VENUE_ID, mStateHolder.venueId);
+                intentEditVenue.putExtra(
+                        EditVenueOptionsActivity.EXTRA_VENUE_PARCELABLE, mStateHolder.venue);
                 startActivity(intentEditVenue);
                 return true;
             case MENU_MYINFO:

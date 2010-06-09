@@ -7,6 +7,7 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Category;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.Response;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
@@ -40,19 +41,25 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
+ * @author Mark Wyszomierski (markww@gmail.com)
+ *   -Added support for using this activity to edit existing venues (June 8, 2010).
  */
 public class AddVenueActivity extends Activity {
     private static final String TAG = "AddVenueActivity";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
+    public static final String EXTRA_VENUE_TO_EDIT = "com.joelapenna.foursquared.VenueParcel";
+
     private static final double MINIMUM_ACCURACY_FOR_ADDRESS = 100.0;
     
     private static final int DIALOG_PICK_CATEGORY = 1;
+    
 
     private StateHolder mStateHolder;
 
@@ -128,7 +135,7 @@ public class AddVenueActivity extends Activity {
         mAddVenueButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mStateHolder.startTaskAddVenue(
+                mStateHolder.startTaskAddOrEditVenue(
                     AddVenueActivity.this,
                     new String[] {
                         mNameEditText.getText().toString(),
@@ -140,7 +147,9 @@ public class AddVenueActivity extends Activity {
                         mPhoneEditText.getText().toString(),
                         mStateHolder.getChosenCategory() != null ? 
                                 mStateHolder.getChosenCategory().getId() : ""
-                    });
+                    },
+                    mStateHolder.getVenueBeingEdited() != null ? 
+                            mStateHolder.getVenueBeingEdited().getId() : null);
             }
         });
         
@@ -149,9 +158,7 @@ public class AddVenueActivity extends Activity {
         Object retained = getLastNonConfigurationInstance();
         if (retained != null && retained instanceof StateHolder) {
             mStateHolder = (StateHolder) retained;
-            mStateHolder.setActivityForTaskGetCategories(this);
-            mStateHolder.setActivityForTaskAddressLookup(this);
-            mStateHolder.setActivityForTaskAddVenue(this);
+            mStateHolder.setActivity(this);
             
             setFields(mStateHolder.getAddressLookup());
             setChosenCategory(mStateHolder.getChosenCategory());
@@ -161,8 +168,26 @@ public class AddVenueActivity extends Activity {
             }
         } else {
             mStateHolder = new StateHolder();
-            mStateHolder.startTaskAddressLookup(this);
             mStateHolder.startTaskGetCategories(this);
+            
+            // If passed the venue parcelable, then we are in 'edit' mode.
+            if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(EXTRA_VENUE_TO_EDIT)) {
+                Venue venue = getIntent().getExtras().getParcelable(EXTRA_VENUE_TO_EDIT);
+                if (venue != null) {
+                    mStateHolder.setVenueBeingEdited(venue);
+                    setFields(venue);
+                
+                    setTitle(getResources().getString(R.string.add_venue_activity_label_edit_venue));
+                    
+                    mAddVenueButton.setText(getResources().getString(
+                            R.string.add_venue_activity_btn_submit_edits));
+                } else {
+                    Log.e(TAG, "Null venue parcelable supplied at startup, will finish immediately.");
+                    finish();
+                }
+            } else {
+                mStateHolder.startTaskAddressLookup(this);
+            }
         }
     }
 
@@ -171,10 +196,8 @@ public class AddVenueActivity extends Activity {
         super.onResume();
         ((Foursquared) getApplication()).requestLocationUpdates(true);
         
-        if (mStateHolder.getIsRunningTaskAddVenue()) {
-            startProgressBar(
-                getResources().getString(R.string.add_venue_label),
-                getResources().getString(R.string.add_venue_progress_bar_message));
+        if (mStateHolder.getIsRunningTaskAddOrEditVenue()) {
+            startProgressBar();
         }
     }
 
@@ -194,11 +217,14 @@ public class AddVenueActivity extends Activity {
 
     @Override
     public Object onRetainNonConfigurationInstance() {
+        mStateHolder.setActivity(null);
         return mStateHolder;
     }
 
     private void setFields(AddressLookup addressLookup) {
-        if (addressLookup != null && addressLookup.getAddress() != null) {
+        if (mStateHolder.getVenueBeingEdited() == null &&
+            addressLookup != null && 
+            addressLookup.getAddress() != null) {
 
             // Don't fill in the street unless we're reasonably confident we
             // know where the user is.
@@ -231,6 +257,28 @@ public class AddVenueActivity extends Activity {
         }
     }
     
+    private void setFields(Venue venue) {
+        mNameEditText.setText(venue.getName());
+        mCrossstreetEditText.setText(venue.getCrossstreet());
+        mAddressEditText.setText(venue.getAddress());
+        mCityEditText.setText(venue.getCity());
+        mStateEditText.setText(venue.getState());
+        mZipEditText.setText(venue.getZip());
+        mPhoneEditText.setText(venue.getPhone());
+    }
+    
+    private void startProgressBar() {
+        startProgressBar(
+                getResources().getString(
+                    mStateHolder.getVenueBeingEdited() == null ? 
+                            R.string.add_venue_progress_bar_title_add_venue :
+                            R.string.add_venue_progress_bar_title_edit_venue),
+                getResources().getString(
+                    mStateHolder.getVenueBeingEdited() == null ? 
+                            R.string.add_venue_progress_bar_message_add_venue :
+                            R.string.add_venue_progress_bar_message_edit_venue));
+    }
+    
     private void startProgressBar(String title, String message) {
         if (mDlgProgress == null) {
             mDlgProgress = ProgressDialog.show(this, title, message);
@@ -254,6 +302,14 @@ public class AddVenueActivity extends Activity {
                 mCategoryLayout.setEnabled(true);
                 mCategoryTextView.setText("Pick a category");
                 mCategoryProgressBar.setVisibility(View.GONE);
+                
+                // If we are editing a venue, set its category here.
+                if (mStateHolder.getVenueBeingEdited() != null) {
+                    Venue venue = mStateHolder.getVenueBeingEdited();
+                    if (venue.getCategory() != null) {
+                        setChosenCategory(venue.getCategory());
+                    }
+                }
             } else {
                 // If error, feed list adapter empty user group.
                 mStateHolder.setCategories(new Group<Category>());
@@ -279,22 +335,32 @@ public class AddVenueActivity extends Activity {
         stopIndeterminateProgressBar();
     }
 
-    private void onAddVenueTaskComplete(Venue venue, Exception ex) {
-        mStateHolder.setIsRunningTaskAddVenue(false);
-        try {
-            // If they added the venue ok, then send them to an activity displaying it
-            // so they can play around with it.
+    private void onAddOrEditVenueTaskComplete(Venue venue, String venueIdIfEditing, Exception ex) {
+        mStateHolder.setIsRunningTaskAddOrEditVenue(false);
+        stopProgressBar();
+        
+        if (venueIdIfEditing == null) {
             if (venue != null) {
+                // If they added the venue ok, then send them to an activity displaying it
+                // so they can play around with it.
                 Intent intent = new Intent(AddVenueActivity.this, VenueActivity.class);
                 intent.putExtra(Foursquared.EXTRA_VENUE_ID, venue.getId());
                 startActivity(intent);
                 finish();
             } else {
+                // Error, let them hang out here.
                 NotificationsUtil.ToastReasonForFailure(this, ex);
             }
-        } finally {
+        } else {
+            if (venue != null) {
+                // Editing the venue worked ok, just return to caller.
+                Toast.makeText(this, "Thank you for submitting your venue edits.", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                // Error, let them hang out here.
+                NotificationsUtil.ToastReasonForFailure(this, ex);
+            }
         }
-        stopProgressBar();
     }
     
     private void stopIndeterminateProgressBar() {
@@ -304,15 +370,19 @@ public class AddVenueActivity extends Activity {
         }
     }
 
-    private static class AddVenueTask extends AsyncTask<Void, Void, Venue> {
+    private static class AddOrEditVenueTask extends AsyncTask<Void, Void, Venue> {
 
         private AddVenueActivity mActivity;
         private String[] mParams;
+        private String mVenueIdIfEditing;
         private Exception mReason;
 
-        public AddVenueTask(AddVenueActivity activity, String[] params) {
+        public AddOrEditVenueTask(AddVenueActivity activity, 
+                            String[] params,
+                            String venueIdIfEditing) {
             mActivity = activity;
             mParams = params;
+            mVenueIdIfEditing = venueIdIfEditing;
         }
 
         public void setActivity(AddVenueActivity activity) {
@@ -321,9 +391,7 @@ public class AddVenueActivity extends Activity {
         
         @Override
         protected void onPreExecute() {
-            mActivity.startProgressBar(
-                mActivity.getResources().getString(R.string.add_venue_label),
-                mActivity.getResources().getString(R.string.add_venue_progress_bar_message));
+            mActivity.startProgressBar();
         }
 
         @Override
@@ -333,18 +401,40 @@ public class AddVenueActivity extends Activity {
                 Foursquare foursquare = foursquared.getFoursquare();
                 Location location = foursquared.getLastKnownLocationOrThrow();
 
-                return foursquare.addVenue(
-                        mParams[0], // name
-                        mParams[1], // address
-                        mParams[2], // cross street
-                        mParams[3], // city
-                        mParams[4], // state,
-                        mParams[5], // zip
-                        mParams[6], // phone
-                        mParams[7], // category id
-                        LocationUtils.createFoursquareLocation(location));
+                if (mVenueIdIfEditing == null) {
+                    return foursquare.addVenue(
+                            mParams[0], // name
+                            mParams[1], // address
+                            mParams[2], // cross street
+                            mParams[3], // city
+                            mParams[4], // state,
+                            mParams[5], // zip
+                            mParams[6], // phone
+                            mParams[7], // category id
+                            LocationUtils.createFoursquareLocation(location));
+                } else {
+                    Response response =
+                        foursquare.proposeedit(
+                            mVenueIdIfEditing,
+                            mParams[0], // name
+                            mParams[1], // address
+                            mParams[2], // cross street
+                            mParams[3], // city
+                            mParams[4], // state,
+                            mParams[5], // zip
+                            mParams[6], // phone
+                            mParams[7], // category id
+                            LocationUtils.createFoursquareLocation(location));
+                    if (response != null && response.getValue().equals("ok")) {
+                        // TODO: Come up with a better method than returning an empty venue on success.
+                        return new Venue();
+                    } else {
+                        throw new Exception(
+                                "There was an error submitting your venue edits, please try again.");
+                    }
+                }
             } catch (Exception e) {
-                if (DEBUG) Log.d(TAG, "Exception doing add venue", e);
+                if (DEBUG) Log.d(TAG, "Exception during add venue.", e);
                 mReason = e;
             }
             return null;
@@ -354,14 +444,14 @@ public class AddVenueActivity extends Activity {
         protected void onPostExecute(Venue venue) {
             if (DEBUG) Log.d(TAG, "onPostExecute()");
             if (mActivity != null) {
-                mActivity.onAddVenueTaskComplete(venue, mReason);
+                mActivity.onAddOrEditVenueTaskComplete(venue, mVenueIdIfEditing, mReason);
             }
         }
 
         @Override
         protected void onCancelled() {
             if (mActivity != null) {
-                mActivity.onAddVenueTaskComplete(null, mReason);
+                mActivity.onAddOrEditVenueTaskComplete(null, mVenueIdIfEditing, mReason);
             }
         }
     }
@@ -473,16 +563,18 @@ public class AddVenueActivity extends Activity {
         private GetCategoriesTask mTaskGetCategories;
         private Group<Category> mCategories;
         private boolean mIsRunningTaskGetCategories;
-        private AddVenueTask mTaskAddVenue;
-        private boolean mIsRunningTaskAddVenue;
+        private AddOrEditVenueTask mTaskAddOrEditVenue;
+        private boolean mIsRunningTaskAddOrEditVenue;
         private Category mChosenCategory;
+        private Venue mVenueBeingEdited;
         
         
         public StateHolder() {
             mCategories = new Group<Category>();
             mIsRunningTaskAddressLookup = false;
             mIsRunningTaskGetCategories = false;
-            mIsRunningTaskAddVenue = false;
+            mIsRunningTaskAddOrEditVenue = false;
+            mVenueBeingEdited = null;
         }
 
         public void setCategories(Group<Category> categories) {
@@ -500,6 +592,14 @@ public class AddVenueActivity extends Activity {
         public AddressLookup getAddressLookup() {
             return mAddressLookup;
         }
+        
+        public Venue getVenueBeingEdited() {
+            return mVenueBeingEdited;
+        }
+        
+        public void setVenueBeingEdited(Venue venue) {
+            mVenueBeingEdited = venue;
+        }
 
         public void startTaskGetCategories(AddVenueActivity activity) {
             mIsRunningTaskGetCategories = true;
@@ -513,27 +613,22 @@ public class AddVenueActivity extends Activity {
             mTaskGetAddress.execute();
         }
 
-        public void startTaskAddVenue(AddVenueActivity activity, String[] params) {
-            mIsRunningTaskAddVenue = true;
-            mTaskAddVenue = new AddVenueTask(activity, params);
-            mTaskAddVenue.execute();
+        public void startTaskAddOrEditVenue(AddVenueActivity activity, String[] params, 
+                String venueIdIfEditing) {
+            mIsRunningTaskAddOrEditVenue = true;
+            mTaskAddOrEditVenue = new AddOrEditVenueTask(activity, params, venueIdIfEditing);
+            mTaskAddOrEditVenue.execute();
         }
 
-        public void setActivityForTaskGetCategories(AddVenueActivity activity) {
+        public void setActivity(AddVenueActivity activity) {
             if (mTaskGetCategories != null) {
                 mTaskGetCategories.setActivity(activity);
             }
-        }
-
-        public void setActivityForTaskAddressLookup(AddVenueActivity activity) {
             if (mTaskGetAddress != null) {
                 mTaskGetAddress.setActivity(activity);
             }
-        }
-
-        public void setActivityForTaskAddVenue(AddVenueActivity activity) {
-            if (mTaskAddVenue != null) {
-                mTaskAddVenue.setActivity(activity);
+            if (mTaskAddOrEditVenue != null) {
+                mTaskAddOrEditVenue.setActivity(activity);
             }
         }
         
@@ -545,8 +640,8 @@ public class AddVenueActivity extends Activity {
             mIsRunningTaskGetCategories = isRunning;
         }
 
-        public void setIsRunningTaskAddVenue(boolean isRunning) {
-            mIsRunningTaskAddVenue = isRunning;
+        public void setIsRunningTaskAddOrEditVenue(boolean isRunning) {
+            mIsRunningTaskAddOrEditVenue = isRunning;
         }
         
         public boolean getIsRunningTaskAddressLookup() {
@@ -557,8 +652,8 @@ public class AddVenueActivity extends Activity {
             return mIsRunningTaskGetCategories;
         }
         
-        public boolean getIsRunningTaskAddVenue() {
-            return mIsRunningTaskAddVenue;
+        public boolean getIsRunningTaskAddOrEditVenue() {
+            return mIsRunningTaskAddOrEditVenue;
         }
         
         public Category getChosenCategory() {

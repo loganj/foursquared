@@ -2,10 +2,14 @@
 <resources>
   <string name="add_a_tip">Add a Tip</string>
   <string name="add_friends_activity_label">Foursquare Add Friends</string>
-  <string name="add_venue_activity_label">Add a New Venue</string>
+  <string name="add_venue_activity_label_add_venue">Add a New Venue</string>
+  <string name="add_venue_activity_label_edit_venue">Submit Venue Edits</string>
   <string name="add_venue_error_toast_venue_null">Unable to add venue!</string>
-  <string name="add_venue_label">Add Venue</string>
-  <string name="add_venue_progress_bar_message">Adding Venue...</string>
+  <string name="add_venue_progress_bar_title_add_venue">Add Venue</string>
+  <string name="add_venue_progress_bar_title_edit_venue">Submit Venue Edits</string>
+  <string name="add_venue_progress_bar_message_add_venue">Adding venue...</string>
+  <string name="add_venue_progress_bar_message_edit_venue">Submitting venue edits...</string>
+  <string name="add_venue_activity_btn_submit_edits">Submit Edits</string>
   <string name="address">Address</string>
   <string name="app_name">Foursquare</string>
   <string name="badges_header">Badges</string>
