@@ -111,7 +111,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
 
         String checkinMsgLine1 = StringFormatters.getCheckinMessageLine1(checkin, true);
         String checkinMsgLine2 = StringFormatters.getCheckinMessageLine2(checkin);
-        String checkinMsgLine3 = StringFormatters.getCheckinMessageLine3(checkin);
+        String checkinMsgLine3 = mCachedTimestamps.get(checkin.getId());
         
         holder.firstLine.setText(checkinMsgLine1);
         if (!TextUtils.isEmpty(checkinMsgLine2)) {
