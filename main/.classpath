@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="lib/signpost-commonshttp.jar"/>
 	<classpathentry kind="lib" path="lib/signpost-core.jar"/>
 	<classpathentry kind="lib" path="lib/dumpcatcher.jar"/>
+	<classpathentry kind="lib" path="/Users/mark/Desktop/facebook-android-sdk.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

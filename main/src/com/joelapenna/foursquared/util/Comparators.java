@@ -22,6 +22,7 @@ public class Comparators {
     private static Comparator<Venue> sVenueDistanceComparator = null;
     private static Comparator<User> sUserRecencyComparator = null;
     private static Comparator<Checkin> sCheckinRecencyComparator = null;
+    private static Comparator<Checkin> sCheckinDistanceComparator = null;
     private static Comparator<Tip> sTipRecencyComparator = null;
 
     public static Comparator<Venue> getVenueDistanceComparator() {
@@ -113,6 +114,34 @@ public class Comparators {
             };
         }
         return sCheckinRecencyComparator;
+    }
+    
+    public static Comparator<Checkin> getCheckinDistanceComparator() {
+        if (sCheckinDistanceComparator == null) {
+            sCheckinDistanceComparator = new Comparator<Checkin>() {
+                /*
+                 * (non-Javadoc)
+                 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+                 */
+                @Override
+                public int compare(Checkin object1, Checkin object2) {
+                    try {
+                        int d1 = Integer.parseInt(object1.getDistance());
+                        int d2 = Integer.parseInt(object2.getDistance());
+                        if (d1 > d2) {
+                            return 1;
+                        } else if (d2 > d1) {
+                            return -1;
+                        } else {
+                            return 0;
+                        }
+                    } catch (NumberFormatException ex) {
+                        return 0;
+                    }
+                }
+            };
+        }
+        return sCheckinDistanceComparator;
     }
 
     public static Comparator<Tip> getTipRecencyComparator() {

@@ -48,6 +48,9 @@
   <string name="friendsactivity_title_sort_yesterday">Yesterday</string>
   <string name="friendsactivity_title_sort_older">Older</string>
   <string name="friendsactivity_title_sort_other_city">Friends in other cities</string>
+  <string name="friendsactivity_title_sort_distance">Friends Nearby</string>
+  <string name="friendsactivity_menu_sort_time">Sort Time</string>
+  <string name="friendsactivity_menu_sort_distance">Sort Distance</string>
   <string name="last_seen_header">Last Seen</string>
   <string name="loading">Loading...</string>
   <string name="login_dialog_message">Please wait while logging into Foursquare...</string>
@@ -146,6 +149,7 @@
   <string name="add_friends_by_name_or_phone_btn_label">Find by name or phone number</string>
   <string name="add_friends_by_twitter_btn_label">Find Twitter friends</string>
   <string name="add_friends_by_address_book_btn_label">Scan my address book</string>
+  <string name="add_friends_by_facebook_btn_label">Find Facebook friends</string>
   <string name="add_friends_invite_btn_label">Invite friends to Foursquare</string>
   <string name="add_friends_by_name_or_phone_instructions">Find friends by name or phone number</string>
   <string name="add_friends_by_name_or_phone_hint">Enter a name or phone number</string>

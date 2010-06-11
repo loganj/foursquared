@@ -54,7 +54,8 @@ import java.util.Observer;
  * @author Mark Wyszomierski (markww@gmail.com)
  *         -Added dummy location observer, new menu icon logic, 
  *          links to new user activity (3/10/2010).
- *         -Sorting checkins by distance/time. (3/18/2010)
+ *         -Sorting checkins by distance/time. (3/18/2010).
+ *         -Added option to sort by server response, or by distance. (6/10/2010).
  */
 public class FriendsActivity extends LoadableListActivityWithView {
     static final String TAG = "FriendsActivity";
@@ -68,8 +69,12 @@ public class FriendsActivity extends LoadableListActivityWithView {
     private static final int MENU_REFRESH = 1;
     private static final int MENU_SHOUT = 2;
     private static final int MENU_STATS = 3;
-    private static final int MENU_MYINFO = 4;
+    private static final int MENU_SORT_METHOD = 4;
+    private static final int MENU_MYINFO = 5;
     private static final int MENU_GROUP_SEARCH = 0;
+    
+    private static final int SORT_METHOD_DEFAULT = 0;
+    private static final int SORT_METHOD_DISTANCE = 1;
 
     public static SearchResultsObservable searchResultsObservable;
     
@@ -106,7 +111,7 @@ public class FriendsActivity extends LoadableListActivityWithView {
             } else {
                 mSearchHolder.query = holder.query;
                 setSearchResults(holder.results);
-                putSearchResultsInAdapter(holder.results);
+                putSearchResultsInAdapter(holder.results, holder.sortMethod);
                 if (holder.results.size() < 1) {
                     setEmptyView(mLayoutEmpty);
                 }
@@ -152,7 +157,9 @@ public class FriendsActivity extends LoadableListActivityWithView {
                 .setIcon(R.drawable.ic_menu_shout);
         menu.add(Menu.NONE, MENU_STATS, Menu.NONE, R.string.stats_label) //
                 .setIcon(R.drawable.ic_menu_leaderboard);
-
+        menu.add(Menu.NONE, MENU_SORT_METHOD, Menu.NONE, getMenuItemTitleSort())
+                .setIcon(android.R.drawable.ic_menu_upload);
+ 
         int sdk = new Integer(Build.VERSION.SDK).intValue();
         if (sdk < 4) {
             int menuIcon = UserUtils.getDrawableForMeMenuItemByGender(
@@ -163,6 +170,13 @@ public class FriendsActivity extends LoadableListActivityWithView {
 
         MenuUtils.addPreferencesToMenu(this, menu);
 
+        return true;
+    }
+    
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.getItem(3);
+        item.setTitle(getMenuItemTitleSort()).setIcon(android.R.drawable.ic_menu_agenda);
         return true;
     }
 
@@ -186,10 +200,18 @@ public class FriendsActivity extends LoadableListActivityWithView {
                         ((Foursquared) getApplication()).getUserId());
                 startActivity(intentUser);
                 return true;
+            case MENU_SORT_METHOD:
+                if (mSearchHolder.sortMethod == SORT_METHOD_DEFAULT) {
+                    mSearchHolder.sortMethod = SORT_METHOD_DISTANCE;
+                } else {
+                    mSearchHolder.sortMethod = SORT_METHOD_DEFAULT;
+                }
+                putSearchResultsInAdapter(mSearchHolder.results, mSearchHolder.sortMethod);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
+    
     @Override
     public void onNewIntent(Intent intent) {
         if (DEBUG) Log.d(TAG, "New Intent: " + intent);
@@ -305,6 +327,13 @@ public class FriendsActivity extends LoadableListActivityWithView {
         }
     }
 
+    private String getMenuItemTitleSort() {
+        if (mSearchHolder.sortMethod == SORT_METHOD_DISTANCE) {
+            return getResources().getString(R.string.friendsactivity_menu_sort_time);
+        }
+        return getResources().getString(R.string.friendsactivity_menu_sort_distance);
+    }
+
     private class SearchTask extends AsyncTask<Void, Void, Group<Checkin>> {
 
         private Exception mReason = null;
@@ -334,7 +363,7 @@ public class FriendsActivity extends LoadableListActivityWithView {
                     NotificationsUtil.ToastReasonForFailure(FriendsActivity.this, mReason);
                 }
                 setSearchResults(checkins);
-                putSearchResultsInAdapter(checkins);
+                putSearchResultsInAdapter(checkins, mSearchHolder.sortMethod);
 
             } finally {
                 setProgressBarIndeterminateVisibility(false);
@@ -372,6 +401,114 @@ public class FriendsActivity extends LoadableListActivityWithView {
         }
     }
     
+    private void sortCheckinsDefault(Group<Checkin> checkins, SeparatedListAdapter listAdapter) {
+
+        // Sort all by timestamp first.
+        Collections.sort(checkins, Comparators.getCheckinRecencyComparator());
+        
+        // We'll group in different section adapters based on some time thresholds.
+        Group<Checkin> recent = new Group<Checkin>();
+        Group<Checkin> today = new Group<Checkin>();
+        Group<Checkin> yesterday = new Group<Checkin>();
+        Group<Checkin> older = new Group<Checkin>();
+        Group<Checkin> other = new Group<Checkin>();
+        CheckinTimestampSort timestamps = new CheckinTimestampSort();
+        for (Checkin it : checkins) {
+
+            // If we can't parse the distance value, it's possible that we
+            // did not have a geolocation for the device at the time the
+            // search was run. In this case just assume this friend is nearby
+            // to sort them in the time buckets.
+            int meters = 0;
+            try {
+                meters = Integer.parseInt(it.getDistance());
+            } catch (NumberFormatException ex) {
+                if (DEBUG) Log.d(TAG, "Couldn't parse distance for checkin during friend search.");
+                meters = 0;
+            }
+  
+            if (meters > CITY_RADIUS_IN_METERS) {
+                other.add(it);
+            } else {
+                try { 
+                    Date date = new Date(it.getCreated());
+                    if (date.after(timestamps.getBoundaryRecent())) {
+                        recent.add(it);
+                    } else if (date.after(timestamps.getBoundaryToday())) {
+                        today.add(it); 
+                    } else if (date.after(timestamps.getBoundaryYesterday())) {
+                        yesterday.add(it);
+                    } else {
+                        older.add(it);
+                    }
+                } catch (Exception ex) {
+                    older.add(it);
+                }
+            }
+        }
+        
+        if (recent.size() > 0) {
+            CheckinListAdapter adapter = new CheckinListAdapter(this, 
+                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            adapter.setGroup(recent);
+            listAdapter.addSection(getResources().getString(
+                    R.string.friendsactivity_title_sort_recent), adapter);
+        }
+        if (today.size() > 0) {
+            CheckinListAdapter adapter = new CheckinListAdapter(this, 
+                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            adapter.setGroup(today);
+            listAdapter.addSection(getResources().getString(
+                    R.string.friendsactivity_title_sort_today), adapter);
+        }
+        if (yesterday.size() > 0) {
+            CheckinListAdapter adapter = new CheckinListAdapter(this, 
+                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            adapter.setGroup(yesterday);
+            listAdapter.addSection(getResources().getString(
+                    R.string.friendsactivity_title_sort_yesterday), adapter);
+        }
+        if (older.size() > 0) {
+            CheckinListAdapter adapter = new CheckinListAdapter(this, 
+                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            adapter.setGroup(older);
+            listAdapter.addSection(getResources().getString(
+                    R.string.friendsactivity_title_sort_older), adapter);
+        }
+        if (other.size() > 0) {
+            CheckinListAdapter adapter = new CheckinListAdapter(this, 
+                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            adapter.setGroup(other);
+            listAdapter.addSection(getResources().getString(
+                    R.string.friendsactivity_title_sort_other_city), adapter);
+        }
+    }
+    
+    private void sortCheckinsDistance(Group<Checkin> checkins, SeparatedListAdapter listAdapter) {
+        Collections.sort(checkins, Comparators.getCheckinDistanceComparator());
+        
+        Group<Checkin> nearby = new Group<Checkin>();
+        CheckinListAdapter adapter = new CheckinListAdapter(this, 
+                ((Foursquared) getApplication()).getRemoteResourceManager());
+        for (Checkin it : checkins) {
+            int meters = 0;
+            try {
+                meters = Integer.parseInt(it.getDistance());
+            } catch (NumberFormatException ex) {
+                if (DEBUG) Log.d(TAG, "Couldn't parse distance for checkin during friend search.");
+                meters = 0;
+            }
+  
+            if (meters < CITY_RADIUS_IN_METERS) {
+                nearby.add(it);
+            }
+        }
+        
+        adapter.setGroup(nearby);
+        listAdapter.addSection(getResources().getString(
+                R.string.friendsactivity_title_sort_distance), adapter);
+    }
+    
     /**
      * Sort checkin results first by distance [same city | different city],
      * then within the [same city] bucket, sort by last three hours, today,
@@ -379,89 +516,18 @@ public class FriendsActivity extends LoadableListActivityWithView {
      * won't have any distance parameter to do the first level of sorting,
      * in this case we just place all our friends in the [same city] bucket.
      */
-    private void putSearchResultsInAdapter(Group<Checkin> checkins) {
+    private void putSearchResultsInAdapter(Group<Checkin> checkins, int sortMethod) {
         
-        Group<Checkin> recent = new Group<Checkin>();
-        Group<Checkin> today = new Group<Checkin>();
-        Group<Checkin> yesterday = new Group<Checkin>();
-        Group<Checkin> older = new Group<Checkin>();
-        Group<Checkin> other = new Group<Checkin>();
-
-        if (checkins != null && checkins.size() > 0) {
-
-            CheckinTimestampSort timestamps = new CheckinTimestampSort();
-            for (Checkin it : checkins) {
-    
-                // If we can't parse the distance value, it's possible that we
-                // did not have a geolocation for the device at the time the
-                // search was run. In this case just assume this friend is nearby
-                // to sort them in the time buckets.
-                int meters = 0;
-                try {
-                    meters = Integer.parseInt(it.getDistance());
-                } catch (NumberFormatException ex) {
-                    if (DEBUG) Log.d(TAG, "Couldn't parse distance for checkin during friend search.");
-                    meters = 0;
-                }
-      
-                if (meters > CITY_RADIUS_IN_METERS) {
-                    other.add(it);
-                } else {
-                    try { 
-                        Date date = new Date(it.getCreated());
-                        if (date.after(timestamps.getBoundaryRecent())) {
-                            recent.add(it);
-                        } else if (date.after(timestamps.getBoundaryToday())) {
-                            today.add(it); 
-                        } else if (date.after(timestamps.getBoundaryYesterday())) {
-                            yesterday.add(it);
-                        } else {
-                            older.add(it);
-                        }
-                    } catch (Exception ex) {
-                        older.add(it);
-                    }
-                }
-            }
-        }
-        
+        // Clear list for new batch.
         mListAdapter.removeObserver();
         mListAdapter.clear();
         mListAdapter = new SeparatedListAdapter(this);
-        if (recent.size() > 0) {
-            CheckinListAdapter adapter = new CheckinListAdapter(this, 
-                    ((Foursquared) getApplication()).getRemoteResourceManager());
-            adapter.setGroup(recent);
-            mListAdapter.addSection(getResources().getString(
-                    R.string.friendsactivity_title_sort_recent), adapter);
-        }
-        if (today.size() > 0) {
-            CheckinListAdapter adapter = new CheckinListAdapter(this, 
-                    ((Foursquared) getApplication()).getRemoteResourceManager());
-            adapter.setGroup(today);
-            mListAdapter.addSection(getResources().getString(
-                    R.string.friendsactivity_title_sort_today), adapter);
-        }
-        if (yesterday.size() > 0) {
-            CheckinListAdapter adapter = new CheckinListAdapter(this, 
-                    ((Foursquared) getApplication()).getRemoteResourceManager());
-            adapter.setGroup(yesterday);
-            mListAdapter.addSection(getResources().getString(
-                    R.string.friendsactivity_title_sort_yesterday), adapter);
-        }
-        if (older.size() > 0) {
-            CheckinListAdapter adapter = new CheckinListAdapter(this, 
-                    ((Foursquared) getApplication()).getRemoteResourceManager());
-            adapter.setGroup(older);
-            mListAdapter.addSection(getResources().getString(
-                    R.string.friendsactivity_title_sort_older), adapter);
-        }
-        if (other.size() > 0) {
-            CheckinListAdapter adapter = new CheckinListAdapter(this, 
-                    ((Foursquared) getApplication()).getRemoteResourceManager());
-            adapter.setGroup(other);
-            mListAdapter.addSection(getResources().getString(
-                    R.string.friendsactivity_title_sort_other_city), adapter);
+        
+        // User can sort by default (which is by checkin time), or just by distance.
+        if (sortMethod == SORT_METHOD_DISTANCE) {
+            sortCheckinsDistance(checkins, mListAdapter);
+        } else {
+            sortCheckinsDefault(checkins, mListAdapter);
         }
         
         getListView().setAdapter(mListAdapter);
@@ -470,6 +536,11 @@ public class FriendsActivity extends LoadableListActivityWithView {
     private static class SearchHolder {
         Group<Checkin> results;
         String query;
+        int sortMethod;
+        
+        public SearchHolder() {
+            sortMethod = SORT_METHOD_DEFAULT;
+        }
     }
 
     class SearchResultsObservable extends Observable {
