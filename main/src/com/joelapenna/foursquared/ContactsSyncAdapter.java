@@ -1,10 +1,13 @@
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.Foursquare.Location;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -35,6 +38,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -70,10 +75,15 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
             Log.e(TAG, "ioexception while getting auth token", e);
         }
         
-        final Group<User> friends = new Group<User>();
+        final HashMap<String,User> friends = new HashMap<String,User>();
         
+        Location loc = LocationUtils.createFoursquareLocation(mFoursquared.getLastKnownLocation());
         try {
-            friends.addAll(mFoursquared.getFoursquare().friends(mFoursquared.getUserId(), LocationUtils.createFoursquareLocation(mFoursquared.getLastKnownLocation())));
+            Group<User> friendsFromServer = mFoursquared.getFoursquare().friends(mFoursquared.getUserId(), loc);
+            for ( User friend : friendsFromServer ) {
+                Log.i(TAG, "Stashed friend " + friend.getId());
+                friends.put(friend.getId(), friend);
+            }
         } catch (FoursquareError e) {
             Log.e(TAG, "error fetching friends", e);
         } catch (FoursquareException e) {
@@ -84,6 +94,23 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         
         Log.i(TAG, "got " + friends.size() + " friends from server");
         
+        final Group<Checkin> checkins = new Group<Checkin>();
+        try {
+            checkins.addAll(mFoursquared.getFoursquare().checkins(loc));
+        } catch (FoursquareError e) {
+            Log.e(TAG, "error fetching checkins", e);
+        } catch (FoursquareException e) {
+            Log.e(TAG, "error fetching checkins", e);
+        } catch (IOException e) {
+            Log.e(TAG, "error fetching checkins", e);
+        }
+        for ( Checkin checkin : checkins ) {
+            Log.i(TAG, "handling checkin for user " + checkin.getUser().getId());
+            if ( friends.containsKey(checkin.getUser().getId())) {
+                friends.get(checkin.getUser().getId()).setCheckin(checkin);
+            }
+        }
+        
         ContentResolver resolver = getContext().getContentResolver();
         // TODO: sync correctly
         // TODO: double check that we're fetching *all* friends from foursquare
@@ -92,7 +119,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         // intersection: need to be updated
         
         ArrayList<ContentProviderOperation> opList = new ArrayList<ContentProviderOperation>();
-        for ( User friend : friends ) {
+        for ( User friend : friends.values() ) {
             long rawContactId = getRawContactId(resolver, friend);
             if ( rawContactId == 0 ) {
                 Log.i(TAG, "adding friend " + friend.getId() + " (" + friend.getFirstname() + " " + friend.getLastname() + ")");
@@ -189,10 +216,6 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
         opList.add(builder.build());
 
-
-//        friend.getFacebook();
-//        friend.getTwitter();
-
         // create a Data record with custom type to point at Foursquare profile
         builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
         builder.withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, backReference);
@@ -201,6 +224,15 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         builder.withValue(ContactsContract.Data.DATA2, "Foursquare Profile");
         builder.withValue(ContactsContract.Data.DATA3, "View profile");
         opList.add(builder.build());
+        
+        // TODO: fix this; it's killing the batch
+//        builder = ContentProviderOperation.newInsert(ContactsContract.StatusUpdates.CONTENT_URI);
+//        builder.withValueBackReference(ContactsContract.StatusUpdates.DATA_ID, backReference);
+//        String status = StringFormatters.getCheckinMessageLine1(friend.getCheckin(), true);
+//        builder.withValue(ContactsContract.StatusUpdates.STATUS, status);
+//        long created = new Date(friend.getCheckin().getCreated()).getTime();
+//        builder.withValue(ContactsContract.StatusUpdates.STATUS_TIMESTAMP, created);
+//        opList.add(builder.build());
         
         return opList;
         
@@ -255,10 +287,20 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
                     Log.i(TAG, "updating " + values.size() + " values; building op");
                     ops.add(op.build());
                 }
+                ContentProviderOperation.Builder updateStatus = ContentProviderOperation.newInsert(ContactsContract.StatusUpdates.CONTENT_URI);
+                updateStatus.withValue(ContactsContract.StatusUpdates.DATA_ID, id);
+                String status = StringFormatters.getCheckinMessageLine1(friend.getCheckin(), true);
+                updateStatus.withValue(ContactsContract.StatusUpdates.STATUS, status);
+                long created = new Date(friend.getCheckin().getCreated()).getTime();
+                updateStatus.withValue(ContactsContract.StatusUpdates.STATUS_TIMESTAMP, created);
+                ops.add(updateStatus.build());
             }
         } finally {
             c.close();
         }
+        
+        
+        
         return ops;
     }
     
