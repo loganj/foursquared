@@ -545,7 +545,7 @@ public class FriendsActivity extends LoadableListActivityWithView {
         mListAdapter = new SeparatedListAdapter(this);
          
         // User can sort by default (which is by checkin time), or just by distance.
-        if (checkins != null) {
+        if (checkins != null && checkins.size() > 0) {
             if (sortMethod == SORT_METHOD_DISTANCE) {
                 sortCheckinsDistance(checkins, mListAdapter);
             } else {
