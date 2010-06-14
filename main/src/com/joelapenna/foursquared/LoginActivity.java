@@ -50,6 +50,20 @@ public class LoginActivity extends AccountAuthenticatorActivity {
     public static final String PARAM_CONFIRMCREDENTIALS = "confirmCredentials";
     public static final String PARAM_LAUNCHMAIN = "launchMain";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
+    
+    private static final String PARAM_DESTINATIONINTENT = "destinationIntent";
+    
+    
+    static Intent loginAndProceedTo(Context context, Intent destination) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.setFlags(
+            Intent.FLAG_ACTIVITY_NO_HISTORY | 
+            Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | 
+            Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.getExtras().putParcelable(PARAM_DESTINATIONINTENT, destination);
+        return intent;
+    }
 
     private AsyncTask<Void, Void, Boolean> mLoginTask;
 
@@ -221,7 +235,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                     throw new FoursquareException(getResources().getString(
                             R.string.login_failed_login_toast));
                 } else {
-                    account = new Account(userId, AuthenticatorService.ACCOUNT_TYPE);
+                    account = new Account(phoneNumber, AuthenticatorService.ACCOUNT_TYPE);
                     am = AccountManager.get(mContext);
                 }
                 
@@ -273,7 +287,10 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                 // Launch the service to update any widgets, etc.
                 foursquared.requestStartService();
 
-                if ( getIntent().getBooleanExtra(PARAM_LAUNCHMAIN, true) ) {
+                Intent dest = getIntent().getParcelableExtra(PARAM_DESTINATIONINTENT);
+                if ( dest != null ) {
+                    startActivity(dest);
+                } else if ( getIntent().getBooleanExtra(PARAM_LAUNCHMAIN, true) ) {
                 // Launch the main activity to let the user do anything.
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

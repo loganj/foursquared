@@ -304,6 +304,11 @@
         <action
           android:name="com.joelapenna.foursquared.intent.action.LOGGED_OUT" />
       </intent-filter>
+      <intent-filter>
+	      <action android:name="android.intent.action.VIEW" />
+	      <category android:name="android.intent.category.DEFAULT" />
+	      <data android:mimeType="vnd.android.cursor.item/com.joelapenna.foursquared.profile" />
+      </intent-filter>
     </activity>
     
     <activity

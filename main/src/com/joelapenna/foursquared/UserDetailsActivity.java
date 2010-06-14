@@ -7,6 +7,7 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
@@ -14,16 +15,19 @@ import com.joelapenna.foursquared.util.StringFormatters;
 import com.joelapenna.foursquared.util.TabsUtil;
 import com.joelapenna.foursquared.util.UserUtils;
 
+import android.accounts.AccountManager;
 import android.app.TabActivity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -101,6 +105,8 @@ public class UserDetailsActivity extends TabActivity {
         } else {
 
             mStateHolder = new StateHolder();
+            mStateHolder.setShowAddFriendOptions(getIntent().getBooleanExtra(
+                    EXTRA_SHOW_ADD_FRIEND_OPTIONS, false));
 
             String userId = null;
             if (getIntent().getExtras() != null) {
@@ -116,10 +122,22 @@ public class UserDetailsActivity extends TabActivity {
                     return;
                 }
 
-                mStateHolder.setShowAddFriendOptions(getIntent().getBooleanExtra(
-                        EXTRA_SHOW_ADD_FRIEND_OPTIONS, false));
-            } else {
-                Log.e(TAG, "UserDetailsActivity requires a userid in its intent extras.");
+            } else if (getIntent().getData() != null) {
+                if (!((Foursquared) getApplication()).isReady()) {
+                    Log.i(TAG, "application is not ready; redirecting to login");
+                    setVisible(false);
+                    Intent redirectToLogin = LoginActivity.loginAndProceedTo(this, getIntent());
+                    startActivity(redirectToLogin);
+                    finish();
+                } else {
+                    Log.i(TAG, "application is ready; proceeding");
+                }
+                Cursor cursor = managedQuery(getIntent().getData(), null, null, null, null);
+                if (cursor.moveToNext()) {
+                    userId = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA1));
+                }
+            }  else {
+                Log.e(TAG, "UserDetailsActivity requires a userid in its intent extras, or a cursor to a contacts profile in its intents data");
                 finish();
                 return;
             }
@@ -148,10 +166,10 @@ public class UserDetailsActivity extends TabActivity {
             unregisterReceiver(mLoggedOutReceiver);
 
             RemoteResourceManager rrm = ((Foursquared) getApplication()).getRemoteResourceManager();
-            rrm.deleteObserver(mResourcesObserver);
+            rrm.deleteObserver(mResourcesObserver);   
         }
     }
-
+    
     private void ensureUi() {
         mImageViewPhoto = (ImageView) findViewById(R.id.userDetailsActivityPhoto);
         mImageViewPhoto.setOnClickListener(new OnClickListener() {
