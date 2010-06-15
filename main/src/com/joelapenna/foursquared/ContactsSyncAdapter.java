@@ -119,11 +119,13 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         // intersection: need to be updated
         
         ArrayList<ContentProviderOperation> opList = new ArrayList<ContentProviderOperation>();
+        ArrayList<User> justAdded = new ArrayList<User>();
         for ( User friend : friends.values() ) {
             long rawContactId = getRawContactId(resolver, friend);
             if ( rawContactId == 0 ) {
                 Log.i(TAG, "adding friend " + friend.getId() + " (" + friend.getFirstname() + " " + friend.getLastname() + ")");
                 opList.addAll(addContact(account, friend, opList.size()));
+                justAdded.add(friend);
             } else {
                 Log.i(TAG, "updating contact " + rawContactId + " for friend " + friend.getFirstname() + " " + friend.getLastname() + ")");
                  opList.addAll(updateContact(resolver, rawContactId, friend));
@@ -132,9 +134,23 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         try {
             mContentResolver.applyBatch(ContactsContract.AUTHORITY, opList);
         } catch (Exception e) {
-            Log.e(TAG, "Something went wrong during creation! " + e);
+            Log.e(TAG, "Something went wrong during creation!", e);
             e.printStackTrace();
-        }        
+        } 
+        
+        opList.clear();
+        for ( User friend : justAdded ) {
+            long rawContactId = getRawContactId(resolver, friend);
+            opList.addAll(updateStatus(resolver, rawContactId, friend));
+        }
+        
+        try {
+            mContentResolver.applyBatch(ContactsContract.AUTHORITY, opList);
+        } catch (Exception e) {
+            Log.e(TAG, "Something went wrong while updating status for new contacts", e);
+            e.printStackTrace();
+        } 
+        
     }
     
     /**
@@ -225,17 +241,32 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         builder.withValue(ContactsContract.Data.DATA3, "View profile");
         opList.add(builder.build());
         
-        // TODO: fix this; it's killing the batch
-//        builder = ContentProviderOperation.newInsert(ContactsContract.StatusUpdates.CONTENT_URI);
-//        builder.withValueBackReference(ContactsContract.StatusUpdates.DATA_ID, backReference);
-//        String status = StringFormatters.getCheckinMessageLine1(friend.getCheckin(), true);
-//        builder.withValue(ContactsContract.StatusUpdates.STATUS, status);
-//        long created = new Date(friend.getCheckin().getCreated()).getTime();
-//        builder.withValue(ContactsContract.StatusUpdates.STATUS_TIMESTAMP, created);
-//        opList.add(builder.build());
-        
         return opList;
         
+    }
+    
+    private ArrayList<ContentProviderOperation> updateStatus(ContentResolver resolver, long rawContactId, User friend) {
+        Cursor c = resolver.query(ContactsContract.Data.CONTENT_URI, 
+                RawContactDataQuery.PROJECTION, 
+                RawContactDataQuery.SELECTION, 
+                new String[] { String.valueOf(rawContactId) }, 
+                null);
+        ArrayList<ContentProviderOperation> optionOp = new ArrayList<ContentProviderOperation>(1);
+        try {
+            while (c.moveToNext()) {
+                long id = c.getLong(RawContactDataQuery.COLUMN_ID);
+                ContentProviderOperation.Builder updateStatus = ContentProviderOperation.newInsert(ContactsContract.StatusUpdates.CONTENT_URI);
+                updateStatus.withValue(ContactsContract.StatusUpdates.DATA_ID, id);
+                String status = StringFormatters.getCheckinMessageLine1(friend.getCheckin(), true);
+                updateStatus.withValue(ContactsContract.StatusUpdates.STATUS, status);
+                long created = new Date(friend.getCheckin().getCreated()).getTime();
+                updateStatus.withValue(ContactsContract.StatusUpdates.STATUS_TIMESTAMP, created);
+                optionOp.add(updateStatus.build());
+            }
+        } finally {
+            c.close();
+        }
+        return optionOp;
     }
     
     private ArrayList<ContentProviderOperation> updateContact(ContentResolver resolver, long rawContactId, User friend) {
