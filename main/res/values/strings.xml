@@ -3,7 +3,7 @@
   <string name="add_a_tip">Add a Tip</string>
   <string name="add_friends_activity_label">Foursquare Add Friends</string>
   <string name="add_venue_activity_label_add_venue">Foursquare Add a New Venue</string>
-  <string name="add_venue_activity_label_edit_venue">Foursquare Submit Venue Edits</string>
+  <string name="add_venue_activity_label_edit_venue">Foursquare Propose Venue Edits</string>
   <string name="add_venue_error_toast_venue_null">Unable to add venue!</string>
   <string name="add_venue_progress_bar_title_add_venue">Add Venue</string>
   <string name="add_venue_progress_bar_title_edit_venue">Submit Venue Edits</string>
@@ -236,7 +236,8 @@
   <string name="edit_venue_options_label">Foursquare Edit Venue</string>
   <string name="edit_venue_options_progress_title">Flag Venue</string>
   <string name="edit_venue_options_progress_message">Submitting venue flag info...</string>
-  <string name="edit_venue_options_btn_edit_venue">Edit venue info</string>
+  <string name="edit_venue_options_instructions">If you know the information for this venue is incorrect, you can suggest updates here. We\'re working through the suggestions on our end and will make updates as soon as we can. Thanks for your help!</string>
+  <string name="edit_venue_options_btn_edit_venue">Flag venue info</string>
   <string name="edit_venue_options_btn_flag_as_mislocated">Flag incorrect address</string>
   <string name="edit_venue_options_btn_flag_as_duplicate">Flag venue as duplicate</string>
   <string name="edit_venue_options_btn_flag_as_closed">Flag venue as closed</string>
