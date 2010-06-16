@@ -9,7 +9,13 @@
   android:padding="10dip"
   android:orientation="vertical"
   > 
-   
+  
+  <TextView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/edit_venue_options_instructions"
+    android:paddingBottom="15dip" />
+    
   <Button
     android:id="@+id/btnEditVenue"
     android:layout_width="fill_parent"
