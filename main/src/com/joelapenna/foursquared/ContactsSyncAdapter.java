@@ -76,9 +76,12 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
         
         final HashMap<String,User> friends = new HashMap<String,User>();
-        
+
         Location loc = LocationUtils.createFoursquareLocation(mFoursquared.getLastKnownLocation());
+
         try {
+            User user = mFoursquared.getFoursquare().user(null, false, false, loc);
+            friends.put(user.getId(), user);
             Group<User> friendsFromServer = mFoursquared.getFoursquare().friends(mFoursquared.getUserId(), loc);
             for ( User friend : friendsFromServer ) {
                 Log.i(TAG, "Stashed friend " + friend.getId());
