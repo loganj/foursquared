@@ -1,5 +1,6 @@
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.Foursquare.Location;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
@@ -48,12 +49,14 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String TAG = "ContactsSyncAdapter";
 
     final private Foursquared mFoursquared;
+    final private Foursquare mFoursquare;
     final private AccountManager mAccountManager;
     final private ContentResolver mContentResolver;
     
     public ContactsSyncAdapter(Foursquared foursquared, Context context, boolean autoInitialize) {
         super(context, autoInitialize);
         mFoursquared = foursquared;
+        mFoursquare = Foursquared.createFoursquare(context);
         mAccountManager = AccountManager.get(context);
         mContentResolver = context.getContentResolver();
     }
@@ -75,14 +78,15 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
             Log.e(TAG, "ioexception while getting auth token", e);
         }
         
+        mFoursquare.setCredentials(account.name, password);
         final HashMap<String,User> friends = new HashMap<String,User>();
 
         Location loc = LocationUtils.createFoursquareLocation(mFoursquared.getLastKnownLocation());
 
         try {
-            User user = mFoursquared.getFoursquare().user(null, false, false, loc);
+            User user = mFoursquare.user(null, false, false, loc);
             friends.put(user.getId(), user);
-            Group<User> friendsFromServer = mFoursquared.getFoursquare().friends(mFoursquared.getUserId(), loc);
+            Group<User> friendsFromServer = mFoursquare.friends(user.getId(), loc);
             for ( User friend : friendsFromServer ) {
                 Log.i(TAG, "Stashed friend " + friend.getId());
                 friends.put(friend.getId(), friend);
@@ -99,7 +103,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         
         final Group<Checkin> checkins = new Group<Checkin>();
         try {
-            checkins.addAll(mFoursquared.getFoursquare().checkins(loc));
+            checkins.addAll(mFoursquare.checkins(loc));
         } catch (FoursquareError e) {
             Log.e(TAG, "error fetching checkins", e);
         } catch (FoursquareException e) {
@@ -115,11 +119,6 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
         
         ContentResolver resolver = getContext().getContentResolver();
-        // TODO: sync correctly
-        // TODO: double check that we're fetching *all* friends from foursquare
-        // partition friend and contact sets into three sets:
-        // contacts - friends: need to be deleted
-        // intersection: need to be updated
         
         ArrayList<ContentProviderOperation> opList = new ArrayList<ContentProviderOperation>();
         ArrayList<User> justAdded = new ArrayList<User>();
@@ -249,18 +248,21 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
     }
     
     private ArrayList<ContentProviderOperation> updateStatus(ContentResolver resolver, long rawContactId, User friend) {
+        ArrayList<ContentProviderOperation> optionOp = new ArrayList<ContentProviderOperation>(1);
+        if ( friend.getCheckin() == null ) {
+            return optionOp;
+        }
         Cursor c = resolver.query(ContactsContract.Data.CONTENT_URI, 
                 RawContactDataQuery.PROJECTION, 
                 RawContactDataQuery.SELECTION, 
                 new String[] { String.valueOf(rawContactId) }, 
                 null);
-        ArrayList<ContentProviderOperation> optionOp = new ArrayList<ContentProviderOperation>(1);
         try {
             while (c.moveToNext()) {
                 long id = c.getLong(RawContactDataQuery.COLUMN_ID);
                 ContentProviderOperation.Builder updateStatus = ContentProviderOperation.newInsert(ContactsContract.StatusUpdates.CONTENT_URI);
                 updateStatus.withValue(ContactsContract.StatusUpdates.DATA_ID, id);
-                String status = StringFormatters.getCheckinMessageLine1(friend.getCheckin(), true);
+                String status = createStatus(friend.getCheckin());
                 updateStatus.withValue(ContactsContract.StatusUpdates.STATUS, status);
                 long created = new Date(friend.getCheckin().getCreated()).getTime();
                 updateStatus.withValue(ContactsContract.StatusUpdates.STATUS_TIMESTAMP, created);
@@ -270,6 +272,16 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
             c.close();
         }
         return optionOp;
+    }
+    
+    private String createStatus(Checkin checkin) {
+       if ( checkin.getVenue() != null ) {
+           return " @ " + checkin.getVenue().getName();
+       }
+       if ( checkin.getShout() != null ) {
+           return "\"" + checkin.getShout() + "\"";
+       }
+       return StringFormatters.getCheckinMessageLine1(checkin, true);
     }
     
     private ArrayList<ContentProviderOperation> updateContact(ContentResolver resolver, long rawContactId, User friend) {
@@ -321,13 +333,15 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
                     Log.i(TAG, "updating " + values.size() + " values; building op");
                     ops.add(op.build());
                 }
-                ContentProviderOperation.Builder updateStatus = ContentProviderOperation.newInsert(ContactsContract.StatusUpdates.CONTENT_URI);
-                updateStatus.withValue(ContactsContract.StatusUpdates.DATA_ID, id);
-                String status = StringFormatters.getCheckinMessageLine1(friend.getCheckin(), true);
-                updateStatus.withValue(ContactsContract.StatusUpdates.STATUS, status);
-                long created = new Date(friend.getCheckin().getCreated()).getTime();
-                updateStatus.withValue(ContactsContract.StatusUpdates.STATUS_TIMESTAMP, created);
-                ops.add(updateStatus.build());
+                if ( friend.getCheckin() != null ) {
+                    ContentProviderOperation.Builder updateStatus = ContentProviderOperation.newInsert(ContactsContract.StatusUpdates.CONTENT_URI);
+                    updateStatus.withValue(ContactsContract.StatusUpdates.DATA_ID, id);
+                    String status = createStatus(friend.getCheckin());
+                    updateStatus.withValue(ContactsContract.StatusUpdates.STATUS, status);
+                    long created = new Date(friend.getCheckin().getCreated()).getTime();
+                    updateStatus.withValue(ContactsContract.StatusUpdates.STATUS_TIMESTAMP, created);
+                    ops.add(updateStatus.build());
+                }
             }
         } finally {
             c.close();
