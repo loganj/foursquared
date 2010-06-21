@@ -21,14 +21,18 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.RemoteException;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -173,8 +177,14 @@ public class PingsService extends WakefulIntentService {
             
             if ( newCheckins.size() > 0 ) {
                 ContentResolver resolver = getApplication().getContentResolver();
+                ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>(newCheckins.size());
                 for ( Checkin checkin : newCheckins) {
-                    Sync.updateStatus(resolver, checkin.getUser(), checkin);
+                    ops.addAll(Sync.updateStatus(resolver, checkin.getUser(), checkin));
+                }
+                try {
+                    resolver.applyBatch(ContactsContract.AUTHORITY, ops);
+                } catch (Exception e) {
+                    Log.w(TAG, "updating contact statuses failed", e);
                 }
             }
             
