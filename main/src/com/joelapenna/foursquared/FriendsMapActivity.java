@@ -13,12 +13,13 @@ import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
-import com.joelapenna.foursquared.maps.CheckinItemizedOverlay;
+import com.joelapenna.foursquared.maps.CheckinGroup;
+import com.joelapenna.foursquared.maps.CheckinGroupItemizedOverlay;
 import com.joelapenna.foursquared.maps.CrashFixMyLocationOverlay;
-import com.joelapenna.foursquared.util.StringFormatters;
+import com.joelapenna.foursquared.maps.CheckinGroupItemizedOverlay.CheckingGroupOverlayTapListener;
+import com.joelapenna.foursquared.util.CheckinTimestampSort;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,30 +27,39 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
+ * @author Mark Wyszomierski (markww@gmail.com)
+ *   -Added support for checkingroup items, also stopped recreation
+ *    of overlay group in onResume(). [2010-06-21]
  */
 public class FriendsMapActivity extends MapActivity {
     public static final String TAG = "FriendsMapActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    private Venue mTappedVenue;
+    private String mTappedVenueId;
 
     private Observer mSearchResultsObserver;
     private Button mCheckinButton;
 
     private MapView mMapView;
     private MapController mMapController;
-    private ArrayList<CheckinItemizedOverlay> mCheckinsGroupOverlays = new ArrayList<CheckinItemizedOverlay>();
+    private ArrayList<CheckinGroupItemizedOverlay> mCheckinsGroupOverlays = new ArrayList<CheckinGroupItemizedOverlay>();
     private MyLocationOverlay mMyLocationOverlay;
+    private boolean mConstructedPinsOnce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_map_activity);
+        
+        mConstructedPinsOnce = false;
 
         mCheckinButton = (Button) findViewById(R.id.venueButton);
         mCheckinButton.setOnClickListener(new OnClickListener() {
@@ -58,7 +68,7 @@ public class FriendsMapActivity extends MapActivity {
                 if (DEBUG) Log.d(TAG, "firing checkin activity for checkin");
                 Intent intent = new Intent(FriendsMapActivity.this, VenueActivity.class);
                 intent.setAction(Intent.ACTION_VIEW);
-                intent.putExtra(Foursquared.EXTRA_VENUE_ID, mTappedVenue.getId());
+                intent.putExtra(Foursquared.EXTRA_VENUE_ID, mTappedVenueId);
                 startActivity(intent);
             }
         });
@@ -81,12 +91,17 @@ public class FriendsMapActivity extends MapActivity {
         super.onResume();
         if (DEBUG) Log.d(TAG, "onResume()");
         mMyLocationOverlay.enableMyLocation();
-        // mMyLocationOverlay.enableCompass(); // Disabled due to a sdk 1.5
+        //mMyLocationOverlay.enableCompass(); // Disabled due to a sdk 1.5
         // emulator bug
-
-        clearMap();
-        loadSearchResults(FriendsActivity.searchResultsObservable.getSearchResults());
-        recenterMap();
+        
+        // If this is the first time we're showing the activity, try generating the overlay
+        // immediately. If the results are already loaded, the observer would not be called.
+        if (!mConstructedPinsOnce) {
+            clearMap();
+            loadSearchResults(FriendsActivity.searchResultsObservable.getSearchResults());
+            recenterMap();
+            mConstructedPinsOnce = true;
+        }
 
         FriendsActivity.searchResultsObservable.addObserver(mSearchResultsObserver);
     }
@@ -122,7 +137,7 @@ public class FriendsMapActivity extends MapActivity {
         if (DEBUG) Log.d(TAG, "Loading search results");
 
         // One CheckinItemizedOverlay per group!
-        CheckinItemizedOverlay mappableCheckinsOverlay = createMappableCheckinsOverlay(checkins);
+        CheckinGroupItemizedOverlay mappableCheckinsOverlay = createMappableCheckinsOverlay(checkins);
 
         if (mappableCheckinsOverlay != null) {
             if (DEBUG) Log.d(TAG, "adding a map view checkin overlay.");
@@ -146,28 +161,68 @@ public class FriendsMapActivity extends MapActivity {
     /**
      * Create an overlay that contains a specific group's list of mappable
      * checkins.
-     * 
-     * @param group
-     * @return
      */
-    private CheckinItemizedOverlay createMappableCheckinsOverlay(Group<Checkin> group) {
-        Group<Checkin> mappableCheckins = new Group<Checkin>();
-        mappableCheckins.setType(group.getType());
-        if (DEBUG) Log.d(TAG, "Adding items in group: " + group.getType());
-
-        final int checkinCount = group.size();
-        for (int checkinIndex = 0; checkinIndex < checkinCount; checkinIndex++) {
-            Checkin checkin = (Checkin) group.get(checkinIndex);
-            if (VenueUtils.hasValidLocation(checkin.getVenue())) {
-                if (DEBUG) Log.d(TAG, "adding checkin: " + checkin.getVenue().getName());
-                mappableCheckins.add(checkin);
+    private CheckinGroupItemizedOverlay createMappableCheckinsOverlay(Group<Checkin> group) {
+        // We want to group checkins by venue. Do max three checkins per venue, a total
+        // of 100 venues total. We should only also display checkins that are within a
+        // city radius, and are at most three hours old.
+        CheckinTimestampSort timestamps = new CheckinTimestampSort();
+        
+        Map<String, CheckinGroup> checkinMap = new HashMap<String, CheckinGroup>();
+        for (int i = 0, m = group.size(); i < m; i++) {
+            Checkin checkin = (Checkin)group.get(i);
+            Venue venue = checkin.getVenue();
+            if (VenueUtils.hasValidLocation(venue)) {
+                // Make sure the venue is within city radius.
+                try {
+                    int distance = Integer.parseInt(checkin.getDistance());
+                    if (distance > FriendsActivity.CITY_RADIUS_IN_METERS) {
+                        continue;
+                    }
+                } catch (NumberFormatException ex) {
+                    // Distance was invalid, ignore this checkin.
+                    continue;
+                }
+                
+                // Make sure the checkin happened within the last three hours.
+                try { 
+                    Date date = new Date(checkin.getCreated());
+                    if (date.before(timestamps.getBoundaryRecent())) {
+                        continue;
+                    }
+                } catch (Exception ex) {
+                    // Timestamps was invalid, ignore this checkin.
+                    continue;
+                }
+                
+                String venueId = venue.getId();
+                CheckinGroup cg = checkinMap.get(venueId);
+                if (cg == null) {
+                    cg = new CheckinGroup();
+                    checkinMap.put(venueId, cg);
+                }
+                
+                // Stop appending if we already have three checkins here.
+                if (cg.getCheckinCount() < 3) {
+                    cg.appendCheckin(checkin);
+                }
+            }
+            
+            // We can't have too many pins on the map.
+            if (checkinMap.size() > 99) {
+                break;
             }
         }
+
+        Group<CheckinGroup> mappableCheckins = new Group<CheckinGroup>(checkinMap.values());
         if (mappableCheckins.size() > 0) {
-            CheckinItemizedOverlay mappableCheckinsOverlay = new CheckinItemizedOverlayWithButton( //
-                    this.getResources().getDrawable(R.drawable.map_marker_blue));
-            mappableCheckinsOverlay.setGroup(mappableCheckins);
-            return mappableCheckinsOverlay;
+            CheckinGroupItemizedOverlay mappableCheckinsGroupOverlay = new CheckinGroupItemizedOverlay(
+                    this,
+                    ((Foursquared) getApplication()).getRemoteResourceManager(),
+                    this.getResources().getDrawable(R.drawable.map_marker_blue),
+                    mCheckingGroupOverlayTapListener);
+            mappableCheckinsGroupOverlay.setGroup(mappableCheckins);
+            return mappableCheckinsGroupOverlay;
         } else {
             return null;
         }
@@ -182,7 +237,7 @@ public class FriendsMapActivity extends MapActivity {
             mMapController.setZoom(16);
         } else if (mCheckinsGroupOverlays.size() > 0) {
             if (DEBUG) Log.d(TAG, "recenterMap via checkins overlay span.");
-            CheckinItemizedOverlay newestOverlay = mCheckinsGroupOverlays.get(0);
+            CheckinGroupItemizedOverlay newestOverlay = mCheckinsGroupOverlays.get(0);
             if (DEBUG) {
                 Log.d(TAG, "recenterMap to: " + newestOverlay.getLatSpanE6() + " "
                         + newestOverlay.getLonSpanE6());
@@ -195,36 +250,19 @@ public class FriendsMapActivity extends MapActivity {
             mMapController.animateTo(center);
             mMapController.setZoom(16);
             return;
+        } else {
+            if (DEBUG) Log.d(TAG, "Could not re-center; No known user location.");
         }
-        if (DEBUG) Log.d(TAG, "Could not re-center; No known user location.");
     }
-
-    private class CheckinItemizedOverlayWithButton extends CheckinItemizedOverlay {
-        public static final String TAG = "CheckinItemizedOverlayWithButton";
-        public static final boolean DEBUG = FoursquaredSettings.DEBUG;
-
-        public CheckinItemizedOverlayWithButton(Drawable defaultMarker) {
-            super(defaultMarker);
-        }
-
+ 
+    /** Handle taps on one of the pins. */
+    private CheckingGroupOverlayTapListener mCheckingGroupOverlayTapListener = 
+        new CheckingGroupOverlayTapListener() {
         @Override
-        public boolean onTap(GeoPoint p, MapView mapView) {
-            if (DEBUG) Log.d(TAG, "onTap: " + this + " " + p + " " + mapView);
-            mCheckinButton.setVisibility(View.GONE);
-            return super.onTap(p, mapView);
-        }
-
-        @Override
-        protected boolean onTap(int i) {
-            if (DEBUG) Log.d(TAG, "onTap: " + this + " " + i);
-            CheckinOverlayItem item = (CheckinOverlayItem) getItem(i);
-            item.getCheckin();
-            Checkin checkin = item.getCheckin();
-            mTappedVenue = checkin.getVenue();
-            if (DEBUG) Log.d(TAG, "onTap: " + checkin.getVenue().getName());
-            mCheckinButton.setText(StringFormatters.getCheckinMessageLine1(checkin, true));
+        public void onTap(CheckinGroup cg) {
+            mTappedVenueId = cg.getVenueId();
+            mCheckinButton.setText(cg.getDescription());
             mCheckinButton.setVisibility(View.VISIBLE);
-            return true;
         }
-    }
+    };
 }

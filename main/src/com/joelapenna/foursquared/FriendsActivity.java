@@ -66,7 +66,7 @@ public class FriendsActivity extends LoadableListActivityWithView {
 
     public static final String QUERY_NEARBY = null;
 
-    private static final int CITY_RADIUS_IN_METERS = 20 * 1000; // 20km
+    public static final int CITY_RADIUS_IN_METERS = 20 * 1000; // 20km
     private static final long SLEEP_TIME_IF_NO_LOCATION = 3000L;
 
     private static final int MENU_GROUP_SEARCH = 0;
@@ -77,9 +77,10 @@ public class FriendsActivity extends LoadableListActivityWithView {
     
     private static final int MENU_MORE_SORT_DEFAULT = 20;
     private static final int MENU_MORE_SORT_DISTANCE = 21;
-    private static final int MENU_MORE_SORT_LEADERBOARD = 22;
-    private static final int MENU_MORE_SORT_ADD_FRIENDS = 23;
-    private static final int MENU_MORE_SORT_FRIEND_REQUESTS = 24;
+    private static final int MENU_MORE_MAP = 22;
+    private static final int MENU_MORE_SORT_LEADERBOARD = 23;
+    private static final int MENU_MORE_SORT_ADD_FRIENDS = 24;
+    private static final int MENU_MORE_SORT_FRIEND_REQUESTS = 25;
     
     private static final int SORT_METHOD_DEFAULT = 0;
     private static final int SORT_METHOD_DISTANCE = 1;
@@ -134,6 +135,7 @@ public class FriendsActivity extends LoadableListActivityWithView {
                 R.string.friendsactivity_menu_sort_time));
         mMenuMoreSubitems.put(MENU_MORE_SORT_DISTANCE, getResources().getString(
                 R.string.friendsactivity_menu_sort_distance));
+        mMenuMoreSubitems.put(MENU_MORE_MAP, "Map");
         mMenuMoreSubitems.put(MENU_MORE_SORT_LEADERBOARD, getResources().getString(
                 R.string.friendsactivity_menu_leaderboard));
         mMenuMoreSubitems.put(MENU_MORE_SORT_ADD_FRIENDS, getResources().getString(
@@ -224,6 +226,9 @@ public class FriendsActivity extends LoadableListActivityWithView {
                 } else if (item.getTitle().equals(mMenuMoreSubitems.get(MENU_MORE_SORT_DISTANCE))) {
                     mSearchHolder.sortMethod = SORT_METHOD_DISTANCE;
                     putSearchResultsInAdapter(mSearchHolder.results, mSearchHolder.sortMethod);
+                    return true;
+                } else if (item.getTitle().equals("Map")) {
+                    startActivity(new Intent(FriendsActivity.this, FriendsMapActivity.class));
                     return true;
                 } else if (item.getTitle().equals(mMenuMoreSubitems.get(MENU_MORE_SORT_LEADERBOARD))) {
                     startActivity(new Intent(FriendsActivity.this, StatsActivity.class));
