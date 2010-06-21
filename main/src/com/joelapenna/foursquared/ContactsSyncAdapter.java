@@ -8,7 +8,6 @@ import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.location.LocationUtils;
-import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -123,7 +122,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         ArrayList<ContentProviderOperation> opList = new ArrayList<ContentProviderOperation>();
         ArrayList<User> justAdded = new ArrayList<User>();
         for ( User friend : friends.values() ) {
-            long rawContactId = getRawContactId(resolver, friend);
+            long rawContactId = Sync.getRawContactId(resolver, friend);
             if ( rawContactId == 0 ) {
                 Log.i(TAG, "adding friend " + friend.getId() + " (" + friend.getFirstname() + " " + friend.getLastname() + ")");
                 opList.addAll(addContact(account, friend, opList.size()));
@@ -142,8 +141,10 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         
         opList.clear();
         for ( User friend : justAdded ) {
-            long rawContactId = getRawContactId(resolver, friend);
-            opList.addAll(updateStatus(resolver, rawContactId, friend));
+            long rawContactId = Sync.getRawContactId(resolver, friend);
+            if (friend.getCheckin() != null) {
+                opList.addAll(Sync.updateStatus(resolver, rawContactId, friend.getCheckin()));
+            }
         }
         
         try {
@@ -155,29 +156,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         
     }
     
-    /**
-     * 
-     * @return raw contact id, or 0 if not found
-     */
-    private long getRawContactId(ContentResolver resolver, User friend) {
-        long rawContactId = 0;
-        Cursor c = resolver.query(RawContacts.CONTENT_URI, 
-                                  RawContactIdQuery.PROJECTION, 
-                                  RawContactIdQuery.SELECTION, 
-                                  new String[] { friend.getId() }, null);
-        try {
-            if (c.moveToFirst()) {
-                rawContactId = c.getLong(RawContactIdQuery.COLUMN_ID);
-            }
-        } finally {
-            if ( c != null) {
-                c.close();
-            }
-        }
-        return rawContactId;
-    }
-    
-    private static class RawContactIdQuery {
+    static class RawContactIdQuery {
         static final String[] PROJECTION = new String[] { RawContacts._ID };
         static final String SELECTION = RawContacts.ACCOUNT_TYPE+"='"+AuthenticatorService.ACCOUNT_TYPE+"'"
                                         + " AND " + RawContacts.SOURCE_ID+"=?";
@@ -247,47 +226,10 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         
     }
     
-    private ArrayList<ContentProviderOperation> updateStatus(ContentResolver resolver, long rawContactId, User friend) {
-        ArrayList<ContentProviderOperation> optionOp = new ArrayList<ContentProviderOperation>(1);
-        if ( friend.getCheckin() == null ) {
-            return optionOp;
-        }
-        Cursor c = resolver.query(ContactsContract.Data.CONTENT_URI, 
-                RawContactDataQuery.PROJECTION, 
-                RawContactDataQuery.SELECTION, 
-                new String[] { String.valueOf(rawContactId) }, 
-                null);
-        try {
-            while (c.moveToNext()) {
-                long id = c.getLong(RawContactDataQuery.COLUMN_ID);
-                ContentProviderOperation.Builder updateStatus = ContentProviderOperation.newInsert(ContactsContract.StatusUpdates.CONTENT_URI);
-                updateStatus.withValue(ContactsContract.StatusUpdates.DATA_ID, id);
-                String status = createStatus(friend.getCheckin());
-                updateStatus.withValue(ContactsContract.StatusUpdates.STATUS, status);
-                long created = new Date(friend.getCheckin().getCreated()).getTime();
-                updateStatus.withValue(ContactsContract.StatusUpdates.STATUS_TIMESTAMP, created);
-                optionOp.add(updateStatus.build());
-            }
-        } finally {
-            c.close();
-        }
-        return optionOp;
-    }
-    
-    private String createStatus(Checkin checkin) {
-       if ( checkin.getVenue() != null ) {
-           return " @ " + checkin.getVenue().getName();
-       }
-       if ( checkin.getShout() != null ) {
-           return "\"" + checkin.getShout() + "\"";
-       }
-       return StringFormatters.getCheckinMessageLine1(checkin, true);
-    }
-    
     private ArrayList<ContentProviderOperation> updateContact(ContentResolver resolver, long rawContactId, User friend) {
         Cursor c = resolver.query(ContactsContract.Data.CONTENT_URI, 
-                                  RawContactDataQuery.PROJECTION, 
-                                  RawContactDataQuery.SELECTION, 
+                                  Sync.RawContactDataQuery.PROJECTION, 
+                                  Sync.RawContactDataQuery.SELECTION, 
                                   new String[] { String.valueOf(rawContactId) }, 
                                   null);
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
@@ -296,19 +238,19 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
             while (c.moveToNext()) {
                 Log.i(TAG, "processing row with raw_contact_id=" + c.getLong(5));
                 Uri uri = ContentUris.withAppendedId(Data.CONTENT_URI, rawContactId);
-                long id = c.getLong(RawContactDataQuery.COLUMN_ID);
-                String mimeType = c.getString(RawContactDataQuery.COLUMN_MIMETYPE);
+                long id = c.getLong(Sync.RawContactDataQuery.COLUMN_ID);
+                String mimeType = c.getString(Sync.RawContactDataQuery.COLUMN_MIMETYPE);
                 ContentValues values = new ContentValues();
                 if ( StructuredName.CONTENT_ITEM_TYPE.equals(mimeType)) {
                     
                     // TODO: will this ever be null?  what if it's null, and we want to clear the column?
-                    String contactFamilyName = c.getString(RawContactDataQuery.COLUMN_FAMILY_NAME);
+                    String contactFamilyName = c.getString(Sync.RawContactDataQuery.COLUMN_FAMILY_NAME);
                     if ( friend.getLastname() != null && !friend.getLastname().equals(contactFamilyName)) {
                         Log.i(TAG, "updating family name from '" + contactFamilyName + "' to '" + friend.getLastname() + "'");
                         values.put(StructuredName.FAMILY_NAME, friend.getLastname());
                     }
                     
-                    String contactGivenName = c.getString(RawContactDataQuery.COLUMN_GIVEN_NAME);
+                    String contactGivenName = c.getString(Sync.RawContactDataQuery.COLUMN_GIVEN_NAME);
                     if ( friend.getFirstname() != null &&
                          !friend.getFirstname().equals(contactGivenName)) {
                         Log.i(TAG, "updating given name from '" + contactGivenName + "' to '" + friend.getFirstname() + "'");
@@ -316,12 +258,12 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
                     }
                 } else if ( Phone.CONTENT_ITEM_TYPE.equals(mimeType) ) {
                     
-                    if ( friend.getPhone() != null && !friend.getPhone().equals(c.getString(RawContactDataQuery.COLUMN_PHONE_NUMBER))) {
+                    if ( friend.getPhone() != null && !friend.getPhone().equals(c.getString(Sync.RawContactDataQuery.COLUMN_PHONE_NUMBER))) {
                         Log.i(TAG, "updating phone to '" + friend.getPhone() + "'");
                         values.put(Phone.NUMBER, friend.getPhone());
                     }
                 } else if ( Email.CONTENT_ITEM_TYPE.equals(mimeType)) {
-                    if ( friend.getEmail() != null && !friend.getEmail().equals(c.getString(RawContactDataQuery.COLUMN_EMAIL_ADDRESS))) {
+                    if ( friend.getEmail() != null && !friend.getEmail().equals(c.getString(Sync.RawContactDataQuery.COLUMN_EMAIL_ADDRESS))) {
                         Log.i(TAG, "updating email to '" + friend.getEmail() + "'");
                         values.put(Email.CONTENT_ITEM_TYPE, friend.getEmail());
                     }
@@ -336,7 +278,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
                 if ( friend.getCheckin() != null ) {
                     ContentProviderOperation.Builder updateStatus = ContentProviderOperation.newInsert(ContactsContract.StatusUpdates.CONTENT_URI);
                     updateStatus.withValue(ContactsContract.StatusUpdates.DATA_ID, id);
-                    String status = createStatus(friend.getCheckin());
+                    String status = Sync.createStatus(friend.getCheckin());
                     updateStatus.withValue(ContactsContract.StatusUpdates.STATUS, status);
                     long created = new Date(friend.getCheckin().getCreated()).getTime();
                     updateStatus.withValue(ContactsContract.StatusUpdates.STATUS_TIMESTAMP, created);
@@ -350,22 +292,6 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         
         
         return ops;
-    }
-    
-    private static class RawContactDataQuery {
-        final static String[] PROJECTION = new String[] { Data._ID, Data.MIMETYPE, Data.DATA1, Data.DATA2, Data.DATA3, Data.RAW_CONTACT_ID };
-        final static String SELECTION = Data.RAW_CONTACT_ID + "=?";
-
-        final static int COLUMN_ID = 0;
-        final static int COLUMN_MIMETYPE = 1;
-        final static int COLUMN_DATA1 = 2;
-        final static int COLUMN_DATA2 = 3;
-        final static int COLUMN_DATA3 = 4;
-        final static int COLUMN_PHONE_NUMBER = COLUMN_DATA1;
-        final static int COLUMN_EMAIL_ADDRESS = COLUMN_DATA1;
-        final static int COLUMN_GIVEN_NAME = COLUMN_DATA2;
-        final static int COLUMN_FAMILY_NAME = COLUMN_DATA3;
-
     }
 
 }

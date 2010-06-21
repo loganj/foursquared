@@ -7,10 +7,12 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquared.ContactsSyncAdapter;
 import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.FriendsActivity;
 import com.joelapenna.foursquared.MainActivity;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.Sync;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.StringFormatters;
@@ -19,6 +21,7 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -167,6 +170,13 @@ public class PingsService extends WakefulIntentService {
             }
 
             Log.i(TAG, "Found " + newCheckins.size() + " new checkins.");
+            
+            if ( newCheckins.size() > 0 ) {
+                ContentResolver resolver = getApplication().getContentResolver();
+                for ( Checkin checkin : newCheckins) {
+                    Sync.updateStatus(resolver, checkin.getUser(), checkin);
+                }
+            }
             
             notifyUser(newCheckins);
         }
