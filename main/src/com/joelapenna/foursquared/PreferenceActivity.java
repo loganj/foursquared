@@ -8,17 +8,26 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.FeedbackUtils;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.BroadcastReceiver;
+import android.content.ContentProviderClient;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.Groups;
+import android.provider.ContactsContract.Settings;
 import android.util.Log;
 
 /**
@@ -58,6 +67,38 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 ((Foursquared) getApplication()).requestUpdateUser();
                 return false;
+            }
+        });
+        
+        Preference syncContactsPreference = getPreferenceScreen().findPreference(Preferences.PREFERENCE_SYNC_CONTACTS);
+        syncContactsPreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                Boolean on = (Boolean)newValue;
+                String login = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(Preferences.PREFERENCE_LOGIN, "");
+                String password = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(Preferences.PREFERENCE_PASSWORD, "");
+                if ("".equals(login) || "".equals(password)) {
+                    return false;
+                }
+                Account account = new Account(login, AuthenticatorService.ACCOUNT_TYPE);
+                if ( on ) {
+                    AccountManager.get(PreferenceActivity.this).addAccountExplicitly(account, password, null);
+                    ContentResolver.setSyncAutomatically(account, ContactsContract.AUTHORITY, true);
+                    ContentProviderClient client = getContentResolver().acquireContentProviderClient(ContactsContract.AUTHORITY_URI);
+                    ContentValues cv = new ContentValues();
+                    cv.put(Groups.ACCOUNT_NAME, account.name);
+                    cv.put(Groups.ACCOUNT_TYPE, account.type);
+                    cv.put(Settings.UNGROUPED_VISIBLE, true);
+                    try {
+                        client.insert(Settings.CONTENT_URI, cv);
+                    } catch (RemoteException e) {
+                        return false;
+                    }
+                } else {
+                    // TODO: callback and handler should not be null; if something goes wrong, we should not set the pref
+                    AccountManager.get(PreferenceActivity.this).removeAccount(account, null, null);
+                }
+                return true;
             }
         });
     }

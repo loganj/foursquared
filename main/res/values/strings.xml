@@ -109,6 +109,9 @@
   <string name="preferences_share_summary_on">By default, tell my friends when I check-in.</string>
   <string name="preferences_startup_tab">Startup Tab</string>
   <string name="preferences_startup_tab_summary">Select which tab to display at startup.</string>
+  <string name="preferences_sync_contacts_title">Sync to Contacts</string>
+  <string name="preferences_sync_contacts_off">Don\'t sync friends\' info to Contacts</string>
+  <string name="preferences_sync_contacts_on">Sync friends\' info to Contacts</string>
   <string name="preferences_twitter_checkin_summary_off">By default, don\'t tweet my checkins.</string>
   <string name="preferences_twitter_checkin_summary_on">By default, tweet my checkins.</string>
   <string name="preferences_twitter_checkin_title">Tell Twitter</string>

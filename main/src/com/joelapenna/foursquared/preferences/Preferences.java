@@ -32,6 +32,7 @@ public class Preferences {
     public static final String PREFERENCE_SHARE_CHECKIN = "share_checkin";
     public static final String PREFERENCE_IMMEDIATE_CHECKIN = "immediate_checkin";
     public static final String PREFERENCE_STARTUP_TAB = "startup_tab";
+    public static final String PREFERENCE_SYNC_CONTACTS = "sync_contacts";
  
     // Hacks for preference activity extra UI elements.
     public static final String PREFERENCE_ADVANCED_SETTINGS = "advanced_settings";
