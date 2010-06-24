@@ -42,7 +42,36 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private SharedPreferences mPrefs;
+    private Account mAccount;
     
+    private OnPreferenceChangeListener syncChangeListener = new OnPreferenceChangeListener() {
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            Boolean on = (Boolean)newValue;
+            if ( on ) {
+                String password = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(Preferences.PREFERENCE_PASSWORD, "");
+                if ("".equals(password)) {
+                    return false;
+                }
+                AccountManager.get(PreferenceActivity.this).addAccountExplicitly(mAccount, password, null);
+                ContentResolver.setSyncAutomatically(mAccount, ContactsContract.AUTHORITY, true);
+                ContentProviderClient client = getContentResolver().acquireContentProviderClient(ContactsContract.AUTHORITY_URI);
+                ContentValues cv = new ContentValues();
+                cv.put(Groups.ACCOUNT_NAME, mAccount.name);
+                cv.put(Groups.ACCOUNT_TYPE, mAccount.type);
+                cv.put(Settings.UNGROUPED_VISIBLE, true);
+                try {
+                    client.insert(Settings.CONTENT_URI, cv);
+                } catch (RemoteException e) {
+                    return false;
+                }
+            } else {
+                // TODO: callback and handler should not be null; if something goes wrong, we should not set the pref
+                AccountManager.get(PreferenceActivity.this).removeAccount(mAccount, null, null);
+            }
+            return true;
+        }
+    };
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
@@ -52,14 +81,37 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         }
     };
 
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // TODO: would be slightly more efficient to hook a listener up to ContentResolver, if possible
+        boolean crSaysSync = ContentResolver.getSyncAutomatically(mAccount, ContactsContract.AUTHORITY);
+        Log.i(TAG, "ContentResolver.getSyncAutomatically = " + crSaysSync);
+        mPrefs.edit().putBoolean(Preferences.PREFERENCE_SYNC_CONTACTS, crSaysSync).commit();
+        Log.i(TAG, "Preference now is " + mPrefs.getBoolean(Preferences.PREFERENCE_SYNC_CONTACTS, false));
+        Preference syncContactsPreference = getPreferenceScreen().findPreference(Preferences.PREFERENCE_SYNC_CONTACTS);
+        syncContactsPreference.setOnPreferenceChangeListener(syncChangeListener);
+        Log.i(TAG, "added preference change listener");
+    }
+    
+    @Override
+    protected void onPause() {
+        Preference syncContactsPreference = getPreferenceScreen().findPreference(Preferences.PREFERENCE_SYNC_CONTACTS);
+        syncContactsPreference.setOnPreferenceChangeListener(null);
+        Log.i(TAG, "removed preference change listener");
+        super.onPause();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
+        String login = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(Preferences.PREFERENCE_LOGIN, "");
+        mAccount = new Account(login, AuthenticatorService.ACCOUNT_TYPE);
 
         this.addPreferencesFromResource(R.xml.preferences);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-
         Preference advanceSettingsPreference = getPreferenceScreen().findPreference(
                 Preferences.PREFERENCE_ADVANCED_SETTINGS);
         advanceSettingsPreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
@@ -70,37 +122,6 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
             }
         });
         
-        Preference syncContactsPreference = getPreferenceScreen().findPreference(Preferences.PREFERENCE_SYNC_CONTACTS);
-        syncContactsPreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                Boolean on = (Boolean)newValue;
-                String login = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(Preferences.PREFERENCE_LOGIN, "");
-                String password = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(Preferences.PREFERENCE_PASSWORD, "");
-                if ("".equals(login) || "".equals(password)) {
-                    return false;
-                }
-                Account account = new Account(login, AuthenticatorService.ACCOUNT_TYPE);
-                if ( on ) {
-                    AccountManager.get(PreferenceActivity.this).addAccountExplicitly(account, password, null);
-                    ContentResolver.setSyncAutomatically(account, ContactsContract.AUTHORITY, true);
-                    ContentProviderClient client = getContentResolver().acquireContentProviderClient(ContactsContract.AUTHORITY_URI);
-                    ContentValues cv = new ContentValues();
-                    cv.put(Groups.ACCOUNT_NAME, account.name);
-                    cv.put(Groups.ACCOUNT_TYPE, account.type);
-                    cv.put(Settings.UNGROUPED_VISIBLE, true);
-                    try {
-                        client.insert(Settings.CONTENT_URI, cv);
-                    } catch (RemoteException e) {
-                        return false;
-                    }
-                } else {
-                    // TODO: callback and handler should not be null; if something goes wrong, we should not set the pref
-                    AccountManager.get(PreferenceActivity.this).removeAccount(account, null, null);
-                }
-                return true;
-            }
-        });
     }
     
     @Override
