@@ -16,6 +16,7 @@ import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.maps.CrashFixMyLocationOverlay;
 import com.joelapenna.foursquared.maps.VenueItemizedOverlay;
+import com.joelapenna.foursquared.widget.MapCalloutView;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -23,7 +24,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -35,10 +35,10 @@ public class SearchVenuesMapActivity extends MapActivity {
     public static final String TAG = "SearchVenuesMapActivity";
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
-    private Venue mTappedVenue;
+    private String mTappedVenueId;
 
     private Observer mSearchResultsObserver;
-    private Button mVenueButton;
+    private MapCalloutView mCallout;
 
     private MapView mMapView;
     private MapController mMapController;
@@ -52,18 +52,18 @@ public class SearchVenuesMapActivity extends MapActivity {
 
         initMap();
 
-        mVenueButton = (Button)findViewById(R.id.venueButton);
-        mVenueButton.setOnClickListener(new OnClickListener() {
+        mCallout = (MapCalloutView) findViewById(R.id.map_callout);
+        mCallout.setVisibility(View.GONE);
+        mCallout.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (DEBUG) Log.d(TAG, "firing venue activity for venue");
+            public void onClick(View view) {
                 Intent intent = new Intent(SearchVenuesMapActivity.this, VenueActivity.class);
                 intent.setAction(Intent.ACTION_VIEW);
-                intent.putExtra(Foursquared.EXTRA_VENUE_ID, mTappedVenue.getId());
+                intent.putExtra(Foursquared.EXTRA_VENUE_ID, mTappedVenueId);
                 startActivity(intent);
             }
         });
-
+        
         mSearchResultsObserver = new Observer() {
             @Override
             public void update(Observable observable, Object data) {
@@ -213,7 +213,7 @@ public class SearchVenuesMapActivity extends MapActivity {
         @Override
         public boolean onTap(GeoPoint p, MapView mapView) {
             if (DEBUG) Log.d(TAG, "onTap: " + this + " " + p + " " + mapView);
-            mVenueButton.setVisibility(View.GONE);
+            mCallout.setVisibility(View.GONE);
             return super.onTap(p, mapView);
         }
 
@@ -221,10 +221,10 @@ public class SearchVenuesMapActivity extends MapActivity {
         protected boolean onTap(int i) {
             if (DEBUG) Log.d(TAG, "onTap: " + this + " " + i);
             VenueOverlayItem item = (VenueOverlayItem)getItem(i);
-            mTappedVenue = item.getVenue();
-            if (DEBUG) Log.d(TAG, "onTap: " + item.getVenue().getName());
-            mVenueButton.setText(item.getVenue().getName());
-            mVenueButton.setVisibility(View.VISIBLE);
+            mTappedVenueId = item.getVenue().getId();
+            mCallout.setTitle(item.getVenue().getName());
+            mCallout.setMessage(item.getVenue().getAddress());
+            mCallout.setVisibility(View.VISIBLE);
             return true;
         }
     }

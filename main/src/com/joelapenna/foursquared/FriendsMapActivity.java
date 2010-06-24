@@ -9,6 +9,7 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.google.android.maps.OverlayItem;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
@@ -18,13 +19,14 @@ import com.joelapenna.foursquared.maps.CheckinGroupItemizedOverlay;
 import com.joelapenna.foursquared.maps.CrashFixMyLocationOverlay;
 import com.joelapenna.foursquared.maps.CheckinGroupItemizedOverlay.CheckingGroupOverlayTapListener;
 import com.joelapenna.foursquared.util.CheckinTimestampSort;
+import com.joelapenna.foursquared.widget.MapCalloutView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,11 +48,12 @@ public class FriendsMapActivity extends MapActivity {
     private String mTappedVenueId;
 
     private Observer mSearchResultsObserver;
-    private Button mCheckinButton;
-
+    private MapCalloutView mCallout;
+    
     private MapView mMapView;
     private MapController mMapController;
-    private ArrayList<CheckinGroupItemizedOverlay> mCheckinsGroupOverlays = new ArrayList<CheckinGroupItemizedOverlay>();
+    private ArrayList<CheckinGroupItemizedOverlay> mCheckinsGroupOverlays = 
+        new ArrayList<CheckinGroupItemizedOverlay>();
     private MyLocationOverlay mMyLocationOverlay;
     private boolean mConstructedPinsOnce;
 
@@ -61,18 +64,18 @@ public class FriendsMapActivity extends MapActivity {
         
         mConstructedPinsOnce = false;
 
-        mCheckinButton = (Button) findViewById(R.id.venueButton);
-        mCheckinButton.setOnClickListener(new OnClickListener() {
+        mCallout = (MapCalloutView) findViewById(R.id.map_callout);
+        mCallout.setVisibility(View.GONE);
+        mCallout.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (DEBUG) Log.d(TAG, "firing checkin activity for checkin");
+            public void onClick(View view) {
                 Intent intent = new Intent(FriendsMapActivity.this, VenueActivity.class);
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.putExtra(Foursquared.EXTRA_VENUE_ID, mTappedVenueId);
                 startActivity(intent);
             }
         });
-
+        
         initMap();
 
         mSearchResultsObserver = new Observer() {
@@ -147,6 +150,9 @@ public class FriendsMapActivity extends MapActivity {
         // overlays.
         if (mCheckinsGroupOverlays.size() > 0) {
             mMapView.getOverlays().addAll(mCheckinsGroupOverlays);
+        } else {
+            Toast.makeText(this, getResources().getString(
+                    R.string.friendsmapactivity_no_checkins), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -259,10 +265,16 @@ public class FriendsMapActivity extends MapActivity {
     private CheckingGroupOverlayTapListener mCheckingGroupOverlayTapListener = 
         new CheckingGroupOverlayTapListener() {
         @Override
-        public void onTap(CheckinGroup cg) {
+        public void onTap(OverlayItem itemSelected, OverlayItem itemLastSelected, CheckinGroup cg) {
             mTappedVenueId = cg.getVenueId();
-            mCheckinButton.setText(cg.getDescription());
-            mCheckinButton.setVisibility(View.VISIBLE);
+            mCallout.setTitle(cg.getVenueName());
+            mCallout.setMessage(cg.getDescription());
+            mCallout.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onTap(GeoPoint p, MapView mapView) {
+            mCallout.setVisibility(View.GONE);
         }
     };
 }

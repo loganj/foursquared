@@ -37,6 +37,8 @@ public class CheckinGroupItemizedOverlay extends BaseGroupItemizedOverlay<Checki
     private Bitmap mBmpPinSingle;
     private Bitmap mBmpPinMultiple;
     
+    private OverlayItem mLastSelected;
+    
     private CheckingGroupOverlayTapListener mTapListener;
     
     
@@ -46,6 +48,7 @@ public class CheckinGroupItemizedOverlay extends BaseGroupItemizedOverlay<Checki
         mContext = context;
         mRrm = rrm;
         mTapListener = tapListener;
+        mLastSelected = null;
         
         constructScaledPinBackgrounds(context);
     }
@@ -59,16 +62,19 @@ public class CheckinGroupItemizedOverlay extends BaseGroupItemizedOverlay<Checki
 
     @Override
     public boolean onTap(GeoPoint p, MapView mapView) {
-        //mapView.getController().animateTo(p);
-        //return false;
+        mapView.getController().animateTo(p);
+        if (mTapListener != null) {
+            mTapListener.onTap(p, mapView);
+        }
         return super.onTap(p, mapView);
     }
     
     @Override
     public boolean onTap(int i) {
         if (mTapListener != null) {
-            mTapListener.onTap(group.get(i));
+            mTapListener.onTap(getItem(i), mLastSelected, group.get(i));
         }
+        mLastSelected = getItem(i);
         return true;
     }
     
@@ -118,16 +124,16 @@ public class CheckinGroupItemizedOverlay extends BaseGroupItemizedOverlay<Checki
         private void constructPinDrawable(CheckinGroup cg, Context context, RemoteResourceManager rrm, 
                     Bitmap bmpPinSingle, Bitmap bmpPinMultiple) {
 
-            // The mdpi size of the photo background is 50 x 58.
-            // The user's photo should begin at origin (6, 11).
-            // The user's photo should be 36 x 36.s
+            // The mdpi size of the photo background is 52 x 58.
+            // The user's photo should begin at origin (9, 12).
+            // The user's photo should be 34 x 34.
             float screenDensity = context.getResources().getDisplayMetrics().density;
-            int cx  = dddi(50, screenDensity);
+            int cx  = dddi(52, screenDensity);
             int cy  = dddi(58, screenDensity);
-            int pox = dddi(6,  screenDensity);
-            int poy = dddi(11, screenDensity);
-            int pcx = dddi(36, screenDensity);
-            int pcy = dddi(36, screenDensity); 
+            int pox = dddi(9,  screenDensity);
+            int poy = dddi(12, screenDensity);
+            int pcx = cx - (pox * 2);//dddi(34, screenDensity);
+            int pcy = cy - (poy * 2);//dddi(34, screenDensity); 
             
             Bitmap bmp = Bitmap.createBitmap(cx, cy, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bmp);
@@ -135,10 +141,12 @@ public class CheckinGroupItemizedOverlay extends BaseGroupItemizedOverlay<Checki
 
             // Draw the correct background pin image.
             if (cg.getCheckinCount() < 2) {
-                canvas.drawBitmap(bmpPinSingle, new Rect(0, 0, bmpPinSingle.getWidth(), bmpPinSingle.getHeight()), 
+                canvas.drawBitmap(bmpPinSingle, 
+                        new Rect(0, 0, bmpPinSingle.getWidth(), bmpPinSingle.getHeight()), 
                         new Rect(0, 0, cx, cy), paint);
             } else {
-                canvas.drawBitmap(bmpPinMultiple, new Rect(0, 0, bmpPinMultiple.getWidth(), bmpPinMultiple.getHeight()), 
+                canvas.drawBitmap(bmpPinMultiple, 
+                        new Rect(0, 0, bmpPinMultiple.getWidth(), bmpPinMultiple.getHeight()), 
                         new Rect(0, 0, cx, cy), paint);
             }
             
@@ -168,6 +176,7 @@ public class CheckinGroupItemizedOverlay extends BaseGroupItemizedOverlay<Checki
     
     public interface CheckingGroupOverlayTapListener
     {
-        public void onTap(CheckinGroup cg);
+        public void onTap(OverlayItem itemSelected, OverlayItem itemLastSelected, CheckinGroup cg);
+        public void onTap(GeoPoint p, MapView mapView);
     }
 }

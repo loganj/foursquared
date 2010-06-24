@@ -53,6 +53,7 @@
   <string name="friendsactivity_menu_sort_distance">Sort Distance</string>
   <string name="friendsactivity_menu_leaderboard">Leaderboard</string>
   <string name="friendsactivity_menu_add_friends">Add Friends</string>
+  <string name="friendsmapactivity_no_checkins">No recent friend checkins nearby.</string>
   <string name="friendsactivity_menu_friend_requests">Friend Requests</string>
   <string name="last_seen_header">Last Seen</string>
   <string name="loading">Loading...</string>

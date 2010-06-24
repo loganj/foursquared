@@ -8,6 +8,7 @@ import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.FoursquareType;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.util.StringFormatters;
 
 
 /**
@@ -39,7 +40,7 @@ public class CheckinGroup implements FoursquareType {
         if (mCheckinCount == 0) {
             mPhotoUrl = user.getPhoto();
             mGender = user.getGender();
-            mDescription += user.getFirstname();
+            mDescription += StringFormatters.getUserAbbreviatedName(user);
             
             Venue venue = checkin.getVenue();
             mVenueId = venue.getId();
@@ -48,7 +49,7 @@ public class CheckinGroup implements FoursquareType {
             mLatE6 = (int)(Double.parseDouble(venue.getGeolat()) * 1E6);
             mLonE6 = (int)(Double.parseDouble(venue.getGeolong()) * 1E6);
         } else {
-            mDescription += ", " + user.getFirstname();
+            mDescription += ", " + StringFormatters.getUserAbbreviatedName(user);
         }
         mCheckinCount++;
     }

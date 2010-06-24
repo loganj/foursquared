@@ -10,15 +10,10 @@
     android:layout_width="fill_parent"
     android:apiKey="@string/google_maps_api_key"
     android:clickable="true" />
-
-  <Button
-    android:id="@+id/venueButton"
+ 
+  <com.joelapenna.foursquared.widget.MapCalloutView
+    android:id="@+id/map_callout"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentTop="true"
-
-    android:gravity="center"
-    android:textAppearance="@android:style/TextAppearance.Large"
-    android:visibility="gone" />
-
+    android:layout_height="wrap_content" />
+        
 </FrameLayout>

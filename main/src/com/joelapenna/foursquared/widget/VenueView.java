@@ -6,7 +6,6 @@ package com.joelapenna.foursquared.widget;
 
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.R;
-import com.joelapenna.foursquared.VenueActivity;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.StringFormatters;
 

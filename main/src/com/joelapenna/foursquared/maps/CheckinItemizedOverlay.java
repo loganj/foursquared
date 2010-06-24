@@ -54,5 +54,4 @@ public class CheckinItemizedOverlay extends BaseGroupItemizedOverlay<Checkin> {
             return mCheckin;
         }
     }
-
 }
