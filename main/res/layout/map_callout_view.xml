@@ -50,9 +50,9 @@
     >
   
     <ImageView
-	  android:layout_height="34dip"
-	  android:layout_width="34dip"
-      android:src="@drawable/moreicon"
+	  android:layout_width="14dip"
+	  android:layout_height="22dip"
+      android:src="@drawable/arrow_big"
       android:scaleType="fitXY" 
       android:layout_alignParentLeft="true" />
    
