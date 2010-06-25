@@ -88,7 +88,7 @@ public class FriendsActivity extends LoadableListActivityWithView {
     private static final int SORT_METHOD_DEFAULT = 0;
     private static final int SORT_METHOD_DISTANCE = 1;
     
-    private static final int DIALOG_SORT_METHOD = 1;
+    private static final int DIALOG_SORT_METHOD = 20;
 
     public static SearchResultsObservable searchResultsObservable;
     

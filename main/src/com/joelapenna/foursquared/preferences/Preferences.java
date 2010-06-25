@@ -98,7 +98,7 @@ public class Preferences {
             editor.putString(PREFERENCE_STARTUP_TAB, startupTabValues[0]);
         }
         if (!preferences.contains(PREFERENCE_CACHE_GEOLOCATION_FOR_SEARCHES)) {
-            editor.putBoolean(PREFERENCE_CACHE_GEOLOCATION_FOR_SEARCHES, true);
+            editor.putBoolean(PREFERENCE_CACHE_GEOLOCATION_FOR_SEARCHES, false);
         }
         if (!preferences.contains(PREFERENCE_SHOW_PRELAUNCH_ACTIVITY)) {
             editor.putBoolean(PREFERENCE_SHOW_PRELAUNCH_ACTIVITY, true);
