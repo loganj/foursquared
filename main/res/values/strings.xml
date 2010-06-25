@@ -157,6 +157,8 @@
   <string name="add_friends_invite_btn_label">Invite friends to Foursquare</string>
   <string name="add_friends_by_name_or_phone_instructions">Find friends by name or phone number</string>
   <string name="add_friends_by_name_or_phone_hint">Enter a name or phone number</string>
+  <string name="add_friends_by_facebook_instructions">Find friends from Facebook</string>
+  <string name="add_friends_by_facebook_additional_instructions">Following are Facebook friends also using Foursquare. Foursquare users have to enable Facebook connect in their account settings to be found here.</string>
   <string name="add_friends_by_twitter_instructions">Find a friend by Twitter handle</string>
   <string name="add_friends_by_twitter_hint">Enter your Twitter name</string> 
   <string name="add_friends_by_addressbook_instructions">Find friends from address book</string>

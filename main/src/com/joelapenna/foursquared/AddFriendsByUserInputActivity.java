@@ -170,8 +170,10 @@ public class AddFriendsByUserInputActivity extends Activity {
                 mBtnSearch.setVisibility(View.GONE);
                 break;
             case INPUT_TYPE_FACEBOOK:
-                mTextViewInstructions.setVisibility(View.GONE);
-                mTextViewAdditionalInstructions.setVisibility(View.GONE);
+                mTextViewInstructions.setText(getResources().getString(
+                        R.string.add_friends_by_facebook_instructions));
+                mTextViewAdditionalInstructions.setText(getResources().getString(
+                        R.string.add_friends_by_facebook_additional_instructions));
                 mEditInput.setVisibility(View.GONE);
                 mBtnSearch.setVisibility(View.GONE);
                 break;
@@ -376,7 +378,12 @@ public class AddFriendsByUserInputActivity extends Activity {
                     // Error running the operation, report to user perhaps.
                     String error = data.getStringExtra(FacebookWebViewActivity.INTENT_RESULT_KEY_ERROR);
                     Log.e(TAG, error);
+                    Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+                    finish();
                 }
+            } else {
+                // If the user cancelled enterting their facebook credentials, exit here too.
+                finish();
             }
         }
     }
