@@ -49,8 +49,10 @@
   <string name="friendsactivity_title_sort_older">Older</string>
   <string name="friendsactivity_title_sort_other_city">Friends in other cities</string>
   <string name="friendsactivity_title_sort_distance">Friends Nearby</string>
-  <string name="friendsactivity_menu_sort_time">Sort Time</string>
-  <string name="friendsactivity_menu_sort_distance">Sort Distance</string>
+  <string name="friendsactivity_menu_sort_method">Sort checkins by...</string>
+  <string name="friendsactivity_menu_sort_time">Recent</string>
+  <string name="friendsactivity_menu_sort_distance">Nearby</string>
+  <string name="friendsactivity_menu_map">Map</string>
   <string name="friendsactivity_menu_leaderboard">Leaderboard</string>
   <string name="friendsactivity_menu_add_friends">Add Friends</string>
   <string name="friendsmapactivity_no_checkins">No recent friend checkins nearby.</string>
