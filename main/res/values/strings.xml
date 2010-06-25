@@ -151,9 +151,9 @@
   <string name="search_description">Venues and friends</string>
   <string name="add_friends_instructions">Foursquare is more fun when you connect with your friends. Your friends can see the email address and phone number you gave us when you signed up, so choose wisely.</string>
   <string name="add_friends_by_name_or_phone_btn_label">Find by name or phone number</string>
+  <string name="add_friends_by_facebook_btn_label">Find Facebook friends</string>
   <string name="add_friends_by_twitter_btn_label">Find Twitter friends</string>
   <string name="add_friends_by_address_book_btn_label">Scan my address book</string>
-  <string name="add_friends_by_facebook_btn_label">Find Facebook friends</string>
   <string name="add_friends_invite_btn_label">Invite friends to Foursquare</string>
   <string name="add_friends_by_name_or_phone_instructions">Find friends by name or phone number</string>
   <string name="add_friends_by_name_or_phone_hint">Enter a name or phone number</string>
