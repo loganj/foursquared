@@ -13,6 +13,7 @@ import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -21,6 +22,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnDismissListener;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -30,6 +32,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -63,6 +66,7 @@ public class AddVenueActivity extends Activity {
     private static final double MINIMUM_ACCURACY_FOR_ADDRESS = 100.0;
     
     private static final int DIALOG_PICK_CATEGORY = 1;
+    private static final int DIALOG_ERROR = 2;
     
 
     private StateHolder mStateHolder;
@@ -139,16 +143,44 @@ public class AddVenueActivity extends Activity {
         mAddOrEditVenueButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                String name = mNameEditText.getText().toString();
+                String address = mAddressEditText.getText().toString();
+                String crossstreet = mCrossstreetEditText.getText().toString();
+                String city = mCityEditText.getText().toString();
+                String state = mStateEditText.getText().toString();
+                String zip = mZipEditText.getText().toString();
+                String phone = mPhoneEditText.getText().toString();
+                if (mStateHolder.getVenueBeingEdited() != null) {
+                    if (TextUtils.isEmpty(name)) {
+                        showDialogError(getResources().getString(
+                                R.string.add_venue_activity_error_no_venue_name));
+                        return;
+                    } else if (TextUtils.isEmpty(address)) {
+                        showDialogError(getResources().getString(
+                                R.string.add_venue_activity_error_no_venue_address));
+                        return;
+                    } else if (TextUtils.isEmpty(city)) {
+                        showDialogError(getResources().getString(
+                                R.string.add_venue_activity_error_no_venue_city));
+                        return;
+                    } else if (TextUtils.isEmpty(state)) {
+                        showDialogError(getResources().getString(
+                                R.string.add_venue_activity_error_no_venue_state));
+                        return;
+                    }
+                }
+                
                 mStateHolder.startTaskAddOrEditVenue(
                     AddVenueActivity.this,
                     new String[] {
-                        mNameEditText.getText().toString(),
-                        mAddressEditText.getText().toString(),
-                        mCrossstreetEditText.getText().toString(),
-                        mCityEditText.getText().toString(),
-                        mStateEditText.getText().toString(),
-                        mZipEditText.getText().toString(),
-                        mPhoneEditText.getText().toString(),
+                        name,
+                        address,
+                        crossstreet,
+                        city,
+                        state,
+                        zip,
+                        phone,
                         mStateHolder.getChosenCategory() != null ? 
                                 mStateHolder.getChosenCategory().getId() : ""
                     },
@@ -224,6 +256,11 @@ public class AddVenueActivity extends Activity {
     public Object onRetainNonConfigurationInstance() {
         mStateHolder.setActivity(null);
         return mStateHolder;
+    }
+    
+    private void showDialogError(String message) {
+        mStateHolder.setError(message);
+        showDialog(DIALOG_ERROR);
     }
 
     /**
@@ -585,6 +622,7 @@ public class AddVenueActivity extends Activity {
         private boolean mIsRunningTaskAddOrEditVenue;
         private Category mChosenCategory;
         private Venue mVenueBeingEdited;
+        private String mError;
         
         
         public StateHolder() {
@@ -681,6 +719,14 @@ public class AddVenueActivity extends Activity {
         public void setChosenCategory(Category category) {
             mChosenCategory = category;
         }
+        
+        public String getError() {
+            return mError;
+        }
+        
+        public void setError(String error) {
+            mError = error;
+        }
     }
     
     private static class AddressLookup {
@@ -722,9 +768,22 @@ public class AddVenueActivity extends Activity {
                     }
                 });
                 return dlg;
+                
+            case DIALOG_ERROR:
+                AlertDialog dlgInfo = new AlertDialog.Builder(this)
+                    .setIcon(0)
+                    .setTitle(getResources().getString(R.string.add_venue_progress_bar_title_edit_venue))
+                    .setMessage(mStateHolder.getError()).create();
+                dlgInfo.setOnDismissListener(new OnDismissListener() {
+                    public void onDismiss(DialogInterface dialog) {
+                        removeDialog(DIALOG_ERROR);
+                    }
+                });
+            
+            return dlgInfo;
         }
         return null;
-    } 
+    }
     
     private void setChosenCategory(Category category) {
         if (category == null) {

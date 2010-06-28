@@ -15,6 +15,10 @@
   <string name="add_venue_activity_edit_venue_fail">There was an error submitting your venue edits, please try again.</string>
   <string name="add_venue_activity_pick_category_label">Pick a category</string>
   <string name="add_venue_activity_progress_loading_categories">Loading categories...</string>
+  <string name="add_venue_activity_error_no_venue_name">Please supply a venue name.</string>
+  <string name="add_venue_activity_error_no_venue_address">Please supply a venue address.</string>
+  <string name="add_venue_activity_error_no_venue_city">Please supply a venue city.</string>
+  <string name="add_venue_activity_error_no_venue_state">Please supply a venue state.</string>
   <string name="address">Address</string> 
   <string name="app_name">Foursquare</string>
   <string name="badges_header">Badges</string>
