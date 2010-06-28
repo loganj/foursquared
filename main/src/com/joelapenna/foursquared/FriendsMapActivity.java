@@ -43,7 +43,7 @@ import java.util.Observer;
  */
 public class FriendsMapActivity extends MapActivity {
     public static final String TAG = "FriendsMapActivity";
-    public static final boolean DEBUG = FoursquaredSettings.DEBUG;
+    public static final boolean DEBUG = true;//FoursquaredSettings.DEBUG;
 
     private String mTappedVenueId;
 
@@ -270,6 +270,8 @@ public class FriendsMapActivity extends MapActivity {
             mCallout.setTitle(cg.getVenueName());
             mCallout.setMessage(cg.getDescription());
             mCallout.setVisibility(View.VISIBLE);
+
+            mMapController.animateTo(new GeoPoint(cg.getLatE6(), cg.getLonE6()));
         }
 
         @Override

@@ -13,7 +13,7 @@
     android:state_pressed="false"
     android:state_enabled="true"
     android:drawable="@drawable/map_callout_bg_off" />
-     
+      
   <item 
     android:state_focused="false" 
     android:state_selected="true"

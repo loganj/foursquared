@@ -62,7 +62,6 @@ public class CheckinGroupItemizedOverlay extends BaseGroupItemizedOverlay<Checki
 
     @Override
     public boolean onTap(GeoPoint p, MapView mapView) {
-        mapView.getController().animateTo(p);
         if (mTapListener != null) {
             mTapListener.onTap(p, mapView);
         }
