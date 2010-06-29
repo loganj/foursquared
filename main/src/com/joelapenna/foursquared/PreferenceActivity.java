@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
@@ -81,25 +82,21 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         }
     };
 
-    
+
+
     @Override
     protected void onResume() {
         super.onResume();
-        // TODO: would be slightly more efficient to hook a listener up to ContentResolver, if possible
         boolean crSaysSync = ContentResolver.getSyncAutomatically(mAccount, ContactsContract.AUTHORITY);
-        Log.i(TAG, "ContentResolver.getSyncAutomatically = " + crSaysSync);
-        mPrefs.edit().putBoolean(Preferences.PREFERENCE_SYNC_CONTACTS, crSaysSync).commit();
-        Log.i(TAG, "Preference now is " + mPrefs.getBoolean(Preferences.PREFERENCE_SYNC_CONTACTS, false));
-        Preference syncContactsPreference = getPreferenceScreen().findPreference(Preferences.PREFERENCE_SYNC_CONTACTS);
-        syncContactsPreference.setOnPreferenceChangeListener(syncChangeListener);
-        Log.i(TAG, "added preference change listener");
+        CheckBoxPreference syncPref = (CheckBoxPreference)getPreferenceScreen().findPreference(Preferences.PREFERENCE_SYNC_CONTACTS);
+        syncPref.setChecked(crSaysSync);
+        syncPref.setOnPreferenceChangeListener(syncChangeListener);
     }
     
     @Override
     protected void onPause() {
         Preference syncContactsPreference = getPreferenceScreen().findPreference(Preferences.PREFERENCE_SYNC_CONTACTS);
         syncContactsPreference.setOnPreferenceChangeListener(null);
-        Log.i(TAG, "removed preference change listener");
         super.onPause();
     }
 
