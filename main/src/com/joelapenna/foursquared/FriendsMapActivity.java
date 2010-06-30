@@ -19,9 +19,11 @@ import com.joelapenna.foursquared.maps.CheckinGroupItemizedOverlay;
 import com.joelapenna.foursquared.maps.CrashFixMyLocationOverlay;
 import com.joelapenna.foursquared.maps.CheckinGroupItemizedOverlay.CheckinGroupOverlayTapListener;
 import com.joelapenna.foursquared.util.CheckinTimestampSort;
+import com.joelapenna.foursquared.util.GeoUtils;
 import com.joelapenna.foursquared.widget.MapCalloutView;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -43,7 +45,7 @@ import java.util.Observer;
  */
 public class FriendsMapActivity extends MapActivity {
     public static final String TAG = "FriendsMapActivity";
-    public static final boolean DEBUG = true;//FoursquaredSettings.DEBUG;
+    public static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private String mTappedVenueId;
 
@@ -235,29 +237,26 @@ public class FriendsMapActivity extends MapActivity {
     }
 
     private void recenterMap() {
+        // Previously we'd try to zoom to span, but this gives us odd results a lot of times,
+        // so falling back to zoom at a fixed level.
         GeoPoint center = mMyLocationOverlay.getMyLocation();
-        if (center != null
-                && FriendsActivity.searchResultsObservable.getQuery() == FriendsActivity.QUERY_NEARBY) {
-            if (DEBUG) Log.d(TAG, "recenterMap via MyLocation as we are doing a nearby search");
+        if (center != null) {
+            if (DEBUG) Log.d(TAG, "Using MyLocaionOverlay as center point for recenterMap().");
             mMapController.animateTo(center);
             mMapController.setZoom(16);
-        } else if (mCheckinsGroupOverlays.size() > 0) {
-            if (DEBUG) Log.d(TAG, "recenterMap via checkins overlay span.");
-            CheckinGroupItemizedOverlay newestOverlay = mCheckinsGroupOverlays.get(0);
-            if (DEBUG) {
-                Log.d(TAG, "recenterMap to: " + newestOverlay.getLatSpanE6() + " "
-                        + newestOverlay.getLonSpanE6());
-            }
-            // For some reason, this is zooming us to some weird spot!.
-            mMapController.zoomToSpan(newestOverlay.getLatSpanE6(), newestOverlay.getLonSpanE6());
-            mMapController.animateTo(newestOverlay.getCenter());
-        } else if (center != null) {
-            if (DEBUG) Log.d(TAG, "Fallback, recenterMap via MyLocation overlay");
-            mMapController.animateTo(center);
-            mMapController.setZoom(16);
-            return;
         } else {
-            if (DEBUG) Log.d(TAG, "Could not re-center; No known user location.");
+            // Location overlay wasn't ready yet, try using last known geolocation from manager.
+            Location bestLocation = GeoUtils.getBestLastGeolocation(this);
+            if (bestLocation != null) {
+                if (DEBUG) Log.d(TAG, "Using last known location as center point for recenterMap().");
+                mMapController.animateTo(GeoUtils.locationToGeoPoint(bestLocation));
+                mMapController.setZoom(16);
+            } else {
+                // We have no location information at all, so we'll just show the map at a high
+                // zoom level and the user can zoom in as they wish.
+                if (DEBUG) Log.d(TAG, "No location info available for recenterMap().");
+                mMapController.setZoom(8);
+            }
         }
     }
  
