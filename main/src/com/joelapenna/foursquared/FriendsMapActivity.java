@@ -17,7 +17,7 @@ import com.joelapenna.foursquare.util.VenueUtils;
 import com.joelapenna.foursquared.maps.CheckinGroup;
 import com.joelapenna.foursquared.maps.CheckinGroupItemizedOverlay;
 import com.joelapenna.foursquared.maps.CrashFixMyLocationOverlay;
-import com.joelapenna.foursquared.maps.CheckinGroupItemizedOverlay.CheckingGroupOverlayTapListener;
+import com.joelapenna.foursquared.maps.CheckinGroupItemizedOverlay.CheckinGroupOverlayTapListener;
 import com.joelapenna.foursquared.util.CheckinTimestampSort;
 import com.joelapenna.foursquared.widget.MapCalloutView;
 
@@ -225,7 +225,7 @@ public class FriendsMapActivity extends MapActivity {
             CheckinGroupItemizedOverlay mappableCheckinsGroupOverlay = new CheckinGroupItemizedOverlay(
                     this,
                     ((Foursquared) getApplication()).getRemoteResourceManager(),
-                    this.getResources().getDrawable(R.drawable.map_marker_blue),
+                    this.getResources().getDrawable(R.drawable.pin_checkin_multiple),
                     mCheckingGroupOverlayTapListener);
             mappableCheckinsGroupOverlay.setGroup(mappableCheckins);
             return mappableCheckinsGroupOverlay;
@@ -262,8 +262,8 @@ public class FriendsMapActivity extends MapActivity {
     }
  
     /** Handle taps on one of the pins. */
-    private CheckingGroupOverlayTapListener mCheckingGroupOverlayTapListener = 
-        new CheckingGroupOverlayTapListener() {
+    private CheckinGroupOverlayTapListener mCheckingGroupOverlayTapListener = 
+        new CheckinGroupOverlayTapListener() {
         @Override
         public void onTap(OverlayItem itemSelected, OverlayItem itemLastSelected, CheckinGroup cg) {
             mTappedVenueId = cg.getVenueId();
