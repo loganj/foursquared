@@ -51,4 +51,17 @@ public class GeoUtils {
             return null;
         }
     }
+    
+    public static GeoPoint stringLocationToGeoPoint(String strlat, String strlon) {
+        try {
+            double lat = Double.parseDouble(strlat);
+            double lon = Double.parseDouble(strlon);
+            GeoPoint pt = new GeoPoint(
+                    (int)(lat * 1E6 + 0.5),
+                    (int)(lon * 1E6 + 0.5));
+            return pt;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
 }

@@ -90,15 +90,16 @@ public class FriendsActivity extends LoadableListActivityWithView {
     
     private static final int DIALOG_SORT_METHOD = 20;
 
-    public static SearchResultsObservable searchResultsObservable;
     
     private SearchTask mSearchTask;
     private SearchHolder mSearchHolder = new SearchHolder();
-    private SeparatedListAdapter mListAdapter;
     private SearchLocationObserver mSearchLocationObserver = new SearchLocationObserver();
-    private LinkedHashMap<Integer, String> mMenuMoreSubitems;
+
+    public static SearchResultsObservable searchResultsObservable;
     
     private ViewGroup mLayoutEmpty;
+    private LinkedHashMap<Integer, String> mMenuMoreSubitems;
+    private SeparatedListAdapter mListAdapter;
 
     
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {

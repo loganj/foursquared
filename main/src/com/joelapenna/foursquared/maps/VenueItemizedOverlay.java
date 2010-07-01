@@ -111,5 +111,4 @@ public class VenueItemizedOverlay extends BaseGroupItemizedOverlay<Venue> {
         int latSpanE6 = 0;
         int lonSpanE6 = 0;
     }
-
 }

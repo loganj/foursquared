@@ -393,6 +393,10 @@
       android:configChanges="orientation|keyboardHidden">
     </activity> 
     
+    <activity
+      android:name=".NearbyVenuesMapActivity" >
+    </activity> 
+    
     <receiver
       android:name=".appwidget.FriendsAppWidgetProvider"
       android:label="@string/friends_appwidget_3x3_label">
