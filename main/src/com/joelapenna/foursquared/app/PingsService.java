@@ -175,7 +175,8 @@ public class PingsService extends WakefulIntentService {
 
             Log.i(TAG, "Found " + newCheckins.size() + " new checkins.");
             
-            if ( newCheckins.size() > 0 ) {
+            if ( newCheckins.size() > 0 && 
+                 PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Preferences.PREFERENCE_SYNC_CONTACTS, false)) {
                 ContentResolver resolver = getApplication().getContentResolver();
                 ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>(newCheckins.size());
                 for ( Checkin checkin : newCheckins) {
