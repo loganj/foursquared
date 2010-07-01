@@ -62,7 +62,8 @@
       android:layout_height="12dip"
       android:src="@drawable/special_icon"
       android:layout_gravity="center_vertical"
-      android:layout_marginRight="10dip" />
+      android:layout_marginRight="10dip"
+      android:layout_marginTop="1dip" />
   
     <TextView
       android:id="@+id/venueDistance"
