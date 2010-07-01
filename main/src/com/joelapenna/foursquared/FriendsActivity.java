@@ -8,8 +8,10 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
+import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.app.LoadableListActivityWithView;
 import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.CheckinTimestampSort;
 import com.joelapenna.foursquared.util.Comparators;
 import com.joelapenna.foursquared.util.MenuUtils;
@@ -27,6 +29,7 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -385,6 +388,21 @@ public class FriendsActivity extends LoadableListActivityWithView {
                 }
                 setSearchResults(checkins);
                 putSearchResultsInAdapter(checkins, mSearchHolder.sortMethod);
+                
+                boolean syncPref = PreferenceManager.getDefaultSharedPreferences(FriendsActivity.this).getBoolean(Preferences.PREFERENCE_SYNC_CONTACTS, false);
+                Log.i(TAG, "sync preference is " + syncPref);
+                
+                if ( syncPref ) {
+                    Log.i(TAG, "starting task to sync contacts");
+                    Group<User> friends = new Group<User>();
+                    for ( Checkin checkin : checkins) {
+                        User friend = checkin.getUser();
+                        friend.setCheckin(checkin);
+                        friends.add(checkin.getUser());
+                    }
+                    Sync.startBackgroundSync(getApplication().getContentResolver(), friends);
+                }
+
 
             } finally {
                 setProgressBarIndeterminateVisibility(false);
