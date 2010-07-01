@@ -111,7 +111,6 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
             Log.e(TAG, "error fetching checkins", e);
         }
         for ( Checkin checkin : checkins ) {
-            Log.i(TAG, "handling checkin for user " + checkin.getUser().getId());
             if ( friends.containsKey(checkin.getUser().getId())) {
                 friends.get(checkin.getUser().getId()).setCheckin(checkin);
             }
@@ -124,11 +123,9 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         for ( User friend : friends.values() ) {
             long rawContactId = Sync.getRawContactId(resolver, friend);
             if ( rawContactId == 0 ) {
-                Log.i(TAG, "adding friend " + friend.getId() + " (" + friend.getFirstname() + " " + friend.getLastname() + ")");
                 opList.addAll(addContact(account, friend, opList.size()));
                 justAdded.add(friend);
             } else {
-                Log.i(TAG, "updating contact " + rawContactId + " for friend " + friend.getFirstname() + " " + friend.getLastname() + ")");
                  opList.addAll(updateContact(resolver, rawContactId, friend));
             }
         }
