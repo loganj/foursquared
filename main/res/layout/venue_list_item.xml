@@ -46,15 +46,46 @@
     android:textAppearance="@style/TextViewStyleVenueAddressListItem"
     android:singleLine="true"
     android:ellipsize="marquee" />
-
-  <TextView
-    android:id="@+id/venueLocationLine2"
+  
+  <LinearLayout
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_toRightOf="@id/icon"
-    android:layout_alignParentRight="true"
+    android:orientation="horizontal"
     android:layout_below="@id/venueLocationLine1"
+    android:layout_toRightOf="@id/icon"
     android:paddingLeft="7dip"
-    android:textAppearance="@style/TextViewStyleVenueAddressListItem" />
-
+    >
+    
+    <ImageView
+      android:id="@+id/iconSpecialHere"
+      android:layout_width="39dip"
+      android:layout_height="12dip"
+      android:src="@drawable/special_icon"
+      android:layout_gravity="center_vertical"
+      android:layout_marginRight="10dip" />
+  
+    <TextView
+      android:id="@+id/venueDistance"
+      android:layout_width="100dip"
+      android:layout_height="wrap_content"
+      android:textAppearance="@style/TextViewStyleVenueAddressListItem"
+      android:ellipsize="end" />
+    
+    <ImageView
+      android:id="@+id/iconTrending"
+      android:layout_width="9dip"
+      android:layout_height="9dip"
+      android:src="@drawable/people_icon"
+      android:layout_gravity="center_vertical"
+      android:layout_marginTop="1dip" />
+      
+    <TextView
+      android:id="@+id/venueCheckinCount"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:paddingLeft="3dip"
+      android:textAppearance="@style/TextViewStyleVenueAddressListItem"
+      android:ellipsize="end" />
+      
+  </LinearLayout>
 </RelativeLayout>

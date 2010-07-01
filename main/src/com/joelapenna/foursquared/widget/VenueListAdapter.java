@@ -80,8 +80,10 @@ public class VenueListAdapter extends BaseVenueAdapter implements ObservableAdap
             holder.icon = (ImageView) convertView.findViewById(R.id.icon);
             holder.venueName = (TextView) convertView.findViewById(R.id.venueName);
             holder.locationLine1 = (TextView) convertView.findViewById(R.id.venueLocationLine1);
-            holder.locationLine2 = (TextView) convertView.findViewById(R.id.venueLocationLine2);
-
+            holder.iconSpecial = (ImageView) convertView.findViewById(R.id.iconSpecialHere);
+            holder.venueDistance = (TextView) convertView.findViewById(R.id.venueDistance);
+            holder.iconTrending = (ImageView) convertView.findViewById(R.id.iconTrending);
+            holder.venueCheckinCount = (TextView) convertView.findViewById(R.id.venueCheckinCount);
             convertView.setTag(holder);
         } else {
             // Get the ViewHolder back to get fast access to the TextView
@@ -125,34 +127,30 @@ public class VenueListAdapter extends BaseVenueAdapter implements ObservableAdap
             holder.locationLine1.setText("");
         }
         
-        // If we're using yards, we already changed all the distance values
-        // in the setGroup() method, just append the correct unit name.
-        StringBuilder sbExtra = new StringBuilder(128);
-        if (!TextUtils.isEmpty(venue.getDistance())) {
-            sbExtra.append(venue.getDistance());
-            sbExtra.append(" meters");
+        // If there's a special here, show the special here icon.
+        if (venue.getSpecials() != null && venue.getSpecials().size() > 0) {
+            holder.iconSpecial.setVisibility(View.VISIBLE);
+        } else {
+            holder.iconSpecial.setVisibility(View.GONE);
         }
         
-        // TODO: Parse the int value of the string instead of all these compares.
-        // Add the number of people currently at the venue.
+        // Show venue distance always.
+        holder.venueDistance.setText(venue.getDistance() + " meters");
+        
+        // If more than two people here, then show trending text.
         Stats stats = venue.getStats();
         if (stats != null && 
            !stats.getHereNow().equals("0") &&
            !stats.getHereNow().equals("1") &&
            !stats.getHereNow().equals("2")) {
-            sbExtra.append("      ");
-            sbExtra.append(stats.getHereNow());
-            sbExtra.append(" people here");
-        }
-        
-        if (sbExtra.length() > 0) {
-            holder.locationLine2.setText(sbExtra.toString());
-            holder.locationLine2.setVisibility(View.VISIBLE);
+            holder.iconTrending.setVisibility(View.VISIBLE);
+            holder.venueCheckinCount.setVisibility(View.VISIBLE);
+            holder.venueCheckinCount.setText(stats.getHereNow() + " people here");
         } else {
-            holder.locationLine2.setVisibility(View.GONE);
+            holder.iconTrending.setVisibility(View.GONE);
+            holder.venueCheckinCount.setVisibility(View.GONE);
         }
         
-        if (DEBUG) Log.d(TAG, "Returning: " + convertView);
         return convertView;
     }
 
@@ -193,6 +191,9 @@ public class VenueListAdapter extends BaseVenueAdapter implements ObservableAdap
         ImageView icon;
         TextView venueName;
         TextView locationLine1;
-        TextView locationLine2;
+        ImageView iconSpecial;
+        TextView venueDistance;
+        ImageView iconTrending;
+        TextView venueCheckinCount;
     }
 }
