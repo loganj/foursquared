@@ -429,13 +429,7 @@ public class FriendsActivity extends LoadableListActivityWithView {
                 
                 if ( syncPref ) {
                     Log.i(TAG, "starting task to sync contacts");
-                    Group<User> friends = new Group<User>();
-                    for ( Checkin checkin : checkins) {
-                        User friend = checkin.getUser();
-                        friend.setCheckin(checkin);
-                        friends.add(checkin.getUser());
-                    }
-                    Sync.startBackgroundSync(getApplication().getContentResolver(), friends);
+                    Sync.startBackgroundSync(getApplication().getContentResolver(), checkins);
                 }
 
 

@@ -41,20 +41,19 @@ final public class Sync {
     
     }
 
-    private static final class SyncContactsTask extends AsyncTask<User[], Void, Void> {
+    private static final class SyncCheckinsTask extends AsyncTask<Checkin[], Void, Void> {
     
         final private ContentResolver resolver;
         
-        SyncContactsTask(ContentResolver resolver) {
+        SyncCheckinsTask(ContentResolver resolver) {
             this.resolver = resolver;
         }
         
         @Override
-        protected Void doInBackground(User[]... friends) {
-            ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>(friends[0].length);
-            for ( User friend : friends[0]) {
-                Log.i(UserFriendsActivity.TAG, "updating status for friend " + friend.getFirstname() + " " + friend.getLastname());
-                ops.addAll(updateStatus(resolver, friend));
+        protected Void doInBackground(Checkin[]... checkins) {
+            ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>(checkins[0].length);
+            for ( Checkin checkin : checkins[0]) {
+                ops.addAll(updateStatus(resolver, checkin.getUser(), checkin));
             }
             try {
                 resolver.applyBatch(ContactsContract.AUTHORITY, ops);
@@ -68,9 +67,9 @@ final public class Sync {
         
     }
     
-    static AsyncTask<?,?,?> startBackgroundSync(ContentResolver resolver, Group<User> friends) {
-        SyncContactsTask task = new SyncContactsTask(resolver);
-        task.execute(friends.toArray(new User[friends.size()]));
+    static AsyncTask<?,?,?> startBackgroundSync(ContentResolver resolver, List<Checkin> checkins) {
+        SyncCheckinsTask task = new SyncCheckinsTask(resolver);
+        task.execute(checkins.toArray(new Checkin[checkins.size()]));
         return task;
     }
 
@@ -86,8 +85,8 @@ final public class Sync {
        return StringFormatters.getCheckinMessageLine1(checkin, true);
     }
 
-    public static List<ContentProviderOperation> updateStatus(ContentResolver resolver, User friend) {
-        if ( friend.getCheckin() == null ) {
+    public static List<ContentProviderOperation> updateStatus(ContentResolver resolver, User friend, Checkin checkin) {
+        if ( friend == null || checkin == null ) {
             return Collections.emptyList();
         }
         long rawContactId = getRawContactId(resolver, friend);
@@ -105,9 +104,9 @@ final public class Sync {
                 long id = c.getLong(Sync.RawContactDataQuery.COLUMN_ID);
                 ContentProviderOperation.Builder updateStatus = ContentProviderOperation.newInsert(ContactsContract.StatusUpdates.CONTENT_URI);
                 updateStatus.withValue(ContactsContract.StatusUpdates.DATA_ID, id);
-                String status = createStatus(friend.getCheckin());
+                String status = createStatus(checkin);
                 updateStatus.withValue(ContactsContract.StatusUpdates.STATUS, status);
-                long created = new Date(friend.getCheckin().getCreated()).getTime();
+                long created = new Date(checkin.getCreated()).getTime();
                 updateStatus.withValue(ContactsContract.StatusUpdates.STATUS_TIMESTAMP, created);
                 optionOp.add(updateStatus.build());
             }

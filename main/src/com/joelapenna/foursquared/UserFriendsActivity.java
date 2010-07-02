@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.app.LoadableListActivity;
@@ -27,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -250,7 +252,16 @@ public class UserFriendsActivity extends LoadableListActivity {
         }
         
         public void startTaskSyncContacts(ContentResolver resolver) {
-            mTaskSyncContacts = Sync.startBackgroundSync(resolver, mFriends);
+            List<Checkin> checkins = new ArrayList<Checkin>(mFriends.size());
+            for ( User friend : mFriends ) {
+                Checkin c = friend.getCheckin();
+                if ( c != null ) {
+                    checkins.add(c);
+                }
+            }
+            if ( checkins.size() > 0 ) {
+                mTaskSyncContacts = Sync.startBackgroundSync(resolver, checkins);
+            }
         }
 
         public void setActivityForTaskFriends(UserFriendsActivity activity) {

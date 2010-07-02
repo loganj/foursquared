@@ -79,6 +79,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         
         mFoursquare.setCredentials(account.name, password);
         final HashMap<String,User> friends = new HashMap<String,User>();
+        final HashMap<String,Checkin> checkinsByUserId = new HashMap<String,Checkin>();
 
         Location loc = LocationUtils.createFoursquareLocation(mFoursquared.getLastKnownLocation());
 
@@ -111,9 +112,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
             Log.e(TAG, "error fetching checkins", e);
         }
         for ( Checkin checkin : checkins ) {
-            if ( friends.containsKey(checkin.getUser().getId())) {
-                friends.get(checkin.getUser().getId()).setCheckin(checkin);
-            }
+            checkinsByUserId.put(checkin.getUser().getId(), checkin);
         }
         
         ContentResolver resolver = getContext().getContentResolver();
@@ -126,7 +125,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
                 opList.addAll(addContact(account, friend, opList.size()));
                 justAdded.add(friend);
             } else {
-                 opList.addAll(updateContact(resolver, rawContactId, friend));
+                 opList.addAll(updateContact(resolver, rawContactId, friend, checkinsByUserId.get(friend.getId())));
             }
         }
         try {
@@ -138,7 +137,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         
         opList.clear();
         for ( User friend : justAdded ) {
-            opList.addAll(Sync.updateStatus(resolver, friend));
+            opList.addAll(Sync.updateStatus(resolver, friend, checkinsByUserId.get(friend.getId())));
         }
         
         try {
@@ -220,7 +219,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         
     }
     
-    private ArrayList<ContentProviderOperation> updateContact(ContentResolver resolver, long rawContactId, User friend) {
+    private ArrayList<ContentProviderOperation> updateContact(ContentResolver resolver, long rawContactId, User friend, Checkin checkin) {
         Cursor c = resolver.query(ContactsContract.Data.CONTENT_URI, 
                                   Sync.RawContactDataQuery.PROJECTION, 
                                   Sync.RawContactDataQuery.SELECTION, 
@@ -269,7 +268,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
                     Log.i(TAG, "updating " + values.size() + " values; building op");
                     ops.add(op.build());
                 }
-                if ( friend.getCheckin() != null ) {
+                if ( checkin != null ) {
                     ContentProviderOperation.Builder updateStatus = ContentProviderOperation.newInsert(ContactsContract.StatusUpdates.CONTENT_URI);
                     updateStatus.withValue(ContactsContract.StatusUpdates.DATA_ID, id);
                     String status = Sync.createStatus(friend.getCheckin());
