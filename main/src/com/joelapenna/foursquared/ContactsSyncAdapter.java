@@ -138,10 +138,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         
         opList.clear();
         for ( User friend : justAdded ) {
-            long rawContactId = Sync.getRawContactId(resolver, friend);
-            if (friend.getCheckin() != null) {
-                opList.addAll(Sync.updateStatus(resolver, rawContactId, friend.getCheckin()));
-            }
+            opList.addAll(Sync.updateStatus(resolver, friend));
         }
         
         try {

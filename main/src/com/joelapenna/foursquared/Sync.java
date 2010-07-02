@@ -54,7 +54,7 @@ final public class Sync {
             ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>(friends[0].length);
             for ( User friend : friends[0]) {
                 Log.i(UserFriendsActivity.TAG, "updating status for friend " + friend.getFirstname() + " " + friend.getLastname());
-                ops.addAll(updateStatus(resolver, friend, friend.getCheckin()));
+                ops.addAll(updateStatus(resolver, friend));
             }
             try {
                 resolver.applyBatch(ContactsContract.AUTHORITY, ops);
@@ -86,16 +86,14 @@ final public class Sync {
        return StringFormatters.getCheckinMessageLine1(checkin, true);
     }
 
-    public static List<ContentProviderOperation> updateStatus(ContentResolver resolver, User friend, Checkin checkin) {
-        long rawId = getRawContactId(resolver, friend);
-        Log.i(TAG, "got raw contact ID " + rawId);
-        if ( rawId == 0 ) {
+    public static List<ContentProviderOperation> updateStatus(ContentResolver resolver, User friend) {
+        if ( friend.getCheckin() == null ) {
             return Collections.emptyList();
         }
-        return updateStatus(resolver, rawId, checkin);
-    }
-    
-    static ArrayList<ContentProviderOperation> updateStatus(ContentResolver resolver, long rawContactId, Checkin checkin) {
+        long rawContactId = getRawContactId(resolver, friend);
+        if ( rawContactId == 0 ) {
+            return Collections.emptyList();
+        }
         ArrayList<ContentProviderOperation> optionOp = new ArrayList<ContentProviderOperation>(1);
         Cursor c = resolver.query(ContactsContract.Data.CONTENT_URI, 
                 Sync.RawContactDataQuery.PROJECTION, 
@@ -107,9 +105,9 @@ final public class Sync {
                 long id = c.getLong(Sync.RawContactDataQuery.COLUMN_ID);
                 ContentProviderOperation.Builder updateStatus = ContentProviderOperation.newInsert(ContactsContract.StatusUpdates.CONTENT_URI);
                 updateStatus.withValue(ContactsContract.StatusUpdates.DATA_ID, id);
-                String status = createStatus(checkin);
+                String status = createStatus(friend.getCheckin());
                 updateStatus.withValue(ContactsContract.StatusUpdates.STATUS, status);
-                long created = new Date(checkin.getCreated()).getTime();
+                long created = new Date(friend.getCheckin().getCreated()).getTime();
                 updateStatus.withValue(ContactsContract.StatusUpdates.STATUS_TIMESTAMP, created);
                 optionOp.add(updateStatus.build());
             }
