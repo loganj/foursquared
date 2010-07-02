@@ -68,6 +68,9 @@ public class UserParser extends AbstractParser<User> {
             } else if ("mayor".equals(name)) {
                 user.setMayorships(new GroupParser(new VenueParser()).parse(parser));
 
+            } else if ("mayorcount".equals(name)) {
+                user.setMayorCount(Integer.valueOf(parser.nextText()));
+                
             } else if ("phone".equals(name)) {
                 user.setPhone(parser.nextText());
 

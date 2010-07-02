@@ -252,7 +252,8 @@ public class UserDetailsActivity extends TabActivity {
         // Number of mayorships.
         if (user != null) {
             if (mStateHolder.getFetchedUserDetails()) {
-                mTextViewNumMayorships.setText(String.valueOf(user.getMayorships().size()));
+                //mTextViewNumMayorships.setText(String.valueOf(user.getMayorships().size()));
+                mTextViewNumMayorships.setText(String.valueOf(user.getMayorCount()));
             } else {
                 mTextViewNumMayorships.setText("-");
             }

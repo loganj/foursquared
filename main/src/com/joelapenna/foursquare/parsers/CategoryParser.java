@@ -8,9 +8,12 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Category;
+import com.joelapenna.foursquare.util.IconUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -44,7 +47,12 @@ public class CategoryParser extends AbstractParser<Category> {
                 category.setNodeName(parser.nextText());
 
             } else if ("iconurl".equals(name)) {
-                category.setIconUrl(parser.nextText());
+                // TODO: Remove this once api v2 allows icon request.
+                String iconUrl = parser.nextText();
+                if (IconUtils.get().getRequestHighDensityIcons()) {
+                    iconUrl = iconUrl.replace(".png", "_64.png");
+                }
+                category.setIconUrl(iconUrl);
 
             } else if ("categories".equals(name)) {
                 category.setChildCategories(new GroupParser(new CategoryParser()).parse(parser));
