@@ -4,6 +4,10 @@
 
 package com.joelapenna.foursquared;
 
+import com.facebook.android.Facebook;
+import com.facebook.android.FacebookUtil;
+import com.facebook.android.FacebookWebViewActivity;
+import com.facebook.android.Facebook.PreparedUrl;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.FriendInvitesResult;
 import com.joelapenna.foursquare.types.Group;
@@ -15,6 +19,9 @@ import com.joelapenna.foursquared.util.AddressBookEmailBuilder.ContactSimple;
 import com.joelapenna.foursquared.widget.FriendSearchAddFriendAdapter;
 import com.joelapenna.foursquared.widget.FriendSearchInviteNonFoursquareUserAdapter;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -78,6 +85,9 @@ public class AddFriendsByUserInputActivity extends Activity {
     public static final int INPUT_TYPE_TWITTERNAME = 1;
     public static final int INPUT_TYPE_ADDRESSBOOK = 2;
     public static final int INPUT_TYPE_ADDRESSBOOK_INVITE = 3;
+    public static final int INPUT_TYPE_FACEBOOK = 4;
+    
+    private static final int ACTIVITY_RESULT_FACEBOOK_WEBVIEW_ACTIVITY = 5;
 
     private TextView mTextViewInstructions;
     private TextView mTextViewAdditionalInstructions;
@@ -159,6 +169,14 @@ public class AddFriendsByUserInputActivity extends Activity {
                 mEditInput.setVisibility(View.GONE);
                 mBtnSearch.setVisibility(View.GONE);
                 break;
+            case INPUT_TYPE_FACEBOOK:
+                mTextViewInstructions.setText(getResources().getString(
+                        R.string.add_friends_by_facebook_instructions));
+                mTextViewAdditionalInstructions.setText(getResources().getString(
+                        R.string.add_friends_by_facebook_additional_instructions));
+                mEditInput.setVisibility(View.GONE);
+                mBtnSearch.setVisibility(View.GONE);
+                break;
             default:
                 mTextViewInstructions.setText(getResources().getString(
                         R.string.add_friends_by_name_or_phone_instructions));
@@ -181,12 +199,16 @@ public class AddFriendsByUserInputActivity extends Activity {
         } else {
             mStateHolder = new StateHolder();
 
-            // If we are scanning the address book, we should kick it off
-            // immediately.
-            if (mInputType == INPUT_TYPE_ADDRESSBOOK || 
-                mInputType == INPUT_TYPE_ADDRESSBOOK_INVITE) 
-            {
-                startSearch("");
+            // If we are scanning the address book, or a facebook search, we should 
+            // kick off immediately.
+            switch (mInputType) {
+                case INPUT_TYPE_ADDRESSBOOK:
+                case INPUT_TYPE_ADDRESSBOOK_INVITE:
+                    startSearch("");
+                    break;
+                case INPUT_TYPE_FACEBOOK:
+                    startFacebookWebViewActivity();
+                    break;
             }
         }
     }
@@ -268,6 +290,18 @@ public class AddFriendsByUserInputActivity extends Activity {
                 getResources().getString(R.string.add_friends_progress_bar_message_find));
         mStateHolder.startTaskFindFriends(AddFriendsByUserInputActivity.this, input);
     }
+    
+    private void startFacebookWebViewActivity() {
+        Intent intent = new Intent(this, FacebookWebViewActivity.class);
+        intent.putExtra(FacebookWebViewActivity.INTENT_EXTRA_ACTION, Facebook.LOGIN);
+        intent.putExtra(FacebookWebViewActivity.INTENT_EXTRA_KEY_APP_ID, 
+                getResources().getString(R.string.facebook_api_key));
+        intent.putExtra(FacebookWebViewActivity.INTENT_EXTRA_KEY_PERMISSIONS, 
+                new String[] {});//"publish_stream", "read_stream", "offline_access"});
+        intent.putExtra(FacebookWebViewActivity.INTENT_EXTRA_KEY_DEBUG, false);
+        intent.putExtra(FacebookWebViewActivity.INTENT_EXTRA_KEY_CLEAR_COOKIES, true);
+        startActivityForResult(intent, ACTIVITY_RESULT_FACEBOOK_WEBVIEW_ACTIVITY);
+    }
 
     private void startProgressBar(String title, String message) {
         if (mDlgProgress == null) {
@@ -316,6 +350,42 @@ public class AddFriendsByUserInputActivity extends Activity {
                 return dlgInfo;
         }
         return null;
+    }
+    
+    /**
+     * Listen for FacebookWebViewActivity finishing, inspect success/failure and returned
+     * request parameters.
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ACTIVITY_RESULT_FACEBOOK_WEBVIEW_ACTIVITY) {
+            // If RESULT_OK, means the request was attempted, but we still have to check the return status.
+            if (resultCode == RESULT_OK) {
+                // Check return status.
+                if (data.getBooleanExtra(FacebookWebViewActivity.INTENT_RESULT_KEY_RESULT_STATUS, false)) {
+                        
+                    // If ok, the result bundle will contain all data from the webview.
+                    Bundle bundle = data.getBundleExtra(FacebookWebViewActivity.INTENT_RESULT_KEY_RESULT_BUNDLE);
+                        
+                    // We can switch on the action here, the activity echoes it back to us for convenience.
+                    String suppliedAction = data.getStringExtra(FacebookWebViewActivity.INTENT_RESULT_KEY_SUPPLIED_ACTION);
+                    if (suppliedAction.equals(Facebook.LOGIN)) {
+                        // We can now start a task to fetch foursquare friends using their facebook id.
+                        mStateHolder.startTaskFindFriends(
+                                AddFriendsByUserInputActivity.this, bundle.getString(Facebook.TOKEN));
+                    }
+                } else {
+                    // Error running the operation, report to user perhaps.
+                    String error = data.getStringExtra(FacebookWebViewActivity.INTENT_RESULT_KEY_ERROR);
+                    Log.e(TAG, error);
+                    Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            } else {
+                // If the user cancelled enterting their facebook credentials, exit here too.
+                finish();
+            }
+        }
     }
 
     private void populateListFromStateHolder() {
@@ -472,6 +542,14 @@ public class AddFriendsByUserInputActivity extends Activity {
                     case INPUT_TYPE_ADDRESSBOOK_INVITE:
                         scanAddressBook(result, foursquare, foursquared, true);
                         break;
+                    case INPUT_TYPE_FACEBOOK:
+                        // For facebook, we need to first get all friend uids, then use that with the foursquare api.
+                        String facebookFriendIds = getFacebookFriendIds(params[0]);
+                        if (TextUtils.isEmpty(facebookFriendIds)) {
+                            throw new Exception("No Facebook friends found.");
+                        }
+                        result.setUsersOnFoursquare(foursquare.findFriendsByFacebook(facebookFriendIds));
+                        break;
                     default:
                         // Combine searches for name/phone, results returned in one list.
                         Group<User> users = new Group<User>();
@@ -486,6 +564,40 @@ public class AddFriendsByUserInputActivity extends Activity {
                 mReason = e;
             }
             return null;
+        }
+        
+        private String getFacebookFriendIds(String facebookToken) {
+            Facebook facebook = new Facebook();
+            facebook.setAccessToken(facebookToken);
+            
+            String friendsAsJson = "";
+            try {
+                PreparedUrl purl = facebook.requestUrl("me/friends");
+                friendsAsJson = FacebookUtil.openUrl(purl.getUrl(), purl.getHttpMethod(), purl.getParameters());
+            } catch (Exception ex) {
+                Log.e(TAG, "Error getting facebook friends as json.", ex);
+                return friendsAsJson;
+            }
+            
+            // {"data":[{"name":"Friends Name","id":"12345"}]}
+            StringBuilder sb = new StringBuilder(2048);
+            try {
+                JSONObject json = new JSONObject(friendsAsJson);
+                JSONArray friends = json.getJSONArray("data");
+                for (int i = 0, m = friends.length(); i < m; i++) {
+                    JSONObject friend = friends.getJSONObject(i);
+                    sb.append(friend.get("id"));
+                    sb.append(",");
+                }
+                if (sb.length() > 0 && sb.charAt(sb.length()-1) == ',') {
+                    sb.deleteCharAt(sb.length()-1);
+                }
+            }
+            catch (Exception ex) {
+                Log.e(TAG, "Error deserializing facebook friends json object.", ex);
+            }
+            
+            return sb.toString();
         }
         
         private void scanAddressBook(FindFriendsResult result,

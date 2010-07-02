@@ -20,9 +20,12 @@ import com.joelapenna.foursquared.util.UserUtils;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
@@ -40,6 +43,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -69,7 +73,7 @@ public class FriendsActivity extends LoadableListActivityWithView {
 
     public static final String QUERY_NEARBY = null;
 
-    private static final int CITY_RADIUS_IN_METERS = 20 * 1000; // 20km
+    public static final int CITY_RADIUS_IN_METERS = 20 * 1000; // 20km
     private static final long SLEEP_TIME_IF_NO_LOCATION = 3000L;
 
     private static final int MENU_GROUP_SEARCH = 0;
@@ -78,14 +82,16 @@ public class FriendsActivity extends LoadableListActivityWithView {
     private static final int MENU_MORE = 3;
     private static final int MENU_MYINFO = 4;
     
-    private static final int MENU_MORE_SORT_DEFAULT = 20;
-    private static final int MENU_MORE_SORT_DISTANCE = 21;
-    private static final int MENU_MORE_SORT_LEADERBOARD = 22;
-    private static final int MENU_MORE_SORT_ADD_FRIENDS = 23;
-    private static final int MENU_MORE_SORT_FRIEND_REQUESTS = 24;
+    private static final int MENU_MORE_SORT_METHOD = 20;
+    private static final int MENU_MORE_MAP = 21;
+    private static final int MENU_MORE_LEADERBOARD = 22;
+    private static final int MENU_MORE_ADD_FRIENDS = 23;
+    private static final int MENU_MORE_FRIEND_REQUESTS = 24;
     
     private static final int SORT_METHOD_DEFAULT = 0;
     private static final int SORT_METHOD_DISTANCE = 1;
+    
+    private static final int DIALOG_SORT_METHOD = 20;
 
     public static SearchResultsObservable searchResultsObservable;
     
@@ -133,15 +139,15 @@ public class FriendsActivity extends LoadableListActivityWithView {
         }
         
         mMenuMoreSubitems = new LinkedHashMap<Integer, String>();
-        mMenuMoreSubitems.put(MENU_MORE_SORT_DEFAULT, getResources().getString(
-                R.string.friendsactivity_menu_sort_time));
-        mMenuMoreSubitems.put(MENU_MORE_SORT_DISTANCE, getResources().getString(
-                R.string.friendsactivity_menu_sort_distance));
-        mMenuMoreSubitems.put(MENU_MORE_SORT_LEADERBOARD, getResources().getString(
+        mMenuMoreSubitems.put(MENU_MORE_SORT_METHOD, getResources().getString(
+                R.string.friendsactivity_menu_sort_method));
+        mMenuMoreSubitems.put(MENU_MORE_MAP, getResources().getString(
+                R.string.friendsactivity_menu_map));
+        mMenuMoreSubitems.put(MENU_MORE_LEADERBOARD, getResources().getString(
                 R.string.friendsactivity_menu_leaderboard));
-        mMenuMoreSubitems.put(MENU_MORE_SORT_ADD_FRIENDS, getResources().getString(
+        mMenuMoreSubitems.put(MENU_MORE_ADD_FRIENDS, getResources().getString(
                 R.string.friendsactivity_menu_add_friends));
-        mMenuMoreSubitems.put(MENU_MORE_SORT_FRIEND_REQUESTS, getResources().getString(
+        mMenuMoreSubitems.put(MENU_MORE_FRIEND_REQUESTS, getResources().getString(
                 R.string.friendsactivity_menu_friend_requests));
     }
     
@@ -220,21 +226,19 @@ public class FriendsActivity extends LoadableListActivityWithView {
                 // Submenu items generate id zero, but we check on item title below.
                 return true;
             default:
-                if (item.getTitle().equals(mMenuMoreSubitems.get(MENU_MORE_SORT_DEFAULT))) {
-                    mSearchHolder.sortMethod = SORT_METHOD_DEFAULT;
-                    putSearchResultsInAdapter(mSearchHolder.results, mSearchHolder.sortMethod);
+                if (item.getTitle().equals(mMenuMoreSubitems.get(MENU_MORE_SORT_METHOD))) {
+                    showDialog(DIALOG_SORT_METHOD);
                     return true;
-                } else if (item.getTitle().equals(mMenuMoreSubitems.get(MENU_MORE_SORT_DISTANCE))) {
-                    mSearchHolder.sortMethod = SORT_METHOD_DISTANCE;
-                    putSearchResultsInAdapter(mSearchHolder.results, mSearchHolder.sortMethod);
+                } else if (item.getTitle().equals("Map")) {
+                    startActivity(new Intent(FriendsActivity.this, FriendsMapActivity.class));
                     return true;
-                } else if (item.getTitle().equals(mMenuMoreSubitems.get(MENU_MORE_SORT_LEADERBOARD))) {
+                } else if (item.getTitle().equals(mMenuMoreSubitems.get(MENU_MORE_LEADERBOARD))) {
                     startActivity(new Intent(FriendsActivity.this, StatsActivity.class));
                     return true;
-                } else if (item.getTitle().equals(mMenuMoreSubitems.get(MENU_MORE_SORT_ADD_FRIENDS))) {
+                } else if (item.getTitle().equals(mMenuMoreSubitems.get(MENU_MORE_ADD_FRIENDS))) {
                     startActivity(new Intent(FriendsActivity.this, AddFriendsActivity.class));
                     return true;
-                } else if (item.getTitle().equals(mMenuMoreSubitems.get(MENU_MORE_SORT_FRIEND_REQUESTS))) {
+                } else if (item.getTitle().equals(mMenuMoreSubitems.get(MENU_MORE_FRIEND_REQUESTS))) {
                     startActivity(new Intent(FriendsActivity.this, FriendRequestsActivity.class));
                     return true;
                 }
@@ -257,6 +261,37 @@ public class FriendsActivity extends LoadableListActivityWithView {
     @Override
     public Object onRetainNonConfigurationInstance() {
         return mSearchHolder;
+    }
+    
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DIALOG_SORT_METHOD:
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+                adapter.add(getResources().getString(R.string.friendsactivity_menu_sort_time));
+                adapter.add(getResources().getString(R.string.friendsactivity_menu_sort_distance));
+                AlertDialog dlgSortMethod = new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.friendsactivity_menu_sort_method))
+                    .setIcon(0)
+                    .setAdapter(adapter, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    mSearchHolder.sortMethod = SORT_METHOD_DEFAULT;
+                                    putSearchResultsInAdapter(mSearchHolder.results, mSearchHolder.sortMethod);
+                                    break;
+                                case 1:
+                                    mSearchHolder.sortMethod = SORT_METHOD_DISTANCE;
+                                    putSearchResultsInAdapter(mSearchHolder.results, mSearchHolder.sortMethod);
+                                    break;
+                            }
+                        }
+                    })
+                    .create();
+                return dlgSortMethod;
+        }
+        return null;
     }
 
     @Override

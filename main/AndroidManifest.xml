@@ -2,7 +2,7 @@
 <manifest
   xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.joelapenna.foursquared"
-  android:versionName="2010-06-16" android:versionCode="2010061600">
+  android:versionName="2010-06-24" android:versionCode="2010062400">
 
   <uses-permission
     android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -410,6 +410,11 @@
     <activity
       android:name=".EditVenueOptionsActivity"
       android:label="@string/edit_venue_options_label" >
+    </activity> 
+    
+    <activity
+      android:name="com.facebook.android.FacebookWebViewActivity"
+      android:configChanges="orientation|keyboardHidden">
     </activity> 
     
     <receiver

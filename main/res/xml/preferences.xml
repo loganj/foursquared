@@ -70,7 +70,7 @@
       android:title="@string/preferences_cache_geo_loc_for_searches_title"
       android:summaryOn="@string/preferences_cache_geo_loc_for_searches_on"
       android:summaryOff="@string/preferences_cache_geo_loc_for_searches_off"
-      android:defaultValue="true" />
+      android:defaultValue="false" />
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="changelog"
       android:title="@string/preferences_changelog"

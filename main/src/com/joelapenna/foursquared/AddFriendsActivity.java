@@ -41,6 +41,18 @@ public class AddFriendsActivity extends Activity {
             }
         });
 
+        Button btnAddFriendsByFacebook = (Button) findViewById(R.id.findFriendsByFacebook);
+        btnAddFriendsByFacebook.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AddFriendsActivity.this,
+                        AddFriendsByUserInputActivity.class);
+                intent.putExtra(AddFriendsByUserInputActivity.INPUT_TYPE,
+                        AddFriendsByUserInputActivity.INPUT_TYPE_FACEBOOK);
+                startActivity(intent);
+            }
+        });
+        
         Button btnAddFriendsByTwitter = (Button) findViewById(R.id.findFriendsByTwitter);
         btnAddFriendsByTwitter.setOnClickListener(new OnClickListener() {
             @Override

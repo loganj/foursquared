@@ -32,6 +32,12 @@
         android:text="@string/add_friends_by_address_book_btn_label" />
       
       <Button
+        android:id="@+id/findFriendsByFacebook"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_friends_by_facebook_btn_label" />
+        
+      <Button
         android:id="@+id/findFriendsByTwitter"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

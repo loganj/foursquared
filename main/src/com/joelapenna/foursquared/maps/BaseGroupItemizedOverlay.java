@@ -39,7 +39,6 @@ abstract class BaseGroupItemizedOverlay<T extends FoursquareType> extends Itemiz
     @Override
     public boolean onTap(GeoPoint p, MapView mapView) {
         if (DEBUG) Log.d(TAG, "onTap: " + group.getType() + " " + p);
-        mapView.getController().animateTo(p);
         return super.onTap(p, mapView);
     }
 

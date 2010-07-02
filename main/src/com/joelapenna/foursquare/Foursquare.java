@@ -206,6 +206,12 @@ public class Foursquare {
     }
     
     @V1
+    public Group<User> findFriendsByFacebook(String text) 
+        throws FoursquareException, FoursquareError, IOException {
+        return mFoursquareV1.findFriendsByFacebook(text);
+    }
+    
+    @V1
     public Group<User> findFriendsByTwitter(String text) 
     	throws FoursquareException, FoursquareError, IOException {
     	return mFoursquareV1.findFriendsByTwitter(text);

@@ -73,6 +73,7 @@ class FoursquareHttpApiV1 {
     private static final String URL_API_FRIENDS = "/friends";
     private static final String URL_API_FIND_FRIENDS_BY_NAME = "/findfriends/byname";
     private static final String URL_API_FIND_FRIENDS_BY_PHONE = "/findfriends/byphone";
+    private static final String URL_API_FIND_FRIENDS_BY_FACEBOOK = "/findfriends/byfacebook";
     private static final String URL_API_FIND_FRIENDS_BY_TWITTER = "/findfriends/bytwitter";
     private static final String URL_API_CATEGORIES = "/categories";
     private static final String URL_API_HISTORY = "/history";
@@ -405,6 +406,17 @@ class FoursquareHttpApiV1 {
         return (Group<User>) mHttpApi.doHttpRequest(httpPost, new GroupParser(new UserParser()));
     }
 
+    /**
+     * /findfriends/byfacebook?q=friendid,friendid,friendid
+     */
+    @SuppressWarnings("unchecked")
+    public Group<User> findFriendsByFacebook(String text) throws FoursquareException,
+            FoursquareCredentialsException, FoursquareError, IOException {
+        HttpPost httpPost = mHttpApi.createHttpPost(fullUrl(URL_API_FIND_FRIENDS_BY_FACEBOOK), //
+                new BasicNameValuePair("q", text));
+        return (Group<User>) mHttpApi.doHttpRequest(httpPost, new GroupParser(new UserParser()));
+    }
+    
     /**
      * /findfriends/bytwitter?q=yourtwittername
      */

@@ -37,7 +37,6 @@ public class CheckinItemizedOverlay extends BaseGroupItemizedOverlay<Checkin> {
     @Override
     public boolean onTap(GeoPoint p, MapView mapView) {
         if (DEBUG) Log.d(TAG, "onTap: " + p);
-        mapView.getController().animateTo(p);
         return super.onTap(p, mapView);
     }
 
@@ -54,5 +53,4 @@ public class CheckinItemizedOverlay extends BaseGroupItemizedOverlay<Checkin> {
             return mCheckin;
         }
     }
-
 }
