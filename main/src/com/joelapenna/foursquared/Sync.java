@@ -3,13 +3,14 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
-import com.joelapenna.foursquared.ContactsSyncAdapter.RawContactIdQuery;
 import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
@@ -67,6 +68,14 @@ final public class Sync {
         
     }
     
+    static class RawContactIdQuery {
+        static final String[] PROJECTION = new String[] { RawContacts._ID, RawContacts.CONTACT_ID };
+        static final String SELECTION = RawContacts.ACCOUNT_TYPE+"='"+AuthenticatorService.ACCOUNT_TYPE+"'"
+                                        + " AND " + RawContacts.SOURCE_ID+"=?";
+        public final static int COLUMN_ID = 0;
+        public final static int COLUMN_CONTACT_ID = 1;
+    }
+
     static AsyncTask<?,?,?> startBackgroundSync(ContentResolver resolver, List<Checkin> checkins) {
         SyncCheckinsTask task = new SyncCheckinsTask(resolver);
         task.execute(checkins.toArray(new Checkin[checkins.size()]));
@@ -123,12 +132,12 @@ final public class Sync {
     static long getRawContactId(ContentResolver resolver, User friend) {
         long rawContactId = 0;
         Cursor c = resolver.query(RawContacts.CONTENT_URI, 
-                                  ContactsSyncAdapter.RawContactIdQuery.PROJECTION, 
-                                  ContactsSyncAdapter.RawContactIdQuery.SELECTION, 
+                                  RawContactIdQuery.PROJECTION, 
+                                  RawContactIdQuery.SELECTION, 
                                   new String[] { friend.getId() }, null);
         try {
             if (c.moveToFirst()) {
-                rawContactId = c.getLong(ContactsSyncAdapter.RawContactIdQuery.COLUMN_ID);
+                rawContactId = c.getLong(RawContactIdQuery.COLUMN_ID);
             }
         } finally {
             if ( c != null) {
@@ -138,6 +147,26 @@ final public class Sync {
         return rawContactId;
     }
     
+    static Intent getViewContactIntent(ContentResolver resolver, User friend) {
+        long contactId = 0;
+        Cursor c = resolver.query(RawContacts.CONTENT_URI, 
+                RawContactIdQuery.PROJECTION, 
+                RawContactIdQuery.SELECTION, 
+                new String[] { friend.getId() }, null);
+        try {
+            if (c.moveToFirst()) {
+                contactId = c.getLong(RawContactIdQuery.COLUMN_CONTACT_ID);
+            }
+        } finally {
+            if ( c != null) {
+                c.close();
+            }
+        }
+        if ( contactId == 0 ) {
+            return null;
+        }
+        return new Intent(Intent.ACTION_VIEW, Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, ""+contactId));
+    }
     
 
 }

@@ -193,6 +193,7 @@
   <string name="friend_requests_progress_bar_ignore_request">Ignoring request....</string>
   <string name="user_activity_fetch_full_image_title">Fetching Image</string>
   <string name="user_activity_fetch_full_image_message">Fetching Image...</string>
+  <string name="user_actions_activity_contacts">View in Contacts</string>
   <string name="user_actions_activity_no_info">No additional information available.</string>
   <string name="user_actions_activity_action_sms">SMS</string>
   <string name="user_actions_activity_action_email">Email</string>

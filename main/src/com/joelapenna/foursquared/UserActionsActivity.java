@@ -8,6 +8,7 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Settings;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.app.LoadableListActivity;
+import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.util.UserUtils;
 
@@ -19,6 +20,8 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -190,6 +193,11 @@ public class UserActionsActivity extends LoadableListActivity {
                         mStateHolder.startTaskPings(UserActionsActivity.this, mStateHolder
                                 .getUser().getId(), true);
                         break;
+                    case ActionsAdapter.ACTION_ID_CONTACTS:
+                        if (mListAdapter.contactIntent != null) {
+                            startActivity(mListAdapter.contactIntent);
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -234,6 +242,7 @@ public class UserActionsActivity extends LoadableListActivity {
         public static final int ACTION_ID_LAST_SEEN_AT = 5; // Going to go away eventually.
         public static final int ACTION_ID_PINGS_ON = 6;
         public static final int ACTION_ID_PINGS_OFF = 7;
+        public static final int ACTION_ID_CONTACTS = 8;
         public static final int ACTION_ID_SEND_FRIEND_REQUEST = 100;
         public static final int ACTION_ID_SEND_APPROVE_FRIEND_REQUEST = 101;
         public static final int ACTION_ID_SEND_READONLY_FRIEND_REQUEST = 102;
@@ -242,6 +251,7 @@ public class UserActionsActivity extends LoadableListActivity {
         private int mLayoutToInflate;
         private User mUser;
         private ArrayList<Action> mActions;
+        private Intent contactIntent;
 
         public ActionsAdapter(Context context, User user, boolean showAddFriendOptions) {
             super();
@@ -315,6 +325,11 @@ public class UserActionsActivity extends LoadableListActivity {
                     mActions.add(new Action(context.getResources().getString(
                             R.string.user_actions_activity_action_facebook),
                             R.drawable.user_action_facebook, ACTION_ID_FACEBOOK, true));
+                }
+                contactIntent = Sync.getViewContactIntent(context.getContentResolver(), mUser); 
+                if (contactIntent != null) {
+                    mActions.add(new Action(context.getResources().getString(R.string.user_actions_activity_contacts),
+                                 android.R.drawable.sym_contact_card, ACTION_ID_CONTACTS, true));
                 }
             }
         }

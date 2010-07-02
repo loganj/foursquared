@@ -137,6 +137,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         
         opList.clear();
         for ( User friend : justAdded ) {
+            Log.i(TAG, "added friend " + friend.getFirstname() + " with id " + Sync.getRawContactId(resolver, friend));
             opList.addAll(Sync.updateStatus(resolver, friend, checkinsByUserId.get(friend.getId())));
         }
         
@@ -147,13 +148,6 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
             e.printStackTrace();
         } 
         
-    }
-    
-    static class RawContactIdQuery {
-        static final String[] PROJECTION = new String[] { RawContacts._ID };
-        static final String SELECTION = RawContacts.ACCOUNT_TYPE+"='"+AuthenticatorService.ACCOUNT_TYPE+"'"
-                                        + " AND " + RawContacts.SOURCE_ID+"=?";
-        public final static int COLUMN_ID = 0;
     }
     
     private ArrayList<ContentProviderOperation> addContact(Account account, User friend, int backReference) {
@@ -271,9 +265,9 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
                 if ( checkin != null ) {
                     ContentProviderOperation.Builder updateStatus = ContentProviderOperation.newInsert(ContactsContract.StatusUpdates.CONTENT_URI);
                     updateStatus.withValue(ContactsContract.StatusUpdates.DATA_ID, id);
-                    String status = Sync.createStatus(friend.getCheckin());
+                    String status = Sync.createStatus(checkin);
                     updateStatus.withValue(ContactsContract.StatusUpdates.STATUS, status);
-                    long created = new Date(friend.getCheckin().getCreated()).getTime();
+                    long created = new Date(checkin.getCreated()).getTime();
                     updateStatus.withValue(ContactsContract.StatusUpdates.STATUS_TIMESTAMP, created);
                     ops.add(updateStatus.build());
                 }

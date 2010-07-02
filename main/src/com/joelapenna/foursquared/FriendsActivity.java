@@ -420,19 +420,17 @@ public class FriendsActivity extends LoadableListActivityWithView {
             try {
                 if (checkins == null) {
                     NotificationsUtil.ToastReasonForFailure(FriendsActivity.this, mReason);
+                } else {
+                    boolean syncPref = PreferenceManager.getDefaultSharedPreferences(FriendsActivity.this).getBoolean(Preferences.PREFERENCE_SYNC_CONTACTS, false);
+                    Log.i(TAG, "sync preference is " + syncPref);
+                    
+                    if ( syncPref ) {
+                        Log.i(TAG, "starting task to sync contacts");
+                        Sync.startBackgroundSync(getApplication().getContentResolver(), checkins);
+                    }
                 }
                 setSearchResults(checkins);
                 putSearchResultsInAdapter(checkins, mSearchHolder.sortMethod);
-                
-                boolean syncPref = PreferenceManager.getDefaultSharedPreferences(FriendsActivity.this).getBoolean(Preferences.PREFERENCE_SYNC_CONTACTS, false);
-                Log.i(TAG, "sync preference is " + syncPref);
-                
-                if ( syncPref ) {
-                    Log.i(TAG, "starting task to sync contacts");
-                    Sync.startBackgroundSync(getApplication().getContentResolver(), checkins);
-                }
-
-
             } finally {
                 setProgressBarIndeterminateVisibility(false);
                 ensureTitle(true);
