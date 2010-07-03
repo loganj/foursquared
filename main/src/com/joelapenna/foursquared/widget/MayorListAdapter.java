@@ -8,8 +8,10 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Mayor;
 import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquared.AuthenticatorService;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.Sync;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 
 import android.content.Context;
@@ -22,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -40,6 +43,7 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
     private RemoteResourceManager mRrm;
     private Handler mHandler = new Handler();
     private RemoteResourceManagerObserver mResourcesObserver;
+    private Context mContext;
 
     public MayorListAdapter(Context context, RemoteResourceManager rrm) {
         super(context);
@@ -48,6 +52,7 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
         mResourcesObserver = new RemoteResourceManagerObserver();
 
         mRrm.addObserver(mResourcesObserver);
+        mContext = context;
     }
 
     public void removeObserver() {
@@ -59,6 +64,8 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
         // A ViewHolder keeps references to children views to avoid unnecessary
         // calls to findViewById() on each row.
         final ViewHolder holder;
+        Mayor mayor = (Mayor)getItem(position);
+        final User user = mayor.getUser();
 
         // When convertView is not null, we can reuse it directly, there is no
         // need to re-inflate it. We only inflate a new View when the
@@ -69,7 +76,20 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.photo = (ImageView)convertView.findViewById(R.id.photo);
+            ImageView photo = (ImageView) convertView.findViewById(R.id.photo);
+            QuickContactBadge qcBadge = (QuickContactBadge) convertView.findViewById(R.id.qcphoto);
+            
+            Uri lookupUri = Sync.getContactLookupUri(mContext.getContentResolver(), user);
+            if ( lookupUri != null ) {
+                holder.photo = qcBadge;
+                qcBadge.assignContactUri(lookupUri);
+                qcBadge.setExcludeMimes(new String[] {"vnd.android.cursor.item/com.joelapenna.foursquared.profile"});
+                photo.setVisibility(View.GONE);
+            } else {
+                holder.photo = photo;
+                qcBadge.setVisibility(View.GONE);
+            }
+            
             holder.firstLine = (TextView)convertView.findViewById(R.id.firstLine);
             holder.secondLine = (TextView)convertView.findViewById(R.id.mayorMessageTextView);
 
@@ -80,8 +100,6 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
             holder = (ViewHolder)convertView.getTag();
         }
 
-        Mayor mayor = (Mayor)getItem(position);
-        final User user = mayor.getUser();
         final Uri photoUri = Uri.parse(user.getPhoto());
 
         try {

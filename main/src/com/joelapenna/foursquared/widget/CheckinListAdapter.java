@@ -4,12 +4,14 @@
 
 package com.joelapenna.foursquared.widget;
 
+
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.Sync;
 import com.joelapenna.foursquared.util.CheckinTimestampSort;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
@@ -25,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -51,10 +54,11 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
     private RemoteResourceManagerObserver mResourcesObserver;
     private Handler mHandler = new Handler();
     private HashMap<String, String> mCachedTimestamps;
-    
+    private Context mContext;
     
     public CheckinListAdapter(Context context, RemoteResourceManager rrm) {
         super(context);
+        mContext = context;
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
         mResourcesObserver = new RemoteResourceManagerObserver();
@@ -73,6 +77,10 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
         // calls to findViewById() on each row.
         final ViewHolder holder;
 
+        Checkin checkin = (Checkin) getItem(position);
+        final User user = checkin.getUser();
+        final Uri photoUri = Uri.parse(user.getPhoto());
+
         // When convertView is not null, we can reuse it directly, there is no
         // need to re-inflate it. We only inflate a new View when the
         // convertView supplied by ListView is null.
@@ -82,7 +90,19 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.photo = (ImageView) convertView.findViewById(R.id.photo);
+            ImageView photo = (ImageView) convertView.findViewById(R.id.photo);
+            QuickContactBadge qcBadge = (QuickContactBadge) convertView.findViewById(R.id.qcphoto);
+            
+            Uri lookupUri = Sync.getContactLookupUri(mContext.getContentResolver(), user);
+            if ( lookupUri != null ) {
+                holder.photo = qcBadge;
+                qcBadge.assignContactUri(lookupUri);
+                qcBadge.setExcludeMimes(new String[] {"vnd.android.cursor.item/com.joelapenna.foursquared.profile"});
+                photo.setVisibility(View.GONE);
+            } else {
+                holder.photo = photo;
+                qcBadge.setVisibility(View.GONE);
+            }
             holder.firstLine = (TextView) convertView.findViewById(R.id.firstLine);
             holder.secondLine = (TextView) convertView.findViewById(R.id.secondLine);
             holder.timeTextView = (TextView) convertView.findViewById(R.id.timeTextView);
@@ -94,9 +114,6 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
             holder = (ViewHolder) convertView.getTag();
         }
 
-        Checkin checkin = (Checkin) getItem(position);
-        final User user = checkin.getUser();
-        final Uri photoUri = Uri.parse(user.getPhoto());
 
         try {
             Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photoUri));

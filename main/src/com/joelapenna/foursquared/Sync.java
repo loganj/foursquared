@@ -68,12 +68,17 @@ final public class Sync {
         
     }
     
-    static class RawContactIdQuery {
+    private static class RawContactIdQuery {
         static final String[] PROJECTION = new String[] { RawContacts._ID, RawContacts.CONTACT_ID };
         static final String SELECTION = RawContacts.ACCOUNT_TYPE+"='"+AuthenticatorService.ACCOUNT_TYPE+"'"
                                         + " AND " + RawContacts.SOURCE_ID+"=?";
         public final static int COLUMN_ID = 0;
         public final static int COLUMN_CONTACT_ID = 1;
+    }
+    private static class ContactLookupKeyQuery {
+        static final String[] PROJECTION = new String[] { ContactsContract.Contacts.LOOKUP_KEY };
+        static final String SELECTION = ContactsContract.Contacts._ID + "=?";
+        public final static int COLUMN_LOOKUP_KEY = 0;
     }
 
     static AsyncTask<?,?,?> startBackgroundSync(ContentResolver resolver, List<Checkin> checkins) {
@@ -125,6 +130,7 @@ final public class Sync {
         return optionOp;
     }
 
+    
     /**
      * 
      * @return raw contact id, or 0 if not found
@@ -147,12 +153,55 @@ final public class Sync {
         return rawContactId;
     }
     
-    static Intent getViewContactIntent(ContentResolver resolver, User friend) {
+    static long getContactId(ContentResolver resolver, User user) {
+        long contactId = 0;
+        Cursor c = resolver.query(RawContacts.CONTENT_URI, 
+                                  RawContactIdQuery.PROJECTION, 
+                                  RawContactIdQuery.SELECTION, 
+                                  new String[] { user.getId() }, null);
+        try {
+            if (c.moveToFirst()) {
+                contactId = c.getLong(RawContactIdQuery.COLUMN_CONTACT_ID);
+            }
+        } finally {
+            if ( c != null) {
+                c.close();
+            }
+        }
+        return contactId;
+    }
+    
+    public static Uri getContactLookupUri(ContentResolver resolver, User user) {
+        long contactId = getContactId(resolver, user);
+        if ( contactId == 0 ) {
+            return null;
+        }
+        Cursor c = resolver.query(ContactsContract.Contacts.CONTENT_URI,
+                ContactLookupKeyQuery.PROJECTION,
+                ContactLookupKeyQuery.SELECTION,
+                new String[] { String.valueOf(contactId) }, null);
+        String lookupKey = null;
+        try {
+            if ( c.moveToFirst() ) {
+                lookupKey = c.getString(ContactLookupKeyQuery.COLUMN_LOOKUP_KEY);
+            }
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+        if (lookupKey == null) {
+            return null;
+        }
+        return Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, "/"+lookupKey+"/"+contactId);
+        
+    }
+    public static Uri getContactLookupUriOld(ContentResolver resolver, User user) {
         long contactId = 0;
         Cursor c = resolver.query(RawContacts.CONTENT_URI, 
                 RawContactIdQuery.PROJECTION, 
                 RawContactIdQuery.SELECTION, 
-                new String[] { friend.getId() }, null);
+                new String[] { user.getId() }, null);
         try {
             if (c.moveToFirst()) {
                 contactId = c.getLong(RawContactIdQuery.COLUMN_CONTACT_ID);
@@ -165,7 +214,14 @@ final public class Sync {
         if ( contactId == 0 ) {
             return null;
         }
-        return new Intent(Intent.ACTION_VIEW, Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, ""+contactId));
+        return Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, ""+contactId);
+    }
+    static Intent getViewContactIntent(ContentResolver resolver, User friend) {
+        Uri lookupUri = getContactLookupUri(resolver, friend);
+        if ( lookupUri == null ) {
+            return null;
+        }
+        return new Intent(Intent.ACTION_VIEW, lookupUri);
     }
     
 

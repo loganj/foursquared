@@ -13,14 +13,26 @@
   
   <ImageView
     android:id="@+id/tipPhoto"
-	android:layout_height="46dip"
-	android:layout_width="46dip"
+        android:layout_height="46dip"
+        android:layout_width="46dip"
     android:background="@drawable/photo_background"
     android:layout_alignParentTop="true"
     android:layout_alignParentLeft="true"
     android:padding="3dip"
     android:src="@drawable/blank_boy"
     android:scaleType="fitXY" />
+  
+  <QuickContactBadge
+    android:id="@+id/qcTipPhoto"
+	android:layout_height="52dip"
+	android:layout_width="46dip"
+    android:background="@drawable/photo_background"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentLeft="true"
+    android:padding="3dip"
+    android:src="@drawable/blank_boy"
+    android:scaleType="centerInside" 
+    style="?android:attr/quickContactBadgeStyleWindowSmall"/>
     
     <LinearLayout
       android:layout_width="fill_parent"

@@ -9,6 +9,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.Sync;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 
 import android.content.Context;
@@ -21,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -43,10 +45,12 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
     private RemoteResourceManagerObserver mResourcesObserver;
     private Handler mHandler = new Handler();
     private int mLoadedPhotoIndex;
+    private Context mContext;
 
     
     public FriendListAdapter(Context context, RemoteResourceManager rrm) {
         super(context);
+        mContext = context;
         mInflater = LayoutInflater.from(context);
         mLayoutToInflate = R.layout.friend_list_item;
         mRrm = rrm;
@@ -72,6 +76,7 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
         // A ViewHolder keeps references to children views to avoid unnecessary
         // calls to findViewById() on each row.
         ViewHolder holder;
+        User user = (User) getItem(position);
 
         // When convertView is not null, we can reuse it directly, there is no
         // need to re-inflate it. We only inflate a new View when the
@@ -82,7 +87,17 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.photo = (ImageView) convertView.findViewById(R.id.friendListItemPhoto);
+            ImageView photo = (ImageView) convertView.findViewById(R.id.friendListItemPhoto);
+            QuickContactBadge qcBadge = (QuickContactBadge) convertView.findViewById(R.id.qcFriendListItemPhoto);
+            Uri lookupUri = Sync.getContactLookupUri(mContext.getContentResolver(), user);
+            if ( lookupUri != null ) {
+                holder.photo = qcBadge;
+                qcBadge.assignContactUri(lookupUri);
+                photo.setVisibility(View.GONE);
+            } else {
+                holder.photo = photo;
+                qcBadge.setVisibility(View.GONE);
+            }
             holder.name = (TextView) convertView.findViewById(R.id.friendListItemName);
 
             convertView.setTag(holder);
@@ -92,7 +107,6 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
             holder = (ViewHolder) convertView.getTag();
         }
 
-        User user = (User) getItem(position);
         Uri photoUri = Uri.parse(user.getPhoto());
         try {
             Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photoUri));

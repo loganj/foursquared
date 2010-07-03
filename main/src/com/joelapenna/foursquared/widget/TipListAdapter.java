@@ -10,6 +10,7 @@ import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.Sync;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
 
@@ -24,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -46,10 +48,11 @@ public class TipListAdapter extends BaseTipAdapter
     private RemoteResourceManagerObserver mResourcesObserver;
     private Handler mHandler = new Handler();
     private int mLoadedPhotoIndex;
-    
+    private Context mContext;
 
     public TipListAdapter(Context context, RemoteResourceManager rrm) {
         super(context);
+        mContext = context;
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
         mResourcesObserver = new RemoteResourceManagerObserver();
@@ -68,6 +71,8 @@ public class TipListAdapter extends BaseTipAdapter
         // A ViewHolder keeps references to children views to avoid unnecessary
         // calls to findViewById() on each row.
         ViewHolder holder;
+        Tip tip = (Tip)getItem(position);
+        User user = tip.getUser();
 
         // When convertView is not null, we can reuse it directly, there is no
         // need to re-inflate it. We only inflate a new View when the
@@ -78,7 +83,19 @@ public class TipListAdapter extends BaseTipAdapter
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.photo = (ImageView)convertView.findViewById(R.id.tipPhoto);
+            ImageView photo = (ImageView) convertView.findViewById(R.id.tipPhoto);
+            QuickContactBadge qcBadge = (QuickContactBadge) convertView.findViewById(R.id.qcTipPhoto);
+            
+            Uri lookupUri = Sync.getContactLookupUri(mContext.getContentResolver(), user);
+            if ( lookupUri != null ) {
+                holder.photo = qcBadge;
+                qcBadge.assignContactUri(lookupUri);
+                qcBadge.setExcludeMimes(new String[] {"vnd.android.cursor.item/com.joelapenna.foursquared.profile"});
+                photo.setVisibility(View.GONE);
+            } else {
+                holder.photo = photo;
+                qcBadge.setVisibility(View.GONE);
+            }
             holder.tipTextView = (TextView)convertView.findViewById(R.id.tipTextView);
             holder.userTextView = (TextView)convertView.findViewById(R.id.userTextView);
 
@@ -89,13 +106,11 @@ public class TipListAdapter extends BaseTipAdapter
             holder = (ViewHolder)convertView.getTag();
         }
 
-        Tip tip = (Tip)getItem(position);
         // Popping from string->html fixes things like "&amp;" converting it back to a string
         // prevents a stack overflow in cupcake.
         holder.tipTextView.setText(Html.fromHtml(tip.getText()).toString());
         holder.userTextView.setText("- " + StringFormatters.getUserAbbreviatedName(tip.getUser()));
         
-        User user = tip.getUser();
         if (user != null) {
             Uri photoUri = Uri.parse(user.getPhoto());
             try {
