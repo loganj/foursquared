@@ -4,24 +4,19 @@
 
 package com.joelapenna.foursquared;
 
+import android.content.*;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Settings;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.app.LoadableListActivity;
-import com.joelapenna.foursquared.preferences.Preferences;
+import com.joelapenna.foursquared.util.CompatibilityHelp;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.util.UserUtils;
 
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 /**
@@ -326,10 +322,16 @@ public class UserActionsActivity extends LoadableListActivity {
                             R.string.user_actions_activity_action_facebook),
                             R.drawable.user_action_facebook, ACTION_ID_FACEBOOK, true));
                 }
-                contactIntent = Sync.getViewContactIntent(context.getContentResolver(), mUser); 
-                if (contactIntent != null) {
-                    mActions.add(new Action(context.getResources().getString(R.string.user_actions_activity_contacts),
+                if ( CompatibilityHelp.API_LEVEL_AT_LEAST_ECLAIR) {
+                    try {
+                        Method getViewContactIntent = Class.forName("com.joelapenna.foursquared.Sync").getMethod("getViewContactIntent", ContentResolver.class, User.class);
+                        Intent contactIntent = (Intent) getViewContactIntent.invoke(Sync.class, context.getContentResolver(), mUser);
+                        if ( contactIntent != null ) {
+                            mActions.add(new Action(context.getResources().getString(R.string.user_actions_activity_contacts),
                                  android.R.drawable.sym_contact_card, ACTION_ID_CONTACTS, true));
+                        }
+                    } catch (Exception e) {
+                    }
                 }
             }
         }

@@ -196,26 +196,7 @@ final public class Sync {
         return Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, "/"+lookupKey+"/"+contactId);
         
     }
-    public static Uri getContactLookupUriOld(ContentResolver resolver, User user) {
-        long contactId = 0;
-        Cursor c = resolver.query(RawContacts.CONTENT_URI, 
-                RawContactIdQuery.PROJECTION, 
-                RawContactIdQuery.SELECTION, 
-                new String[] { user.getId() }, null);
-        try {
-            if (c.moveToFirst()) {
-                contactId = c.getLong(RawContactIdQuery.COLUMN_CONTACT_ID);
-            }
-        } finally {
-            if ( c != null) {
-                c.close();
-            }
-        }
-        if ( contactId == 0 ) {
-            return null;
-        }
-        return Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, ""+contactId);
-    }
+    
     static Intent getViewContactIntent(ContentResolver resolver, User friend) {
         Uri lookupUri = getContactLookupUri(resolver, friend);
         if ( lookupUri == null ) {

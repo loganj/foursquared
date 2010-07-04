@@ -83,19 +83,7 @@ public class TipListAdapter extends BaseTipAdapter
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            ImageView photo = (ImageView) convertView.findViewById(R.id.tipPhoto);
-            QuickContactBadge qcBadge = (QuickContactBadge) convertView.findViewById(R.id.qcTipPhoto);
-            
-            Uri lookupUri = Sync.getContactLookupUri(mContext.getContentResolver(), user);
-            if ( lookupUri != null ) {
-                holder.photo = qcBadge;
-                qcBadge.assignContactUri(lookupUri);
-                qcBadge.setExcludeMimes(new String[] {"vnd.android.cursor.item/com.joelapenna.foursquared.profile"});
-                photo.setVisibility(View.GONE);
-            } else {
-                holder.photo = photo;
-                qcBadge.setVisibility(View.GONE);
-            }
+            holder.photo = SometimesQuickContactBadgeHelp.getPhotoView(mContext.getContentResolver(), user, convertView, R.id.tipPhoto);
             holder.tipTextView = (TextView)convertView.findViewById(R.id.tipTextView);
             holder.userTextView = (TextView)convertView.findViewById(R.id.userTextView);
 

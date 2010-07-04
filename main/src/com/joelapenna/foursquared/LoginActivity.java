@@ -6,14 +6,11 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
-import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
-import com.joelapenna.foursquared.util.StringFormatters;
 
 import android.accounts.Account;
-import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.app.Activity;
@@ -43,7 +40,7 @@ import android.widget.Toast;
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
-public class LoginActivity extends AccountAuthenticatorActivity {
+public class LoginActivity extends Activity {
     public static final String TAG = "LoginActivity";
     public static final String PARAM_PHONENUMBER = "phoneNumber";
     public static final String PARAM_SETAUTHTOKEN = "setAuthToken";
@@ -52,7 +49,91 @@ public class LoginActivity extends AccountAuthenticatorActivity {
     public static final boolean DEBUG = FoursquaredSettings.DEBUG;
     
     private static final String PARAM_DESTINATIONINTENT = "destinationIntent";
-    
+
+
+    private static class AuthenticatorHelper {
+        private AccountAuthenticatorResponse mResponse = null;
+        private Bundle mResultBundle = null;
+
+        final private Context context;
+        final private Intent intent;
+        final private String phoneNumber;
+        final private String password;
+        final private boolean loggedIn;
+
+        public AuthenticatorHelper(Context context, Intent intent, String phoneNumber, String password, boolean loggedIn) {
+            this.context = context;
+            this.intent = intent;
+            this.phoneNumber = phoneNumber;
+            this.password = password;
+            this.loggedIn = loggedIn;
+        }
+
+        private Intent getIntent() {
+            return intent;
+        }
+
+        Intent getResult() {
+            onCreate();
+            Account account = new Account(phoneNumber, AuthenticatorService.ACCOUNT_TYPE);
+            AccountManager am = AccountManager.get(context);
+
+            final Intent intent = new Intent();
+
+            if (getIntent().getBooleanExtra(PARAM_CONFIRMCREDENTIALS, false)){
+                    am.setPassword(account, password);
+                    intent.putExtra(AccountManager.KEY_BOOLEAN_RESULT, loggedIn);
+                    setAccountAuthenticatorResult(intent.getExtras());
+            } else if (getIntent().getBooleanExtra(PARAM_SETAUTHTOKEN, false)) {
+                if ( phoneNumber.equalsIgnoreCase(getIntent().getStringExtra(PARAM_PHONENUMBER))) {
+                    am.setPassword(account, password);
+                } else {
+                    am.addAccountExplicitly(account, password, null);
+                    ContentResolver.setSyncAutomatically(account, ContactsContract.AUTHORITY, true);
+                }
+
+                intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, phoneNumber);
+                intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, AuthenticatorService.ACCOUNT_TYPE);
+                intent.putExtra(AccountManager.KEY_AUTHTOKEN, password);
+                setAccountAuthenticatorResult(intent.getExtras());
+            }
+            return intent;
+        }
+
+        // lifted from AccountAuthenticatorActivity
+        void onCreate() {
+            mResponse = getIntent().getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+
+            if (mResponse != null) {
+                mResponse.onRequestContinued();
+            }
+        }
+
+        // lifted from AccountAuthenticatorActivity
+        public final void setAccountAuthenticatorResult(Bundle result) {
+            mResultBundle = result;
+        }
+
+        // lifted from AccountAuthenticatorActivity
+        public void finish() {
+            if (mResponse != null) {
+                // send the result bundle back if set, otherwise send an error.
+                if (mResultBundle != null) {
+                    mResponse.onResult(mResultBundle);
+                } else {
+                    mResponse.onError(AccountManager.ERROR_CODE_CANCELED,
+                            "canceled");
+                }
+                mResponse = null;
+            }
+        }
+
+
+    }
+
+    private static class AuthenticatorLoginHelper {
+
+    }
     
     static Intent loginAndProceedTo(Context context, Intent destination) {
         Intent intent = new Intent(context, LoginActivity.class);
@@ -72,6 +153,8 @@ public class LoginActivity extends AccountAuthenticatorActivity {
     private EditText mPasswordEditText;
 
     private ProgressDialog mProgressDialog;
+    private AuthenticatorHelper authenticatorHelper;
+    private AuthenticatorLoginHelper authLoginHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,6 +272,14 @@ public class LoginActivity extends AccountAuthenticatorActivity {
         mPasswordEditText.addTextChangedListener(fieldValidatorTextWatcher);
     }
 
+    @Override
+    public void finish() {
+        if ( authenticatorHelper != null ) {
+            authenticatorHelper.finish();
+        }
+        super.finish();
+    }
+
     private class LoginTask extends AsyncTask<Void, Void, Boolean> {
         private static final String TAG = "LoginTask";
         private static final boolean DEBUG = FoursquaredSettings.DEBUG;
@@ -225,44 +316,19 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                 boolean loggedIn = Preferences.loginUser(foursquare, phoneNumber, password,
                         location, editor);
 
-                
-                Account account = null;
-                AccountManager am = null;
                 // Make sure prefs make a round trip.
                 String userId = Preferences.getUserId(prefs);
                 if (TextUtils.isEmpty(userId)) {
                     if (DEBUG) Log.d(TAG, "Preference store calls failed");
                     throw new FoursquareException(getResources().getString(
                             R.string.login_failed_login_toast));
-                } else {
-                    account = new Account(phoneNumber, AuthenticatorService.ACCOUNT_TYPE);
-                    am = AccountManager.get(mContext);
+                } else if ( getIntent().getBooleanExtra(PARAM_CONFIRMCREDENTIALS, false)
+                            || getIntent().getBooleanExtra(PARAM_SETAUTHTOKEN, false) ) {
+                    authenticatorHelper = new AuthenticatorHelper(mContext, getIntent(), phoneNumber, password, loggedIn);
+                    setResult(RESULT_OK, authenticatorHelper.getResult());
+                    finish();
                 }
                 
-                final Intent intent = new Intent();
-
-                if (getIntent().getBooleanExtra(PARAM_CONFIRMCREDENTIALS, false)){
-                    am.setPassword(account, password);
-                    intent.putExtra(AccountManager.KEY_BOOLEAN_RESULT, loggedIn);
-                    setAccountAuthenticatorResult(intent.getExtras());
-                    setResult(RESULT_OK, intent);
-                    finish();
-                } else if (getIntent().getBooleanExtra(PARAM_SETAUTHTOKEN, false)) {
-                    
-                    if ( phoneNumber.equalsIgnoreCase(getIntent().getStringExtra(PARAM_PHONENUMBER))) {
-                        am.setPassword(account, password);
-                    } else {
-                        am.addAccountExplicitly(account, password, null);
-                        ContentResolver.setSyncAutomatically(account, ContactsContract.AUTHORITY, true);
-                    }
-                    
-                    intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, phoneNumber);
-                    intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, AuthenticatorService.ACCOUNT_TYPE);
-                    intent.putExtra(AccountManager.KEY_AUTHTOKEN, password);
-                    setAccountAuthenticatorResult(intent.getExtras());
-                    setResult(RESULT_OK, intent);
-                    finish();
-                }
                 return loggedIn;
 
             } catch (Exception e) {
@@ -311,5 +377,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
         protected void onCancelled() {
             dismissProgressDialog();
         }
+
+        
     }
 }

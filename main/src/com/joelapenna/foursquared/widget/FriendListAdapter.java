@@ -87,17 +87,7 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            ImageView photo = (ImageView) convertView.findViewById(R.id.friendListItemPhoto);
-            QuickContactBadge qcBadge = (QuickContactBadge) convertView.findViewById(R.id.qcFriendListItemPhoto);
-            Uri lookupUri = Sync.getContactLookupUri(mContext.getContentResolver(), user);
-            if ( lookupUri != null ) {
-                holder.photo = qcBadge;
-                qcBadge.assignContactUri(lookupUri);
-                photo.setVisibility(View.GONE);
-            } else {
-                holder.photo = photo;
-                qcBadge.setVisibility(View.GONE);
-            }
+            holder.photo = SometimesQuickContactBadgeHelp.getPhotoView(mContext.getContentResolver(), user, convertView, R.id.friendListItemPhoto);
             holder.name = (TextView) convertView.findViewById(R.id.friendListItemName);
 
             convertView.setTag(holder);

@@ -11,7 +11,6 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
-import com.joelapenna.foursquared.Sync;
 import com.joelapenna.foursquared.util.CheckinTimestampSort;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
@@ -27,7 +26,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -90,19 +88,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            ImageView photo = (ImageView) convertView.findViewById(R.id.photo);
-            QuickContactBadge qcBadge = (QuickContactBadge) convertView.findViewById(R.id.qcphoto);
-            
-            Uri lookupUri = Sync.getContactLookupUri(mContext.getContentResolver(), user);
-            if ( lookupUri != null ) {
-                holder.photo = qcBadge;
-                qcBadge.assignContactUri(lookupUri);
-                qcBadge.setExcludeMimes(new String[] {"vnd.android.cursor.item/com.joelapenna.foursquared.profile"});
-                photo.setVisibility(View.GONE);
-            } else {
-                holder.photo = photo;
-                qcBadge.setVisibility(View.GONE);
-            }
+            holder.photo = SometimesQuickContactBadgeHelp.getPhotoView(mContext.getContentResolver(), user, convertView, R.id.photo);
             holder.firstLine = (TextView) convertView.findViewById(R.id.firstLine);
             holder.secondLine = (TextView) convertView.findViewById(R.id.secondLine);
             holder.timeTextView = (TextView) convertView.findViewById(R.id.timeTextView);

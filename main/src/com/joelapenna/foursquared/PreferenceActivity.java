@@ -6,30 +6,27 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquared.preferences.Preferences;
+import com.joelapenna.foursquared.util.CompatibilityHelp;
 import com.joelapenna.foursquared.util.FeedbackUtils;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.BroadcastReceiver;
-import android.content.ContentProviderClient;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.provider.ContactsContract;
-import android.provider.ContactsContract.Groups;
-import android.provider.ContactsContract.Settings;
 import android.util.Log;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -41,38 +38,26 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     private static final String TAG = "PreferenceActivity";
 
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
+    private static Method getSyncAutomatically;
+    private static Constructor syncChangePreferenceListenerConstructor;
+    private static Constructor accountConstructor;
+    static {
+        if ( CompatibilityHelp.API_LEVEL_AT_LEAST_ECLAIR) {
+            try {
+                Class accountClass = Class.forName("android.accounts.Account");
+                accountConstructor = accountClass.getConstructor(String.class, String.class);
+                getSyncAutomatically = Class.forName("android.content.ContentResolver").getMethod("getSyncAutomatically", accountClass, String.class);
+                syncChangePreferenceListenerConstructor = Class.forName("com.joelapenna.foursquared.SyncPreferenceChangeListener").getConstructor(accountClass);
+            } catch (Exception e) {
+            }
+        }
+    }
+
 
     private SharedPreferences mPrefs;
-    private Account mAccount;
+    private Object mAccount;
     
-    private OnPreferenceChangeListener syncChangeListener = new OnPreferenceChangeListener() {
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
-            Boolean on = (Boolean)newValue;
-            if ( on ) {
-                String password = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(Preferences.PREFERENCE_PASSWORD, "");
-                if ("".equals(password)) {
-                    return false;
-                }
-                AccountManager.get(PreferenceActivity.this).addAccountExplicitly(mAccount, password, null);
-                ContentResolver.setSyncAutomatically(mAccount, ContactsContract.AUTHORITY, true);
-                ContentProviderClient client = getContentResolver().acquireContentProviderClient(ContactsContract.AUTHORITY_URI);
-                ContentValues cv = new ContentValues();
-                cv.put(Groups.ACCOUNT_NAME, mAccount.name);
-                cv.put(Groups.ACCOUNT_TYPE, mAccount.type);
-                cv.put(Settings.UNGROUPED_VISIBLE, true);
-                try {
-                    client.insert(Settings.CONTENT_URI, cv);
-                } catch (RemoteException e) {
-                    return false;
-                }
-            } else {
-                // TODO: callback and handler should not be null; if something goes wrong, we should not set the pref
-                AccountManager.get(PreferenceActivity.this).removeAccount(mAccount, null, null);
-            }
-            return true;
-        }
-    };
+    private OnPreferenceChangeListener syncChangeListener;
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
@@ -87,10 +72,18 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        boolean crSaysSync = ContentResolver.getSyncAutomatically(mAccount, ContactsContract.AUTHORITY);
         CheckBoxPreference syncPref = (CheckBoxPreference)getPreferenceScreen().findPreference(Preferences.PREFERENCE_SYNC_CONTACTS);
-        syncPref.setChecked(crSaysSync);
-        syncPref.setOnPreferenceChangeListener(syncChangeListener);
+        if (CompatibilityHelp.API_LEVEL_AT_LEAST_ECLAIR && mAccount != null && syncChangeListener != null) {
+            try {
+                boolean crSaysSync = (Boolean) getSyncAutomatically.invoke(ContentResolver.class, mAccount, ContactsContract.AUTHORITY);
+                syncPref.setChecked(crSaysSync);
+                syncPref.setOnPreferenceChangeListener(syncChangeListener);
+            } catch (Exception e) {
+                syncPref.setEnabled(false);
+            }
+        } else {
+            syncPref.setEnabled(false);
+        }
     }
     
     @Override
@@ -105,7 +98,14 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         super.onCreate(savedInstanceState);
         registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
         String login = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(Preferences.PREFERENCE_LOGIN, "");
-        mAccount = new Account(login, AuthenticatorService.ACCOUNT_TYPE);
+
+        if ( CompatibilityHelp.API_LEVEL_AT_LEAST_ECLAIR) {
+            try {
+                mAccount = accountConstructor.newInstance(login, AuthenticatorService.ACCOUNT_TYPE);
+                syncChangeListener = (OnPreferenceChangeListener) syncChangePreferenceListenerConstructor.newInstance(mAccount);
+            } catch (Exception e) {
+            }
+        }
 
         this.addPreferencesFromResource(R.xml.preferences);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
