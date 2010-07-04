@@ -135,11 +135,8 @@ public class UserFriendsActivity extends LoadableListActivity {
             mStateHolder.setFriends(group);
             mListAdapter.setGroup(mStateHolder.getFriends());
             getListView().setAdapter(mListAdapter);
-            // TODO: start sync task here
             boolean syncPref = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Preferences.PREFERENCE_SYNC_CONTACTS, false);
-            Log.i(TAG, "sync preference is " + syncPref);
             if ( syncPref ) {
-                Log.i(TAG, "starting task to sync contacts");
                 mStateHolder.startTaskSyncContacts(getApplication().getContentResolver());
             }
         }

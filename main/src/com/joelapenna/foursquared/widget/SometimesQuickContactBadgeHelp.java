@@ -39,26 +39,39 @@ final class SometimesQuickContactBadgeHelp {
     }
 
     static ImageView setPhotoView(ContentResolver resolver, User user, View convertView, int photoFrameId) {
-        FrameLayout frame = (FrameLayout)convertView.findViewById(photoFrameId);
-        SometimesQuickContactBadge photo = (SometimesQuickContactBadge)convertView.findViewById(R.id.sometimes_quickcontact);
+        final FrameLayout frame = (FrameLayout)convertView.findViewById(photoFrameId);
+        final SometimesQuickContactBadge photo = (SometimesQuickContactBadge)convertView.findViewById(R.id.sometimes_quickcontact);
 
         if (!CompatibilityHelp.API_LEVEL_AT_LEAST_ECLAIR) {
             return photo;
         }
 
-        Uri lookupUri = Sync.getContactLookupUri(resolver, user);
-        if ( lookupUri != null ) {
-            try {
-                ImageView badge = (ImageView) badgeConstructor.newInstance(photo.getContext(), photo.getAttrs(),  android.R.attr.quickContactBadgeStyleWindowSmall);
-                assignContactUri.invoke(badge, lookupUri);
+        try {
+            ImageView badge = null;
+            if ( frame.getChildCount() > 1 ) {
+                badge = (ImageView)frame.getChildAt(1);
+                badge.setVisibility(View.GONE);
+            } else {
+                badge = (ImageView) badgeConstructor.newInstance(photo.getContext(), photo.getAttrs(),  android.R.attr.quickContactBadgeStyleWindowSmall);
                 setExcludeMimes.invoke(badge, (Object)new String[] {"vnd.android.cursor.item/com.joelapenna.foursquared.profile"});
+                badge.setVisibility(View.GONE);
                 frame.addView(badge);
-                photo.setVisibility(View.GONE);
-                return badge;
-            } catch (Exception e) {
-                // we'll fall through and return the original photo view
             }
+
+            Uri lookupUri = Sync.getContactLookupUri(resolver, user);
+
+            if ( lookupUri != null ) {
+                    assignContactUri.invoke(badge, lookupUri);
+                    photo.setVisibility(View.GONE);
+                    badge.setVisibility(View.VISIBLE);
+                    return badge;
+            } else {
+
+            }
+        } catch (Exception e) {
+            // we'll fall through and return the original photo view
         }
+        photo.setVisibility(View.VISIBLE);
         return photo;
     }
 }

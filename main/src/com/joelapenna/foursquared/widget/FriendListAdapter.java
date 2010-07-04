@@ -74,26 +74,24 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
         // A ViewHolder keeps references to children views to avoid unnecessary
         // calls to findViewById() on each row.
         ViewHolder holder;
-        User user = (User) getItem(position);
+        final User user = (User) getItem(position);
 
         // When convertView is not null, we can reuse it directly, there is no
         // need to re-inflate it. We only inflate a new View when the
         // convertView supplied by ListView is null.
         if (convertView == null) {
             convertView = mInflater.inflate(mLayoutToInflate, null);
-
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.photo = SometimesQuickContactBadgeHelp.setPhotoView(mContext.getContentResolver(), user, convertView, R.id.friendListItemPhoto);
             holder.name = (TextView) convertView.findViewById(R.id.friendListItemName);
-
             convertView.setTag(holder);
         } else {
             // Get the ViewHolder back to get fast access to the TextView
             // and the ImageView.
             holder = (ViewHolder) convertView.getTag();
         }
+        holder.photo = SometimesQuickContactBadgeHelp.setPhotoView(mContext.getContentResolver(), user, convertView, R.id.friendListItemPhoto);
 
         Uri photoUri = Uri.parse(user.getPhoto());
         try {
