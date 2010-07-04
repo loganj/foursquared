@@ -193,10 +193,10 @@ final public class Sync {
         if (lookupKey == null) {
             return null;
         }
-        return Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, "/"+lookupKey+"/"+contactId);
+        return Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey+"/"+contactId);
         
     }
-    
+
     static Intent getViewContactIntent(ContentResolver resolver, User friend) {
         Uri lookupUri = getContactLookupUri(resolver, friend);
         if ( lookupUri == null ) {

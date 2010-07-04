@@ -324,8 +324,8 @@ public class UserActionsActivity extends LoadableListActivity {
                 }
                 if ( CompatibilityHelp.API_LEVEL_AT_LEAST_ECLAIR) {
                     try {
-                        Method getViewContactIntent = Class.forName("com.joelapenna.foursquared.Sync").getMethod("getViewContactIntent", ContentResolver.class, User.class);
-                        Intent contactIntent = (Intent) getViewContactIntent.invoke(Sync.class, context.getContentResolver(), mUser);
+                        Method getViewContactIntent = Class.forName("com.joelapenna.foursquared.Sync").getDeclaredMethod("getViewContactIntent", ContentResolver.class, User.class);
+                        contactIntent = (Intent) getViewContactIntent.invoke(null, context.getContentResolver(), mUser);
                         if ( contactIntent != null ) {
                             mActions.add(new Action(context.getResources().getString(R.string.user_actions_activity_contacts),
                                  android.R.drawable.sym_contact_card, ACTION_ID_CONTACTS, true));
