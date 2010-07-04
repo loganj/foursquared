@@ -10,18 +10,23 @@
   android:paddingRight="5dip"
   android:paddingBottom="5dip"
   style="@style/listItemStyle" >
-  
-  <com.joelapenna.foursquared.widget.SometimesQuickContactBadge
+
+  <FrameLayout
     android:id="@+id/tipPhoto"
     android:layout_height="52dip"
-    android:layout_width="46dip"
-    android:background="@drawable/photo_background"
+    android:layout_width="46dip">
     android:layout_alignParentTop="true"
     android:layout_alignParentLeft="true"
     android:padding="3dip"
-    android:src="@drawable/blank_boy"
-    android:scaleType="centerInside" />
-    
+      <com.joelapenna.foursquared.widget.SometimesQuickContactBadge
+        android:id="@+id/sometimes_quickcontact"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:background="@drawable/photo_background"
+        android:src="@drawable/blank_boy"
+        android:scaleType="centerInside" />
+  </FrameLayout>
+
     <LinearLayout
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"

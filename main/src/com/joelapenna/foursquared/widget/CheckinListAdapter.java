@@ -84,11 +84,10 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
         // convertView supplied by ListView is null.
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.checkin_list_item, null);
-
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.photo = SometimesQuickContactBadgeHelp.getPhotoView(mContext.getContentResolver(), user, convertView, R.id.photo);
+            holder.photo = SometimesQuickContactBadgeHelp.setPhotoView(mContext.getContentResolver(), user, convertView, R.id.photo);
             holder.firstLine = (TextView) convertView.findViewById(R.id.firstLine);
             holder.secondLine = (TextView) convertView.findViewById(R.id.secondLine);
             holder.timeTextView = (TextView) convertView.findViewById(R.id.timeTextView);

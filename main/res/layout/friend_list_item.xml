@@ -9,18 +9,23 @@
   android:gravity="center_vertical"
   android:padding="5dip"
   > 
-  
-  <com.joelapenna.foursquared.widget.SometimesQuickContactBadge
+
+  <FrameLayout
     android:id="@+id/friendListItemPhoto"
-        android:layout_height="50dip"
-        android:layout_width="44dip"
-    android:background="@drawable/photo_background"
+    android:layout_height="50dip"
+    android:layout_width="44dip"
     android:layout_alignParentTop="true"
     android:layout_alignParentLeft="true"
-    android:padding="3dip"
-    android:src="@drawable/blank_boy"
-    android:scaleType="centerInside" />
-      
+    android:padding="3dip">
+      <com.joelapenna.foursquared.widget.SometimesQuickContactBadge
+        android:id="@+id/sometimes_quickcontact"
+        android:layout_height="fill_parent"
+	    android:layout_width="fill_parent"
+        android:background="@drawable/photo_background"
+        android:src="@drawable/blank_boy"
+        android:scaleType="centerInside" />
+  </FrameLayout>
+
   <TextView
     android:id="@+id/friendListItemName"
     android:layout_width="wrap_content"

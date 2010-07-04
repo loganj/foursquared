@@ -9,7 +9,6 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
-import com.joelapenna.foursquared.Sync;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 
 import android.content.Context;
@@ -22,7 +21,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -87,7 +85,7 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.photo = SometimesQuickContactBadgeHelp.getPhotoView(mContext.getContentResolver(), user, convertView, R.id.friendListItemPhoto);
+            holder.photo = SometimesQuickContactBadgeHelp.setPhotoView(mContext.getContentResolver(), user, convertView, R.id.friendListItemPhoto);
             holder.name = (TextView) convertView.findViewById(R.id.friendListItemName);
 
             convertView.setTag(holder);
