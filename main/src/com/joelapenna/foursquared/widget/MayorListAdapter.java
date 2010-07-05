@@ -10,6 +10,7 @@ import com.joelapenna.foursquare.types.Mayor;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.Sync;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 
 import android.content.Context;
@@ -21,7 +22,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -41,9 +41,11 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
     private Handler mHandler = new Handler();
     private RemoteResourceManagerObserver mResourcesObserver;
     private Context mContext;
+    private Sync mSync;
 
-    public MayorListAdapter(Context context, RemoteResourceManager rrm) {
+    public MayorListAdapter(Context context, RemoteResourceManager rrm, Sync sync) {
         super(context);
+        mSync = sync;
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
         mResourcesObserver = new RemoteResourceManagerObserver();
@@ -74,7 +76,7 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
             // views we want to bind data to.
             holder = new ViewHolder();
 
-            holder.photo = SometimesQuickContactBadgeHelp.setPhotoView(mContext.getContentResolver(), user, convertView, R.id.photo);
+            holder.photo = (MaybeContactView)convertView.findViewById(R.id.photo);
             holder.firstLine = (TextView)convertView.findViewById(R.id.firstLine);
             holder.secondLine = (TextView)convertView.findViewById(R.id.mayorMessageTextView);
 
@@ -84,6 +86,8 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
             // and the ImageView.
             holder = (ViewHolder)convertView.getTag();
         }
+
+        holder.photo.setContactLookupUri(mSync.getContactLookupUri(mContext.getContentResolver(), user));
 
         final Uri photoUri = Uri.parse(user.getPhoto());
 
@@ -129,7 +133,7 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
     }
 
     private static class ViewHolder {
-        ImageView photo;
+        MaybeContactView photo;
         TextView firstLine;
         TextView secondLine;
     }

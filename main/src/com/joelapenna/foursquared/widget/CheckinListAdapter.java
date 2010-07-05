@@ -11,6 +11,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.Sync;
 import com.joelapenna.foursquared.util.CheckinTimestampSort;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
@@ -25,7 +26,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -52,11 +52,13 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
     private RemoteResourceManagerObserver mResourcesObserver;
     private Handler mHandler = new Handler();
     private HashMap<String, String> mCachedTimestamps;
+    private Sync mSync;
     private Context mContext;
-    
-    public CheckinListAdapter(Context context, RemoteResourceManager rrm) {
+
+    public CheckinListAdapter(Context context, RemoteResourceManager rrm, Sync sync) {
         super(context);
         mContext = context;
+        mSync = sync;
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
         mResourcesObserver = new RemoteResourceManagerObserver();
@@ -87,7 +89,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.photo = SometimesQuickContactBadgeHelp.setPhotoView(mContext.getContentResolver(), user, convertView, R.id.photo);
+            holder.photo =  (MaybeContactView)convertView.findViewById(R.id.photo);
             holder.firstLine = (TextView) convertView.findViewById(R.id.firstLine);
             holder.secondLine = (TextView) convertView.findViewById(R.id.secondLine);
             holder.timeTextView = (TextView) convertView.findViewById(R.id.timeTextView);
@@ -98,8 +100,8 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
             // and the ImageView.
             holder = (ViewHolder) convertView.getTag();
         }
-
-
+        holder.photo.setContactLookupUri(mSync.getContactLookupUri(mContext.getContentResolver(), user));
+        
         try {
             Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photoUri));
             holder.photo.setImageBitmap(bitmap);
@@ -168,7 +170,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
     }
 
     private static class ViewHolder {
-        ImageView photo;
+        MaybeContactView photo;
         TextView firstLine;
         TextView secondLine;
         TextView timeTextView;

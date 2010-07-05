@@ -123,7 +123,8 @@ public class VenueTipsActivity extends LoadableListActivity {
         for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
             Group<Tip> group = groups.get(groupsIndex);
             TipListAdapter groupAdapter = new TipListAdapter(
-                this, ((Foursquared)getApplication()).getRemoteResourceManager());
+                this, ((Foursquared)getApplication()).getRemoteResourceManager(),
+                      ((Foursquared)getApplication()).getSync());
             groupAdapter.setGroup(group);
             mListAdapter.addSection(group.getType(), groupAdapter);
         }

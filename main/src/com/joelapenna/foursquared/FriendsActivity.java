@@ -12,11 +12,7 @@ import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.app.LoadableListActivityWithView;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
-import com.joelapenna.foursquared.util.CheckinTimestampSort;
-import com.joelapenna.foursquared.util.Comparators;
-import com.joelapenna.foursquared.util.MenuUtils;
-import com.joelapenna.foursquared.util.NotificationsUtil;
-import com.joelapenna.foursquared.util.UserUtils;
+import com.joelapenna.foursquared.util.*;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 
@@ -426,7 +422,7 @@ public class FriendsActivity extends LoadableListActivityWithView {
                     
                     if ( syncPref ) {
                         Log.i(TAG, "starting task to sync contacts");
-                        Sync.startBackgroundSync(getApplication().getContentResolver(), checkins);
+                        ((Foursquared)getApplication()).getSync().startBackgroundSync(getApplication().getContentResolver(), checkins);
                     }
                 }
                 setSearchResults(checkins);
@@ -512,38 +508,36 @@ public class FriendsActivity extends LoadableListActivityWithView {
                 }
             }
         }
-        
+
+        RemoteResourceManager rRm = ((Foursquared)getApplication()).getRemoteResourceManager();
+        Sync sync = ((Foursquared)getApplication()).getSync();
+
         if (recent.size() > 0) {
-            CheckinListAdapter adapter = new CheckinListAdapter(this, 
-                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            CheckinListAdapter adapter = new CheckinListAdapter(this, rRm, sync);
             adapter.setGroup(recent);
             listAdapter.addSection(getResources().getString(
                     R.string.friendsactivity_title_sort_recent), adapter);
         }
         if (today.size() > 0) {
-            CheckinListAdapter adapter = new CheckinListAdapter(this, 
-                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            CheckinListAdapter adapter = new CheckinListAdapter(this, rRm, sync);
             adapter.setGroup(today);
             listAdapter.addSection(getResources().getString(
                     R.string.friendsactivity_title_sort_today), adapter);
         }
         if (yesterday.size() > 0) {
-            CheckinListAdapter adapter = new CheckinListAdapter(this, 
-                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            CheckinListAdapter adapter = new CheckinListAdapter(this, rRm, sync);
             adapter.setGroup(yesterday);
             listAdapter.addSection(getResources().getString(
                     R.string.friendsactivity_title_sort_yesterday), adapter);
         }
         if (older.size() > 0) {
-            CheckinListAdapter adapter = new CheckinListAdapter(this, 
-                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            CheckinListAdapter adapter = new CheckinListAdapter(this, rRm, sync);
             adapter.setGroup(older);
             listAdapter.addSection(getResources().getString(
                     R.string.friendsactivity_title_sort_older), adapter);
         }
         if (other.size() > 0) {
-            CheckinListAdapter adapter = new CheckinListAdapter(this, 
-                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            CheckinListAdapter adapter = new CheckinListAdapter(this, rRm, sync);
             adapter.setGroup(other);
             listAdapter.addSection(getResources().getString(
                     R.string.friendsactivity_title_sort_other_city), adapter);
@@ -554,8 +548,9 @@ public class FriendsActivity extends LoadableListActivityWithView {
         Collections.sort(checkins, Comparators.getCheckinDistanceComparator());
         
         Group<Checkin> nearby = new Group<Checkin>();
-        CheckinListAdapter adapter = new CheckinListAdapter(this, 
-                ((Foursquared) getApplication()).getRemoteResourceManager());
+        CheckinListAdapter adapter = new CheckinListAdapter(this,
+                                                            ((Foursquared)getApplication()).getRemoteResourceManager(),
+                                                            ((Foursquared)getApplication()).getSync());
         for (Checkin it : checkins) {
             int meters = 0;
             try {

@@ -103,7 +103,8 @@ public class UserFriendsActivity extends LoadableListActivity {
 
     private void ensureUi() {
         mListAdapter = new FriendListAdapter(this, 
-            ((Foursquared) getApplication()).getRemoteResourceManager());
+            ((Foursquared) getApplication()).getRemoteResourceManager(),
+            ((Foursquared) getApplication()).getSync());
         mListAdapter.setGroup(mStateHolder.getFriends());
         
         ListView listView = getListView();
@@ -130,14 +131,15 @@ public class UserFriendsActivity extends LoadableListActivity {
     private void onFriendsTaskComplete(Group<User> group, Exception ex) {
         mListAdapter.removeObserver();
         mListAdapter = new FriendListAdapter(this, 
-            ((Foursquared) getApplication()).getRemoteResourceManager());
+            ((Foursquared) getApplication()).getRemoteResourceManager(),
+            ((Foursquared) getApplication()).getSync());
         if (group != null) {
             mStateHolder.setFriends(group);
             mListAdapter.setGroup(mStateHolder.getFriends());
             getListView().setAdapter(mListAdapter);
             boolean syncPref = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Preferences.PREFERENCE_SYNC_CONTACTS, false);
             if ( syncPref ) {
-                mStateHolder.startTaskSyncContacts(getApplication().getContentResolver());
+                mStateHolder.startTaskSyncContacts(((Foursquared)getApplication()).getSync(), getApplication().getContentResolver());
             }
         }
         else {
@@ -248,7 +250,7 @@ public class UserFriendsActivity extends LoadableListActivity {
             mTaskFriends.execute(userId);
         }
         
-        public void startTaskSyncContacts(ContentResolver resolver) {
+        public void startTaskSyncContacts(Sync sync, ContentResolver resolver) {
             List<Checkin> checkins = new ArrayList<Checkin>(mFriends.size());
             for ( User friend : mFriends ) {
                 Checkin c = friend.getCheckin();
@@ -257,7 +259,7 @@ public class UserFriendsActivity extends LoadableListActivity {
                 }
             }
             if ( checkins.size() > 0 ) {
-                mTaskSyncContacts = Sync.startBackgroundSync(resolver, checkins);
+                mTaskSyncContacts = sync.startBackgroundSync(resolver, checkins);
             }
         }
 

@@ -20,12 +20,10 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.OperationApplicationException;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.RawContacts;
@@ -40,8 +38,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
 
@@ -120,7 +116,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         ArrayList<ContentProviderOperation> opList = new ArrayList<ContentProviderOperation>();
         ArrayList<User> justAdded = new ArrayList<User>();
         for ( User friend : friends.values() ) {
-            long rawContactId = Sync.getRawContactId(resolver, friend);
+            long rawContactId = ((SyncImpl)mFoursquared.getSync()).getRawContactId(resolver, friend);
             if ( rawContactId == 0 ) {
                 opList.addAll(addContact(account, friend, opList.size()));
                 justAdded.add(friend);
@@ -137,8 +133,8 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
         
         opList.clear();
         for ( User friend : justAdded ) {
-            Log.i(TAG, "added friend " + friend.getFirstname() + " with id " + Sync.getRawContactId(resolver, friend));
-            opList.addAll(Sync.updateStatus(resolver, friend, checkinsByUserId.get(friend.getId())));
+            Log.i(TAG, "added friend " + friend.getFirstname() + " with id " + ((SyncImpl)mFoursquared.getSync()).getRawContactId(resolver, friend));
+            opList.addAll(mFoursquared.getSync().updateStatus(resolver, friend, checkinsByUserId.get(friend.getId())));
         }
         
         try {
@@ -215,8 +211,8 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
     
     private ArrayList<ContentProviderOperation> updateContact(ContentResolver resolver, long rawContactId, User friend, Checkin checkin) {
         Cursor c = resolver.query(ContactsContract.Data.CONTENT_URI, 
-                                  Sync.RawContactDataQuery.PROJECTION, 
-                                  Sync.RawContactDataQuery.SELECTION, 
+                                  SyncImpl.RawContactDataQuery.PROJECTION,
+                                  SyncImpl.RawContactDataQuery.SELECTION,
                                   new String[] { String.valueOf(rawContactId) }, 
                                   null);
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
@@ -225,19 +221,19 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
             while (c.moveToNext()) {
                 Log.i(TAG, "processing row with raw_contact_id=" + c.getLong(5));
                 Uri uri = ContentUris.withAppendedId(Data.CONTENT_URI, rawContactId);
-                long id = c.getLong(Sync.RawContactDataQuery.COLUMN_ID);
-                String mimeType = c.getString(Sync.RawContactDataQuery.COLUMN_MIMETYPE);
+                long id = c.getLong(SyncImpl.RawContactDataQuery.COLUMN_ID);
+                String mimeType = c.getString(SyncImpl.RawContactDataQuery.COLUMN_MIMETYPE);
                 ContentValues values = new ContentValues();
                 if ( StructuredName.CONTENT_ITEM_TYPE.equals(mimeType)) {
                     
                     // TODO: will this ever be null?  what if it's null, and we want to clear the column?
-                    String contactFamilyName = c.getString(Sync.RawContactDataQuery.COLUMN_FAMILY_NAME);
+                    String contactFamilyName = c.getString(SyncImpl.RawContactDataQuery.COLUMN_FAMILY_NAME);
                     if ( friend.getLastname() != null && !friend.getLastname().equals(contactFamilyName)) {
                         Log.i(TAG, "updating family name from '" + contactFamilyName + "' to '" + friend.getLastname() + "'");
                         values.put(StructuredName.FAMILY_NAME, friend.getLastname());
                     }
                     
-                    String contactGivenName = c.getString(Sync.RawContactDataQuery.COLUMN_GIVEN_NAME);
+                    String contactGivenName = c.getString(SyncImpl.RawContactDataQuery.COLUMN_GIVEN_NAME);
                     if ( friend.getFirstname() != null &&
                          !friend.getFirstname().equals(contactGivenName)) {
                         Log.i(TAG, "updating given name from '" + contactGivenName + "' to '" + friend.getFirstname() + "'");
@@ -245,12 +241,12 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
                     }
                 } else if ( Phone.CONTENT_ITEM_TYPE.equals(mimeType) ) {
                     
-                    if ( friend.getPhone() != null && !friend.getPhone().equals(c.getString(Sync.RawContactDataQuery.COLUMN_PHONE_NUMBER))) {
+                    if ( friend.getPhone() != null && !friend.getPhone().equals(c.getString(SyncImpl.RawContactDataQuery.COLUMN_PHONE_NUMBER))) {
                         Log.i(TAG, "updating phone to '" + friend.getPhone() + "'");
                         values.put(Phone.NUMBER, friend.getPhone());
                     }
                 } else if ( Email.CONTENT_ITEM_TYPE.equals(mimeType)) {
-                    if ( friend.getEmail() != null && !friend.getEmail().equals(c.getString(Sync.RawContactDataQuery.COLUMN_EMAIL_ADDRESS))) {
+                    if ( friend.getEmail() != null && !friend.getEmail().equals(c.getString(SyncImpl.RawContactDataQuery.COLUMN_EMAIL_ADDRESS))) {
                         Log.i(TAG, "updating email to '" + friend.getEmail() + "'");
                         values.put(Email.CONTENT_ITEM_TYPE, friend.getEmail());
                     }
@@ -265,7 +261,7 @@ public class ContactsSyncAdapter extends AbstractThreadedSyncAdapter {
                 if ( checkin != null ) {
                     ContentProviderOperation.Builder updateStatus = ContentProviderOperation.newInsert(ContactsContract.StatusUpdates.CONTENT_URI);
                     updateStatus.withValue(ContactsContract.StatusUpdates.DATA_ID, id);
-                    String status = Sync.createStatus(checkin);
+                    String status = ((SyncImpl)mFoursquared.getSync()).createStatus(checkin);
                     updateStatus.withValue(ContactsContract.StatusUpdates.STATUS, status);
                     long created = new Date(checkin.getCreated()).getTime();
                     updateStatus.withValue(ContactsContract.StatusUpdates.STATUS_TIMESTAMP, created);

@@ -10,21 +10,13 @@
   android:padding="5dip"
   > 
 
-  <FrameLayout
+  <com.joelapenna.foursquared.widget.MaybeContactView
     android:id="@+id/friendListItemPhoto"
     android:layout_height="50dip"
     android:layout_width="44dip"
     android:layout_alignParentTop="true"
     android:layout_alignParentLeft="true"
-    android:padding="3dip">
-      <com.joelapenna.foursquared.widget.SometimesQuickContactBadge
-        android:id="@+id/sometimes_quickcontact"
-        android:layout_height="fill_parent"
-	    android:layout_width="fill_parent"
-        android:background="@drawable/photo_background"
-        android:src="@drawable/blank_boy"
-        android:scaleType="centerInside" />
-  </FrameLayout>
+    android:padding="3dip"/>
 
   <TextView
     android:id="@+id/friendListItemName"

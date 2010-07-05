@@ -9,6 +9,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.Sync;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 
 import android.content.Context;
@@ -20,7 +21,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -44,11 +44,13 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
     private Handler mHandler = new Handler();
     private int mLoadedPhotoIndex;
     private Context mContext;
+    private Sync mSync;
 
     
-    public FriendListAdapter(Context context, RemoteResourceManager rrm) {
+    public FriendListAdapter(Context context, RemoteResourceManager rrm, Sync sync) {
         super(context);
         mContext = context;
+        mSync = sync;
         mInflater = LayoutInflater.from(context);
         mLayoutToInflate = R.layout.friend_list_item;
         mRrm = rrm;
@@ -63,8 +65,9 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
         mRrm.deleteObserver(mResourcesObserver);
     }
 
-    public FriendListAdapter(Context context, int layoutResource) {
+    public FriendListAdapter(Context context, int layoutResource, Sync sync) {
         super(context);
+        mSync = sync;
         mInflater = LayoutInflater.from(context);
         mLayoutToInflate = layoutResource;
     }
@@ -85,13 +88,14 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
             // views we want to bind data to.
             holder = new ViewHolder();
             holder.name = (TextView) convertView.findViewById(R.id.friendListItemName);
+            holder.photo = (MaybeContactView)convertView.findViewById(R.id.friendListItemPhoto);
             convertView.setTag(holder);
         } else {
             // Get the ViewHolder back to get fast access to the TextView
             // and the ImageView.
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.photo = SometimesQuickContactBadgeHelp.setPhotoView(mContext.getContentResolver(), user, convertView, R.id.friendListItemPhoto);
+        holder.photo.setContactLookupUri(mSync.getContactLookupUri(mContext.getContentResolver(), user));
 
         Uri photoUri = Uri.parse(user.getPhoto());
         try {
@@ -159,7 +163,7 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
     };
 
     static class ViewHolder {
-        ImageView photo;
+        MaybeContactView photo;
         TextView name;
     }
 }

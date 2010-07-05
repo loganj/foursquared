@@ -10,6 +10,7 @@ import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.Sync;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
 
@@ -23,7 +24,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -47,10 +47,12 @@ public class TipListAdapter extends BaseTipAdapter
     private Handler mHandler = new Handler();
     private int mLoadedPhotoIndex;
     private Context mContext;
+    private Sync mSync;
 
-    public TipListAdapter(Context context, RemoteResourceManager rrm) {
+    public TipListAdapter(Context context, RemoteResourceManager rrm, Sync sync) {
         super(context);
         mContext = context;
+        mSync = sync;
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
         mResourcesObserver = new RemoteResourceManagerObserver();
@@ -81,7 +83,7 @@ public class TipListAdapter extends BaseTipAdapter
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.photo = SometimesQuickContactBadgeHelp.setPhotoView(mContext.getContentResolver(), user, convertView, R.id.tipPhoto);
+            holder.photo =  (MaybeContactView)convertView.findViewById(R.id.tipPhoto);
             holder.tipTextView = (TextView)convertView.findViewById(R.id.tipTextView);
             holder.userTextView = (TextView)convertView.findViewById(R.id.userTextView);
 
@@ -98,6 +100,8 @@ public class TipListAdapter extends BaseTipAdapter
         holder.userTextView.setText("- " + StringFormatters.getUserAbbreviatedName(tip.getUser()));
         
         if (user != null) {
+            holder.photo.setContactLookupUri(mSync.getContactLookupUri(mContext.getContentResolver(), user));
+
             Uri photoUri = Uri.parse(user.getPhoto());
             try {
                 Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photoUri));
@@ -152,7 +156,7 @@ public class TipListAdapter extends BaseTipAdapter
     };
 
     private static class ViewHolder {
-        ImageView photo;
+        MaybeContactView photo;
         TextView tipTextView;
         TextView userTextView;
     }

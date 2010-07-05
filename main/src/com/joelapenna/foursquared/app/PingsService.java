@@ -180,7 +180,7 @@ public class PingsService extends WakefulIntentService {
                 ContentResolver resolver = getApplication().getContentResolver();
                 ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>(newCheckins.size());
                 for ( Checkin checkin : newCheckins) {
-                    ops.addAll(Sync.updateStatus(resolver, checkin.getUser(), checkin));
+                    ops.addAll(foursquared.getSync().updateStatus(resolver, checkin.getUser(), checkin));
                 }
                 try {
                     resolver.applyBatch(ContactsContract.AUTHORITY, ops);
