@@ -6,7 +6,6 @@ package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquared.preferences.Preferences;
-import com.joelapenna.foursquared.util.FeedbackUtils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -89,8 +88,8 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                     Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_PREFERENCES)));
 
         } else if (Preferences.PREFERENCE_SEND_FEEDBACK.equals(key)) {
-            FeedbackUtils.SendFeedBack(this, (Foursquared) getApplication());
-
+            startActivity(new Intent(this, SendLogActivity.class));
+            
         } else if (Preferences.PREFERENCE_FRIEND_ADD.equals(key)) {
         	startActivity(new Intent(this, AddFriendsActivity.class));
 

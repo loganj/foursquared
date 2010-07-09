@@ -37,7 +37,7 @@
   <string name="cross_street">Cross Street</string>
   <string name="feedback_error">Couldn\'t find configured email client.</string>
   <string name="feedback_label">Send Feedback</string>
-  <string name="feedback_more">If you are reporting problem please answer the questions below:</string>
+  <string name="feedback_more">If you are reporting a problem please answer the questions below:</string>
   <string name="feedback_question_additional_information">Please provide any additional information below.</string>
   <string name="feedback_question_expected_output">What is the expected output? What do you see instead?</string>
   <string name="feedback_question_how_to_reproduce">What steps will reproduce the problem?</string>
@@ -126,7 +126,7 @@
   <string name="search_already_in_progress_toast">A search is already in progress.</string>
   <string name="search_label">Search</string>
   <string name="search_venues_label">Venues</string>
-  <string name="send_feedback_preference_summary">Send feedback by email.</string>
+  <string name="send_feedback_preference_summary">Send feedback with system logs by email.</string>
   <string name="shout_action_label">Shout!</string>
   <string name="shout_activity_label">Foursquare Checkin</string>
   <string name="shout_hint">Shout, shout, let it all out...                              </string> <!-- The whitespace is a layout hack to make sure the dialog box doesn't bounce in size so quickly.  -->
@@ -250,5 +250,16 @@
   <string name="edit_venue_options_btn_flag_as_mislocated">Flag incorrect address</string>
   <string name="edit_venue_options_btn_flag_as_duplicate">Flag venue as duplicate</string>
   <string name="edit_venue_options_btn_flag_as_closed">Flag venue as closed</string>
-  <string name="edit_venue">Edit Venue</string>
-</resources>  
+  <string name="edit_venue">Edit Venue</string> 
+  <string name="send_log_message_subject">Foursquare for Android Feedback</string>
+  <string name="send_log_message_device_our_version">"Foursquare version: "</string>
+  <string name="send_log_message_device_user_id">"User: "</string>
+  <string name="send_log_message_device_model">"Device model: "</string>
+  <string name="send_log_message_device_firmware">"Firmware version: "</string>
+  <string name="send_log_message_device_kernel">"Kernel version: "</string>
+  <string name="send_log_message_device_build">"Build number: "</string>
+  <string name="send_log_main_dialog_text">After we\'ve completed collecting the logs, please choose an email client to send.</string>  
+  <string name="send_log_acquiring_log_progress_dialog_message">Collecting logs from system...</string>
+  <string name="send_log_chooser_title">Foursquare for Android Feedback</string>
+  <string name="send_log_failed_to_get_log_message">Failed to get the log from the system.</string>
+</resources>
