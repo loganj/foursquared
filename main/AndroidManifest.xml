@@ -2,7 +2,7 @@
 <manifest
   xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.joelapenna.foursquared"
-  android:versionName="2010-07-08" android:versionCode="2010070800">
+  android:versionName="2010-07-09" android:versionCode="2010070900">
 
   <uses-permission
     android:name="android.permission.ACCESS_COARSE_LOCATION" />
