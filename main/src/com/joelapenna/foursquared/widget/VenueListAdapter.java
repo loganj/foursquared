@@ -134,8 +134,12 @@ public class VenueListAdapter extends BaseVenueAdapter implements ObservableAdap
             holder.iconSpecial.setVisibility(View.GONE);
         }
         
-        // Show venue distance always.
-        holder.venueDistance.setText(venue.getDistance() + " meters");
+        // Show venue distance.
+        if (venue.getDistance() != null) {
+            holder.venueDistance.setText(venue.getDistance() + " meters");
+        } else {
+            holder.venueDistance.setText("");
+        }
         
         // If more than two people here, then show trending text.
         Stats stats = venue.getStats();
