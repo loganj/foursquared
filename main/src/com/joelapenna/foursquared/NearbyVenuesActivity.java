@@ -193,8 +193,9 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                     .setIcon(menuIcon);
         }
         
-        menu.add(Menu.NONE, MENU_MAP, Menu.NONE, "Map")
-            .setIcon(R.drawable.ic_menu_places);
+        // Shows a map of all nearby venues, works but not going into this version.
+        //menu.add(Menu.NONE, MENU_MAP, Menu.NONE, "Map")
+        //    .setIcon(R.drawable.ic_menu_places);
 
         MenuUtils.addPreferencesToMenu(this, menu);
 
