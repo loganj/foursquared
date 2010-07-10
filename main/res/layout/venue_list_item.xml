@@ -62,12 +62,12 @@
       android:layout_height="12dip"
       android:src="@drawable/special_icon"
       android:layout_gravity="center_vertical"
-      android:layout_marginRight="10dip"
+      android:layout_marginRight="25dip"
       android:layout_marginTop="1dip" />
   
     <TextView
       android:id="@+id/venueDistance"
-      android:layout_width="100dip"
+      android:layout_width="90dip"
       android:layout_height="wrap_content"
       android:textAppearance="@style/TextViewStyleVenueAddressListItem"
       android:ellipsize="end" />
