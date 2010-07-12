@@ -4,6 +4,7 @@
 
 package com.joelapenna.foursquared;
 
+import android.app.Activity;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
@@ -259,6 +260,15 @@ public class Foursquared extends Application {
         } else {
             return new Foursquare(Foursquare.createHttpApi(version, false));
         }
+    }
+
+    /**
+     * Provides static access to the application as a Foursquared.  Mostly here to hide the cast, and in case we can do
+     * better later.
+     * @return the current Application as a Foursquared instance
+     */
+    public static Foursquared get(Activity activity) {
+        return (Foursquared)activity.getApplication();
     }
 
     /**
