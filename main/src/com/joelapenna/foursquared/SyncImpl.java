@@ -2,10 +2,17 @@ package com.joelapenna.foursquared;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AuthenticatorException;
+import android.accounts.OperationCanceledException;
 import android.content.*;
 import android.preference.PreferenceManager;
+import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.error.FoursquareError;
+import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Checkin;
+import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.StringFormatters;
 
@@ -18,11 +25,230 @@ import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.RawContacts;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 final class SyncImpl implements Sync {
     
     final private static String TAG = "Sync";
+
+    static void syncFriends(Foursquared mFoursquared, Foursquare mFoursquare, ContentResolver resolver, AccountManager mAccountManager, Account account) {
+        String password = null;
+        try {
+            Log.i(TAG, "getting password from account manager");
+            password = mAccountManager.blockingGetAuthToken(account, AuthenticatorService.ACCOUNT_TYPE, true);
+
+        } catch (OperationCanceledException e) {
+            Log.w(TAG, "operation cancelled while getting auth token", e);
+        } catch (AuthenticatorException e) {
+            Log.e(TAG, "authenticator exception while getting auth token", e);
+        } catch (IOException e) {
+            Log.e(TAG, "ioexception while getting auth token", e);
+        }
+
+        mFoursquare.setCredentials(account.name, password);
+        final HashMap<String,User> friends = new HashMap<String,User>();
+        final HashMap<String,Checkin> checkinsByUserId = new HashMap<String,Checkin>();
+
+        Foursquare.Location loc = LocationUtils.createFoursquareLocation(mFoursquared.getLastKnownLocation());
+
+        try {
+            User user = mFoursquare.user(null, false, false, loc);
+            friends.put(user.getId(), user);
+            Group<User> friendsFromServer = mFoursquare.friends(user.getId(), loc);
+            for ( User friend : friendsFromServer ) {
+                Log.i(TAG, "Stashed friend " + friend.getId());
+                friends.put(friend.getId(), friend);
+            }
+        } catch (FoursquareError e) {
+            Log.e(TAG, "error fetching friends", e);
+        } catch (FoursquareException e) {
+            Log.e(TAG, "exception fetching friends", e);
+        } catch (IOException e) {
+            Log.e(TAG, "ioexception fetching friends", e);
+        }
+
+        Log.i(TAG, "got " + friends.size() + " friends from server");
+
+        final Group<Checkin> checkins = new Group<Checkin>();
+        try {
+            checkins.addAll(mFoursquare.checkins(loc));
+        } catch (FoursquareError e) {
+            Log.e(TAG, "error fetching checkins", e);
+        } catch (FoursquareException e) {
+            Log.e(TAG, "error fetching checkins", e);
+        } catch (IOException e) {
+            Log.e(TAG, "error fetching checkins", e);
+        }
+        for ( Checkin checkin : checkins ) {
+            checkinsByUserId.put(checkin.getUser().getId(), checkin);
+        }
+        
+        ArrayList<ContentProviderOperation> opList = new ArrayList<ContentProviderOperation>();
+        ArrayList<User> justAdded = new ArrayList<User>();
+        for ( User friend : friends.values() ) {
+            long rawContactId = ((SyncImpl)mFoursquared.getSync()).getRawContactId(resolver, friend);
+            if ( rawContactId == 0 ) {
+                opList.addAll(addContact(mFoursquared, account, friend, opList.size()));
+                justAdded.add(friend);
+            } else {
+                 opList.addAll(updateContact(mFoursquared, resolver, rawContactId, friend, checkinsByUserId.get(friend.getId())));
+            }
+        }
+        try {
+            resolver.applyBatch(ContactsContract.AUTHORITY, opList);
+        } catch (Exception e) {
+            Log.e(TAG, "Something went wrong during creation!", e);
+            e.printStackTrace();
+        }
+
+        opList.clear();
+        for ( User friend : justAdded ) {
+            Log.i(TAG, "added friend " + friend.getFirstname() + " with id " + ((SyncImpl)mFoursquared.getSync()).getRawContactId(resolver, friend));
+            opList.addAll(mFoursquared.getSync().updateStatus(resolver, friend, checkinsByUserId.get(friend.getId())));
+        }
+
+        try {
+            resolver.applyBatch(ContactsContract.AUTHORITY, opList);
+        } catch (Exception e) {
+            Log.e(TAG, "Something went wrong while updating status for new contacts", e);
+            e.printStackTrace();
+        }
+    }
+
+    private static ArrayList<ContentProviderOperation> addContact(Foursquared foursquared, Account account, User friend, int backReference) {
+        ArrayList<ContentProviderOperation> opList = new ArrayList<ContentProviderOperation>();
+ 
+        ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(RawContacts.CONTENT_URI);
+        builder.withValue(RawContacts.ACCOUNT_NAME, account.name);
+        builder.withValue(RawContacts.ACCOUNT_TYPE, account.type);
+        builder.withValue(RawContacts.SYNC1, friend.getId());
+        builder.withValue(RawContacts.SOURCE_ID, friend.getId());
+        opList.add(builder.build());
+        
+        builder = ContentProviderOperation.newInsert(Data.CONTENT_URI);
+        builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, backReference);
+        builder.withValue(Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
+        builder.withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, friend.getFirstname()+" "+friend.getLastname());
+        builder.withValue(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, friend.getFirstname());
+        builder.withValue(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME, friend.getLastname());
+        opList.add(builder.build());
+        
+        builder = ContentProviderOperation.newInsert(Data.CONTENT_URI);
+        builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, backReference);
+        builder.withValue(Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+        builder.withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, friend.getPhone());
+        opList.add(builder.build());
+        
+        builder = ContentProviderOperation.newInsert(Data.CONTENT_URI);
+        builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, backReference);
+        builder.withValue(Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
+        builder.withValue(ContactsContract.CommonDataKinds.Email.DATA, friend.getEmail());
+        opList.add(builder.build());
+
+        builder = ContentProviderOperation.newInsert(Data.CONTENT_URI);
+        builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, backReference);
+        builder.withValue(Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
+        
+        try {
+            Uri photoUri = Uri.parse(friend.getPhoto());
+            InputStream photoIn = foursquared.getRemoteResourceManager().getInputStream(photoUri);
+            ByteArrayOutputStream photoOut = new ByteArrayOutputStream();
+            byte[] buf = new byte[64];
+            int r = 0;
+            while ( (r = photoIn.read(buf)) >= 0) {
+                photoOut.write(buf, 0, r);
+            }
+            byte[] photoBytes = photoOut.toByteArray();
+            builder.withValue(ContactsContract.CommonDataKinds.Photo.PHOTO, photoBytes);
+        } catch (IOException e) {
+            Log.w(TAG, "failed to fetch or read friend photo", e);
+        }
+        opList.add(builder.build());
+
+        // create a Data record with custom type to point at Foursquare profile
+        builder = ContentProviderOperation.newInsert(Data.CONTENT_URI);
+        builder.withValueBackReference(Data.RAW_CONTACT_ID, backReference);
+        builder.withValue(Data.MIMETYPE, "vnd.android.cursor.item/com.joelapenna.foursquared.profile");
+        builder.withValue(Data.DATA1, friend.getId());
+        builder.withValue(Data.DATA2, "Foursquare Profile");
+        builder.withValue(Data.DATA3, "View profile");
+        opList.add(builder.build());
+        
+        return opList;
+        
+    }
+
+    private static ArrayList<ContentProviderOperation> updateContact(Foursquared foursquared, ContentResolver resolver, long rawContactId, User friend, Checkin checkin) {
+        Cursor c = resolver.query(Data.CONTENT_URI, 
+                                  RawContactDataQuery.PROJECTION,
+                                  RawContactDataQuery.SELECTION,
+                                  new String[] { String.valueOf(rawContactId) }, 
+                                  null);
+        ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+        Log.i(TAG, "updateContact passed rawContactId=" + rawContactId);
+        try {
+            while (c.moveToNext()) {
+                Log.i(TAG, "processing row with raw_contact_id=" + c.getLong(5));
+                Uri uri = ContentUris.withAppendedId(Data.CONTENT_URI, rawContactId);
+                long id = c.getLong(RawContactDataQuery.COLUMN_ID);
+                String mimeType = c.getString(RawContactDataQuery.COLUMN_MIMETYPE);
+                ContentValues values = new ContentValues();
+                if ( ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE.equals(mimeType)) {
+                    
+                    // TODO: will this ever be null?  what if it's null, and we want to clear the column?
+                    String contactFamilyName = c.getString(RawContactDataQuery.COLUMN_FAMILY_NAME);
+                    if ( friend.getLastname() != null && !friend.getLastname().equals(contactFamilyName)) {
+                        Log.i(TAG, "updating family name from '" + contactFamilyName + "' to '" + friend.getLastname() + "'");
+                        values.put(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME, friend.getLastname());
+                    }
+                    
+                    String contactGivenName = c.getString(RawContactDataQuery.COLUMN_GIVEN_NAME);
+                    if ( friend.getFirstname() != null &&
+                         !friend.getFirstname().equals(contactGivenName)) {
+                        Log.i(TAG, "updating given name from '" + contactGivenName + "' to '" + friend.getFirstname() + "'");
+                        values.put(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, friend.getFirstname());
+                    }
+                } else if ( ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE.equals(mimeType) ) {
+                    
+                    if ( friend.getPhone() != null && !friend.getPhone().equals(c.getString(RawContactDataQuery.COLUMN_PHONE_NUMBER))) {
+                        Log.i(TAG, "updating phone to '" + friend.getPhone() + "'");
+                        values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, friend.getPhone());
+                    }
+                } else if ( ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE.equals(mimeType)) {
+                    if ( friend.getEmail() != null && !friend.getEmail().equals(c.getString(RawContactDataQuery.COLUMN_EMAIL_ADDRESS))) {
+                        Log.i(TAG, "updating email to '" + friend.getEmail() + "'");
+                        values.put(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE, friend.getEmail());
+                    }
+                }
+                
+                if ( values.size() > 0) {
+                    ContentProviderOperation.Builder op = ContentProviderOperation.newUpdate(uri);
+                    op.withValues(values);
+                    Log.i(TAG, "updating " + values.size() + " values; building op");
+                    ops.add(op.build());
+                }
+                if ( checkin != null ) {
+                    ContentProviderOperation.Builder updateStatus = ContentProviderOperation.newInsert(ContactsContract.StatusUpdates.CONTENT_URI);
+                    updateStatus.withValue(ContactsContract.StatusUpdates.DATA_ID, id);
+                    String status = ((SyncImpl)foursquared.getSync()).createStatus(checkin);
+                    updateStatus.withValue(ContactsContract.StatusUpdates.STATUS, status);
+                    long created = new Date(checkin.getCreated()).getTime();
+                    updateStatus.withValue(ContactsContract.StatusUpdates.STATUS_TIMESTAMP, created);
+                    ops.add(updateStatus.build());
+                }
+            }
+        } finally {
+            c.close();
+        }
+        
+        
+        
+        return ops;
+    }
+
     static class RawContactDataQuery {
         final static String[] PROJECTION = new String[] { Data._ID, Data.MIMETYPE, Data.DATA1, Data.DATA2, Data.DATA3, Data.RAW_CONTACT_ID };
         final static String SELECTION = Data.RAW_CONTACT_ID + "=?";
@@ -85,19 +311,26 @@ final class SyncImpl implements Sync {
         public final static int COLUMN_LOOKUP_KEY = 0;
     }
 
+    final private Foursquared mFoursquared;
     final private Context mContext;
     final private SyncSettingObservable mObservable = new SyncSettingObservable();
     private Boolean isEnabled = null;
 
-    SyncImpl(Context context) {
-        this.mContext = context;
+    SyncImpl(Foursquared foursquared) {
+        this.mFoursquared = foursquared;
+        this.mContext = foursquared;
     }
 
     @Override
-    public AsyncTask<?,?,?> startBackgroundSync(ContentResolver resolver, List<Checkin> checkins) {
+    public AsyncTask<?,?,?> syncCheckins(ContentResolver resolver, List<Checkin> checkins) {
         SyncCheckinsTask task = new SyncCheckinsTask(resolver);
         task.execute(checkins.toArray(new Checkin[checkins.size()]));
         return task;
+    }
+
+    @Override
+    public void syncFriends(Account account) {
+        syncFriends(mFoursquared, mFoursquared.getFoursquare(), mContext.getContentResolver(), AccountManager.get(mContext), account);
     }
 
     String createStatus(Checkin checkin) {

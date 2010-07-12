@@ -1,5 +1,6 @@
 package com.joelapenna.foursquared;
 
+import android.accounts.Account;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.net.Uri;
@@ -45,7 +46,11 @@ final class PreEclairSyncImpl implements Sync {
     }
 
     @Override
-    public AsyncTask<?, ?, ?> startBackgroundSync(ContentResolver resolver, List<Checkin> checkins) {
+    public AsyncTask<?, ?, ?> syncCheckins(ContentResolver resolver, List<Checkin> checkins) {
         return null;
+    }
+
+    @Override
+    public void syncFriends(Account account) {
     }
 }

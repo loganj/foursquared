@@ -1,5 +1,6 @@
 package com.joelapenna.foursquared;
 
+import android.accounts.Account;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.net.Uri;
@@ -55,5 +56,12 @@ public interface Sync {
     /**
      * @return an already-started task to perform sync, or null if such a task is impossible
      */
-    AsyncTask<?,?,?> startBackgroundSync(ContentResolver resolver, List<Checkin> checkins);
+    AsyncTask<?,?,?> syncCheckins(ContentResolver resolver, List<Checkin> checkins);
+
+    /**
+     * Perform an immediate, synchronous sync.
+     *
+     * TODO: return an AsyncTask
+     */
+    void syncFriends(Account account);
 }

@@ -8,7 +8,6 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
-import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.app.LoadableListActivityWithView;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
@@ -422,7 +421,7 @@ public class FriendsActivity extends LoadableListActivityWithView {
                     
                     if ( syncPref ) {
                         Log.i(TAG, "starting task to sync contacts");
-                        ((Foursquared)getApplication()).getSync().startBackgroundSync(getApplication().getContentResolver(), checkins);
+                        ((Foursquared)getApplication()).getSync().syncCheckins(getApplication().getContentResolver(), checkins);
                     }
                 }
                 setSearchResults(checkins);
