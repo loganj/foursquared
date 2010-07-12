@@ -40,6 +40,7 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
     private RemoteResourceManager mRrm;
     private Handler mHandler = new Handler();
     private RemoteResourceManagerObserver mResourcesObserver;
+    private SyncObserver mSyncObserver;
     private Context mContext;
     private Sync mSync;
 
@@ -49,12 +50,14 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
         mResourcesObserver = new RemoteResourceManagerObserver();
-
+        mSyncObserver = new SyncObserver();
+        mSync.getObservable().addObserver(mSyncObserver);
         mRrm.addObserver(mResourcesObserver);
         mContext = context;
     }
 
     public void removeObserver() {
+        mSync.getObservable().deleteObserver(mSyncObserver);
         mRrm.deleteObserver(mResourcesObserver);
     }
 
@@ -129,6 +132,13 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
                     notifyDataSetChanged();
                 }
             });
+        }
+    }
+
+    private class SyncObserver implements Observer {
+        @Override
+        public void update(Observable observable, Object o) {
+            notifyDataSetChanged();
         }
     }
 

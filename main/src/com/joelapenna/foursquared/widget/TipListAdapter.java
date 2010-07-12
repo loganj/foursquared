@@ -48,6 +48,7 @@ public class TipListAdapter extends BaseTipAdapter
     private int mLoadedPhotoIndex;
     private Context mContext;
     private Sync mSync;
+    private Observer mSyncObserver;
 
     public TipListAdapter(Context context, RemoteResourceManager rrm, Sync sync) {
         super(context);
@@ -59,9 +60,12 @@ public class TipListAdapter extends BaseTipAdapter
         mLoadedPhotoIndex = 0;
 
         mRrm.addObserver(mResourcesObserver);
+        mSyncObserver = new SyncObserver();
+        mSync.getObservable().addObserver(mSyncObserver);
     }
     
     public void removeObserver() {
+        mSync.getObservable().deleteObserver(mSyncObserver);
         mHandler.removeCallbacks(mRunnableLoadPhotos);
         mRrm.deleteObserver(mResourcesObserver);
     }
@@ -135,6 +139,13 @@ public class TipListAdapter extends BaseTipAdapter
                     notifyDataSetChanged();
                 }
             });
+        }
+    }
+
+    private class SyncObserver implements Observer {
+        @Override
+        public void update(Observable observable, Object o) {
+            notifyDataSetChanged();
         }
     }
     

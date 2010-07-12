@@ -79,7 +79,13 @@ public class VenueTipsActivity extends LoadableListActivity {
         outState.putString(STATE_CLICKED_TIP, mClickedTip);
         outState.putString(STATE_CLICKED_TIP_AUTHOR, mClickedTipAuthor);
     }
-    
+
+    @Override
+    protected void onResume() {
+        Foursquared.get(this).getSync().validate();
+        super.onResume();
+    }
+
     @Override
     public void onPause() {
         super.onPause();

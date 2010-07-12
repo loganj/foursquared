@@ -64,7 +64,13 @@ public class VenueCheckinsActivity extends LoadableListActivity {
             ((VenueActivity)getParent()).venueObservable.addObserver(mParentDataObserver);
         }
     }
-    
+
+    @Override
+    protected void onResume() {
+        Foursquared.get(this).getSync().validate();
+        super.onResume();
+    }
+
     @Override
     public void onPause() {
         super.onPause();

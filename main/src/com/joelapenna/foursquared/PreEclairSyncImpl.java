@@ -9,8 +9,30 @@ import com.joelapenna.foursquare.types.User;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Observable;
 
 final class PreEclairSyncImpl implements Sync {
+
+    final private Observable observable = new Observable();
+
+    @Override
+    public void validate() {
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean setEnabled(boolean enabled) {
+        return (!enabled);
+    }
+
+    @Override
+    public Observable getObservable() {
+        return observable;
+    }
 
     @Override
     public List<ContentProviderOperation> updateStatus(ContentResolver resolver, User friend, Checkin checkin) {

@@ -50,6 +50,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
 
     private RemoteResourceManager mRrm;
     private RemoteResourceManagerObserver mResourcesObserver;
+    private SyncObserver mSyncObserver;
     private Handler mHandler = new Handler();
     private HashMap<String, String> mCachedTimestamps;
     private Sync mSync;
@@ -62,13 +63,15 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
         mResourcesObserver = new RemoteResourceManagerObserver();
+        mSyncObserver = new SyncObserver();
         mCachedTimestamps = new HashMap<String, String>();
-
         mRrm.addObserver(mResourcesObserver);
+        sync.getObservable().addObserver(mSyncObserver);
     }
     
     public void removeObserver() {
         mRrm.deleteObserver(mResourcesObserver);
+        mSync.getObservable().deleteObserver(mSyncObserver);
     }
 
     @Override
@@ -160,6 +163,19 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
         @Override
         public void update(Observable observable, Object data) {
             if (DEBUG) Log.d(TAG, "Fetcher got: " + data);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    notifyDataSetChanged();
+                }
+            });
+        }
+    }
+
+    private class SyncObserver implements Observer {
+        
+        @Override
+        public void update(Observable observable, Object o) {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {

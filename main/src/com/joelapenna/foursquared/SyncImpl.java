@@ -1,13 +1,14 @@
 package com.joelapenna.foursquared;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.content.*;
+import android.preference.PreferenceManager;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.StringFormatters;
 
-import android.content.ContentProviderOperation;
-import android.content.ContentResolver;
-import android.content.Intent;
-import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -35,7 +36,13 @@ final class SyncImpl implements Sync {
         final static int COLUMN_EMAIL_ADDRESS = COLUMN_DATA1;
         final static int COLUMN_GIVEN_NAME = COLUMN_DATA2;
         final static int COLUMN_FAMILY_NAME = COLUMN_DATA3;
-    
+    }
+
+    private final static class SyncSettingObservable extends Observable {
+        @Override
+        public void setChanged() {
+            super.setChanged();
+        }
     }
 
     private final class SyncCheckinsTask extends AsyncTask<Checkin[], Void, Void> {
@@ -78,7 +85,13 @@ final class SyncImpl implements Sync {
         public final static int COLUMN_LOOKUP_KEY = 0;
     }
 
-    SyncImpl() {}
+    final private Context mContext;
+    final private SyncSettingObservable mObservable = new SyncSettingObservable();
+    private Boolean isEnabled = null;
+
+    SyncImpl(Context context) {
+        this.mContext = context;
+    }
 
     @Override
     public AsyncTask<?,?,?> startBackgroundSync(ContentResolver resolver, List<Checkin> checkins) {
@@ -97,6 +110,62 @@ final class SyncImpl implements Sync {
        return StringFormatters.getCheckinMessageLine1(checkin, true);
     }
 
+
+    @Override
+    public void validate() {
+        boolean isEnabledNow = isEnabled();
+        if ( (isEnabled == null) || (isEnabled != isEnabledNow) ) {
+            isEnabled = isEnabledNow;
+            mObservable.setChanged();
+            mObservable.notifyObservers();
+        }
+    }
+
+    @Override
+    public boolean isEnabled() {
+        String login = PreferenceManager.getDefaultSharedPreferences(mContext).getString(Preferences.PREFERENCE_LOGIN, "");     
+        Account account = new Account(login, AuthenticatorService.ACCOUNT_TYPE);
+        return ContentResolver.getSyncAutomatically(account, ContactsContract.AUTHORITY);
+    }
+
+    @Override
+    public boolean setEnabled(boolean enabled) {
+        String login = PreferenceManager.getDefaultSharedPreferences(mContext).getString(Preferences.PREFERENCE_LOGIN, "");
+        Account account = new Account(login, AuthenticatorService.ACCOUNT_TYPE);
+        if (enabled) {
+        String password = PreferenceManager.getDefaultSharedPreferences(mContext).getString(Preferences.PREFERENCE_PASSWORD, "");
+        if ("".equals(password)) {
+            return false;
+        }
+        AccountManager.get(mContext).addAccountExplicitly(account, password, null);
+        ContentResolver.setSyncAutomatically(account, ContactsContract.AUTHORITY, true);
+        ContentProviderClient client = mContext.getContentResolver().acquireContentProviderClient(ContactsContract.AUTHORITY_URI);
+        ContentValues cv = new ContentValues();
+        cv.put(ContactsContract.Groups.ACCOUNT_NAME, account.name);
+        cv.put(ContactsContract.Groups.ACCOUNT_TYPE, account.type);
+        cv.put(ContactsContract.Settings.UNGROUPED_VISIBLE, true);
+        try {
+            client.insert(ContactsContract.Settings.CONTENT_URI, cv);
+        } catch (RemoteException e) {
+            return false;
+        }
+        } else {
+            // TODO: callback and handler should not be null; if something goes wrong, we should not set the pref
+            AccountManager.get(mContext).removeAccount(account, null, null);
+        }
+
+        if ( (isEnabled == null) || (isEnabled != enabled) ) {
+            mObservable.setChanged();
+            mObservable.notifyObservers();
+        }
+        return true;
+    }
+
+    @Override
+    public Observable getObservable() {
+        Log.i(TAG, "observable requested");
+        return mObservable;
+    }
 
     @Override
     public List<ContentProviderOperation> updateStatus(ContentResolver resolver, User friend, Checkin checkin) {
@@ -198,14 +267,5 @@ final class SyncImpl implements Sync {
         }
         return Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey+"/"+contactId);
     }
-
-    Intent getViewContactIntent(ContentResolver resolver, User friend) {
-        Uri lookupUri = getContactLookupUri(resolver, friend);
-        if ( lookupUri == null ) {
-            return null;
-        }
-        return new Intent(Intent.ACTION_VIEW, lookupUri);
-    }
-    
 
 }

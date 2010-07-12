@@ -41,6 +41,7 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
     private int mLayoutToInflate;
     private RemoteResourceManager mRrm;
     private RemoteResourceManagerObserver mResourcesObserver;
+    private SyncObserver mSyncObserver;
     private Handler mHandler = new Handler();
     private int mLoadedPhotoIndex;
     private Context mContext;
@@ -56,11 +57,13 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
         mRrm = rrm;
         mResourcesObserver = new RemoteResourceManagerObserver();
         mLoadedPhotoIndex = 0;
-
+        mSyncObserver = new SyncObserver();
+        mSync.getObservable().addObserver(mSyncObserver);
         mRrm.addObserver(mResourcesObserver);
     }
     
     public void removeObserver() {
+        mSync.getObservable().deleteObserver(mSyncObserver);
         mHandler.removeCallbacks(mRunnableLoadPhotos);
         mRrm.deleteObserver(mResourcesObserver);
     }
@@ -145,6 +148,13 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
                     notifyDataSetChanged();
                 }
             });
+        }
+    }
+
+    private class SyncObserver implements Observer {
+        @Override
+        public void update(Observable observable, Object o) {
+            notifyDataSetChanged();
         }
     }
     

@@ -83,7 +83,13 @@ public class UserFriendsActivity extends LoadableListActivity {
         
         ensureUi();
     }
-    
+
+    @Override
+    protected void onResume() {
+        Foursquared.get(this).getSync().validate();
+        super.onResume();
+    }
+
     @Override
     public void onPause() {
         super.onPause();
