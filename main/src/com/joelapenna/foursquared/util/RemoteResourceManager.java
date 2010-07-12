@@ -63,6 +63,13 @@ public class RemoteResourceManager extends Observable {
         if (DEBUG) Log.d(TAG, "request(): " + uri);
         mRemoteResourceFetcher.fetch(uri, Uri.encode(uri.toString()));
     }
+    
+    /**
+     * Explicitly expire an individual item.
+     */
+    public void invalidate(Uri uri) {
+        mDiskCache.invalidate(Uri.encode(uri.toString()));
+    }
 
     public void shutdown() {
         mRemoteResourceFetcher.shutdown();

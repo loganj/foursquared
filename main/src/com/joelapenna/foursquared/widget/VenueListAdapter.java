@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
@@ -36,7 +37,7 @@ import java.util.Observer;
 public class VenueListAdapter extends BaseVenueAdapter implements ObservableAdapter {
     private static final String TAG = "VenueListAdapter";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
-
+    
     private LayoutInflater mInflater;
     private RemoteResourceManager mRrm;
     private Handler mHandler;
@@ -168,10 +169,20 @@ public class VenueListAdapter extends BaseVenueAdapter implements ObservableAdap
         
         for (Venue it : g) {
             // Start download of category icon if not already in the cache.
+            // At the same time, check the age of each of these images, if
+            // expired, delete and request a fresh copy. This should be 
+            // removed once category icon set urls are versioned.
             Category category = it.getCategory();
             if (category != null) {
                 Uri photoUri = Uri.parse(category.getIconUrl());
-                if (!mRrm.exists(photoUri)) {
+                
+                File file = mRrm.getFile(photoUri);
+                if (System.currentTimeMillis() - file.lastModified() > FoursquaredSettings.CATEGORY_ICON_EXPIRATION) {
+                    mRrm.invalidate(photoUri); 
+                    file = null;
+                }
+                
+                if (file == null) {
                     mRrm.request(photoUri);
                 }
             }
