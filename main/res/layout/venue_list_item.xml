@@ -63,7 +63,8 @@
       android:src="@drawable/special_icon"
       android:layout_gravity="center_vertical"
       android:layout_marginRight="25dip"
-      android:layout_marginTop="1dip" />
+      android:layout_marginTop="1dip"
+      android:scaleType="fitCenter"   />
   
     <TextView
       android:id="@+id/venueDistance"
@@ -78,7 +79,8 @@
       android:layout_height="9dip"
       android:src="@drawable/people_icon"
       android:layout_gravity="center_vertical"
-      android:layout_marginTop="1dip" />
+      android:layout_marginTop="1dip"
+      android:scaleType="fitCenter"   />
       
     <TextView
       android:id="@+id/venueCheckinCount"
