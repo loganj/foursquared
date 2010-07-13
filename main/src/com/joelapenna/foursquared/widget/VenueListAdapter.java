@@ -177,9 +177,11 @@ public class VenueListAdapter extends BaseVenueAdapter implements ObservableAdap
                 Uri photoUri = Uri.parse(category.getIconUrl());
                 
                 File file = mRrm.getFile(photoUri);
-                if (System.currentTimeMillis() - file.lastModified() > FoursquaredSettings.CATEGORY_ICON_EXPIRATION) {
-                    mRrm.invalidate(photoUri); 
-                    file = null;
+                if (file != null) {
+                    if (System.currentTimeMillis() - file.lastModified() > FoursquaredSettings.CATEGORY_ICON_EXPIRATION) {
+                        mRrm.invalidate(photoUri); 
+                        file = null;
+                    }
                 }
                 
                 if (file == null) {
