@@ -50,9 +50,11 @@ public class CategoryPickerAdapter extends BaseAdapter implements ObservableAdap
             Uri photoUri = Uri.parse(it.getIconUrl());
             
             File file = mRrm.getFile(photoUri);
-            if (System.currentTimeMillis() - file.lastModified() > FoursquaredSettings.CATEGORY_ICON_EXPIRATION) {
-                mRrm.invalidate(photoUri); 
-                file = null;
+            if (file != null) {
+                if (System.currentTimeMillis() - file.lastModified() > FoursquaredSettings.CATEGORY_ICON_EXPIRATION) {
+                    mRrm.invalidate(photoUri); 
+                    file = null;
+                }
             }
             
             if (file == null) {
