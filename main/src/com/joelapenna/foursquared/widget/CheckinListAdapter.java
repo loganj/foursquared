@@ -103,7 +103,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
             // and the ImageView.
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.photo.setContactLookupUri(mSync.getContactLookupUri(mContext.getContentResolver(), user));
+        holder.photo.setContactLookupUri(mSync.getContactLookupUri(mContext.getContentResolver(), user.getId()));
         
         try {
             Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photoUri));
@@ -179,6 +179,7 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
+                    Log.i(TAG, "update received from sync");
                     notifyDataSetChanged();
                 }
             });

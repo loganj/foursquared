@@ -1,10 +1,9 @@
 package com.joelapenna.foursquared;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.accounts.AuthenticatorException;
-import android.accounts.OperationCanceledException;
+import android.accounts.*;
 import android.content.*;
+import android.database.ContentObserver;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
@@ -29,6 +28,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 final class SyncImpl implements Sync {
     
@@ -264,11 +266,100 @@ final class SyncImpl implements Sync {
         final static int COLUMN_FAMILY_NAME = COLUMN_DATA3;
     }
 
-    private final static class SyncSettingObservable extends Observable {
-        @Override
-        public void setChanged() {
-            super.setChanged();
+    /**
+     * Watches for any changes to Contacts or Accounts and notifies its own observers that those changes occurred.
+     * Attempts to aggregate events that occur in close temporal proximity.
+     */
+    private final class SyncObservable extends Observable {
+
+        final private AtomicBoolean observerRegistered = new AtomicBoolean(false);
+        final private ContentObserver observer;
+        final private ContentResolver resolver;
+        final private AccountManager accountManager;
+        final private OnAccountsUpdateListener listener;
+
+        final private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        final private Runnable fireAggregate = new Runnable() {
+            @Override
+            public void run() {
+
+                // invalidate/refresh lookup uri cache
+                Set<String> userIds = new HashSet<String>(contactLookupUriCache.keySet());
+                contactLookupUriCache.clear();
+                for ( String userId : userIds ) {
+                    getContactLookupUri(resolver, userId);
+                }
+
+                notifyObservers();
+            }
+        };
+        final private AtomicReference<ScheduledFuture<?>> scheduled = new AtomicReference<ScheduledFuture<?>>();
+
+        public SyncObservable(AccountManager accountManager, ContentResolver resolver) {
+            this.accountManager = accountManager;
+            this.resolver = resolver;
+            this.observer = new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    scheduleEvent();
+                }
+            };
+            this.listener = new OnAccountsUpdateListener() {
+                @Override
+                public void onAccountsUpdated(Account[] accounts) {
+                    scheduleEvent();
+                }
+            };
         }
+
+        private void scheduleEvent() {
+            ScheduledFuture sf = scheduled.get();
+            if ( sf != null ) {
+                sf.cancel(false);
+            }
+            setChanged();
+            scheduler.schedule(fireAggregate, 1, TimeUnit.SECONDS);
+        }
+
+        @Override
+        public void addObserver(Observer observer) {
+            super.addObserver(observer);
+            ensureContentObserver();
+        }
+
+        @Override
+        public void deleteObserver(Observer observer) {
+            super.deleteObserver(observer);
+            if (countObservers() == 0) {
+                removeContentObserver();
+            }
+        }
+
+        @Override
+        public void deleteObservers() {
+            super.deleteObservers();
+            removeContentObserver();
+        }
+
+        private void ensureContentObserver() {
+            synchronized(observerRegistered) {
+                if ( !observerRegistered.get() ) {
+                    accountManager.addOnAccountsUpdatedListener(listener, new Handler(), true);
+                    Uri observe = ContactsContract.Data.CONTENT_URI;
+                    resolver.registerContentObserver(observe, true, observer);
+                    observerRegistered.set(true);
+                }
+            }
+        }
+
+        private void removeContentObserver() {
+            synchronized(observerRegistered) {
+                accountManager.removeOnAccountsUpdatedListener(listener);
+                resolver.unregisterContentObserver(observer);
+                observerRegistered.set(false);
+            }
+        }
+
     }
 
     private final class SyncCheckinsTask extends AsyncTask<Checkin[], Void, Void> {
@@ -313,12 +404,14 @@ final class SyncImpl implements Sync {
 
     final private Foursquared mFoursquared;
     final private Context mContext;
-    final private SyncSettingObservable mObservable = new SyncSettingObservable();
+    final private SyncObservable mObservable;
     private Boolean isEnabled = null;
+    final private Map<String,Uri> contactLookupUriCache = new ConcurrentHashMap<String,Uri>();    
 
     SyncImpl(Foursquared foursquared) {
         this.mFoursquared = foursquared;
         this.mContext = foursquared;
+        this.mObservable = new SyncObservable(AccountManager.get(mContext), mContext.getContentResolver());
     }
 
     @Override
@@ -346,12 +439,12 @@ final class SyncImpl implements Sync {
 
     @Override
     public void validate() {
-        boolean isEnabledNow = isEnabled();
-        if ( (isEnabled == null) || (isEnabled != isEnabledNow) ) {
-            isEnabled = isEnabledNow;
-            mObservable.setChanged();
-            mObservable.notifyObservers();
-        }
+//        boolean isEnabledNow = isEnabled();
+//        if ( (isEnabled == null) || (isEnabled != isEnabledNow) ) {
+//            isEnabled = isEnabledNow;
+//            mObservable.setChanged();
+//            mObservable.notifyObservers();
+//        }
     }
 
     @Override
@@ -366,31 +459,31 @@ final class SyncImpl implements Sync {
         String login = PreferenceManager.getDefaultSharedPreferences(mContext).getString(Preferences.PREFERENCE_LOGIN, "");
         Account account = new Account(login, AuthenticatorService.ACCOUNT_TYPE);
         if (enabled) {
-        String password = PreferenceManager.getDefaultSharedPreferences(mContext).getString(Preferences.PREFERENCE_PASSWORD, "");
-        if ("".equals(password)) {
-            return false;
-        }
-        AccountManager.get(mContext).addAccountExplicitly(account, password, null);
-        ContentResolver.setSyncAutomatically(account, ContactsContract.AUTHORITY, true);
-        ContentProviderClient client = mContext.getContentResolver().acquireContentProviderClient(ContactsContract.AUTHORITY_URI);
-        ContentValues cv = new ContentValues();
-        cv.put(ContactsContract.Groups.ACCOUNT_NAME, account.name);
-        cv.put(ContactsContract.Groups.ACCOUNT_TYPE, account.type);
-        cv.put(ContactsContract.Settings.UNGROUPED_VISIBLE, true);
-        try {
-            client.insert(ContactsContract.Settings.CONTENT_URI, cv);
-        } catch (RemoteException e) {
-            return false;
-        }
+            String password = PreferenceManager.getDefaultSharedPreferences(mContext).getString(Preferences.PREFERENCE_PASSWORD, "");
+            if ("".equals(password)) {
+                return false;
+            }
+            AccountManager.get(mContext).addAccountExplicitly(account, password, null);
+            ContentResolver.setSyncAutomatically(account, ContactsContract.AUTHORITY, true);
+            ContentProviderClient client = mContext.getContentResolver().acquireContentProviderClient(ContactsContract.AUTHORITY_URI);
+            ContentValues cv = new ContentValues();
+            cv.put(ContactsContract.Groups.ACCOUNT_NAME, account.name);
+            cv.put(ContactsContract.Groups.ACCOUNT_TYPE, account.type);
+            cv.put(ContactsContract.Settings.UNGROUPED_VISIBLE, true);
+            try {
+                client.insert(ContactsContract.Settings.CONTENT_URI, cv);
+            } catch (RemoteException e) {
+                return false;
+            }
         } else {
             // TODO: callback and handler should not be null; if something goes wrong, we should not set the pref
             AccountManager.get(mContext).removeAccount(account, null, null);
         }
 
-        if ( (isEnabled == null) || (isEnabled != enabled) ) {
-            mObservable.setChanged();
-            mObservable.notifyObservers();
-        }
+//        if ( (isEnabled == null) || (isEnabled != enabled) ) {
+//            mObservable.setChanged();
+//            mObservable.notifyObservers();
+//        }
         return true;
     }
 
@@ -455,12 +548,12 @@ final class SyncImpl implements Sync {
         return rawContactId;
     }
     
-    long getContactId(ContentResolver resolver, User user) {
+    long getContactId(ContentResolver resolver, String userId) {
         long contactId = 0;
         Cursor c = resolver.query(RawContacts.CONTENT_URI, 
                                   RawContactIdQuery.PROJECTION, 
                                   RawContactIdQuery.SELECTION, 
-                                  new String[] { user.getId() }, null);
+                                  new String[] { userId }, null);
         try {
             if (c.moveToFirst()) {
                 contactId = c.getLong(RawContactIdQuery.COLUMN_CONTACT_ID);
@@ -475,9 +568,13 @@ final class SyncImpl implements Sync {
 
     
     @Override
-    public Uri getContactLookupUri(ContentResolver resolver, User user) {
+    public Uri getContactLookupUri(ContentResolver resolver, String userId) {
 
-        long contactId = getContactId(resolver, user);
+        if ( contactLookupUriCache.containsKey(userId) ) {
+            return contactLookupUriCache.get(userId);
+        }
+        
+        long contactId = getContactId(resolver, userId);
         if ( contactId == 0 ) {
             return null;
         }
@@ -498,7 +595,9 @@ final class SyncImpl implements Sync {
         if (lookupKey == null) {
             return null;
         }
-        return Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey+"/"+contactId);
+        Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey+"/"+contactId);
+        contactLookupUriCache.put(userId, uri);
+        return uri;
     }
 
 }

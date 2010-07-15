@@ -90,7 +90,7 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
             holder = (ViewHolder)convertView.getTag();
         }
 
-        holder.photo.setContactLookupUri(mSync.getContactLookupUri(mContext.getContentResolver(), user));
+        holder.photo.setContactLookupUri(mSync.getContactLookupUri(mContext.getContentResolver(), user.getId()));
 
         final Uri photoUri = Uri.parse(user.getPhoto());
 

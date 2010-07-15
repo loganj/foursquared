@@ -104,7 +104,7 @@ public class TipListAdapter extends BaseTipAdapter
         holder.userTextView.setText("- " + StringFormatters.getUserAbbreviatedName(tip.getUser()));
         
         if (user != null) {
-            holder.photo.setContactLookupUri(mSync.getContactLookupUri(mContext.getContentResolver(), user));
+            holder.photo.setContactLookupUri(mSync.getContactLookupUri(mContext.getContentResolver(), user.getId()));
 
             Uri photoUri = Uri.parse(user.getPhoto());
             try {

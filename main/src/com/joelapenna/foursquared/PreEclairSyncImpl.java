@@ -41,7 +41,7 @@ final class PreEclairSyncImpl implements Sync {
     }
 
     @Override
-    public Uri getContactLookupUri(ContentResolver resolver, User user) {
+    public Uri getContactLookupUri(ContentResolver resolver, String userId) {
         return null;
     }
 

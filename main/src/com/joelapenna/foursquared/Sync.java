@@ -51,7 +51,7 @@ public interface Sync {
     /**
      * @return lookup URI for the given user, if there's a matching contact; otherwise null
      */
-    Uri getContactLookupUri(ContentResolver resolver, User user);
+    Uri getContactLookupUri(ContentResolver resolver, String userId);
 
     /**
      * @return an already-started task to perform sync, or null if such a task is impossible

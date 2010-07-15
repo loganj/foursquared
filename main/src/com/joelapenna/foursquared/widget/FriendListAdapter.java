@@ -98,7 +98,7 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
             // and the ImageView.
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.photo.setContactLookupUri(mSync.getContactLookupUri(mContext.getContentResolver(), user));
+        holder.photo.setContactLookupUri(mSync.getContactLookupUri(mContext.getContentResolver(), user.getId()));
 
         Uri photoUri = Uri.parse(user.getPhoto());
         try {

@@ -126,8 +126,7 @@ public class Foursquared extends Application {
 
         if ( CompatibilityHelp.API_LEVEL_AT_LEAST_ECLAIR ) {
             try {
-                Sync syncImpl = (SyncImpl)Class.forName("com.joelapenna.foursquared.SyncImpl").getDeclaredConstructor(Foursquared.class).newInstance(this);
-                mSync = syncImpl;
+                mSync = (SyncImpl)Class.forName("com.joelapenna.foursquared.SyncImpl").getDeclaredConstructor(Foursquared.class).newInstance(this);
             } catch (Exception e) {
                 Log.w(TAG, "failed to instantiate SyncImpl for Eclair+", e);
                 mSync = new PreEclairSyncImpl();
