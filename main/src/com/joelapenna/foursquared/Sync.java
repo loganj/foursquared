@@ -54,10 +54,10 @@ public interface Sync {
     Uri getContactLookupUri(ContentResolver resolver, String userId);
 
     /**
-     * @return an already-started task to perform sync, or null if such a task is impossible
+     * @return a task to perform sync; if sync is impossible or disabled in preferences, this task is a noop
      */
-    AsyncTask<?,?,?> syncCheckins(ContentResolver resolver, List<Checkin> checkins);
-
+    AsyncTask<?,?,?> createSyncTask();
+    
     /**
      * Perform an immediate, synchronous sync.
      *

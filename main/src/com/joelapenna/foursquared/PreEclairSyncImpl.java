@@ -16,6 +16,12 @@ final class PreEclairSyncImpl implements Sync {
 
     final private Observable observable = new Observable();
 
+    final private static class NoopTask extends AsyncTask<Void,Void,Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return null;
+        }
+    }
     @Override
     public void validate() {
     }
@@ -46,8 +52,8 @@ final class PreEclairSyncImpl implements Sync {
     }
 
     @Override
-    public AsyncTask<?, ?, ?> syncCheckins(ContentResolver resolver, List<Checkin> checkins) {
-        return null;
+    public AsyncTask<?, ?, ?> createSyncTask() {
+        return new NoopTask();
     }
 
     @Override

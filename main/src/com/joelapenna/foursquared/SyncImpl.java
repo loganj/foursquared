@@ -362,6 +362,17 @@ final class SyncImpl implements Sync {
 
     }
 
+    private final class SyncTask extends AsyncTask<Object, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Object... params) {
+            if (isEnabled()) {
+                syncFriends(getAccount());
+            }
+            return (Void)null;
+        }
+    }
+
     private final class SyncCheckinsTask extends AsyncTask<Checkin[], Void, Void> {
 
 
@@ -415,10 +426,8 @@ final class SyncImpl implements Sync {
     }
 
     @Override
-    public AsyncTask<?,?,?> syncCheckins(ContentResolver resolver, List<Checkin> checkins) {
-        SyncCheckinsTask task = new SyncCheckinsTask(resolver);
-        task.execute(checkins.toArray(new Checkin[checkins.size()]));
-        return task;
+    public AsyncTask<?,?,?> createSyncTask() {
+        return new SyncTask();
     }
 
     @Override
@@ -447,17 +456,20 @@ final class SyncImpl implements Sync {
 //        }
     }
 
+
+    private Account getAccount() {
+        String login = PreferenceManager.getDefaultSharedPreferences(mContext).getString(Preferences.PREFERENCE_LOGIN, "");
+        return new Account(login, AuthenticatorService.ACCOUNT_TYPE);
+    }
+
     @Override
     public boolean isEnabled() {
-        String login = PreferenceManager.getDefaultSharedPreferences(mContext).getString(Preferences.PREFERENCE_LOGIN, "");     
-        Account account = new Account(login, AuthenticatorService.ACCOUNT_TYPE);
-        return ContentResolver.getSyncAutomatically(account, ContactsContract.AUTHORITY);
+        return ContentResolver.getSyncAutomatically(getAccount(), ContactsContract.AUTHORITY);
     }
 
     @Override
     public boolean setEnabled(boolean enabled) {
-        String login = PreferenceManager.getDefaultSharedPreferences(mContext).getString(Preferences.PREFERENCE_LOGIN, "");
-        Account account = new Account(login, AuthenticatorService.ACCOUNT_TYPE);
+        Account account = getAccount();
         if (enabled) {
             String password = PreferenceManager.getDefaultSharedPreferences(mContext).getString(Preferences.PREFERENCE_PASSWORD, "");
             if ("".equals(password)) {

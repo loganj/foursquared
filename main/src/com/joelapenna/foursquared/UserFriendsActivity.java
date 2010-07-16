@@ -265,7 +265,7 @@ public class UserFriendsActivity extends LoadableListActivity {
                 }
             }
             if ( checkins.size() > 0 ) {
-                mTaskSyncContacts = sync.syncCheckins(resolver, checkins);
+                mTaskSyncContacts = sync.createSyncTask().execute();
             }
         }
 

@@ -421,7 +421,7 @@ public class FriendsActivity extends LoadableListActivityWithView {
                     
                     if ( syncPref ) {
                         Log.i(TAG, "starting task to sync contacts");
-                        ((Foursquared)getApplication()).getSync().syncCheckins(getApplication().getContentResolver(), checkins);
+                        Foursquared.get(FriendsActivity.this).getSync().createSyncTask().execute();
                     }
                 }
                 setSearchResults(checkins);
