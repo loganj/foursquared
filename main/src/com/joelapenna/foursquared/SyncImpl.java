@@ -133,42 +133,51 @@ final class SyncImpl implements Sync {
         builder = ContentProviderOperation.newInsert(Data.CONTENT_URI);
         builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, backReference);
         builder.withValue(Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
-        builder.withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, friend.getFirstname()+" "+friend.getLastname());
         builder.withValue(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, friend.getFirstname());
-        builder.withValue(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME, friend.getLastname());
-        opList.add(builder.build());
-        
-        builder = ContentProviderOperation.newInsert(Data.CONTENT_URI);
-        builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, backReference);
-        builder.withValue(Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
-        builder.withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, friend.getPhone());
-        opList.add(builder.build());
-        
-        builder = ContentProviderOperation.newInsert(Data.CONTENT_URI);
-        builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, backReference);
-        builder.withValue(Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
-        builder.withValue(ContactsContract.CommonDataKinds.Email.DATA, friend.getEmail());
+        String last = friend.getLastname();
+        if ( last != null ) {
+            builder.withValue(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME, friend.getLastname());
+        }
+        builder.withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, friend.getFirstname() + (last==null ? " "+friend.getLastname() : ""));
         opList.add(builder.build());
 
-        builder = ContentProviderOperation.newInsert(Data.CONTENT_URI);
-        builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, backReference);
-        builder.withValue(Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
-        
-        try {
-            Uri photoUri = Uri.parse(friend.getPhoto());
-            InputStream photoIn = foursquared.getRemoteResourceManager().getInputStream(photoUri);
-            ByteArrayOutputStream photoOut = new ByteArrayOutputStream();
-            byte[] buf = new byte[64];
-            int r = 0;
-            while ( (r = photoIn.read(buf)) >= 0) {
-                photoOut.write(buf, 0, r);
-            }
-            byte[] photoBytes = photoOut.toByteArray();
-            builder.withValue(ContactsContract.CommonDataKinds.Photo.PHOTO, photoBytes);
-        } catch (IOException e) {
-            Log.w(TAG, "failed to fetch or read friend photo", e);
+        if ( friend.getPhone() != null ) {
+            builder = ContentProviderOperation.newInsert(Data.CONTENT_URI);
+            builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, backReference);
+            builder.withValue(Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+            builder.withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, friend.getPhone());
+            opList.add(builder.build());
         }
-        opList.add(builder.build());
+
+        if ( friend.getEmail() != null ) {
+            builder = ContentProviderOperation.newInsert(Data.CONTENT_URI);
+            builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, backReference);
+            builder.withValue(Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
+            builder.withValue(ContactsContract.CommonDataKinds.Email.DATA, friend.getEmail());
+            opList.add(builder.build());
+        }
+
+        if ( friend.getPhoto() != null ) {
+            builder = ContentProviderOperation.newInsert(Data.CONTENT_URI);
+            builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, backReference);
+            builder.withValue(Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
+
+            try {
+                Uri photoUri = Uri.parse(friend.getPhoto());
+                InputStream photoIn = foursquared.getRemoteResourceManager().getInputStream(photoUri);
+                ByteArrayOutputStream photoOut = new ByteArrayOutputStream();
+                byte[] buf = new byte[64];
+                int r = 0;
+                while ( (r = photoIn.read(buf)) >= 0) {
+                    photoOut.write(buf, 0, r);
+                }
+                byte[] photoBytes = photoOut.toByteArray();
+                builder.withValue(ContactsContract.CommonDataKinds.Photo.PHOTO, photoBytes);
+            } catch (IOException e) {
+                Log.w(TAG, "failed to fetch or read friend photo", e);
+            }
+            opList.add(builder.build());
+        }
 
         // create a Data record with custom type to point at Foursquare profile
         builder = ContentProviderOperation.newInsert(Data.CONTENT_URI);
