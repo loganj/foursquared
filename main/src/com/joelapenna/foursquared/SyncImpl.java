@@ -400,33 +400,6 @@ final class SyncImpl implements Sync {
             return (Void)null;
         }
     }
-
-    private final class SyncCheckinsTask extends AsyncTask<Checkin[], Void, Void> {
-
-
-        final private ContentResolver resolver;
-        
-        SyncCheckinsTask(ContentResolver resolver) {
-            this.resolver = resolver;
-        }
-        
-        @Override
-        protected Void doInBackground(Checkin[]... checkins) {
-            ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>(checkins[0].length);
-            for ( Checkin checkin : checkins[0]) {
-                ops.addAll(updateStatus(resolver, checkin.getUser(), checkin));
-            }
-            try {
-                resolver.applyBatch(ContactsContract.AUTHORITY, ops);
-            } catch (RemoteException e) {
-               Log.w(UserFriendsActivity.TAG, "failed to sync to Contacts", e);
-            } catch (OperationApplicationException e) {
-                Log.w(UserFriendsActivity.TAG, "failed to sync to Contacts", e);
-            }
-            return null;
-        }
-        
-    }
     
     private static class RawContactIdQuery {
         static final String[] PROJECTION = new String[] { RawContacts._ID, RawContacts.CONTACT_ID };
