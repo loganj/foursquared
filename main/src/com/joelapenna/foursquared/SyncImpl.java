@@ -210,18 +210,37 @@ final class SyncImpl implements Sync {
                 if ( ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE.equals(mimeType)) {
                     
                     // TODO: will this ever be null?  what if it's null, and we want to clear the column?
-                    String contactFamilyName = c.getString(RawContactDataQuery.COLUMN_FAMILY_NAME);
-                    if ( friend.getLastname() != null && !friend.getLastname().equals(contactFamilyName)) {
-                        Log.i(TAG, "updating family name from '" + contactFamilyName + "' to '" + friend.getLastname() + "'");
-                        values.put(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME, friend.getLastname());
-                    }
-                    
+                    StringBuilder newDisplayName = new StringBuilder();
+
                     String contactGivenName = c.getString(RawContactDataQuery.COLUMN_GIVEN_NAME);
+                    boolean changeDisplayName = false;
                     if ( friend.getFirstname() != null &&
                          !friend.getFirstname().equals(contactGivenName)) {
                         Log.i(TAG, "updating given name from '" + contactGivenName + "' to '" + friend.getFirstname() + "'");
                         values.put(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, friend.getFirstname());
+                        newDisplayName.append(friend.getFirstname());
+                        changeDisplayName = true;
+                    } else {
+                        newDisplayName.append(contactGivenName);
                     }
+
+                    String contactFamilyName = c.getString(RawContactDataQuery.COLUMN_FAMILY_NAME);
+                    if ( friend.getLastname() != null && !friend.getLastname().equals(contactFamilyName)) {
+                        Log.i(TAG, "updating family name from '" + contactFamilyName + "' to '" + friend.getLastname() + "'");
+                        values.put(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME, friend.getLastname());
+                        newDisplayName.append(" ");
+                        newDisplayName.append(friend.getLastname());
+                        changeDisplayName = true;
+                    } else if (contactFamilyName != null) {
+                        newDisplayName.append(" ");
+                        newDisplayName.append(contactFamilyName);
+                    }
+
+                    if ( changeDisplayName ) {
+                        values.put(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, newDisplayName.toString());
+                    }
+                    
+
                 } else if ( ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE.equals(mimeType) ) {
                     
                     if ( friend.getPhone() != null && !friend.getPhone().equals(c.getString(RawContactDataQuery.COLUMN_PHONE_NUMBER))) {
