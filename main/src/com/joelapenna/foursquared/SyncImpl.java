@@ -447,17 +447,6 @@ final class SyncImpl implements Sync {
     }
 
 
-    @Override
-    public void validate() {
-//        boolean isEnabledNow = isEnabled();
-//        if ( (isEnabled == null) || (isEnabled != isEnabledNow) ) {
-//            isEnabled = isEnabledNow;
-//            mObservable.setChanged();
-//            mObservable.notifyObservers();
-//        }
-    }
-
-
     private Account getAccount() {
         String login = PreferenceManager.getDefaultSharedPreferences(mContext).getString(Preferences.PREFERENCE_LOGIN, "");
         return new Account(login, AuthenticatorService.ACCOUNT_TYPE);

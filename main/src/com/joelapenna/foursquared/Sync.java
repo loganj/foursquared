@@ -18,14 +18,6 @@ import java.util.Observable;
 public interface Sync {
 
     /**
-     * Check for any changes that may have occurred.  Probably want to call in onResume() in your Activity.
-     *
-     * This isn't necessary from Froyo on, because we can register a listener on the ContentResolver for sync setting
-     * changes.  Pre-Froyo devices would still have to call this though.
-     */
-    void validate();
-
-    /**
      *
      * @return true if sync is turned on; false otherwise
      */

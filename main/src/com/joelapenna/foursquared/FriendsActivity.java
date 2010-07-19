@@ -149,7 +149,6 @@ public class FriendsActivity extends LoadableListActivityWithView {
     @Override
     public void onResume() {
         super.onResume();
-        Foursquared.get(this).getSync().validate();
         ((Foursquared) getApplication()).requestLocationUpdates(mSearchLocationObserver);
     }
 

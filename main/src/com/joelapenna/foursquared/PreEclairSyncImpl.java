@@ -22,9 +22,6 @@ final class PreEclairSyncImpl implements Sync {
             return null;
         }
     }
-    @Override
-    public void validate() {
-    }
 
     @Override
     public boolean isEnabled() {

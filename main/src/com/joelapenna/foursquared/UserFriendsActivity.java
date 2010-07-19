@@ -86,7 +86,6 @@ public class UserFriendsActivity extends LoadableListActivity {
 
     @Override
     protected void onResume() {
-        Foursquared.get(this).getSync().validate();
         super.onResume();
     }
 
