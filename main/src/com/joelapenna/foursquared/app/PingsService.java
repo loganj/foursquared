@@ -253,6 +253,10 @@ public class PingsService extends WakefulIntentService {
         if (prefs.getBoolean(Preferences.PREFERENCE_PINGS_VIBRATE, false)) {
             notification.defaults |= Notification.DEFAULT_VIBRATE;
         }
+        notification.ledARGB = 0xffad2063;
+        notification.ledOnMS = 300;
+        notification.ledOffMS = 1000;
+        notification.flags |= Notification.FLAG_SHOW_LIGHTS;
         if (newCheckins.size() > 1) {
             notification.number = newCheckins.size();
         }
