@@ -116,60 +116,62 @@ public class PingsService extends WakefulIntentService {
             Log.e(TAG, "Could not find location in pings service, cannot proceed.");
         }
         
-        if (checkins != null) {
+        if (checkins == null) {
+            // unsuccessful attempt; go ahead and abort and don't update any state
+            return;
+        }
             
-            Log.i(TAG, "Checking " + checkins.size() + " checkins for pings.");
-            
-            // Don't accept any checkins that are older than the last time we ran.
-            long lastRunTime = prefs.getLong(
-                    Preferences.PREFERENCE_PINGS_SERVICE_LAST_RUN_TIME, System.currentTimeMillis());
-            Date dateLast = new Date(lastRunTime);
-            
-            Log.i(TAG, "Last service run time: " + dateLast.toLocaleString() + " (" + lastRunTime + ").");
-              
-            // Now build the list of 'new' checkins.
-            List<Checkin> newCheckins = new ArrayList<Checkin>();
-            for (Checkin it : checkins) {
-                 
-                if (DEBUG) Log.d(TAG, "Checking checkin of " + it.getUser().getFirstname());
-                 
-                // Ignore ourselves. The server should handle this by setting the pings flag off but..
-                if (it.getUser() != null && it.getUser().getId().equals(foursquared.getUserId())) {
-                    if (DEBUG) Log.d(TAG, "  Ignoring checkin of ourselves.");
-                    continue;
-                }
-                
-                // Check that our user wanted to see pings from this user.
-                if (!it.getPing()) {
-                    if (DEBUG) Log.d(TAG, "  Pings are off for this user.");
-                    continue;
-                }
-                
-                // Check against date times.
-                try {
-                    Date dateCheckin = StringFormatters.DATE_FORMAT.parse(it.getCreated()); 
+        Log.i(TAG, "Checking " + checkins.size() + " checkins for pings.");
 
-                    if (DEBUG) {
-                        Log.d(TAG, "  Comaring date times for checkin.");
-                        Log.d(TAG, "    Last run time: " + dateLast.toLocaleString());
-                        Log.d(TAG, "    Checkin time:  " + dateCheckin.toLocaleString());
-                    }
-                    
-                    if (dateCheckin.after(dateLast)) {
-                        if (DEBUG) Log.d(TAG, "  Checkin is younger than our last run time, passes all tests!!");
-                        newCheckins.add(it);
-                    } else {
-                        if (DEBUG) Log.d(TAG, "  Checkin is older than last run time.");
-                    }
-                } catch (ParseException ex) {
-                    if (DEBUG) Log.e(TAG, "  Error parsing checkin timestamp: " + it.getCreated(), ex);
-                }
+        // Don't accept any checkins that are older than the last time we ran.
+        long lastRunTime = prefs.getLong(
+                Preferences.PREFERENCE_PINGS_SERVICE_LAST_RUN_TIME, System.currentTimeMillis());
+        Date dateLast = new Date(lastRunTime);
+
+        Log.i(TAG, "Last service run time: " + dateLast.toLocaleString() + " (" + lastRunTime + ").");
+
+        // Now build the list of 'new' checkins.
+        List<Checkin> newCheckins = new ArrayList<Checkin>();
+        for (Checkin it : checkins) {
+
+            if (DEBUG) Log.d(TAG, "Checking checkin of " + it.getUser().getFirstname());
+
+            // Ignore ourselves. The server should handle this by setting the pings flag off but..
+            if (it.getUser() != null && it.getUser().getId().equals(foursquared.getUserId())) {
+                if (DEBUG) Log.d(TAG, "  Ignoring checkin of ourselves.");
+                continue;
             }
 
-            Log.i(TAG, "Found " + newCheckins.size() + " new checkins.");
-            
-            notifyUser(newCheckins);
+            // Check that our user wanted to see pings from this user.
+            if (!it.getPing()) {
+                if (DEBUG) Log.d(TAG, "  Pings are off for this user.");
+                continue;
+            }
+
+            // Check against date times.
+            try {
+                Date dateCheckin = StringFormatters.DATE_FORMAT.parse(it.getCreated());
+
+                if (DEBUG) {
+                    Log.d(TAG, "  Comaring date times for checkin.");
+                    Log.d(TAG, "    Last run time: " + dateLast.toLocaleString());
+                    Log.d(TAG, "    Checkin time:  " + dateCheckin.toLocaleString());
+                }
+
+                if (dateCheckin.after(dateLast)) {
+                    if (DEBUG) Log.d(TAG, "  Checkin is younger than our last run time, passes all tests!!");
+                    newCheckins.add(it);
+                } else {
+                    if (DEBUG) Log.d(TAG, "  Checkin is older than last run time.");
+                }
+            } catch (ParseException ex) {
+                if (DEBUG) Log.e(TAG, "  Error parsing checkin timestamp: " + it.getCreated(), ex);
+            }
         }
+
+        Log.i(TAG, "Found " + newCheckins.size() + " new checkins.");
+
+        notifyUser(newCheckins);
         
         // Record this as the last time we ran.
         prefs.edit().putLong(
