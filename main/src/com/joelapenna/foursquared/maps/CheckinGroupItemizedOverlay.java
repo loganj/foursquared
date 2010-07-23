@@ -39,11 +39,11 @@ public class CheckinGroupItemizedOverlay extends BaseGroupItemizedOverlay<Checki
     
     private OverlayItem mLastSelected;
     
-    private CheckingGroupOverlayTapListener mTapListener;
+    private CheckinGroupOverlayTapListener mTapListener;
     
     
     public CheckinGroupItemizedOverlay(Context context, RemoteResourceManager rrm, 
-            Drawable defaultMarker, CheckingGroupOverlayTapListener tapListener) {
+            Drawable defaultMarker, CheckinGroupOverlayTapListener tapListener) {
         super(defaultMarker);
         mContext = context;
         mRrm = rrm;
@@ -119,7 +119,6 @@ public class CheckinGroupItemizedOverlay extends BaseGroupItemizedOverlay<Checki
             return mCheckinGroup;
         }
         
-        
         private void constructPinDrawable(CheckinGroup cg, Context context, RemoteResourceManager rrm, 
                     Bitmap bmpPinSingle, Bitmap bmpPinMultiple) {
 
@@ -131,8 +130,8 @@ public class CheckinGroupItemizedOverlay extends BaseGroupItemizedOverlay<Checki
             int cy  = dddi(58, screenDensity);
             int pox = dddi(9,  screenDensity);
             int poy = dddi(12, screenDensity);
-            int pcx = cx - (pox * 2);//dddi(34, screenDensity);
-            int pcy = cy - (poy * 2);//dddi(34, screenDensity); 
+            int pcx = cx - (pox * 2);
+            int pcy = cy - (poy * 2); 
             
             Bitmap bmp = Bitmap.createBitmap(cx, cy, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bmp);
@@ -167,13 +166,13 @@ public class CheckinGroupItemizedOverlay extends BaseGroupItemizedOverlay<Checki
                 drw2.draw(canvas);
             }
             
-            BitmapDrawable bd = new BitmapDrawable(bmp);
-            bd.setBounds(new Rect(0, 0, cx, cy));
+            Drawable bd = new BitmapDrawable(bmp);
+            bd.setBounds(-cx / 2, -cy, cx / 2, 0);
             setMarker(bd);
         }
     }
     
-    public interface CheckingGroupOverlayTapListener
+    public interface CheckinGroupOverlayTapListener
     {
         public void onTap(OverlayItem itemSelected, OverlayItem itemLastSelected, CheckinGroup cg);
         public void onTap(GeoPoint p, MapView mapView);

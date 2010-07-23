@@ -18,12 +18,21 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Presents the user with a list of pending friend requests that they can
@@ -40,9 +49,12 @@ public class FriendRequestsActivity extends ListActivity {
 
     private StateHolder mStateHolder;
     private ProgressDialog mDlgProgress;
+    private EditText mEditTextFilter;
     private FriendRequestsAdapter mListAdapter;
     private TextView mTextViewNoRequests;
+    private Handler mHandler;
 
+    
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override 
         public void onReceive(Context context, Intent intent) {
@@ -57,7 +69,23 @@ public class FriendRequestsActivity extends ListActivity {
         if (DEBUG) Log.d(TAG, "onCreate()");
         setContentView(R.layout.friend_requests_activity);
         registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
+        
+        mHandler = new Handler();
 
+        mEditTextFilter = (EditText)findViewById(R.id.editTextFilter);
+        mEditTextFilter.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Run the filter operation after a brief waiting period in case the user
+                // is typing real fast.
+                mHandler.removeCallbacks(mRunnableFilter);
+                mHandler.postDelayed(mRunnableFilter, 700L);
+            }
+        });
+        
         mListAdapter = new FriendRequestsAdapter(this, mButtonRowClickHandler,
                 ((Foursquared) getApplication()).getRemoteResourceManager());
         getListView().setAdapter(mListAdapter);
@@ -99,7 +127,7 @@ public class FriendRequestsActivity extends ListActivity {
                             .getString(R.string.friend_requests_progress_bar_ignore_request));
         }
 
-        mListAdapter.setGroup(mStateHolder.getFoundFriendRequests());
+        mListAdapter.setGroup(mStateHolder.getFoundFriendsFiltered());
         mListAdapter.notifyDataSetChanged();
     }
 
@@ -183,7 +211,7 @@ public class FriendRequestsActivity extends ListActivity {
 
     private void decideShowNoFriendRequestsTextView() {
         if (mStateHolder.getRanFetchOnce() && 
-            mStateHolder.getFoundFriendRequests().size() < 1) {
+            mStateHolder.getFoundFriendsCount() < 1) {
             mTextViewNoRequests.setVisibility(View.VISIBLE);
         }
         else {
@@ -191,7 +219,7 @@ public class FriendRequestsActivity extends ListActivity {
         }
     }
     
-    private void onFriendRequestsTaskComplete(Group<User> users, Exception ex) {
+    private void onFriendRequestsTaskComplete(Group<User> users, HashMap<String, Group<User>> usersAlpha, Exception ex) {
 
         // Recreate the adapter, cleanup beforehand.
         mListAdapter.removeObserver();
@@ -201,15 +229,22 @@ public class FriendRequestsActivity extends ListActivity {
         try {
             // Populate the list control below now.
             if (users != null) {
-                mStateHolder.setFoundFriendRequests(users);
-                mListAdapter.setGroup(mStateHolder.getFoundFriendRequests());
+                mStateHolder.setFoundFriends(users, usersAlpha);
+                if (DEBUG) {
+                    Log.e(TAG, "Alpha-sorted requests map:");
+                    for (Map.Entry<String, Group<User>> it : usersAlpha.entrySet()) {
+                        Log.e(TAG, it.getKey());
+                        for (User jt : it.getValue()) {
+                            Log.e(TAG, "   " + getUsersDisplayName(jt));
+                        }
+                    }
+                }
             } else {
                 // If error, feed list adapter empty user group.
-                Group<User> usersNone = new Group<User>();
-                mStateHolder.setFoundFriendRequests(usersNone);
-                mListAdapter.setGroup(usersNone);
+                mStateHolder.setFoundFriends(null, null);
                 NotificationsUtil.ToastReasonForFailure(FriendRequestsActivity.this, ex);
             }
+            mListAdapter.setGroup(mStateHolder.getFoundFriendsFiltered());
         } finally {
             getListView().setAdapter(mListAdapter);
             mStateHolder.setIsRunningFriendRequest(false);
@@ -222,17 +257,12 @@ public class FriendRequestsActivity extends ListActivity {
     private void onFriendRequestDecisionTaskComplete(User user, boolean isApproving, Exception ex) {
         try {
             // If sending the request was successful, then we need to remove
-            // that user from the
-            // list adapter. We do a linear search to find the matching row.
+            // that user from the list adapter. We do a linear search to find the 
+            // matching row.
             if (user != null) {
-                int position = 0;
-                for (User it : mStateHolder.getFoundFriendRequests()) {
-                    if (it.getId().equals(user.getId())) {
-                        mListAdapter.removeItem(position);
-                        break;
-                    }
-                    position++;
-                }
+                mStateHolder.removeUser(user);
+                mListAdapter.setGroup(mStateHolder.getFoundFriendsFiltered());
+                mListAdapter.notifyDataSetChanged();
 
                 // This should generate the message: "You're now friends with [name]!" if
                 // the user chose to approve the request, otherwise we show no toast, just
@@ -240,7 +270,7 @@ public class FriendRequestsActivity extends ListActivity {
                 if (isApproving) {
                     Toast.makeText(this,
                             getResources().getString(R.string.friend_requests_approved) + " " +
-                            user.getFirstname() + "!",
+                            getUsersDisplayName(user) + "!",
                             Toast.LENGTH_SHORT).show();
                 }
             } else {
@@ -258,9 +288,11 @@ public class FriendRequestsActivity extends ListActivity {
 
         private FriendRequestsActivity mActivity;
         private Exception mReason;
+        private HashMap<String, Group<User>> mRequestsAlpha;
 
         public GetFriendRequestsTask(FriendRequestsActivity activity) {
             mActivity = activity;
+            mRequestsAlpha = new LinkedHashMap<String, Group<User>>();
         }
 
         public void setActivity(FriendRequestsActivity activity) {
@@ -272,8 +304,22 @@ public class FriendRequestsActivity extends ListActivity {
             try {
                 Foursquared foursquared = (Foursquared) mActivity.getApplication();
                 Foursquare foursquare = foursquared.getFoursquare();
+                Group<User> requests = foursquare.friendRequests();
+                
+                for (User it : requests) {
+                    String name = getUsersDisplayName(it).toUpperCase();
+                    String first = name.substring(0, 1);
+                    
+                    Group<User> block = mRequestsAlpha.get(first);
+                    if (block == null) {
+                        block = new Group<User>();
+                        mRequestsAlpha.put(first, block);
+                    }
+                    block.add(it);
+                }
 
-                return foursquare.friendRequests();
+                return requests;
+                
             } catch (Exception e) {
                 if (DEBUG) Log.d(TAG, "FindFriendsTask: Exception doing add friends by name", e);
                 mReason = e;
@@ -285,14 +331,14 @@ public class FriendRequestsActivity extends ListActivity {
         protected void onPostExecute(Group<User> users) {
             if (DEBUG) Log.d(TAG, "FindFriendsTask: onPostExecute()");
             if (mActivity != null) {
-                mActivity.onFriendRequestsTaskComplete(users, mReason);
+                mActivity.onFriendRequestsTaskComplete(users, mRequestsAlpha, mReason);
             }
         }
 
         @Override
         protected void onCancelled() {
             if (mActivity != null) {
-                mActivity.onFriendRequestsTaskComplete(null, new Exception(
+                mActivity.onFriendRequestsTaskComplete(null, null, new Exception(
                         "Friend search cancelled."));
             }
         }
@@ -355,29 +401,27 @@ public class FriendRequestsActivity extends ListActivity {
         }
     }
 
+    
+    
     private static class StateHolder {
         GetFriendRequestsTask mTaskFriendRequests;
         SendFriendRequestDecisionTask mTaskSendDecision;
-        Group<User> mFoundFriends;
         boolean mIsRunningFriendRequests;
         boolean mIsRunningApproval;
         boolean mIsRunningIgnore;
         boolean mRanFetchOnce;
+        private Group<User> mFoundFriends;
+        private Group<User> mFoundFriendsFiltered;
+        private HashMap<String, Group<User>> mFoundFriendsAlpha;
 
         public StateHolder() {
             mFoundFriends = new Group<User>();
+            mFoundFriendsFiltered = null;
+            mFoundFriendsAlpha = null;
             mIsRunningFriendRequests = false;
             mIsRunningApproval = false;
             mIsRunningIgnore = false;
             mRanFetchOnce = false;
-        }
-
-        public void setFoundFriendRequests(Group<User> foundFriends) {
-            mFoundFriends = foundFriends;
-        }
-
-        public Group<User> getFoundFriendRequests() {
-            return mFoundFriends;
         }
 
         public void startTaskFriendRequests(FriendRequestsActivity activity) {
@@ -437,6 +481,89 @@ public class FriendRequestsActivity extends ListActivity {
         public void setRanFetchOnce(boolean ranFetchOnce) {
             mRanFetchOnce = ranFetchOnce;
         }
+        
+        public int getFoundFriendsCount() {
+            return mFoundFriends.size();
+        }
+        
+        public Group<User> getFoundFriendsFiltered() {
+            if (mFoundFriendsFiltered == null) {
+                return mFoundFriends;
+            }
+            return mFoundFriendsFiltered;
+        }
+        
+        public void setFoundFriends(Group<User> requests, HashMap<String, Group<User>> alpha) {
+            if (requests != null) {
+                mFoundFriends = requests;
+                mFoundFriendsFiltered = null;
+                mFoundFriendsAlpha = alpha;
+            } else {
+                mFoundFriends = new Group<User>();
+                mFoundFriendsFiltered = null;
+                mFoundFriendsAlpha = null;
+            }
+        }
+        
+        public void filterFriendRequests(String filterString) {
+            // If no filter, just keep using the original found friends group.
+            // If a filter is supplied, reconstruct the group using the alpha
+            // map so we don't have to go through the entire list.
+            mFoundFriendsFiltered = null;
+            if (!TextUtils.isEmpty(filterString)) {
+                filterString = filterString.toUpperCase();
+                
+                Group<User> alpha = mFoundFriendsAlpha.get(filterString.substring(0, 1));
+                mFoundFriendsFiltered = new Group<User>();
+                if (alpha != null) {
+                    for (User it : alpha) {
+                        String name = getUsersDisplayName(it).toUpperCase();
+                        if (name.startsWith(filterString)) {
+                            mFoundFriendsFiltered.add(it);
+                        }
+                    }
+                }
+            }
+        }
+        
+        public void removeUser(User user) {
+            for (User it : mFoundFriends) {
+                if (it.getId().equals(user.getId())) {
+                    mFoundFriends.remove(it);
+                    break;
+                }
+            }
+            if (mFoundFriendsFiltered != null) {
+                for (User it : mFoundFriendsFiltered) {
+                    if (it.getId().equals(user.getId())) {
+                        mFoundFriendsFiltered.remove(it);
+                        break;
+                    }
+                }
+            }
+            
+            String name = getUsersDisplayName(user).toUpperCase();
+            String first = name.substring(0, 1);
+            Group<User> alpha = mFoundFriendsAlpha.get(first);
+            for (User it : alpha) {
+                if (it.getId().equals(user.getId())) {
+                    alpha.remove(it);
+                    break;
+                }
+            }
+        }
+    }
+    
+    private static String getUsersDisplayName(User user) {
+        StringBuilder sb = new StringBuilder(64);
+        if (!TextUtils.isEmpty(user.getFirstname())) {
+            sb.append(user.getFirstname());
+            sb.append(" ");
+        }
+        if (!TextUtils.isEmpty(user.getLastname())) {
+            sb.append(user.getLastname());
+        }
+        return sb.toString();
     }
 
     private FriendRequestsAdapter.ButtonRowClickHandler mButtonRowClickHandler = 
@@ -455,6 +582,14 @@ public class FriendRequestsActivity extends ListActivity {
         @Override
         public void onInfoAreaClick(User user) {
             infoFriendRequest(user);
+        }
+    };
+    
+    private Runnable mRunnableFilter = new Runnable() {
+        public void run() {
+            mStateHolder.filterFriendRequests(mEditTextFilter.getText().toString());
+            mListAdapter.setGroup(mStateHolder.getFoundFriendsFiltered());
+            mListAdapter.notifyDataSetChanged();
         }
     };
 }

@@ -11,6 +11,13 @@
   android:paddingTop="8dip"
   android:paddingBottom="8dip"
   >
+  
+  <EditText
+    android:id="@+id/editTextFilter"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:hint="Type here to filter"
+    />
 
   <ListView
     android:id="@android:id/list"

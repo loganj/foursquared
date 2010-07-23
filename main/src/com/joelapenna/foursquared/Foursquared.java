@@ -9,6 +9,7 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.User;
+import com.joelapenna.foursquare.util.IconUtils;
 import com.joelapenna.foursquared.app.FoursquaredService;
 import com.joelapenna.foursquared.error.LocationException;
 import com.joelapenna.foursquared.location.BestLocationListener;
@@ -96,6 +97,11 @@ public class Foursquared extends Application {
         
         // Setup some defaults in our preferences if not set yet.
         Preferences.setupDefaults(mPrefs, getResources());
+        
+        // If we're on a high density device, request higher res images. This singleton
+        // is picked up by the parsers to replace their icon urls with high res versions.
+        float screenDensity = getApplicationContext().getResources().getDisplayMetrics().density;
+        IconUtils.get().setRequestHighDensityIcons(screenDensity > 1.0f);
          
         // Setup Dumpcatcher - We've outgrown this infrastructure but we'll
         // leave its calls in place for the day that someone pays for some

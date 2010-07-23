@@ -19,6 +19,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
@@ -47,12 +48,21 @@ public class CategoryPickerAdapter extends BaseAdapter implements ObservableAdap
 
         for (Category it : mCategory.getChildCategories()) {
             Uri photoUri = Uri.parse(it.getIconUrl());
-            if (!mRrm.exists(photoUri)) {
+            
+            File file = mRrm.getFile(photoUri);
+            if (file != null) {
+                if (System.currentTimeMillis() - file.lastModified() > FoursquaredSettings.CATEGORY_ICON_EXPIRATION) {
+                    mRrm.invalidate(photoUri); 
+                    file = null;
+                }
+            }
+            
+            if (file == null) {
                 mRrm.request(photoUri);
             }
         }
     }
-
+    
     public void removeObserver() {
         mRrm.deleteObserver(mResourcesObserver);
     }

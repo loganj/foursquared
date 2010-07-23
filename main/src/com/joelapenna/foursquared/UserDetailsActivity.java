@@ -270,7 +270,7 @@ public class UserDetailsActivity extends TabActivity {
         // Number of mayorships.
         if (user != null) {
             if (mStateHolder.getFetchedUserDetails()) {
-                mTextViewNumMayorships.setText(String.valueOf(user.getMayorships().size()));
+                mTextViewNumMayorships.setText(String.valueOf(user.getMayorCount()));
             } else {
                 mTextViewNumMayorships.setText("-");
             }
@@ -344,9 +344,15 @@ public class UserDetailsActivity extends TabActivity {
         specTab2.setContent(intent);
         mTabHost.addTab(specTab2);
 
-        // User can also now click on the badges / mayorships layouts.
+        // User can also now click on the badges.
         mLayoutNumBadges.setEnabled(true);
-        mLayoutNumMayorships.setEnabled(true);
+        
+        // If user is a friend of ours, we may be able to see their mayorships.
+        if (user.getMayorships() != null && user.getMayorships().size() > 0) {
+            mLayoutNumMayorships.setEnabled(true);
+        } else {
+            mLayoutNumMayorships.setEnabled(false);
+        }
     }
 
     private View prepareTabView(String text) {

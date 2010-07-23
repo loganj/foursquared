@@ -28,7 +28,7 @@ public class NotificationsUtil {
         if (DEBUG) Log.d(TAG, "Toasting for exception: ", e);
 
         if (e instanceof SocketTimeoutException) {
-            Toast.makeText(context, "Foursquare server request timed out", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Foursquare over capacity, server request timed out!", Toast.LENGTH_SHORT).show();
             
         } else if (e instanceof SocketException) {
             Toast.makeText(context, "Foursquare server not responding", Toast.LENGTH_SHORT).show();

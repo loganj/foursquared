@@ -27,6 +27,7 @@ public class User implements FoursquareType, Parcelable {
     private String mGender;
     private String mId;
     private String mLastname;
+    private int mMayorCount;
     private String mPhone;
     private String mPhoto;
     private Settings mSettings;
@@ -177,6 +178,14 @@ public class User implements FoursquareType, Parcelable {
 
     public void setMayorships(Group<Venue> mayorships) {
         mMayorships = mayorships;
+    }
+    
+    public int getMayorCount() {
+        return mMayorCount;
+    }
+    
+    public void setMayorCount(int mayorCount) {
+        mMayorCount = mayorCount;    
     }
     
     public String getPhone() {
