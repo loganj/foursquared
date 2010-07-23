@@ -4,6 +4,7 @@
 
 package com.joelapenna.foursquared;
 
+import android.app.Activity;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
@@ -14,6 +15,7 @@ import com.joelapenna.foursquared.error.LocationException;
 import com.joelapenna.foursquared.location.BestLocationListener;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
+import com.joelapenna.foursquared.util.CompatibilityHelp;
 import com.joelapenna.foursquared.util.JavaLoggingHandler;
 import com.joelapenna.foursquared.util.NullDiskCache;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
@@ -41,6 +43,7 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -69,6 +72,7 @@ public class Foursquared extends Application {
 
     private SharedPreferences mPrefs;
     private RemoteResourceManager mRemoteResourceManager;
+    private Sync mSync;
 
     private Foursquare mFoursquare;
 
@@ -125,6 +129,17 @@ public class Foursquared extends Application {
 
         // Log into Foursquare, if we can.
         loadFoursquare();
+
+        if ( CompatibilityHelp.API_LEVEL_AT_LEAST_ECLAIR ) {
+            try {
+                mSync = (SyncImpl)Class.forName("com.joelapenna.foursquared.SyncImpl").getDeclaredConstructor(Foursquared.class).newInstance(this);
+            } catch (Exception e) {
+                Log.w(TAG, "failed to instantiate SyncImpl for Eclair+", e);
+                mSync = new PreEclairSyncImpl();
+            }
+        } else {
+            mSync = new PreEclairSyncImpl();
+        }
     }
 
     public boolean isReady() {
@@ -164,6 +179,10 @@ public class Foursquared extends Application {
         return mRemoteResourceManager;
     }
 
+    public Sync getSync() {
+        return mSync;
+    }
+    
     public BestLocationListener requestLocationUpdates(boolean gps) {
         mBestLocationListener.register(
                 (LocationManager) getSystemService(Context.LOCATION_SERVICE), gps);
@@ -247,6 +266,15 @@ public class Foursquared extends Application {
         } else {
             return new Foursquare(Foursquare.createHttpApi(version, false));
         }
+    }
+
+    /**
+     * Provides static access to the application as a Foursquared.  Mostly here to hide the cast, and in case we can do
+     * better later.
+     * @return the current Application as a Foursquared instance
+     */
+    public static Foursquared get(Activity activity) {
+        return (Foursquared)activity.getApplication();
     }
 
     /**

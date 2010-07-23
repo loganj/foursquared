@@ -4,12 +4,14 @@
 
 package com.joelapenna.foursquared.widget;
 
+
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.Sync;
 import com.joelapenna.foursquared.util.CheckinTimestampSort;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
@@ -24,7 +26,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -49,22 +50,28 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
 
     private RemoteResourceManager mRrm;
     private RemoteResourceManagerObserver mResourcesObserver;
+    private SyncObserver mSyncObserver;
     private Handler mHandler = new Handler();
     private HashMap<String, String> mCachedTimestamps;
-    
-    
-    public CheckinListAdapter(Context context, RemoteResourceManager rrm) {
+    private Sync mSync;
+    private Context mContext;
+
+    public CheckinListAdapter(Context context, RemoteResourceManager rrm, Sync sync) {
         super(context);
+        mContext = context;
+        mSync = sync;
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
         mResourcesObserver = new RemoteResourceManagerObserver();
+        mSyncObserver = new SyncObserver();
         mCachedTimestamps = new HashMap<String, String>();
-
         mRrm.addObserver(mResourcesObserver);
+        sync.getObservable().addObserver(mSyncObserver);
     }
     
     public void removeObserver() {
         mRrm.deleteObserver(mResourcesObserver);
+        mSync.getObservable().deleteObserver(mSyncObserver);
     }
 
     @Override
@@ -73,16 +80,19 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
         // calls to findViewById() on each row.
         final ViewHolder holder;
 
+        Checkin checkin = (Checkin) getItem(position);
+        final User user = checkin.getUser();
+        final Uri photoUri = Uri.parse(user.getPhoto());
+
         // When convertView is not null, we can reuse it directly, there is no
         // need to re-inflate it. We only inflate a new View when the
         // convertView supplied by ListView is null.
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.checkin_list_item, null);
-
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.photo = (ImageView) convertView.findViewById(R.id.photo);
+            holder.photo =  (MaybeContactView)convertView.findViewById(R.id.photo);
             holder.firstLine = (TextView) convertView.findViewById(R.id.firstLine);
             holder.secondLine = (TextView) convertView.findViewById(R.id.secondLine);
             holder.timeTextView = (TextView) convertView.findViewById(R.id.timeTextView);
@@ -93,11 +103,8 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
             // and the ImageView.
             holder = (ViewHolder) convertView.getTag();
         }
-
-        Checkin checkin = (Checkin) getItem(position);
-        final User user = checkin.getUser();
-        final Uri photoUri = Uri.parse(user.getPhoto());
-
+        holder.photo.setContactLookupUri(mSync.getContactLookupUri(mContext.getContentResolver(), user.getId()));
+        
         try {
             Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photoUri));
             holder.photo.setImageBitmap(bitmap);
@@ -165,8 +172,22 @@ public class CheckinListAdapter extends BaseCheckinAdapter implements Observable
         }
     }
 
+    private class SyncObserver implements Observer {
+        
+        @Override
+        public void update(Observable observable, Object o) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Log.i(TAG, "update received from sync");
+                    notifyDataSetChanged();
+                }
+            });
+        }
+    }
+
     private static class ViewHolder {
-        ImageView photo;
+        MaybeContactView photo;
         TextView firstLine;
         TextView secondLine;
         TextView timeTextView;

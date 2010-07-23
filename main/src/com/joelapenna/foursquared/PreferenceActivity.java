@@ -14,11 +14,14 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.util.Log;
+
+import java.lang.reflect.Constructor;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -31,8 +34,10 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
 
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
+
     private SharedPreferences mPrefs;
     
+    private OnPreferenceChangeListener syncChangeListener;
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
         @Override
@@ -42,14 +47,43 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         }
     };
 
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        CheckBoxPreference syncPref = (CheckBoxPreference)getPreferenceScreen().findPreference(Preferences.PREFERENCE_SYNC_CONTACTS);
+
+        syncPref.setChecked(Foursquared.get(this).getSync().isEnabled());
+        if ( syncChangeListener != null ) {
+            syncPref.setOnPreferenceChangeListener(syncChangeListener);
+        }
+    }
+    
+    @Override
+    protected void onPause() {
+        Preference syncContactsPreference = getPreferenceScreen().findPreference(Preferences.PREFERENCE_SYNC_CONTACTS);
+        syncContactsPreference.setOnPreferenceChangeListener(null);
+        super.onPause();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
+        syncChangeListener = new OnPreferenceChangeListener() {
+
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                boolean enableSync = (Boolean)newValue;
+                Sync sync = Foursquared.get(PreferenceActivity.this).getSync();
+                return sync.setEnabled(enableSync);
+            }
+        };
+
         this.addPreferencesFromResource(R.xml.preferences);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-
         Preference advanceSettingsPreference = getPreferenceScreen().findPreference(
                 Preferences.PREFERENCE_ADVANCED_SETTINGS);
         advanceSettingsPreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
@@ -59,6 +93,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                 return false;
             }
         });
+        
     }
     
     @Override

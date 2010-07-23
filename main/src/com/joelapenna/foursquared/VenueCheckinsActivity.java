@@ -64,7 +64,12 @@ public class VenueCheckinsActivity extends LoadableListActivity {
             ((VenueActivity)getParent()).venueObservable.addObserver(mParentDataObserver);
         }
     }
-    
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -82,7 +87,8 @@ public class VenueCheckinsActivity extends LoadableListActivity {
     private void putCheckinsInAdapter(Group<Checkin> checkins) {
         if (DEBUG) Log.d(TAG, "Setting checkins.");
         CheckinListAdapter adapter = new CheckinListAdapter(this, //
-                ((Foursquared)getApplication()).getRemoteResourceManager());
+                ((Foursquared)getApplication()).getRemoteResourceManager(),
+                ((Foursquared)getApplication()).getSync());
         adapter.setGroup(checkins);
         mListAdapter.addSection("Recent Checkins", adapter);
     }
@@ -92,7 +98,8 @@ public class VenueCheckinsActivity extends LoadableListActivity {
         Group<Mayor> mayors = new Group<Mayor>();
         mayors.add(mayor);
         MayorListAdapter adapter = new MayorListAdapter(this, //
-                ((Foursquared)getApplication()).getRemoteResourceManager());
+                ((Foursquared)getApplication()).getRemoteResourceManager(),
+                ((Foursquared)getApplication()).getSync());
         adapter.setGroup(mayors);
         mListAdapter.addSection("Mayor", adapter);
     }

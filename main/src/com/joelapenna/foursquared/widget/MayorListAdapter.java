@@ -10,6 +10,7 @@ import com.joelapenna.foursquare.types.Mayor;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.Sync;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 
 import android.content.Context;
@@ -21,7 +22,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -40,17 +40,24 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
     private RemoteResourceManager mRrm;
     private Handler mHandler = new Handler();
     private RemoteResourceManagerObserver mResourcesObserver;
+    private SyncObserver mSyncObserver;
+    private Context mContext;
+    private Sync mSync;
 
-    public MayorListAdapter(Context context, RemoteResourceManager rrm) {
+    public MayorListAdapter(Context context, RemoteResourceManager rrm, Sync sync) {
         super(context);
+        mSync = sync;
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
         mResourcesObserver = new RemoteResourceManagerObserver();
-
+        mSyncObserver = new SyncObserver();
+        mSync.getObservable().addObserver(mSyncObserver);
         mRrm.addObserver(mResourcesObserver);
+        mContext = context;
     }
 
     public void removeObserver() {
+        mSync.getObservable().deleteObserver(mSyncObserver);
         mRrm.deleteObserver(mResourcesObserver);
     }
 
@@ -59,6 +66,8 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
         // A ViewHolder keeps references to children views to avoid unnecessary
         // calls to findViewById() on each row.
         final ViewHolder holder;
+        Mayor mayor = (Mayor)getItem(position);
+        final User user = mayor.getUser();
 
         // When convertView is not null, we can reuse it directly, there is no
         // need to re-inflate it. We only inflate a new View when the
@@ -69,7 +78,8 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.photo = (ImageView)convertView.findViewById(R.id.photo);
+
+            holder.photo = (MaybeContactView)convertView.findViewById(R.id.photo);
             holder.firstLine = (TextView)convertView.findViewById(R.id.firstLine);
             holder.secondLine = (TextView)convertView.findViewById(R.id.mayorMessageTextView);
 
@@ -80,8 +90,8 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
             holder = (ViewHolder)convertView.getTag();
         }
 
-        Mayor mayor = (Mayor)getItem(position);
-        final User user = mayor.getUser();
+        holder.photo.setContactLookupUri(mSync.getContactLookupUri(mContext.getContentResolver(), user.getId()));
+
         final Uri photoUri = Uri.parse(user.getPhoto());
 
         try {
@@ -125,8 +135,15 @@ public class MayorListAdapter extends BaseMayorAdapter implements ObservableAdap
         }
     }
 
+    private class SyncObserver implements Observer {
+        @Override
+        public void update(Observable observable, Object o) {
+            notifyDataSetChanged();
+        }
+    }
+
     private static class ViewHolder {
-        ImageView photo;
+        MaybeContactView photo;
         TextView firstLine;
         TextView secondLine;
     }

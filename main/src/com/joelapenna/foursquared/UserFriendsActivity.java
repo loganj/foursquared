@@ -5,24 +5,31 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.app.LoadableListActivity;
 import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.preferences.Preferences;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.widget.FriendListAdapter;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Shows a list of friends for the user id passed as an intent extra.
@@ -76,7 +83,12 @@ public class UserFriendsActivity extends LoadableListActivity {
         
         ensureUi();
     }
-    
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -96,7 +108,8 @@ public class UserFriendsActivity extends LoadableListActivity {
 
     private void ensureUi() {
         mListAdapter = new FriendListAdapter(this, 
-            ((Foursquared) getApplication()).getRemoteResourceManager());
+            ((Foursquared) getApplication()).getRemoteResourceManager(),
+            ((Foursquared) getApplication()).getSync());
         mListAdapter.setGroup(mStateHolder.getFriends());
         
         ListView listView = getListView();
@@ -123,11 +136,16 @@ public class UserFriendsActivity extends LoadableListActivity {
     private void onFriendsTaskComplete(Group<User> group, Exception ex) {
         mListAdapter.removeObserver();
         mListAdapter = new FriendListAdapter(this, 
-            ((Foursquared) getApplication()).getRemoteResourceManager());
+            ((Foursquared) getApplication()).getRemoteResourceManager(),
+            ((Foursquared) getApplication()).getSync());
         if (group != null) {
             mStateHolder.setFriends(group);
             mListAdapter.setGroup(mStateHolder.getFriends());
             getListView().setAdapter(mListAdapter);
+            boolean syncPref = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Preferences.PREFERENCE_SYNC_CONTACTS, false);
+            if ( syncPref ) {
+                mStateHolder.startTaskSyncContacts(((Foursquared)getApplication()).getSync(), getApplication().getContentResolver());
+            }
         }
         else {
             mStateHolder.setFriends(new Group<User>());
@@ -194,7 +212,6 @@ public class UserFriendsActivity extends LoadableListActivity {
         }
     }
     
-    
     private static class StateHolder {
         
         /** User id. */
@@ -204,6 +221,7 @@ public class UserFriendsActivity extends LoadableListActivity {
         private Group<User> mFriends;
         
         private FriendsTask mTaskFriends;
+        private AsyncTask<?,?,?> mTaskSyncContacts;
         private boolean mIsRunningFriendsTask;
         private boolean mFetchedFriendsOnce;
         
@@ -236,6 +254,19 @@ public class UserFriendsActivity extends LoadableListActivity {
             mTaskFriends = new FriendsTask(activity);
             mTaskFriends.execute(userId);
         }
+        
+        public void startTaskSyncContacts(Sync sync, ContentResolver resolver) {
+            List<Checkin> checkins = new ArrayList<Checkin>(mFriends.size());
+            for ( User friend : mFriends ) {
+                Checkin c = friend.getCheckin();
+                if ( c != null ) {
+                    checkins.add(c);
+                }
+            }
+            if ( checkins.size() > 0 ) {
+                mTaskSyncContacts = sync.createSyncTask().execute();
+            }
+        }
 
         public void setActivityForTaskFriends(UserFriendsActivity activity) {
             if (mTaskFriends != null) {
@@ -263,6 +294,9 @@ public class UserFriendsActivity extends LoadableListActivity {
             if (mTaskFriends != null) {
                 mTaskFriends.setActivity(null);
                 mTaskFriends.cancel(true);
+            }
+            if (mTaskSyncContacts != null) {
+                mTaskSyncContacts.cancel(true);
             }
         }
     }

@@ -19,6 +19,8 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentProviderOperation;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,6 +28,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -167,6 +170,24 @@ public class PingsService extends WakefulIntentService {
             } catch (ParseException ex) {
                 if (DEBUG) Log.e(TAG, "  Error parsing checkin timestamp: " + it.getCreated(), ex);
             }
+
+            Log.i(TAG, "Found " + newCheckins.size() + " new checkins.");
+            
+            if ( newCheckins.size() > 0 && 
+                 PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Preferences.PREFERENCE_SYNC_CONTACTS, false)) {
+                ContentResolver resolver = getApplication().getContentResolver();
+                ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>(newCheckins.size());
+                for ( Checkin checkin : newCheckins) {
+                    ops.addAll(foursquared.getSync().updateStatus(resolver, checkin.getUser(), checkin));
+                }
+                try {
+                    resolver.applyBatch(ContactsContract.AUTHORITY, ops);
+                } catch (Exception e) {
+                    Log.w(TAG, "updating contact statuses failed", e);
+                }
+            }
+            
+            notifyUser(newCheckins);
         }
 
         Log.i(TAG, "Found " + newCheckins.size() + " new checkins.");

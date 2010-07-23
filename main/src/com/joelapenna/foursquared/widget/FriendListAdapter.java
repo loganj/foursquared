@@ -9,6 +9,7 @@ import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.Sync;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 
 import android.content.Context;
@@ -20,7 +21,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -41,28 +41,36 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
     private int mLayoutToInflate;
     private RemoteResourceManager mRrm;
     private RemoteResourceManagerObserver mResourcesObserver;
+    private SyncObserver mSyncObserver;
     private Handler mHandler = new Handler();
     private int mLoadedPhotoIndex;
+    private Context mContext;
+    private Sync mSync;
 
     
-    public FriendListAdapter(Context context, RemoteResourceManager rrm) {
+    public FriendListAdapter(Context context, RemoteResourceManager rrm, Sync sync) {
         super(context);
+        mContext = context;
+        mSync = sync;
         mInflater = LayoutInflater.from(context);
         mLayoutToInflate = R.layout.friend_list_item;
         mRrm = rrm;
         mResourcesObserver = new RemoteResourceManagerObserver();
         mLoadedPhotoIndex = 0;
-
+        mSyncObserver = new SyncObserver();
+        mSync.getObservable().addObserver(mSyncObserver);
         mRrm.addObserver(mResourcesObserver);
     }
     
     public void removeObserver() {
+        mSync.getObservable().deleteObserver(mSyncObserver);
         mHandler.removeCallbacks(mRunnableLoadPhotos);
         mRrm.deleteObserver(mResourcesObserver);
     }
 
-    public FriendListAdapter(Context context, int layoutResource) {
+    public FriendListAdapter(Context context, int layoutResource, Sync sync) {
         super(context);
+        mSync = sync;
         mInflater = LayoutInflater.from(context);
         mLayoutToInflate = layoutResource;
     }
@@ -72,27 +80,26 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
         // A ViewHolder keeps references to children views to avoid unnecessary
         // calls to findViewById() on each row.
         ViewHolder holder;
+        final User user = (User) getItem(position);
 
         // When convertView is not null, we can reuse it directly, there is no
         // need to re-inflate it. We only inflate a new View when the
         // convertView supplied by ListView is null.
         if (convertView == null) {
             convertView = mInflater.inflate(mLayoutToInflate, null);
-
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.photo = (ImageView) convertView.findViewById(R.id.friendListItemPhoto);
             holder.name = (TextView) convertView.findViewById(R.id.friendListItemName);
-
+            holder.photo = (MaybeContactView)convertView.findViewById(R.id.friendListItemPhoto);
             convertView.setTag(holder);
         } else {
             // Get the ViewHolder back to get fast access to the TextView
             // and the ImageView.
             holder = (ViewHolder) convertView.getTag();
         }
+        holder.photo.setContactLookupUri(mSync.getContactLookupUri(mContext.getContentResolver(), user.getId()));
 
-        User user = (User) getItem(position);
         Uri photoUri = Uri.parse(user.getPhoto());
         try {
             Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photoUri));
@@ -143,6 +150,13 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
             });
         }
     }
+
+    private class SyncObserver implements Observer {
+        @Override
+        public void update(Observable observable, Object o) {
+            notifyDataSetChanged();
+        }
+    }
     
     private Runnable mRunnableLoadPhotos = new Runnable() {
         @Override
@@ -159,7 +173,7 @@ public class FriendListAdapter extends BaseGroupAdapter<User>
     };
 
     static class ViewHolder {
-        ImageView photo;
+        MaybeContactView photo;
         TextView name;
     }
 }

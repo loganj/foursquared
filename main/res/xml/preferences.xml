@@ -33,6 +33,13 @@
       android:key="friend_requests"
       android:title="@string/preferences_friend_requests_title"
       android:summary="@string/preferences_friend_requests_summary" />
+    <CheckBoxPreference
+      android:key="sync_contacts"
+      android:persistent="true"
+      android:title="@string/preferences_sync_contacts_title"
+      android:summaryOn="@string/preferences_sync_contacts_on"
+      android:summaryOff="@string/preferences_sync_contacts_off"
+      android:defaultValue="false"/>
   </PreferenceCategory>
   
   <PreferenceCategory

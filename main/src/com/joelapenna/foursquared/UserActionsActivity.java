@@ -4,18 +4,16 @@
 
 package com.joelapenna.foursquared;
 
+import android.content.*;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.Settings;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.app.LoadableListActivity;
+import com.joelapenna.foursquared.util.CompatibilityHelp;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.util.UserUtils;
 
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -32,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 /**
@@ -190,6 +189,11 @@ public class UserActionsActivity extends LoadableListActivity {
                         mStateHolder.startTaskPings(UserActionsActivity.this, mStateHolder
                                 .getUser().getId(), true);
                         break;
+                    case ActionsAdapter.ACTION_ID_CONTACTS:
+                        if (mListAdapter.contactIntent != null) {
+                            startActivity(mListAdapter.contactIntent);
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -234,6 +238,7 @@ public class UserActionsActivity extends LoadableListActivity {
         public static final int ACTION_ID_LAST_SEEN_AT = 5; // Going to go away eventually.
         public static final int ACTION_ID_PINGS_ON = 6;
         public static final int ACTION_ID_PINGS_OFF = 7;
+        public static final int ACTION_ID_CONTACTS = 8;
         public static final int ACTION_ID_SEND_FRIEND_REQUEST = 100;
         public static final int ACTION_ID_SEND_APPROVE_FRIEND_REQUEST = 101;
         public static final int ACTION_ID_SEND_READONLY_FRIEND_REQUEST = 102;
@@ -242,6 +247,7 @@ public class UserActionsActivity extends LoadableListActivity {
         private int mLayoutToInflate;
         private User mUser;
         private ArrayList<Action> mActions;
+        private Intent contactIntent;
 
         public ActionsAdapter(Context context, User user, boolean showAddFriendOptions) {
             super();
@@ -315,6 +321,17 @@ public class UserActionsActivity extends LoadableListActivity {
                     mActions.add(new Action(context.getResources().getString(
                             R.string.user_actions_activity_action_facebook),
                             R.drawable.user_action_facebook, ACTION_ID_FACEBOOK, true));
+                }
+                if ( CompatibilityHelp.API_LEVEL_AT_LEAST_ECLAIR) {
+                    try {
+                        Method getViewContactIntent = Class.forName("com.joelapenna.foursquared.Sync").getDeclaredMethod("getViewContactIntent", ContentResolver.class, User.class);
+                        contactIntent = (Intent) getViewContactIntent.invoke(null, context.getContentResolver(), mUser);
+                        if ( contactIntent != null ) {
+                            mActions.add(new Action(context.getResources().getString(R.string.user_actions_activity_contacts),
+                                 android.R.drawable.sym_contact_card, ACTION_ID_CONTACTS, true));
+                        }
+                    } catch (Exception e) {
+                    }
                 }
             }
         }

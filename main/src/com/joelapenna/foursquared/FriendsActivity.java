@@ -10,11 +10,8 @@ import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.app.LoadableListActivityWithView;
 import com.joelapenna.foursquared.location.LocationUtils;
-import com.joelapenna.foursquared.util.CheckinTimestampSort;
-import com.joelapenna.foursquared.util.Comparators;
-import com.joelapenna.foursquared.util.MenuUtils;
-import com.joelapenna.foursquared.util.NotificationsUtil;
-import com.joelapenna.foursquared.util.UserUtils;
+import com.joelapenna.foursquared.preferences.Preferences;
+import com.joelapenna.foursquared.util.*;
 import com.joelapenna.foursquared.widget.CheckinListAdapter;
 import com.joelapenna.foursquared.widget.SeparatedListAdapter;
 
@@ -30,6 +27,7 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -152,7 +150,6 @@ public class FriendsActivity extends LoadableListActivityWithView {
     @Override
     public void onResume() {
         super.onResume();
-
         ((Foursquared) getApplication()).requestLocationUpdates(mSearchLocationObserver);
     }
 
@@ -418,10 +415,17 @@ public class FriendsActivity extends LoadableListActivityWithView {
             try {
                 if (checkins == null) {
                     NotificationsUtil.ToastReasonForFailure(FriendsActivity.this, mReason);
+                } else {
+                    boolean syncPref = PreferenceManager.getDefaultSharedPreferences(FriendsActivity.this).getBoolean(Preferences.PREFERENCE_SYNC_CONTACTS, false);
+                    Log.i(TAG, "sync preference is " + syncPref);
+                    
+                    if ( syncPref ) {
+                        Log.i(TAG, "starting task to sync contacts");
+                        Foursquared.get(FriendsActivity.this).getSync().createSyncTask().execute();
+                    }
                 }
                 setSearchResults(checkins);
                 putSearchResultsInAdapter(checkins, mSearchHolder.sortMethod);
-
             } finally {
                 setProgressBarIndeterminateVisibility(false);
                 ensureTitle(true);
@@ -503,38 +507,36 @@ public class FriendsActivity extends LoadableListActivityWithView {
                 }
             }
         }
-        
+
+        RemoteResourceManager rRm = ((Foursquared)getApplication()).getRemoteResourceManager();
+        Sync sync = ((Foursquared)getApplication()).getSync();
+
         if (recent.size() > 0) {
-            CheckinListAdapter adapter = new CheckinListAdapter(this, 
-                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            CheckinListAdapter adapter = new CheckinListAdapter(this, rRm, sync);
             adapter.setGroup(recent);
             listAdapter.addSection(getResources().getString(
                     R.string.friendsactivity_title_sort_recent), adapter);
         }
         if (today.size() > 0) {
-            CheckinListAdapter adapter = new CheckinListAdapter(this, 
-                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            CheckinListAdapter adapter = new CheckinListAdapter(this, rRm, sync);
             adapter.setGroup(today);
             listAdapter.addSection(getResources().getString(
                     R.string.friendsactivity_title_sort_today), adapter);
         }
         if (yesterday.size() > 0) {
-            CheckinListAdapter adapter = new CheckinListAdapter(this, 
-                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            CheckinListAdapter adapter = new CheckinListAdapter(this, rRm, sync);
             adapter.setGroup(yesterday);
             listAdapter.addSection(getResources().getString(
                     R.string.friendsactivity_title_sort_yesterday), adapter);
         }
         if (older.size() > 0) {
-            CheckinListAdapter adapter = new CheckinListAdapter(this, 
-                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            CheckinListAdapter adapter = new CheckinListAdapter(this, rRm, sync);
             adapter.setGroup(older);
             listAdapter.addSection(getResources().getString(
                     R.string.friendsactivity_title_sort_older), adapter);
         }
         if (other.size() > 0) {
-            CheckinListAdapter adapter = new CheckinListAdapter(this, 
-                    ((Foursquared) getApplication()).getRemoteResourceManager());
+            CheckinListAdapter adapter = new CheckinListAdapter(this, rRm, sync);
             adapter.setGroup(other);
             listAdapter.addSection(getResources().getString(
                     R.string.friendsactivity_title_sort_other_city), adapter);
@@ -545,8 +547,9 @@ public class FriendsActivity extends LoadableListActivityWithView {
         Collections.sort(checkins, Comparators.getCheckinDistanceComparator());
         
         Group<Checkin> nearby = new Group<Checkin>();
-        CheckinListAdapter adapter = new CheckinListAdapter(this, 
-                ((Foursquared) getApplication()).getRemoteResourceManager());
+        CheckinListAdapter adapter = new CheckinListAdapter(this,
+                                                            ((Foursquared)getApplication()).getRemoteResourceManager(),
+                                                            ((Foursquared)getApplication()).getSync());
         for (Checkin it : checkins) {
             int meters = 0;
             try {

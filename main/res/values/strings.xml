@@ -21,6 +21,7 @@
   <string name="add_venue_activity_error_no_venue_state">Please supply a venue state.</string>
   <string name="address">Address</string> 
   <string name="app_name">Foursquare</string>
+  <string name="authtoken_type">com.joelapenna.foursquared.account</string>
   <string name="badges_header">Badges</string>
   <string name="call">Call</string>
   <string name="checkin_action_label">Check-in!</string>
@@ -115,6 +116,9 @@
   <string name="preferences_share_summary_on">By default, tell my friends when I check-in.</string>
   <string name="preferences_startup_tab">Startup Tab</string>
   <string name="preferences_startup_tab_summary">Select which tab to display at startup.</string>
+  <string name="preferences_sync_contacts_title">Sync to Contacts</string>
+  <string name="preferences_sync_contacts_off">Don\'t sync friends\' info to Contacts</string>
+  <string name="preferences_sync_contacts_on">Sync friends\' info to Contacts</string>
   <string name="preferences_twitter_checkin_summary_off">By default, don\'t tweet my checkins.</string>
   <string name="preferences_twitter_checkin_summary_on">By default, tweet my checkins.</string>
   <string name="preferences_twitter_checkin_title">Tell Twitter</string>
@@ -189,6 +193,7 @@
   <string name="friend_requests_progress_bar_ignore_request">Ignoring request....</string>
   <string name="user_activity_fetch_full_image_title">Fetching Image</string>
   <string name="user_activity_fetch_full_image_message">Fetching Image...</string>
+  <string name="user_actions_activity_contacts">View in Contacts</string>
   <string name="user_actions_activity_no_info">No additional information available.</string>
   <string name="user_actions_activity_action_sms">SMS</string>
   <string name="user_actions_activity_action_email">Email</string>

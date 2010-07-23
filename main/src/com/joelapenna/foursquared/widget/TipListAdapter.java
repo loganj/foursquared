@@ -10,6 +10,7 @@ import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.Sync;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
 import com.joelapenna.foursquared.util.StringFormatters;
 
@@ -23,7 +24,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -46,19 +46,26 @@ public class TipListAdapter extends BaseTipAdapter
     private RemoteResourceManagerObserver mResourcesObserver;
     private Handler mHandler = new Handler();
     private int mLoadedPhotoIndex;
-    
+    private Context mContext;
+    private Sync mSync;
+    private Observer mSyncObserver;
 
-    public TipListAdapter(Context context, RemoteResourceManager rrm) {
+    public TipListAdapter(Context context, RemoteResourceManager rrm, Sync sync) {
         super(context);
+        mContext = context;
+        mSync = sync;
         mInflater = LayoutInflater.from(context);
         mRrm = rrm;
         mResourcesObserver = new RemoteResourceManagerObserver();
         mLoadedPhotoIndex = 0;
 
         mRrm.addObserver(mResourcesObserver);
+        mSyncObserver = new SyncObserver();
+        mSync.getObservable().addObserver(mSyncObserver);
     }
     
     public void removeObserver() {
+        mSync.getObservable().deleteObserver(mSyncObserver);
         mHandler.removeCallbacks(mRunnableLoadPhotos);
         mRrm.deleteObserver(mResourcesObserver);
     }
@@ -68,6 +75,8 @@ public class TipListAdapter extends BaseTipAdapter
         // A ViewHolder keeps references to children views to avoid unnecessary
         // calls to findViewById() on each row.
         ViewHolder holder;
+        Tip tip = (Tip)getItem(position);
+        User user = tip.getUser();
 
         // When convertView is not null, we can reuse it directly, there is no
         // need to re-inflate it. We only inflate a new View when the
@@ -78,7 +87,7 @@ public class TipListAdapter extends BaseTipAdapter
             // Creates a ViewHolder and store references to the two children
             // views we want to bind data to.
             holder = new ViewHolder();
-            holder.photo = (ImageView)convertView.findViewById(R.id.tipPhoto);
+            holder.photo =  (MaybeContactView)convertView.findViewById(R.id.tipPhoto);
             holder.tipTextView = (TextView)convertView.findViewById(R.id.tipTextView);
             holder.userTextView = (TextView)convertView.findViewById(R.id.userTextView);
 
@@ -89,14 +98,14 @@ public class TipListAdapter extends BaseTipAdapter
             holder = (ViewHolder)convertView.getTag();
         }
 
-        Tip tip = (Tip)getItem(position);
         // Popping from string->html fixes things like "&amp;" converting it back to a string
         // prevents a stack overflow in cupcake.
         holder.tipTextView.setText(Html.fromHtml(tip.getText()).toString());
         holder.userTextView.setText("- " + StringFormatters.getUserAbbreviatedName(tip.getUser()));
         
-        User user = tip.getUser();
         if (user != null) {
+            holder.photo.setContactLookupUri(mSync.getContactLookupUri(mContext.getContentResolver(), user.getId()));
+
             Uri photoUri = Uri.parse(user.getPhoto());
             try {
                 Bitmap bitmap = BitmapFactory.decodeStream(mRrm.getInputStream(photoUri));
@@ -132,6 +141,13 @@ public class TipListAdapter extends BaseTipAdapter
             });
         }
     }
+
+    private class SyncObserver implements Observer {
+        @Override
+        public void update(Observable observable, Object o) {
+            notifyDataSetChanged();
+        }
+    }
     
     private Runnable mRunnableLoadPhotos = new Runnable() {
         @Override
@@ -151,7 +167,7 @@ public class TipListAdapter extends BaseTipAdapter
     };
 
     private static class ViewHolder {
-        ImageView photo;
+        MaybeContactView photo;
         TextView tipTextView;
         TextView userTextView;
     }
