@@ -48,6 +48,7 @@ public class PingsSettingsActivity extends Activity {
     private CheckBox mCheckBoxPings;
     private Spinner mSpinnerInterval;
     private CheckBox mCheckBoxVibrate;
+    private CheckBox mCheckBoxFlash;
     
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
@@ -131,6 +132,15 @@ public class PingsSettingsActivity extends Activity {
             public void onClick(View view) {
                 mPrefs.edit().putBoolean(
                         Preferences.PREFERENCE_PINGS_VIBRATE, mCheckBoxVibrate.isChecked()).commit();
+            }
+        });
+
+        mCheckBoxFlash = (CheckBox)findViewById(R.id.pings_flash);
+        mCheckBoxFlash.setChecked(mPrefs.getBoolean(Preferences.PREFERENCE_PINGS_FLASH, false));
+        mCheckBoxFlash.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPrefs.edit().putBoolean(Preferences.PREFERENCE_PINGS_FLASH, mCheckBoxFlash.isChecked()).commit();
             }
         });
     }

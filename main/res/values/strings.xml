@@ -240,6 +240,7 @@
   <string name="pings_settings_on">Enable pings</string>
   <string name="pings_settings_interval">Set the refresh rate for pings:</string>
   <string name="pings_settings_vibrate">Vibrate the phone when new pings are received</string>
+  <string name="pings_settings_flash">Flash LED or trackball when new pings are received</string>    
   <string name="pings_settings_btn_save_settings">Save Settings</string>
   <string name="pings_settings_progressbar_title_pings">Pings</string>
   <string name="pings_settings_progressbar_message_pings">Updating pings settings...</string>
