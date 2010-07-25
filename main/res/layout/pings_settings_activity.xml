@@ -45,7 +45,14 @@
 	   android:layout_height="wrap_content"
        android:layout_marginTop="10dip"
        android:textAppearance="@android:style/TextAppearance.Small"  />
-       
+
+     <CheckBox
+       android:id="@+id/pings_flash"
+	   android:text="@string/pings_settings_flash" 
+	   android:layout_width="wrap_content"
+	   android:layout_height="wrap_content"
+       android:layout_marginTop="10dip"
+       android:textAppearance="@android:style/TextAppearance.Small"  />
 	 <TextView
        android:layout_width="fill_parent"
        android:layout_height="wrap_content"

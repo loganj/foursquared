@@ -48,6 +48,7 @@ public class Preferences {
     public static final String PREFERENCE_PINGS = "pings_on";
     public static final String PREFERENCE_PINGS_INTERVAL = "pings_refresh_interval_in_minutes";
     public static final String PREFERENCE_PINGS_VIBRATE = "pings_vibrate";
+    public static final String PREFERENCE_PINGS_FLASH = "pings_flash";
 
     // Credentials related preferences
     public static final String PREFERENCE_LOGIN = "phone";

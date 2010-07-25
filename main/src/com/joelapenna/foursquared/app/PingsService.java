@@ -253,10 +253,12 @@ public class PingsService extends WakefulIntentService {
         if (prefs.getBoolean(Preferences.PREFERENCE_PINGS_VIBRATE, false)) {
             notification.defaults |= Notification.DEFAULT_VIBRATE;
         }
-        notification.ledARGB = 0xff73206b;
-        notification.ledOnMS = 500; // com.android.internal.R.integer.config_defaultNotificationLedOn
-        notification.ledOffMS = 2000; // com.android.internal.R.integer.config_defaultNotificationLedOff
-        notification.flags |= Notification.FLAG_SHOW_LIGHTS;
+        if (prefs.getBoolean(Preferences.PREFERENCE_PINGS_FLASH, false)) {
+            notification.ledARGB = 0xff73206b;
+            notification.ledOnMS = 500; // com.android.internal.R.integer.config_defaultNotificationLedOn
+            notification.ledOffMS = 2000; // com.android.internal.R.integer.config_defaultNotificationLedOff
+            notification.flags |= Notification.FLAG_SHOW_LIGHTS;
+        }
         if (newCheckins.size() > 1) {
             notification.number = newCheckins.size();
         }
