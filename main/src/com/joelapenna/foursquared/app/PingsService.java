@@ -170,27 +170,23 @@ public class PingsService extends WakefulIntentService {
             } catch (ParseException ex) {
                 if (DEBUG) Log.e(TAG, "  Error parsing checkin timestamp: " + it.getCreated(), ex);
             }
-
-            Log.i(TAG, "Found " + newCheckins.size() + " new checkins.");
-            
-            if ( newCheckins.size() > 0 && 
-                 PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Preferences.PREFERENCE_SYNC_CONTACTS, false)) {
-                ContentResolver resolver = getApplication().getContentResolver();
-                ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>(newCheckins.size());
-                for ( Checkin checkin : newCheckins) {
-                    ops.addAll(foursquared.getSync().updateStatus(resolver, checkin.getUser(), checkin));
-                }
-                try {
-                    resolver.applyBatch(ContactsContract.AUTHORITY, ops);
-                } catch (Exception e) {
-                    Log.w(TAG, "updating contact statuses failed", e);
-                }
-            }
-            
-            notifyUser(newCheckins);
         }
-
+        
         Log.i(TAG, "Found " + newCheckins.size() + " new checkins.");
+
+        if ( newCheckins.size() > 0 &&
+             PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Preferences.PREFERENCE_SYNC_CONTACTS, false)) {
+            ContentResolver resolver = getApplication().getContentResolver();
+            ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>(newCheckins.size());
+            for ( Checkin checkin : newCheckins) {
+                ops.addAll(foursquared.getSync().updateStatus(resolver, checkin.getUser(), checkin));
+            }
+            try {
+                resolver.applyBatch(ContactsContract.AUTHORITY, ops);
+            } catch (Exception e) {
+                Log.w(TAG, "updating contact statuses failed", e);
+            }
+        }
 
         notifyUser(newCheckins);
         
