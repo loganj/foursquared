@@ -44,10 +44,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -246,6 +243,28 @@ public class NearbyVenuesActivity extends LoadableListActivity {
             int groupCount = searchResults.size();
             for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
                 Group<Venue> group = searchResults.get(groupsIndex);
+
+                Collections.sort(group, new Comparator<Venue>() {
+                    @Override
+                    public int compare(Venue a, Venue b) {
+                        int da = 0;
+                        int db = 0;
+                        if ( a.getDistance() != null ) {
+                            try {
+                                da = Integer.valueOf(a.getDistance());
+                            } catch (NumberFormatException e) {
+                            }
+                        }
+                        if ( b.getDistance() != null ) {
+                            try {
+                                db = Integer.valueOf(b.getDistance());
+                            } catch (NumberFormatException e) {
+                            }
+                        }
+                        return da - db;
+                    }
+                });
+
                 if (group.size() > 0) {
                     VenueListAdapter groupAdapter = new VenueListAdapter(this,
                             ((Foursquared) getApplication()).getRemoteResourceManager());
