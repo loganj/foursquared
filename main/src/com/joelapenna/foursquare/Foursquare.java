@@ -7,6 +7,7 @@ package com.joelapenna.foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.types.Category;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.CheckinResult;
@@ -23,6 +24,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -291,6 +293,12 @@ public class Foursquare {
                 phone, categoryId, location.geolat, location.geolong, location.geohacc, 
                 location.geovacc, location.geoalt);
     }    
+    
+    @V1
+    public User userUpdate(String imagePathToJpg, String username, String password) 
+        throws SocketTimeoutException, IOException, FoursquareError, FoursquareParseException {
+        return mFoursquareV1.userUpdate(imagePathToJpg, username, password);
+    }
     
     public static final FoursquareHttpApiV1 createHttpApi(String domain, String clientVersion,
             boolean useOAuth) {

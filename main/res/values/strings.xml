@@ -204,6 +204,14 @@
   <string name="user_details_activity_tab_title_friends">Friends</string>
   <string name="user_details_activity_title_mayorships">MAYORSHIPS</string>
   <string name="user_details_activity_title_badges">BADGES</string>
+  <string name="user_details_activity_error_set_photo_load">There was an error using the chosen photo.</string>
+  <string name="user_details_activity_error_set_photo_resample">There was an error using the selected photo.</string>
+  <string name="user_details_activity_error_no_photo_gallery">Photo gallery could not be started!</string>
+  <string name="user_details_activity_set_photo_confirm_title">Profile Photo</string>
+  <string name="user_details_activity_set_photo_confirm_message">Set selected photo as your profile picture?</string>
+  <string name="user_details_activity_set_photo_progress_title">Profile Photo</string>
+  <string name="user_details_activity_set_photo_progress_message">Updating your photo...</string>
+  <string name="user_details_activity_set_photo_success">Photo updated ok!</string>
   <string name="main_activity_tab_title_me">Me</string>
   <string name="checkin_execute_activity_progress_bar_message">Checking-in...</string>
   <string name="shout_execute_activity_progress_bar_message">Posting shout...</string>
@@ -262,4 +270,6 @@
   <string name="send_log_acquiring_log_progress_dialog_message">Collecting logs from system...</string>
   <string name="send_log_chooser_title">Foursquare for Android Feedback</string>
   <string name="send_log_failed_to_get_log_message">Failed to get the log from the system.</string>
+  <string name="ok">OK</string>
+  <string name="cancel">Cancel</string>
 </resources>
