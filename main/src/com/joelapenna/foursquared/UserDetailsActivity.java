@@ -781,6 +781,7 @@ public class UserDetailsActivity extends TabActivity {
                                 mImageViewPhoto.setImageBitmap(bitmap);
                                 mIsUsersPhotoSet = true;
                                 mImageViewPhoto.setImageBitmap(bitmap);
+                                mImageViewPhoto.postInvalidate();
                             } catch (IOException e) {
                             }
                         }
