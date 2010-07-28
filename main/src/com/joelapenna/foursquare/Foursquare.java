@@ -226,9 +226,9 @@ public class Foursquare {
     }
     
     @V1
-    public Group<Checkin> history(int limit) 
+    public Group<Checkin> history(String limit, String sinceid) 
         throws FoursquareException, FoursquareError, IOException {
-        return mFoursquareV1.history(limit);
+        return mFoursquareV1.history(limit, sinceid);
     }
     
     @V1

@@ -453,9 +453,11 @@ class FoursquareHttpApiV1 {
      * /history
      */
     @SuppressWarnings("unchecked")
-    public Group<Checkin> history(int limit) throws FoursquareException,
+    public Group<Checkin> history(String limit, String sinceid) throws FoursquareException,
             FoursquareCredentialsException, FoursquareError, IOException {
-        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_HISTORY));
+        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_HISTORY),
+            new BasicNameValuePair("l", limit),
+            new BasicNameValuePair("sinceid", sinceid));
         return (Group<Checkin>) mHttpApi.doHttpRequest(httpGet, new GroupParser(new CheckinParser()));
     }
     
