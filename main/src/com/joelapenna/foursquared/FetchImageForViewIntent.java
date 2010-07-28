@@ -195,30 +195,38 @@ public class FetchImageForViewIntent extends Activity {
     }
 
     private boolean launchViewIntent(String outputPath, String extension) {
-        // Try to open the file now to create the uri we'll hand to the intent.
-        Uri uri = null;
-        try {
-            File file = new File(outputPath);
-            uri = Uri.fromFile(file);
-        } catch (Exception ex) {
-            Log.e(TAG, "Error opening downloaded image from temp location: ", ex);
-            Toast.makeText(this, "No application could be found to diplay the full image.",
-                    Toast.LENGTH_SHORT);
-            return false;
-        }
-
-        // Try to start an intent to view the image. It's possible that the user
-        // may not have any intents to handle the request.
-        try {
-            Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
-            intent.setDataAndType(uri, "image/" + extension);
+        
+        Foursquared foursquared = (Foursquared) getApplication();
+        if (foursquared.getUseNativeImageViewerForFullScreenImages()) {
+            // Try to open the file now to create the uri we'll hand to the intent.
+            Uri uri = null;
+            try {
+                File file = new File(outputPath);
+                uri = Uri.fromFile(file);
+            } catch (Exception ex) {
+                Log.e(TAG, "Error opening downloaded image from temp location: ", ex);
+                Toast.makeText(this, "No application could be found to diplay the full image.",
+                        Toast.LENGTH_SHORT);
+                return false;
+            }
+            
+            // Try to start an intent to view the image. It's possible that the user
+            // may not have any intents to handle the request.
+            try {
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
+                intent.setDataAndType(uri, "image/" + extension);
+                startActivity(intent);
+            } catch (Exception ex) {
+                Log.e(TAG, "Error starting intent to view image: ", ex);
+                Toast.makeText(this, "There was an error displaying the image.", Toast.LENGTH_SHORT);
+                return false;
+            }
+        } else {
+            Intent intent = new Intent(this, FullSizeImageActivity.class);
+            intent.putExtra(FullSizeImageActivity.INTENT_EXTRA_IMAGE_PATH, outputPath);
             startActivity(intent);
-        } catch (Exception ex) {
-            Log.e(TAG, "Error starting intent to view image: ", ex);
-            Toast.makeText(this, "There was an error displaying the image.", Toast.LENGTH_SHORT);
-            return false;
         }
-
+        
         return true;
     }
 

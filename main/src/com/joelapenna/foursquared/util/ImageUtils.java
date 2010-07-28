@@ -94,4 +94,11 @@ public class ImageUtils {
         }
         return 1;
     }
+    
+    public static BitmapFactory.Options getBitmapDims(String path) throws Exception {
+        BitmapFactory.Options bfo = new BitmapFactory.Options(); 
+        bfo.inJustDecodeBounds = true; 
+        BitmapFactory.decodeFile(path, bfo); 
+        return bfo;
+    }
 }

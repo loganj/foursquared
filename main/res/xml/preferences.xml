@@ -64,6 +64,13 @@
       android:summaryOn="@string/preferences_cache_geo_loc_for_searches_on"
       android:summaryOff="@string/preferences_cache_geo_loc_for_searches_off"
       android:defaultValue="false" />
+    <CheckBoxPreference
+      android:key="native_full_size_image_viewer"
+      android:persistent="true"
+      android:title="@string/preferences_native_full_size_image_viewer_title"
+      android:summaryOn="@string/preferences_native_full_size_image_viewer_summary_on"
+      android:summaryOff="@string/preferences_native_full_size_image_viewer_summary_off"
+      android:defaultValue="true" />
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="changelog"
       android:title="@string/preferences_changelog"

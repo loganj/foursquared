@@ -86,6 +86,10 @@ public class Preferences {
     // Last time pings service ran.
     public static final String PREFERENCE_PINGS_SERVICE_LAST_RUN_TIME = "pings_service_last_run_time";
     
+    // Broadcast an intent to show single full-screen images, or use our own poor image viewer.
+    public static final String PREFERENCE_NATIVE_IMAGE_VIEWER
+        = "native_full_size_image_viewer";
+    
     
     /**
      * Gives us a chance to set some default preferences if this is the first install
@@ -105,6 +109,9 @@ public class Preferences {
         }
         if (!preferences.contains(PREFERENCE_PINGS_INTERVAL)) {
             editor.putString(PREFERENCE_PINGS_INTERVAL, "30");
+        }
+        if (!preferences.contains(PREFERENCE_NATIVE_IMAGE_VIEWER)) {
+            editor.putBoolean(PREFERENCE_NATIVE_IMAGE_VIEWER, true);
         }
         editor.commit();
     }
@@ -206,5 +213,9 @@ public class Preferences {
         if (!editor.commit()) {
             Log.e(TAG, "storeLastSeenChangelogVersion commit failed");
         }
+    }
+    
+    public static boolean getUseNativeImageViewerForFullScreenImages(SharedPreferences prefs) {
+        return prefs.getBoolean(PREFERENCE_NATIVE_IMAGE_VIEWER, true);
     }
 }
