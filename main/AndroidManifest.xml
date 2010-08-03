@@ -415,6 +415,37 @@
         android:resource="@xml/friends_appwidget_3x3" />
     </receiver>
 
+
+    <receiver android:name=".appwidget.StatsWidgetProviderTiny" android:label="@string/stats_widget_name_tiny">
+      <intent-filter>
+          <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+      </intent-filter>
+      <meta-data android:name="android.appwidget.provider"
+          android:resource="@xml/widget_provider_tiny" />
+    </receiver>
+
+    <receiver android:name=".appwidget.StatsWidgetProviderSmall" android:label="@string/stats_widget_name_small">
+      <intent-filter>
+          <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+      </intent-filter>
+      <meta-data android:name="android.appwidget.provider"
+          android:resource="@xml/widget_provider_small" />
+    </receiver>
+
+    <receiver android:name=".appwidget.StatsWidgetProviderMedium" android:label="@string/stats_widget_name_medium">
+      <intent-filter>
+          <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+      </intent-filter>
+      <meta-data android:name="android.appwidget.provider"
+          android:resource="@xml/widget_provider_medium" />
+    </receiver>
+
+    <!-- Service to perform web API queries -->
+    <service android:name=".appwidget.StatsWidgetProviderTiny$UpdateServiceTiny" />
+    <service android:name=".appwidget.StatsWidgetProviderSmall$UpdateServiceSmall" />
+    <service android:name=".appwidget.StatsWidgetProviderMedium$UpdateServiceMedium" />
+
+
     <service
       android:name=".app.FoursquaredService">
     </service>

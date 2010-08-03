@@ -330,5 +330,47 @@
      <item name="android:singleLine">false</item>
      <item name="android:textAppearance">@android:style/TextAppearance.DialogWindowTitle</item>
    </style> 
-  
+
+
+   <style name="SmallCountStyle">
+    <item name="android:textSize">15sp</item>
+    <item name="android:text">n/a</item>
+    <item name="android:textColor">@android:color/white</item>
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_marginTop">53dip</item>
+   </style>
+
+	<style name="MediumCountStyle">
+		<item name="android:textSize">18sp</item>
+		<item name="android:text">n/a</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">43dip</item>
+	</style>
+	 <style name="WidgetStatsDialogStyle">
+      <item name="android:layout_width">fill_parent</item>
+      <item name="android:layout_height">wrap_content</item>
+      <item name="android:textColor">@android:color/black</item>
+      <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+      <item name="android:singleLine">true</item>
+      <item name="android:paddingRight">15dip</item>
+      <item name="android:paddingBottom">15dip</item>
+      <item name="android:paddingTop">15dip</item>
+  	</style>
+  	<style name="WidgetStatsDialogLayoutStyle">
+  		<item name="android:layout_width">wrap_content</item>
+  		<item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:background">@android:drawable/menuitem_background</item>
+  	</style>
+
+  	<style name="VenueTextLocationStyle">
+  		<item name="android:singleLine">true</item>
+    	<item name="android:layout_width">wrap_content</item>
+    	<item name="android:layout_height">wrap_content</item>
+    	<item name="android:layout_marginRight">13dip</item>
+    	<item name="android:layout_alignParentRight">true</item>
+  	</style>
 </resources>

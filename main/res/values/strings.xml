@@ -133,6 +133,22 @@
   <string name="shout_no_venue_activity_label">Foursquare Shout</string>
   <string name="state">State</string>
   <string name="stats_label">Leaderboard</string>
+
+  <string name="stats_widget_name_tiny">Foursquare Stats (1x1)</string>
+  <string name="stats_widget_name_small">Foursquare Stats (2x1)</string>
+  <string name="stats_widget_name_medium">Foursquare Stats (4x1)</string>
+  <string name="stats_widget_error">Error loading widget.</string>
+  <string name="stats_widget_loading">Loading Widget...</string>
+  <string name="stats_widget_refresh_text">Refreshing Widget...</string>
+  <string name="stats_widget_blank_stats_text">n/a</string>
+  <string name="stats_widget_show_toast_extra">showToastExtra</string>
+
+  <!-- don't think these belong here -->
+  <integer name="stats_widget_update_period_millis">90000</integer>
+  <string name="stats_widget_template_define_url">"http://en.wiktionary.org/wiki/%s"</string>
+  <string name="stats_widget_template_user_agent">"FoursquareStats:%s:%s"</string>
+
+
   <string name="tell_facebook">Tell Facebook</string>
   <string name="tell_my_friends">Tell my Friends</string>
   <string name="tell_twitter">Tell Twitter</string>
@@ -262,4 +278,7 @@
   <string name="send_log_acquiring_log_progress_dialog_message">Collecting logs from system...</string>
   <string name="send_log_chooser_title">Foursquare for Android Feedback</string>
   <string name="send_log_failed_to_get_log_message">Failed to get the log from the system.</string>
+
+
+
 </resources>
