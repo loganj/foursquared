@@ -2,7 +2,7 @@
 <manifest
   xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.joelapenna.foursquared"
-  android:versionName="2010-07-13" android:versionCode="2010071300">
+  android:versionName="2010-08-02" android:versionCode="2010080200">
 
   <uses-permission
     android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -405,6 +405,10 @@
     
     <activity
       android:name=".FullSizeImageActivity" >
+    </activity> 
+    
+    <activity
+      android:name=".HelpWebViewActivity" >
     </activity> 
     
     <receiver

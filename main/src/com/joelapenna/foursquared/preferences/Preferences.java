@@ -44,6 +44,7 @@ public class Preferences {
     public static final String PREFERENCE_CHANGELOG = "changelog";
     public static final String PREFERENCE_CITY_NAME = "city_name";
     public static final String PREFERENCE_LOGOUT = "logout";
+    public static final String PREFERENCE_HELP = "help";
     public static final String PREFERENCE_SEND_FEEDBACK = "send_feedback";
     public static final String PREFERENCE_PINGS = "pings_on";
     public static final String PREFERENCE_PINGS_INTERVAL = "pings_refresh_interval_in_minutes";
