@@ -5,7 +5,10 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
+import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.app.FoursquaredService;
+import com.joelapenna.foursquared.appwidget.stats.StatsWidgetUpdater;
 import com.joelapenna.foursquared.appwidget.stats.UpdateService;
 import com.joelapenna.foursquared.appwidget.stats.UserRank;
 import com.joelapenna.foursquared.appwidget.stats.UserStats;
@@ -18,18 +21,24 @@ public class StatsWidgetProviderMedium extends AppWidgetProvider {
 	@Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
             int[] appWidgetIds) {
-    	Intent intent = new Intent(context, UpdateServiceMedium.class);
+    	Intent intent = new Intent(context, FoursquaredService.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);        
         context.startService(intent);
     }
-	
-	public static class UpdateServiceMedium extends UpdateService {
-		
-		@Override
+
+    public static StatsWidgetUpdater updater(Foursquared foursquared) {
+        return new MediumUpdater(foursquared);
+    }
+    
+	private static class MediumUpdater extends StatsWidgetUpdater {
+        protected MediumUpdater(Foursquared foursquared) {
+            super(foursquared);
+        }
+
+        @Override
 		protected void setLayoutResources() {
 			mLayoutResource = R.layout.stats_widget_layout_medium;
 			mLayoutId = R.id.widget_medium;
-			mWidgetProviderClass = StatsWidgetProviderMedium.class;
-			mUpdateServiceClass = UpdateServiceMedium.class;
 		}
 
 		@Override
