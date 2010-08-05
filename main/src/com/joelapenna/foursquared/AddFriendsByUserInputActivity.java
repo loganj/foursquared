@@ -298,7 +298,7 @@ public class AddFriendsByUserInputActivity extends Activity {
                 getResources().getString(R.string.facebook_api_key));
         intent.putExtra(FacebookWebViewActivity.INTENT_EXTRA_KEY_PERMISSIONS, 
                 new String[] {});//"publish_stream", "read_stream", "offline_access"});
-        intent.putExtra(FacebookWebViewActivity.INTENT_EXTRA_KEY_DEBUG, false);
+        intent.putExtra(FacebookWebViewActivity.INTENT_EXTRA_KEY_DEBUG, true);
         intent.putExtra(FacebookWebViewActivity.INTENT_EXTRA_KEY_CLEAR_COOKIES, true);
         startActivityForResult(intent, ACTIVITY_RESULT_FACEBOOK_WEBVIEW_ACTIVITY);
     }
@@ -324,14 +324,14 @@ public class AddFriendsByUserInputActivity extends Activity {
                 AlertDialog dlgInfo = new AlertDialog.Builder(this)
                     .setTitle("Invite All")
                     .setIcon(0)
-                    .setPositiveButton("Yes", 
+                    .setPositiveButton(getResources().getString(R.string.yes), 
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     inviteAll();
                                 }
                             })
-                    .setNegativeButton("No", 
+                    .setNegativeButton(getResources().getString(R.string.no), 
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -546,7 +546,7 @@ public class AddFriendsByUserInputActivity extends Activity {
                         // For facebook, we need to first get all friend uids, then use that with the foursquare api.
                         String facebookFriendIds = getFacebookFriendIds(params[0]);
                         if (TextUtils.isEmpty(facebookFriendIds)) {
-                            throw new Exception("No Facebook friends found.");
+                            result.setUsersOnFoursquare(new Group<User>());
                         }
                         result.setUsersOnFoursquare(foursquare.findFriendsByFacebook(facebookFriendIds));
                         break;

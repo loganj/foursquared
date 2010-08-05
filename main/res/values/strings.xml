@@ -272,6 +272,8 @@
   <string name="send_log_failed_to_get_log_message">Failed to get the log from the system.</string>
   <string name="ok">OK</string>
   <string name="cancel">Cancel</string>
+  <string name="yes">Yes</string>
+  <string name="no">No</string>
   <string name="preferences_native_full_size_image_viewer_title">Image Viewing</string>
   <string name="preferences_native_full_size_image_viewer_summary_on">Use your phone\'s built-in image viewer for viewing friend photos.</string>
   <string name="preferences_native_full_size_image_viewer_summary_off">Use app image viewer for viewing friend photos.</string> 
