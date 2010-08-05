@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_small"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:background="@drawable/stats_widget_small_landscape"
+    >
+   
+    <!-- We can use the same text style padding dips need
+         to be overridden for landscape. -->
+   
+    <TextView
+        android:id="@+id/user_rank_small"
+        android:layout_marginLeft="57dip"
+        android:layout_marginTop="31dip"
+        style="@style/SmallCountStyle"/>
+
+    <TextView
+        android:id="@+id/mayor_count_small"
+        android:layout_marginLeft="90dip"
+        android:layout_marginTop="31dip"
+        style="@style/SmallCountStyle" />
+
+    <TextView
+        android:id="@+id/badge_count_small"
+        android:layout_marginLeft="120dip"
+        android:layout_marginTop="31dip"
+        style="@style/SmallCountStyle" />
+
+    <TextView
+        android:id="@+id/checkins_small"
+        android:layout_marginLeft="150dip"
+        android:layout_marginTop="31dip"
+        style="@style/SmallCountStyle" />
+    <TextView
+    	android:id="@+id/venue_small"
+    	android:textSize="12sp"
+    	android:paddingLeft="58dip"
+    	android:paddingTop="53dip"
+    	style="@style/VenueTextLocationStyle"
+    	/>
+
+</RelativeLayout>

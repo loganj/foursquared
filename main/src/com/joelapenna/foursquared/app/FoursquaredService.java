@@ -4,11 +4,16 @@
 
 package com.joelapenna.foursquared.app;
 
+import android.widget.RemoteViews;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.appwidget.FriendsAppWidgetProvider;
+import com.joelapenna.foursquared.appwidget.StatsWidgetProviderMedium;
+import com.joelapenna.foursquared.appwidget.StatsWidgetProviderSmall;
+import com.joelapenna.foursquared.appwidget.StatsWidgetProviderTiny;
+import com.joelapenna.foursquared.appwidget.stats.StatsWidgetUpdater;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.Comparators;
 
@@ -76,12 +81,29 @@ public class FoursquaredService extends IntentService {
         }
 
         AppWidgetManager am = AppWidgetManager.getInstance(this);
-        int[] appWidgetIds = am.getAppWidgetIds(new ComponentName(this,
-                FriendsAppWidgetProvider.class));
-
+        int[] appWidgetIds = am.getAppWidgetIds(new ComponentName(this, FriendsAppWidgetProvider.class));
         for (int i = 0; i < appWidgetIds.length; i++) {
             FriendsAppWidgetProvider.updateAppWidget((Context) this, foursquared
                     .getRemoteResourceManager(), am, appWidgetIds[i], checkins);
+        }
+
+        Log.i(TAG, "looking for tiny stats widgets to update");
+        int[] statsWidgetIds = am.getAppWidgetIds(new ComponentName(this, StatsWidgetProviderTiny.class));
+        Log.i(TAG, "found " + statsWidgetIds.length + " tiny stats widgets");
+        StatsWidgetUpdater updater = StatsWidgetProviderTiny.updater(foursquared);
+        for (int i = 0; i < statsWidgetIds.length; i++) {
+            updater.update(this, am, statsWidgetIds[i]);
+            Log.i(TAG, "updated tiny stats widget " + statsWidgetIds[i]);
+        }
+        statsWidgetIds = am.getAppWidgetIds(new ComponentName(this, StatsWidgetProviderSmall.class));
+        updater = StatsWidgetProviderSmall.updater(foursquared);
+        for (int i = 0; i < statsWidgetIds.length; i++) {
+            updater.update(this, am, statsWidgetIds[i]);
+        }
+        statsWidgetIds = am.getAppWidgetIds(new ComponentName(this, StatsWidgetProviderMedium.class));
+        updater = StatsWidgetProviderMedium.updater(foursquared);
+        for (int i = 0; i < statsWidgetIds.length; i++) {
+            updater.update(this, am, statsWidgetIds[i]);
         }
     }
 }
