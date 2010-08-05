@@ -322,7 +322,7 @@ public class AddFriendsByUserInputActivity extends Activity {
         switch (id) {
             case DIALOG_ID_CONFIRM_INVITE_ALL:
                 AlertDialog dlgInfo = new AlertDialog.Builder(this)
-                    .setTitle("Invite All")
+                    .setTitle(getResources().getString(R.string.add_friends_contacts_title_invite_all))
                     .setIcon(0)
                     .setPositiveButton(getResources().getString(R.string.yes), 
                             new DialogInterface.OnClickListener() {
@@ -338,9 +338,9 @@ public class AddFriendsByUserInputActivity extends Activity {
                                     dialog.dismiss();
                                 }
                             })
-                    .setMessage("Are you sure you want to send invites to all " 
-                            + mStateHolder.getUsersNotOnFoursquare().size() 
-                            + " contacts?").create();
+                    .setMessage(getResources().getString(R.string.add_friends_contacts_message_invite_all,
+                            String.valueOf(mStateHolder.getUsersNotOnFoursquare().size())))
+                    .create();
                 dlgInfo.setOnDismissListener(new OnDismissListener() {
                     public void onDismiss(DialogInterface dialog) {
                         removeDialog(DIALOG_ID_CONFIRM_INVITE_ALL);

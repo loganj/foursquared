@@ -181,6 +181,8 @@
   <string name="add_friends_no_matches">No matches found.</string>
   <string name="add_friends_contacts_found_on_foursqare">Contacts found on Foursquare</string>
   <string name="add_friends_contacts_not_found_on_foursqare">Contacts not found on Foursquare</string>
+  <string name="add_friends_contacts_title_invite_all">Invite All</string>
+  <string name="add_friends_contacts_message_invite_all">"Are you sure you want to send invites to all %s contacts?"</string>
   <string name="friend_requests_activity_label">Foursquare Friend Requests</string>
   <string name="friend_requests_approved">You are now friends with</string>
   <string name="friend_requests_no_new_requests">You have no new friend requests.</string>
@@ -279,4 +281,5 @@
   <string name="preferences_native_full_size_image_viewer_summary_off">Use app image viewer for viewing friend photos.</string> 
   <string name="help_label">Help</string>
   <string name="help_preference_summary">Get help using Foursquare!</string>
+  <string name="category_picket_dialog_title">Pick a Category</string>
 </resources>
