@@ -47,7 +47,7 @@ public class Facebook {
 
     /** Facebook server endpoints: may be modified in a subclass for testing */
     protected static String OAUTH_ENDPOINT = 
-        "http://graph.facebook.com/oauth/authorize"; // https
+        "https://graph.facebook.com/oauth/authorize"; // https
     protected static String UI_SERVER = 
         "http://www.facebook.com/connect/uiserver.php"; // http
     protected static String GRAPH_BASE_URL = 
