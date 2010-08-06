@@ -253,7 +253,7 @@ public class FacebookWebViewActivity extends Activity {
             if (url.startsWith(Facebook.REDIRECT_URI)) {
                 Bundle values = FacebookUtil.parseUrl(url);
                 String error = values.getString("error_reason");
-Log.e("TTTT", error);
+
                 Intent result = new Intent();
                 result.putExtra(INTENT_RESULT_KEY_SUPPLIED_ACTION, mAction);
                 if (error == null) {
