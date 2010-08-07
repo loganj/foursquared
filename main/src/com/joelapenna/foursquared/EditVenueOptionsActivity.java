@@ -183,10 +183,12 @@ public class EditVenueOptionsActivity extends Activity {
         mStateHolder.setIsRunningTaskVenue(false);
         if (response != null) {
             if (!TextUtils.isEmpty(response.getValue()) && response.getValue().equals("ok")) {
-                Toast.makeText(this, "Thank you for submitting this venue update.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.edit_venue_options_thankyou), 
+                        Toast.LENGTH_SHORT).show();
                 finish();
             } else {
-                Toast.makeText(this, "There was an error submitting the venue update, please try again.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.edit_venue_options_error), 
+                        Toast.LENGTH_SHORT).show();
             }
         } else {
             NotificationsUtil.ToastReasonForFailure(this, ex);
