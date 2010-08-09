@@ -4,11 +4,12 @@
 
 package com.joelapenna.foursquared.app;
 
-import android.widget.RemoteViews;
+import android.widget.Toast;
 import com.joelapenna.foursquare.types.Checkin;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.FoursquaredSettings;
+import com.joelapenna.foursquared.R;
 import com.joelapenna.foursquared.appwidget.FriendsAppWidgetProvider;
 import com.joelapenna.foursquared.appwidget.StatsWidgetProviderMedium;
 import com.joelapenna.foursquared.appwidget.StatsWidgetProviderSmall;
@@ -34,9 +35,21 @@ public class FoursquaredService extends IntentService {
 
     private static final String TAG = "FoursquaredService";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
-    
+
+    private volatile boolean updatingWidgets = false;
+    private boolean mShowRefreshToast = false;
+    private String mRefreshToastExtra;
+    private Context mContext;
+
     public FoursquaredService() {
         super("FoursquaredService");
+    }
+
+    @Override
+    public void onStart(Intent intent, int startId) {
+        super.onStart(intent, startId);
+        mRefreshToastExtra = getString(R.string.stats_widget_show_toast_extra);                
+        mContext = getApplicationContext();
     }
 
     /**
@@ -48,8 +61,18 @@ public class FoursquaredService extends IntentService {
     public void onHandleIntent(Intent intent) {
         if (DEBUG) Log.d(TAG, "onHandleIntent: " + intent.toString());
 
+
         if (AppWidgetManager.ACTION_APPWIDGET_UPDATE.equals(intent.getAction())) {
-            updateWidgets();
+            if (!updatingWidgets) {
+                updatingWidgets = true;
+                mShowRefreshToast = intent.getBooleanExtra(mRefreshToastExtra, mShowRefreshToast);
+                if(mShowRefreshToast){
+                    Log.d(TAG, "making toast");
+                    // TODO: this doesn't work, and I don't yet understand why.  is this context not valid somehow? do I need to be on a different thread?
+                    Toast.makeText(mContext, R.string.stats_widget_refresh_text, Toast.LENGTH_LONG).show();
+                }
+                updateWidgets();
+            }
         }
     }
 
@@ -87,13 +110,10 @@ public class FoursquaredService extends IntentService {
                     .getRemoteResourceManager(), am, appWidgetIds[i], checkins);
         }
 
-        Log.i(TAG, "looking for tiny stats widgets to update");
         int[] statsWidgetIds = am.getAppWidgetIds(new ComponentName(this, StatsWidgetProviderTiny.class));
-        Log.i(TAG, "found " + statsWidgetIds.length + " tiny stats widgets");
         StatsWidgetUpdater updater = StatsWidgetProviderTiny.updater(foursquared);
         for (int i = 0; i < statsWidgetIds.length; i++) {
             updater.update(this, am, statsWidgetIds[i]);
-            Log.i(TAG, "updated tiny stats widget " + statsWidgetIds[i]);
         }
         statsWidgetIds = am.getAppWidgetIds(new ComponentName(this, StatsWidgetProviderSmall.class));
         updater = StatsWidgetProviderSmall.updater(foursquared);
