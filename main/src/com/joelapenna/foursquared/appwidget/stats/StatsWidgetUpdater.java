@@ -11,6 +11,7 @@ import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.FoursquaredSettings;
+import com.joelapenna.foursquared.R;
 import com.joelapenna.foursquared.app.FoursquaredService;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.util.DumpcatcherHelper;
@@ -28,9 +29,12 @@ public abstract class StatsWidgetUpdater {
     protected int mLayoutResource;
 	protected int mLayoutId;
 
+    final private String mRefreshToastExtra;
+
     protected StatsWidgetUpdater(Foursquared foursquared) {
         setLayoutResources();
         mFoursquared = foursquared;
+        mRefreshToastExtra = foursquared.getString(R.string.stats_widget_show_toast_extra);
     }
 
     protected abstract void setLayoutResources();
@@ -39,7 +43,6 @@ public abstract class StatsWidgetUpdater {
 
 
     final public void update(Context context, AppWidgetManager am, int widgetId){
-        Log.i(TAG, "update()");
         RemoteViews updateViews = buildUpdate(context);
         if (updateViews != null) {
             try {
@@ -48,8 +51,6 @@ public abstract class StatsWidgetUpdater {
                 if (FoursquaredSettings.DEBUG) Log.d(TAG, "StatsWidgetUpdater.update crashed: ", e);
                 DumpcatcherHelper.sendException(e);
             }
-        } else {
-            Log.i(TAG, "null updateViews");
         }
 	}
 
@@ -57,28 +58,30 @@ public abstract class StatsWidgetUpdater {
         RemoteViews updateViews = new RemoteViews(context.getPackageName(), mLayoutResource);
         UserStats userStats = null;
         User user = null;
-        try {
-            FoursquareHelper.prepareUserAgent(context);
-            Foursquare.Location loc = LocationUtils.createFoursquareLocation(mFoursquared.getLastKnownLocation());
-            user = mFoursquared.getFoursquare().user(null, true, true, loc);
+        if ( mFoursquared.isReady() ) {
+            try {
+                FoursquareHelper.prepareUserAgent(context);
+                Foursquare.Location loc = LocationUtils.createFoursquareLocation(mFoursquared.getLastKnownLocation());
+                user = mFoursquared.getFoursquare().user(null, true, true, loc);
 
-            String lastInitial = null;
-            if ( user.getLastname() != null && !"".equals(user.getLastname()) ) {
-                lastInitial = user.getLastname().charAt(0) + ".";
+                String lastInitial = null;
+                if ( user.getLastname() != null && !"".equals(user.getLastname()) ) {
+                    lastInitial = user.getLastname().charAt(0) + ".";
+                }
+                String username = user.getFirstname() + (lastInitial == null ? "" : " "+lastInitial);
+
+                userStats = new UserStats(String.valueOf(user.getMayorCount()),
+                                          String.valueOf(user.getBadges().size()),
+                                          user.getCheckin().getVenue().getName(),
+                                          user.getId(),
+                                          username);
+                //Update userStats performed in subclass, based on relevant view id.
+                updateUserStats(updateViews,userStats);
+            } catch (FoursquareException e) {
+                Log.e(TAG, "Foursquare problem encountered", e);
+            } catch (IOException e) {
+                Log.e(TAG, "Couldn't contact API", e);
             }
-            String username = user.getFirstname() + (lastInitial == null ? "" : " "+lastInitial);
-
-            userStats = new UserStats(String.valueOf(user.getMayorCount()),
-                                      String.valueOf(user.getBadges().size()),
-                                      user.getCheckin().getVenue().getName(),
-                                      user.getId(),
-                                      username);
-            //Update userStats performed in subclass, based on relevant view id.
-            updateUserStats(updateViews,userStats);
-        } catch (FoursquareException e) {
-            Log.e(TAG, "Foursquare problem encountered", e);
-        } catch (IOException e) {
-            Log.e(TAG, "Couldn't contact API", e);
         }
 
         if (user != null && userStats != null) {
@@ -96,6 +99,8 @@ public abstract class StatsWidgetUpdater {
 
 //      When user clicks on widget, re-run the service
 		Intent updateIntent = new Intent(context, FoursquaredService.class);
+        updateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);        
+        updateIntent.putExtra(mRefreshToastExtra, true);
 
 		PendingIntent pendingIntent;
 		int flag = PendingIntent.FLAG_UPDATE_CURRENT;
