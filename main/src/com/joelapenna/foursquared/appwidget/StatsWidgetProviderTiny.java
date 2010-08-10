@@ -1,16 +1,19 @@
 package com.joelapenna.foursquared.appwidget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
+import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.Foursquared;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.StatsActivity;
+import com.joelapenna.foursquared.VenueActivity;
 import com.joelapenna.foursquared.app.FoursquaredService;
 import com.joelapenna.foursquared.appwidget.stats.StatsWidgetUpdater;
-import com.joelapenna.foursquared.appwidget.stats.UpdateService;
 import com.joelapenna.foursquared.appwidget.stats.UserRank;
 import com.joelapenna.foursquared.appwidget.stats.UserStats;
 
@@ -59,7 +62,22 @@ public final class StatsWidgetProviderTiny extends AppWidgetProvider {
 			updateViews.setTextViewText(R.id.user_rank_tiny, userRank.getUserRank());
 	        updateViews.setTextViewText(R.id.checkins_tiny, userRank.getCheckins());
 		}
-	}
+
+        @Override
+        protected void addOnClickIntents(RemoteViews updateViews, Context context, User user) {
+            // leaderboard
+            Intent intent = new Intent(context, StatsActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            updateViews.setOnClickPendingIntent(R.id.user_rank_tiny, pendingIntent);
+
+            // venue
+            intent = new Intent(context, VenueActivity.class);
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.putExtra(Foursquared.EXTRA_VENUE_ID, user.getCheckin().getVenue().getId());
+            pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            updateViews.setOnClickPendingIntent(R.id.checkins_medium, pendingIntent);
+        }
+    }
 }
 
 

@@ -40,6 +40,7 @@ public abstract class StatsWidgetUpdater {
     protected abstract void setLayoutResources();
     protected abstract void updateUserStats(RemoteViews views,UserStats userStats);
     protected abstract void updateUserRank(RemoteViews views,UserRank userRank);
+    protected abstract void addOnClickIntents(RemoteViews updateViews, Context context, User user);
 
 
     final public void update(Context context, AppWidgetManager am, int widgetId){
@@ -106,6 +107,9 @@ public abstract class StatsWidgetUpdater {
 		int flag = PendingIntent.FLAG_UPDATE_CURRENT;
 		pendingIntent = PendingIntent.getService(context, 0, updateIntent, flag);
         updateViews.setOnClickPendingIntent(mLayoutId, pendingIntent);
+
+        addOnClickIntents(updateViews,context, user);
+
         return updateViews;
     }
 
