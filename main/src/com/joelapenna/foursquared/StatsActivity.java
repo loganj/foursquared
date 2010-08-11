@@ -53,6 +53,7 @@ public class StatsActivity extends Activity {
         Foursquared foursquared = ((Foursquared) getApplication());
         String userId = ((Foursquared) getApplication()).getUserId();
         try {
+            Foursquared.get(this).requestLocationUpdates(false);
             String url = Foursquare.createLeaderboardUrl(userId, LocationUtils
                     .createFoursquareLocation(foursquared.getLastKnownLocationOrThrow()));
             Log.d(TAG, url);
@@ -60,6 +61,8 @@ public class StatsActivity extends Activity {
         } catch (LocationException e) {
             NotificationsUtil.ToastReasonForFailure(this, e);
             finish();
+        } finally {
+            Foursquared.get(this).removeLocationUpdates();
         }
     }
 
