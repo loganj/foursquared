@@ -145,6 +145,8 @@ final class SyncImpl implements Sync {
             builder = ContentProviderOperation.newInsert(Data.CONTENT_URI);
             builder.withValueBackReference(ContactsContract.CommonDataKinds.StructuredName.RAW_CONTACT_ID, backReference);
             builder.withValue(Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+            builder.withValue(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM);
+            builder.withValue(ContactsContract.CommonDataKinds.Phone.LABEL, "foursquare");
             builder.withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, friend.getPhone());
             opList.add(builder.build());
         }
@@ -245,6 +247,8 @@ final class SyncImpl implements Sync {
                     
                     if ( friend.getPhone() != null && !friend.getPhone().equals(c.getString(RawContactDataQuery.COLUMN_PHONE_NUMBER))) {
                         Log.i(TAG, "updating phone to '" + friend.getPhone() + "'");
+                        values.put(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM);
+                        values.put(ContactsContract.CommonDataKinds.Phone.LABEL, "foursquare");                     
                         values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, friend.getPhone());
                     }
                 } else if ( ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE.equals(mimeType)) {
