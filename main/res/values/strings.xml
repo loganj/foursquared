@@ -126,6 +126,11 @@
   <string name="preferences_unable_to_find_city_toast">Unable to update your city.</string>
   <string name="preferences_updating_city_toast">Updating your city.</string>
   <string name="preferences_welcome_city_toast">Welcome to %s!</string>
+  <string name="preferences_tos_label">"Terms of Service &amp; Privacy"</string>
+  <string name="preferences_tos_summary">"View Foursquare\'s Terms of Service and Privacy Policy."</string>
+  <string name="preference_activity_tos_privacy_dlg_title">Terms of Service &amp; Privacy</string>
+  <string name="preference_activity_tos">Terms of Service</string>
+  <string name="preference_activity_privacy">Privacy Policy</string>
   <string name="refresh_address_label">Refresh Address</string>
   <string name="refresh_label">Refresh</string>
   <string name="search_already_in_progress_toast">A search is already in progress.</string>

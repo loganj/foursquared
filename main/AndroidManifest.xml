@@ -408,7 +408,7 @@
     </activity> 
     
     <activity
-      android:name=".HelpWebViewActivity" >
+      android:name=".WebViewActivity" >
     </activity> 
     
     <receiver
