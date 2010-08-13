@@ -37,6 +37,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
 
     private static final int DIALOG_TOS_PRIVACY = 1;
+    private static final int DIALOG_PROFILE_SETTINGS = 2;
     
     private static final String URL_TOS = "http://foursquare.com/legal/terms";
     private static final String URL_PRIVACY = "http://foursquare.com/legal/privacy";
@@ -119,6 +120,9 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         
         } else if (Preferences.PREFERENCE_TOS_PRIVACY.equals(key)) {
             showDialog(DIALOG_TOS_PRIVACY);
+        
+        } else if (Preferences.PREFERENCE_PROFILE_SETTINGS.equals(key)) {
+            showDialog(DIALOG_PROFILE_SETTINGS);
         }
         
         return true;
@@ -128,12 +132,12 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case DIALOG_TOS_PRIVACY:
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
-                adapter.add(getResources().getString(R.string.preference_activity_tos));
-                adapter.add(getResources().getString(R.string.preference_activity_privacy));
+                ArrayAdapter<String> adapterTos = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+                adapterTos.add(getResources().getString(R.string.preference_activity_tos));
+                adapterTos.add(getResources().getString(R.string.preference_activity_privacy));
                 AlertDialog dlgInfo = new AlertDialog.Builder(this)
                     .setTitle(getResources().getString(R.string.preference_activity_tos_privacy_dlg_title))
-                    .setAdapter(adapter, new OnClickListener() {
+                    .setAdapter(adapterTos, new OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dlg, int pos) {
                             Intent intent = new Intent(PreferenceActivity.this, WebViewActivity.class);
@@ -152,6 +156,27 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                     })
                     .create();
                 return dlgInfo;
+                
+            case DIALOG_PROFILE_SETTINGS:
+                String userId = ((Foursquared) getApplication()).getUserId();
+                String userName = ((Foursquared) getApplication()).getUserName();
+                String userEmail = ((Foursquared) getApplication()).getUserEmail();
+                
+                ArrayAdapter<String> adapterProfileSettings = new ArrayAdapter<String>(
+                        this, android.R.layout.simple_list_item_1);
+                adapterProfileSettings.add(
+                        getResources().getString(R.string.preference_activity_profile_setting_user_id) + ":\t" + userId);
+                adapterProfileSettings.add(
+                        getResources().getString(R.string.preference_activity_profile_setting_username) + ":\t" + userName);
+                adapterProfileSettings.add(
+                        getResources().getString(R.string.preference_activity_profile_setting_email) + ":\t" + userEmail);
+                
+                AlertDialog dlgProfileSettings = new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.preference_activity_profile_settings_dlg_title))
+                    .setAdapter(adapterProfileSettings, null)
+                    .set
+                    .create();
+                return dlgProfileSettings;
         }
         
         //preference_activity_tos_privacy_dlg_title

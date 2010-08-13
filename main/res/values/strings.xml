@@ -131,6 +131,12 @@
   <string name="preference_activity_tos_privacy_dlg_title">Terms of Service &amp; Privacy</string>
   <string name="preference_activity_tos">Terms of Service</string>
   <string name="preference_activity_privacy">Privacy Policy</string>
+  <string name="preference_activity_profile_setting_username">Name</string>
+  <string name="preference_activity_profile_setting_email">Email</string>
+  <string name="preference_activity_profile_setting_user_id">User ID</string>
+  <string name="preference_activity_profile_settings_dlg_title">Profile Settings</string>
+  <string name="preferences_profile_settings_label">Profile Settings</string>
+  <string name="preferences_profile_settings_summary">Information about your Foursquare account.</string>
   <string name="refresh_address_label">Refresh Address</string>
   <string name="refresh_label">Refresh</string>
   <string name="search_already_in_progress_toast">A search is already in progress.</string>
@@ -252,7 +258,7 @@
   <string name="prelaunch_text"></string>
   <string name="prelaunch_button"></string>
   <string name="prelaunch_checkbox_dont_show_again"></string>
-  <string name="preferences_category_pings">Pings</string>
+  <string name="preferences_category_user_info">User Info</string>
   <string name="preferences_pings_title">Pings</string>
   <string name="preferences_pings_summary">Check status of friends in the background.</string>
   <string name="user_actions_activity_action_pings_on">Pings on</string>
