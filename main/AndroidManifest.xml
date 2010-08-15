@@ -464,12 +464,6 @@
           android:resource="@xml/widget_provider_medium" />
     </receiver>
 
-    <!-- Service to perform web API queries -->
-    <service android:name=".appwidget.StatsWidgetProviderTiny$UpdateServiceTiny" />
-    <service android:name=".appwidget.StatsWidgetProviderSmall$UpdateServiceSmall" />
-    <service android:name=".appwidget.StatsWidgetProviderMedium$UpdateServiceMedium" />
-
-
     <service
       android:name=".app.FoursquaredService">
     </service>
