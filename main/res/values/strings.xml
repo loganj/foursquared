@@ -124,6 +124,8 @@
   <string name="preferences_twitter_checkin_title">Tell Twitter</string>
   <string name="preferences_unable_to_find_city_toast">Unable to update your city.</string>
   <string name="preferences_updating_city_toast">Updating your city.</string>
+  <string name="preferences_venues_sort">Nearby venues order</string>
+  <string name="preferences_venues_sort_summary">Select order in which to list venues</string>
   <string name="preferences_welcome_city_toast">Welcome to %s!</string>
   <string name="refresh_address_label">Refresh Address</string>
   <string name="refresh_label">Refresh</string>

@@ -244,26 +244,31 @@ public class NearbyVenuesActivity extends LoadableListActivity {
             for (int groupsIndex = 0; groupsIndex < groupCount; groupsIndex++) {
                 Group<Venue> group = searchResults.get(groupsIndex);
 
-                Collections.sort(group, new Comparator<Venue>() {
-                    @Override
-                    public int compare(Venue a, Venue b) {
-                        int da = 0;
-                        int db = 0;
-                        if ( a.getDistance() != null ) {
-                            try {
-                                da = Integer.valueOf(a.getDistance());
-                            } catch (NumberFormatException e) {
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+                String[] venuesSortValues = getResources().getStringArray(R.array.venues_sort_values);
+                String venuesSort = settings.getString(Preferences.PREFERENCE_VENUES_SORT, venuesSortValues[0]);
+                if ( venuesSort.equals(venuesSortValues[1])) {
+                    Collections.sort(group, new Comparator<Venue>() {
+                        @Override
+                        public int compare(Venue a, Venue b) {
+                            int da = 0;
+                            int db = 0;
+                            if ( a.getDistance() != null ) {
+                                try {
+                                    da = Integer.valueOf(a.getDistance());
+                                } catch (NumberFormatException e) {
+                                }
                             }
-                        }
-                        if ( b.getDistance() != null ) {
-                            try {
-                                db = Integer.valueOf(b.getDistance());
-                            } catch (NumberFormatException e) {
+                            if ( b.getDistance() != null ) {
+                                try {
+                                    db = Integer.valueOf(b.getDistance());
+                                } catch (NumberFormatException e) {
+                                }
                             }
+                            return da - db;
                         }
-                        return da - db;
-                    }
-                });
+                    });
+                }
 
                 if (group.size() > 0) {
                     VenueListAdapter groupAdapter = new VenueListAdapter(this,

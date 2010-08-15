@@ -71,6 +71,14 @@
       android:summaryOn="@string/preferences_cache_geo_loc_for_searches_on"
       android:summaryOff="@string/preferences_cache_geo_loc_for_searches_off"
       android:defaultValue="false" />
+    <ListPreference
+      android:key="venues_sort"
+      android:persistent="true"
+      android:title="@string/preferences_venues_sort"
+      android:summary="@string/preferences_venues_sort_summary"
+      android:entries="@array/venues_sort"
+      android:entryValues="@array/venues_sort_values"
+      android:defaultValue="Popularity"/>
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="changelog"
       android:title="@string/preferences_changelog"

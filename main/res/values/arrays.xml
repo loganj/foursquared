@@ -12,12 +12,25 @@
     <item>Friends</item>
     <item>Places</item>
   </string-array>
-  
+
   <!-- Don't change these for localization. -->
   <string-array
     name="startup_tabs_values">
     <item>Friends</item>
     <item>Places</item>
+  </string-array>
+
+  <string-array
+    name="venues_sort">
+    <item>Popularity</item>
+    <item>Distance</item>
+  </string-array>
+
+  <!-- Don't change these for localization. -->  
+  <string-array
+    name="venues_sort_values">
+    <item>Popularity</item>
+    <item>Distance</item>
   </string-array>
   
   <string-array

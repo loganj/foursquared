@@ -33,6 +33,7 @@ public class Preferences {
     public static final String PREFERENCE_IMMEDIATE_CHECKIN = "immediate_checkin";
     public static final String PREFERENCE_STARTUP_TAB = "startup_tab";
     public static final String PREFERENCE_SYNC_CONTACTS = "sync_contacts";
+    public static final String PREFERENCE_VENUES_SORT = "venues_sort";
  
     // Hacks for preference activity extra UI elements.
     public static final String PREFERENCE_ADVANCED_SETTINGS = "advanced_settings";
@@ -107,6 +108,10 @@ public class Preferences {
         }
         if (!preferences.contains(PREFERENCE_PINGS_INTERVAL)) {
             editor.putString(PREFERENCE_PINGS_INTERVAL, "30");
+        }
+        if (!preferences.contains(PREFERENCE_VENUES_SORT)) {
+            String[] venuesSortValues = resources.getStringArray(R.array.venues_sort_values);
+            editor.putString(PREFERENCE_VENUES_SORT, venuesSortValues[0]);
         }
         editor.commit();
     }
