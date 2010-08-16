@@ -185,9 +185,18 @@ public class FacebookWebViewActivity extends Activity {
                         // Generate the url based on the action.
                         String url = facebook.generateUrl(mAction, mAppId, mPermissions);
                         if (mDebug) {
+                            String permissionsDump = "(null)";
+                            if (mPermissions != null) {
+                                if (mPermissions.length > 0) {
+                                    for (int i = 0; i < mPermissions.length; i++) {
+                                        permissionsDump += mPermissions[i] + ", ";
+                                    }
+                                } else {
+                                    permissionsDump = "[empty]";
+                                }
+                            }
                             Log.d(TAG, "onCreate(): action: " + mAction + ", appid: " + mAppId
-                                    + ", permissions: "
-                                    + (mPermissions == null ? "(null)" : mPermissions.toString()));
+                                    + ", permissions: " + permissionsDump);
                             Log.d(TAG, "onCreate(): Loading url: " + url);
                         }
 
@@ -244,7 +253,7 @@ public class FacebookWebViewActivity extends Activity {
             if (url.startsWith(Facebook.REDIRECT_URI)) {
                 Bundle values = FacebookUtil.parseUrl(url);
                 String error = values.getString("error_reason");
-
+Log.e("TTTT", error);
                 Intent result = new Intent();
                 result.putExtra(INTENT_RESULT_KEY_SUPPLIED_ACTION, mAction);
                 if (error == null) {

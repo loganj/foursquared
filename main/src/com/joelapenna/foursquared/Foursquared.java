@@ -175,6 +175,10 @@ public class Foursquared extends Application {
         Preferences.storeLastSeenChangelogVersion(mPrefs.edit(), version); 
     }
     
+    public boolean getUseNativeImageViewerForFullScreenImages() {
+        return Preferences.getUseNativeImageViewerForFullScreenImages(mPrefs);
+    }
+    
     public RemoteResourceManager getRemoteResourceManager() {
         return mRemoteResourceManager;
     }
@@ -319,6 +323,7 @@ public class Foursquared extends Application {
             "/data/data/com.joelapenna.foursquared/shared_prefs/com.joelapenna.foursquared_preferences.xml");
         return !file.exists();
     }
+    
 
     /**
      * Set up resource managers on the application depending on SD card state.

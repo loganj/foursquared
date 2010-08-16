@@ -186,6 +186,12 @@ public class PingsService extends WakefulIntentService {
             }
             
             notifyUser(newCheckins);
+        } else {
+            // Checkins were null, so don't record this as the last run time in order to try 
+            // fetching checkins we may have missed on the next run.
+            // Thanks to logan.johnson@gmail.com for the fix.
+            Log.i(TAG, "Checkins were null, won't update last run timestamp.");
+            return;
         }
         
         // Record this as the last time we ran.

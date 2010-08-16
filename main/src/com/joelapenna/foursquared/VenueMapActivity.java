@@ -56,6 +56,9 @@ public class VenueMapActivity extends MapActivity {
 
             }
         });
+        if (FoursquaredSettings.SHOW_VENUE_MAP_BUTTON_MORE == false) {
+            mapsButton.setVisibility(View.GONE);
+        }
 
         initMap();
 
