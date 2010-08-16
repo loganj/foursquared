@@ -98,7 +98,9 @@ public abstract class StatsWidgetUpdater {
             }
         }
 
-        addOnClickIntents(updateViews,context, user);
+        if ( user != null ) {
+            addOnClickIntents(updateViews,context, user);
+        }
 
         return updateViews;
     }
