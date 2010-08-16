@@ -60,6 +60,8 @@ public class CheckinOrShoutGatherInfoActivity extends Activity {
             + ".CheckinOrShoutGatherInfoActivity.INTENT_EXTRA_VENUE_ID";
     public static final String INTENT_EXTRA_VENUE_NAME = Foursquared.PACKAGE_NAME
             + ".CheckinOrShoutGatherInfoActivity.INTENT_EXTRA_VENUE_NAME";
+    public static final String INTENT_EXTRA_TEXT_PREPOPULATE = Foursquared.PACKAGE_NAME
+            + ".CheckinOrShoutGatherInfoActivity.INTENT_EXTRA_TEXT_PREPOPULATE";
     
     private StateHolder mStateHolder;
     
@@ -115,6 +117,11 @@ public class CheckinOrShoutGatherInfoActivity extends Activity {
                     Log.e(TAG, "CheckinOrShoutGatherInfoActivity requires intent extra parameter for action type.");
                     finish();
                     return;
+                }
+                
+                if (getIntent().hasExtra(INTENT_EXTRA_TEXT_PREPOPULATE)) {
+                    EditText editShout = (EditText)findViewById(R.id.editTextShout);
+                    editShout.setText(getIntent().getStringExtra(INTENT_EXTRA_TEXT_PREPOPULATE));
                 }
             }
             else {

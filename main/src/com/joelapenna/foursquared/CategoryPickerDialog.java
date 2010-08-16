@@ -59,8 +59,8 @@ public class CategoryPickerDialog extends Dialog {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.category_picker_dialog);
-        setTitle("Pick a Category");
-
+        setTitle(getContext().getResources().getString(R.string.category_picket_dialog_title));
+        
         mViewFlipper = (ViewFlipper) findViewById(R.id.categoryPickerViewFlipper);
 
         mFirstDialogHeight = -1;
