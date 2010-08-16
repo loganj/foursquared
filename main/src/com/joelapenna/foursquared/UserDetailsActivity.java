@@ -8,6 +8,7 @@ import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
+import com.joelapenna.foursquared.util.ImageUtils;
 import com.joelapenna.foursquared.util.MenuUtils;
 import com.joelapenna.foursquared.util.NotificationsUtil;
 import com.joelapenna.foursquared.util.RemoteResourceManager;
@@ -16,11 +17,17 @@ import com.joelapenna.foursquared.util.TabsUtil;
 import com.joelapenna.foursquared.util.UserUtils;
 
 import android.accounts.AccountManager;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,6 +35,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.os.Environment;
+import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,6 +48,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.Observable;
@@ -55,6 +66,7 @@ import java.util.Observer;
 public class UserDetailsActivity extends TabActivity {
     private static final String TAG = "UserDetailsActivity";
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
+    private static final int ACTIVITY_REQUEST_CODE_GALLERY = 814;
 
     public static final String EXTRA_USER_PARCEL = "com.joelapenna.foursquared.UserParcel";
     public static final String EXTRA_USER_ID = "com.joelapenna.foursquared.UserId";
@@ -64,6 +76,8 @@ public class UserDetailsActivity extends TabActivity {
     
     private static final int MENU_FRIEND_REQUESTS    = 0;
     private static final int MENU_SHOUT              = 1;
+    
+    private static final int DIALOG_SET_USER_PHOTO_YES_NO = 8;
 
     
     private ImageView mImageViewPhoto;
@@ -80,6 +94,8 @@ public class UserDetailsActivity extends TabActivity {
     
     private RemoteResourceManager mRrm;
     private RemoteResourceManagerObserver mResourcesObserver;
+
+    private ProgressDialog mDlgProgress;
     
 
     private BroadcastReceiver mLoggedOutReceiver = new BroadcastReceiver() {
@@ -101,7 +117,7 @@ public class UserDetailsActivity extends TabActivity {
         Object retained = getLastNonConfigurationInstance();
         if (retained != null && retained instanceof StateHolder) {
             mStateHolder = (StateHolder) retained;
-            mStateHolder.setActivityForTaskUserDetails(this);
+            mStateHolder.setActivityForTasks(this);
         } else {
 
             mStateHolder = new StateHolder();
@@ -158,9 +174,26 @@ public class UserDetailsActivity extends TabActivity {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        
+        if (mStateHolder.getIsRunningSetUserPhotoTask()) {
+            startProgressBar(
+                getResources().getString(R.string.user_details_activity_set_photo_progress_title),
+                getResources().getString(R.string.user_details_activity_set_photo_progress_message));
+        } else {
+            stopProgressBar();
+        }
+    }
+    
+    @Override
     public void onPause() {
         super.onPause();
 
+        if (mStateHolder.getIsRunningSetUserPhotoTask()) {
+            stopProgressBar();
+        }
+        
         if (isFinishing()) {
             mStateHolder.cancelTasks();
             unregisterReceiver(mLoggedOutReceiver);
@@ -176,18 +209,25 @@ public class UserDetailsActivity extends TabActivity {
             @Override
             public void onClick(View v) {
                 if (mStateHolder.getUser() != null) {
-                    // If "_thumbs" exists, remove it to get the url of the
-                    // full-size image.
-                    String photoUrl = mStateHolder.getUser().getPhoto().replace("_thumbs", "");
-
-                    Intent intent = new Intent();
-                    intent.setClass(UserDetailsActivity.this, FetchImageForViewIntent.class);
-                    intent.putExtra(FetchImageForViewIntent.IMAGE_URL, photoUrl);
-                    intent.putExtra(FetchImageForViewIntent.PROGRESS_BAR_TITLE, getResources()
-                            .getString(R.string.user_activity_fetch_full_image_title));
-                    intent.putExtra(FetchImageForViewIntent.PROGRESS_BAR_MESSAGE, getResources()
-                            .getString(R.string.user_activity_fetch_full_image_message));
-                    startActivity(intent);
+                    // If we're viewing our own page, clicking the thumbnail should let the
+                    // user choose a new photo from the camera gallery.
+                    if (mStateHolder.getUser().getId().equals(((Foursquared) getApplication()).getUserId())) {
+                        startGalleryIntent();
+                    }
+                    else {
+                        // If "_thumbs" exists, remove it to get the url of the
+                        // full-size image.
+                        String photoUrl = mStateHolder.getUser().getPhoto().replace("_thumbs", "");
+    
+                        Intent intent = new Intent();
+                        intent.setClass(UserDetailsActivity.this, FetchImageForViewIntent.class);
+                        intent.putExtra(FetchImageForViewIntent.IMAGE_URL, photoUrl);
+                        intent.putExtra(FetchImageForViewIntent.PROGRESS_BAR_TITLE, getResources()
+                                .getString(R.string.user_activity_fetch_full_image_title));
+                        intent.putExtra(FetchImageForViewIntent.PROGRESS_BAR_MESSAGE, getResources()
+                                .getString(R.string.user_activity_fetch_full_image_message));
+                        startActivity(intent);
+                    }
                 }
             }
         });
@@ -218,9 +258,8 @@ public class UserDetailsActivity extends TabActivity {
         mLayoutNumBadges.setEnabled(false);
 
         // At startup, we need to have at least one tab. Once we load the full
-        // user object,
-        // we can clear all tabs, and add our real tabs once we know what they
-        // are.
+        // user object, we can clear all tabs, and add our real tabs once we know 
+        // what they are.
         mTabHost = getTabHost();
         mTabHost.addTab(mTabHost.newTabSpec("dummy").setIndicator("").setContent(
                 R.id.userDetailsActivityTextViewTabDummy));
@@ -364,7 +403,7 @@ public class UserDetailsActivity extends TabActivity {
 
     @Override
     public Object onRetainNonConfigurationInstance() {
-        mStateHolder.setActivityForTaskUserDetails(null);
+        mStateHolder.setActivityForTasks(null);
         return mStateHolder;
     }
 
@@ -429,6 +468,108 @@ public class UserDetailsActivity extends TabActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)  {
+        String pathInput = null;
+        switch (requestCode) {
+            case ACTIVITY_REQUEST_CODE_GALLERY:
+                if (resultCode == Activity.RESULT_OK) { 
+                    try {
+                        String [] proj = { MediaStore.Images.Media.DATA };  
+                        Cursor cursor = managedQuery(data.getData(), proj, null, null, null);  
+                        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);  
+                        cursor.moveToFirst();  
+                        pathInput = cursor.getString(column_index); 
+                    }
+                    catch (Exception ex) {
+                        Toast.makeText(this, getResources().getString(R.string.user_details_activity_error_set_photo_load), 
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+                    // If everything worked ok, ask the user if they're sure they want to upload?
+                    try {
+                        String pathOutput = Environment.getExternalStorageDirectory() + "/tmp_fsquare.jpg";
+                        ImageUtils.resampleImageAndSaveToNewLocation(pathInput, pathOutput);
+                        mStateHolder.setNewUserPhotoPath(pathOutput);
+                        showDialog(DIALOG_SET_USER_PHOTO_YES_NO);
+                    }
+                    catch (Exception ex) {
+                        Toast.makeText(this, getResources().getString(R.string.user_details_activity_error_set_photo_resample), 
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    return;
+                }
+                break;
+        }
+    }
+    
+    protected Dialog onCreateDialog(int id) { 
+        switch (id) {  
+            case DIALOG_SET_USER_PHOTO_YES_NO: 
+                return new AlertDialog.Builder(this) 
+                    .setTitle(getResources().getString(R.string.user_details_activity_set_photo_confirm_title)) 
+                    .setMessage(getResources().getString(R.string.user_details_activity_set_photo_confirm_message))
+                    .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() { 
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(UserDetailsActivity.this);
+                            String username = sp.getString(Preferences.PREFERENCE_LOGIN, "");
+                            String password = sp.getString(Preferences.PREFERENCE_PASSWORD, "");
+                            mStateHolder.startTaskSetUserPhoto(
+                                    UserDetailsActivity.this, mStateHolder.getNewUserPhotoPath(), username, password);
+                        }
+                    }) 
+                    .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() { 
+                        public void onClick(DialogInterface dialog, int whichButton) { 
+                        }
+                    }) 
+                    .create(); 
+            default:
+                return null; 
+        } 
+    }
+
+    private void startGalleryIntent() {
+        try {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT); 
+            intent.setType("image/*"); 
+            startActivityForResult(intent, ACTIVITY_REQUEST_CODE_GALLERY);
+        }
+        catch (Exception ex) {
+            Toast.makeText(this, getResources().getString(R.string.user_details_activity_error_no_photo_gallery), 
+                Toast.LENGTH_SHORT).show(); 
+        }
+    }
+    
+    private void startProgressBar(String title, String message) {
+        if (mDlgProgress == null) {
+            mDlgProgress = ProgressDialog.show(this, title, message);
+        }
+        mDlgProgress.show();
+    }
+    
+    private void stopProgressBar() {
+        if (mDlgProgress != null) {
+            mDlgProgress.dismiss();
+            mDlgProgress = null;
+        }
+    }
+    
+    private void onSetUserPhotoTaskComplete(User user, Exception ex) {
+        stopProgressBar();
+        mStateHolder.setIsRunningSetUserPhotoTask(false);
+        if (user != null) {
+            Toast.makeText(this, getResources().getString(R.string.user_details_activity_set_photo_success), 
+                    Toast.LENGTH_SHORT).show();
+            mStateHolder.getUser().setPhoto(user.getPhoto());
+            Uri uriPhoto = Uri.parse(user.getPhoto());
+            mRrm.request(uriPhoto);
+        } else {
+            NotificationsUtil.ToastReasonForFailure(this, ex);
+        }
+    }
 
     /**
      * Even if the caller supplies us with a User object parcelable, it won't
@@ -483,6 +624,57 @@ public class UserDetailsActivity extends TabActivity {
             mActivity = activity;
         }
     }
+    
+    private static class SetUserPhotoTask extends AsyncTask<String, Void, User> {
+
+        private UserDetailsActivity mActivity;
+        private Exception mReason;
+        
+
+        public SetUserPhotoTask(UserDetailsActivity activity) {
+            mActivity = activity;
+        }
+        
+        public void setActivity(UserDetailsActivity activity) {
+            mActivity = activity;
+        }
+        
+        @Override
+        protected void onPreExecute() {
+            mActivity.startProgressBar(
+                mActivity.getResources().getString(
+                    R.string.user_details_activity_set_photo_progress_title),
+                mActivity.getResources().getString(
+                    R.string.user_details_activity_set_photo_progress_message));
+        }
+ 
+        /** Params should be image path, username, password. */
+        @Override
+        protected User doInBackground(String... params) {
+            try {
+                return ((Foursquared) mActivity.getApplication()).getFoursquare().userUpdate(
+                        params[0], params[1], params[2]);
+            } catch (Exception e) {
+                Log.e(TAG, "Error submitting new profile photo.", e);
+                mReason = e;
+            }
+            return null;
+        }
+ 
+        @Override
+        protected void onPostExecute(User user) {
+            if (mActivity != null) {
+                mActivity.onSetUserPhotoTaskComplete(user, mReason);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            if (mActivity != null) {
+                mActivity.onSetUserPhotoTaskComplete(null, new Exception("Set photo request cancelled."));
+            }
+        }
+    }
 
     private static class StateHolder {
 
@@ -492,13 +684,21 @@ public class UserDetailsActivity extends TabActivity {
         /** Show options to add friends for strangers. */
         private boolean mShowAddFriendOptions;
 
+        /** Only used if logged-in user wants to update their photo. */
+        private String mNewUserPhotoPath;
+        
         private UserDetailsTask mTaskUserDetails;
         private boolean mIsRunningUserDetailsTask;
         private boolean mFetchedUserDetails;
+        
+        private SetUserPhotoTask mTaskSetUserPhoto;
+        private boolean mIsRunningSetUserPhotoTask;
 
+        
         public StateHolder() {
             mShowAddFriendOptions = false;
             mIsRunningUserDetailsTask = false;
+            mIsRunningSetUserPhotoTask = false;
             mFetchedUserDetails = false;
         }
 
@@ -531,25 +731,54 @@ public class UserDetailsActivity extends TabActivity {
             mTaskUserDetails = new UserDetailsTask(activity);
             mTaskUserDetails.execute(userId);
         }
+        
+        public void startTaskSetUserPhoto(UserDetailsActivity activity, String pathImage, String username, String password) {
+            mIsRunningSetUserPhotoTask = true;
+            mTaskSetUserPhoto = new SetUserPhotoTask(activity);
+            mTaskSetUserPhoto.execute(pathImage, username, password);
+        }
 
-        public void setActivityForTaskUserDetails(UserDetailsActivity activity) {
+        public void setActivityForTasks(UserDetailsActivity activity) {
             if (mTaskUserDetails != null) {
                 mTaskUserDetails.setActivity(activity);
             }
+            if (mTaskSetUserPhoto != null) {
+                mTaskSetUserPhoto.setActivity(activity);
+            }
+        }
+        
+        public boolean getIsRunningUserDetailsTask() {
+            return mIsRunningUserDetailsTask;
         }
 
         public void setIsRunningUserDetailsTask(boolean isRunning) {
             mIsRunningUserDetailsTask = isRunning;
         }
-
-        public boolean getIsRunningUserDetailsTask() {
-            return mIsRunningUserDetailsTask;
+        
+        public boolean getIsRunningSetUserPhotoTask() {
+            return mIsRunningSetUserPhotoTask;
         }
-
+        
+        public void setIsRunningSetUserPhotoTask(boolean isRunning) {
+            mIsRunningSetUserPhotoTask = isRunning;
+        }
+        
+        public String getNewUserPhotoPath() {
+            return mNewUserPhotoPath;
+        }
+        
+        public void setNewUserPhotoPath(String path) {
+            mNewUserPhotoPath = path;
+        }
+        
         public void cancelTasks() {
             if (mTaskUserDetails != null) {
                 mTaskUserDetails.setActivity(null);
                 mTaskUserDetails.cancel(true);
+            }
+            if (mTaskSetUserPhoto != null) {
+                mTaskSetUserPhoto.setActivity(null);
+                mTaskSetUserPhoto.cancel(true);
             }
         }
     }
@@ -568,6 +797,7 @@ public class UserDetailsActivity extends TabActivity {
                                 mImageViewPhoto.setImageBitmap(bitmap);
                                 mIsUsersPhotoSet = true;
                                 mImageViewPhoto.setImageBitmap(bitmap);
+                                mImageViewPhoto.postInvalidate();
                             } catch (IOException e) {
                             }
                         }

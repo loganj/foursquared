@@ -46,6 +46,7 @@ public class Preferences {
     public static final String PREFERENCE_CHANGELOG = "changelog";
     public static final String PREFERENCE_CITY_NAME = "city_name";
     public static final String PREFERENCE_LOGOUT = "logout";
+    public static final String PREFERENCE_HELP = "help";
     public static final String PREFERENCE_SEND_FEEDBACK = "send_feedback";
     public static final String PREFERENCE_PINGS = "pings_on";
     public static final String PREFERENCE_PINGS_INTERVAL = "pings_refresh_interval_in_minutes";
@@ -89,6 +90,10 @@ public class Preferences {
     // Last time pings service ran.
     public static final String PREFERENCE_PINGS_SERVICE_LAST_RUN_TIME = "pings_service_last_run_time";
     
+    // Broadcast an intent to show single full-screen images, or use our own poor image viewer.
+    public static final String PREFERENCE_NATIVE_IMAGE_VIEWER
+        = "native_full_size_image_viewer";
+    
     
     /**
      * Gives us a chance to set some default preferences if this is the first install
@@ -112,6 +117,9 @@ public class Preferences {
         if (!preferences.contains(PREFERENCE_VENUES_SORT)) {
             String[] venuesSortValues = resources.getStringArray(R.array.venues_sort_values);
             editor.putString(PREFERENCE_VENUES_SORT, venuesSortValues[0]);
+        }
+        if (!preferences.contains(PREFERENCE_NATIVE_IMAGE_VIEWER)) {
+            editor.putBoolean(PREFERENCE_NATIVE_IMAGE_VIEWER, true);
         }
         editor.commit();
     }
@@ -213,5 +221,9 @@ public class Preferences {
         if (!editor.commit()) {
             Log.e(TAG, "storeLastSeenChangelogVersion commit failed");
         }
+    }
+    
+    public static boolean getUseNativeImageViewerForFullScreenImages(SharedPreferences prefs) {
+        return prefs.getBoolean(PREFERENCE_NATIVE_IMAGE_VIEWER, true);
     }
 }

@@ -39,7 +39,7 @@ public class SendLogActivity extends Activity
 {
     public final static String TAG = "com.xtralogic.android.logcollector";//$NON-NLS-1$
     
-    private static final String FEEDBACK_EMAIL_ADDRESS = "android@foursquare.zendesk.com";
+    private static final String FEEDBACK_EMAIL_ADDRESS = "crashreport-android@foursquare.com";
 
     public static final String ACTION_SEND_LOG = "com.xtralogic.logcollector.intent.action.SEND_LOG";//$NON-NLS-1$
     public static final String EXTRA_SEND_INTENT_ACTION = "com.xtralogic.logcollector.intent.extra.SEND_INTENT_ACTION";//$NON-NLS-1$

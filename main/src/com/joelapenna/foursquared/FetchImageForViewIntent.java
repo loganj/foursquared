@@ -11,8 +11,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.DialogInterface.OnCancelListener;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -161,6 +163,14 @@ public class FetchImageForViewIntent extends Activity {
     private void startProgressBar(String title, String message) {
         if (mDlgProgress == null) {
             mDlgProgress = ProgressDialog.show(this, title, message);
+            mDlgProgress.setOnCancelListener(new OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dlg) {
+                    mStateHolder.cancel();
+                    finish();
+                }
+            });
+            mDlgProgress.setCancelable(true);
         }
         mDlgProgress.setTitle(title);
         mDlgProgress.setMessage(message);
@@ -177,7 +187,7 @@ public class FetchImageForViewIntent extends Activity {
             Exception ex) {
         try {
             // If successful, start an intent to view the image.
-            if (result.equals(Boolean.TRUE)) {
+            if (result != null && result.equals(Boolean.TRUE)) {
                 // If the image can't be loaded or an intent can't be found to
                 // view it, launchViewIntent() will create a toast with an error
                 // message.
@@ -187,7 +197,7 @@ public class FetchImageForViewIntent extends Activity {
             }
         } finally {
             // Whether download worked or not, we finish ourselves now. If an
-            // error occurred, the toast should remain to the calling activity.
+            // error occurred, the toast should remain on the calling activity.
             mStateHolder.setIsRunning(false);
             stopProgressBar();
             finish();
@@ -195,30 +205,38 @@ public class FetchImageForViewIntent extends Activity {
     }
 
     private boolean launchViewIntent(String outputPath, String extension) {
-        // Try to open the file now to create the uri we'll hand to the intent.
-        Uri uri = null;
-        try {
-            File file = new File(outputPath);
-            uri = Uri.fromFile(file);
-        } catch (Exception ex) {
-            Log.e(TAG, "Error opening downloaded image from temp location: ", ex);
-            Toast.makeText(this, "No application could be found to diplay the full image.",
-                    Toast.LENGTH_SHORT);
-            return false;
-        }
-
-        // Try to start an intent to view the image. It's possible that the user
-        // may not have any intents to handle the request.
-        try {
-            Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
-            intent.setDataAndType(uri, "image/" + extension);
+        
+        Foursquared foursquared = (Foursquared) getApplication();
+        if (foursquared.getUseNativeImageViewerForFullScreenImages()) {
+            // Try to open the file now to create the uri we'll hand to the intent.
+            Uri uri = null;
+            try {
+                File file = new File(outputPath);
+                uri = Uri.fromFile(file);
+            } catch (Exception ex) {
+                Log.e(TAG, "Error opening downloaded image from temp location: ", ex);
+                Toast.makeText(this, "No application could be found to diplay the full image.",
+                        Toast.LENGTH_SHORT);
+                return false;
+            }
+            
+            // Try to start an intent to view the image. It's possible that the user
+            // may not have any intents to handle the request.
+            try {
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
+                intent.setDataAndType(uri, "image/" + extension);
+                startActivity(intent);
+            } catch (Exception ex) {
+                Log.e(TAG, "Error starting intent to view image: ", ex);
+                Toast.makeText(this, "There was an error displaying the image.", Toast.LENGTH_SHORT);
+                return false;
+            }
+        } else {
+            Intent intent = new Intent(this, FullSizeImageActivity.class);
+            intent.putExtra(FullSizeImageActivity.INTENT_EXTRA_IMAGE_PATH, outputPath);
             startActivity(intent);
-        } catch (Exception ex) {
-            Log.e(TAG, "Error starting intent to view image: ", ex);
-            Toast.makeText(this, "There was an error displaying the image.", Toast.LENGTH_SHORT);
-            return false;
         }
-
+        
         return true;
     }
 
@@ -273,8 +291,8 @@ public class FetchImageForViewIntent extends Activity {
         @Override
         protected void onCancelled() {
             if (mActivity != null) {
-                mActivity.onFetchImageTaskComplete(null, null, null, new Exception(
-                        "Fetch image from url cancelled."));
+                mActivity.onFetchImageTaskComplete(null, null, null, 
+                    new FoursquareException("Image download cancelled."));
             }
         }
     }
@@ -361,6 +379,13 @@ public class FetchImageForViewIntent extends Activity {
 
         public String getProgressMessage() {
             return mProgressMessage;
+        }
+        
+        public void cancel() {
+            if (mTaskFetchImage != null) {
+                mTaskFetchImage.cancel(true);
+                mIsRunning = false;
+            }
         }
     }
 }

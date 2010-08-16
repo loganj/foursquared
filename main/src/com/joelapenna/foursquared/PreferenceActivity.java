@@ -122,6 +122,9 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
             startActivity(new Intent( //
                     Intent.ACTION_VIEW, Uri.parse(Foursquare.FOURSQUARE_PREFERENCES)));
 
+        } else if (Preferences.PREFERENCE_HELP.equals(key)) {
+            startActivity(new Intent(this, HelpWebViewActivity.class));
+            
         } else if (Preferences.PREFERENCE_SEND_FEEDBACK.equals(key)) {
             startActivity(new Intent(this, SendLogActivity.class));
             

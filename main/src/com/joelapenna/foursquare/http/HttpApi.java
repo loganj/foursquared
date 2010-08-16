@@ -16,6 +16,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -33,4 +35,7 @@ public interface HttpApi {
     abstract public HttpGet createHttpGet(String url, NameValuePair... nameValuePairs);
 
     abstract public HttpPost createHttpPost(String url, NameValuePair... nameValuePairs);
+    
+    abstract public HttpURLConnection createHttpURLConnectionPost(URL url, String boundary)
+            throws IOException; 
 }

@@ -79,10 +79,21 @@
       android:entries="@array/venues_sort"
       android:entryValues="@array/venues_sort_values"
       android:defaultValue="Popularity"/>
+    <CheckBoxPreference
+      android:key="native_full_size_image_viewer"
+      android:persistent="true"
+      android:title="@string/preferences_native_full_size_image_viewer_title"
+      android:summaryOn="@string/preferences_native_full_size_image_viewer_summary_on"
+      android:summaryOff="@string/preferences_native_full_size_image_viewer_summary_off"
+      android:defaultValue="true" />
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="changelog"
       android:title="@string/preferences_changelog"
       android:summary="@string/preferences_changelog_summary" />
+    <com.joelapenna.foursquared.preferences.ClickPreference
+      android:key="help"
+      android:title="@string/help_label"
+      android:summary="@string/help_preference_summary" />
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="send_feedback"
       android:title="@string/feedback_label"

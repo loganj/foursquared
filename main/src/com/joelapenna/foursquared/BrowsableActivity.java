@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared;
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.content.IntentFilter;
 import android.content.UriMatcher;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -27,6 +29,10 @@ public class BrowsableActivity extends Activity {
     private static final int URI_PATH_SHOUT = 4;
     private static final int URI_PATH_USER = 5;
     private static final int URI_PATH_VENUE = 6;
+    
+    public static String PARAM_SHOUT_TEXT = "shout";
+    public static String PARAM_SEARCH_QUERY = "q";
+    public static String PARAM_SEARCH_IMMEDIATE= "immediate";
 
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
@@ -73,12 +79,25 @@ public class BrowsableActivity extends Activity {
             case URI_PATH_SEARCH:
                 if (DEBUG) Log.d(TAG, "Matched: URI_PATH_SEARCH");
                 intent = new Intent(this, SearchVenuesActivity.class);
+                if (!TextUtils.isEmpty(uri.getQueryParameter(PARAM_SEARCH_QUERY))) {
+                    intent.putExtra(SearchManager.QUERY, uri.getQueryParameter(PARAM_SEARCH_QUERY));
+                    if (uri.getQueryParameter(PARAM_SEARCH_IMMEDIATE) != null && 
+                        uri.getQueryParameter(PARAM_SEARCH_IMMEDIATE).equals("1")) {
+                        intent.setAction(Intent.ACTION_SEARCH); // interpret action as search immediately.
+                    } else {
+                        intent.setAction(Intent.ACTION_VIEW); // interpret as prepopulate search field only.
+                    }
+                }
                 startActivity(intent);
                 break;
             case URI_PATH_SHOUT:
                 if (DEBUG) Log.d(TAG, "Matched: URI_PATH_SHOUT");
                 intent = new Intent(this, CheckinOrShoutGatherInfoActivity.class);
                 intent.putExtra(CheckinOrShoutGatherInfoActivity.INTENT_EXTRA_IS_SHOUT, true);
+                if (!TextUtils.isEmpty(uri.getQueryParameter(PARAM_SHOUT_TEXT))) {
+                    intent.putExtra(CheckinOrShoutGatherInfoActivity.INTENT_EXTRA_TEXT_PREPOPULATE, 
+                            uri.getQueryParameter(PARAM_SHOUT_TEXT));
+                }
                 startActivity(intent);
                 break;
             case URI_PATH_USER:
