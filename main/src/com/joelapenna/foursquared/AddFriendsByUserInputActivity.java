@@ -322,25 +322,25 @@ public class AddFriendsByUserInputActivity extends Activity {
         switch (id) {
             case DIALOG_ID_CONFIRM_INVITE_ALL:
                 AlertDialog dlgInfo = new AlertDialog.Builder(this)
-                    .setTitle("Invite All")
+                    .setTitle(getResources().getString(R.string.add_friends_contacts_title_invite_all))
                     .setIcon(0)
-                    .setPositiveButton("Yes", 
+                    .setPositiveButton(getResources().getString(R.string.yes), 
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     inviteAll();
                                 }
                             })
-                    .setNegativeButton("No", 
+                    .setNegativeButton(getResources().getString(R.string.no), 
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                 }
                             })
-                    .setMessage("Are you sure you want to send invites to all " 
-                            + mStateHolder.getUsersNotOnFoursquare().size() 
-                            + " contacts?").create();
+                    .setMessage(getResources().getString(R.string.add_friends_contacts_message_invite_all,
+                            String.valueOf(mStateHolder.getUsersNotOnFoursquare().size())))
+                    .create();
                 dlgInfo.setOnDismissListener(new OnDismissListener() {
                     public void onDismiss(DialogInterface dialog) {
                         removeDialog(DIALOG_ID_CONFIRM_INVITE_ALL);
@@ -546,7 +546,7 @@ public class AddFriendsByUserInputActivity extends Activity {
                         // For facebook, we need to first get all friend uids, then use that with the foursquare api.
                         String facebookFriendIds = getFacebookFriendIds(params[0]);
                         if (TextUtils.isEmpty(facebookFriendIds)) {
-                            throw new Exception("No Facebook friends found.");
+                            result.setUsersOnFoursquare(new Group<User>());
                         }
                         result.setUsersOnFoursquare(foursquare.findFriendsByFacebook(facebookFriendIds));
                         break;

@@ -37,6 +37,8 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -51,7 +53,7 @@ abstract public class AbstractHttpApi implements HttpApi {
 
     private static final String DEFAULT_CLIENT_VERSION = "com.joelapenna.foursquare";
     private static final String CLIENT_VERSION_HEADER = "User-Agent";
-    private static final int TIMEOUT = 10;
+    private static final int TIMEOUT = 60;
 
     private final DefaultHttpClient mHttpClient;
     private final String mClientVersion;
@@ -183,6 +185,22 @@ abstract public class AbstractHttpApi implements HttpApi {
         }
         if (DEBUG) LOG.log(Level.FINE, "Created: " + httpPost);
         return httpPost;
+    }
+    
+    public HttpURLConnection createHttpURLConnectionPost(URL url, String boundary) 
+        throws IOException {
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection(); 
+        conn.setDoInput(true);        
+        conn.setDoOutput(true); 
+        conn.setUseCaches(false); 
+        conn.setConnectTimeout(TIMEOUT * 1000);
+        conn.setRequestMethod("POST");
+
+        conn.setRequestProperty(CLIENT_VERSION_HEADER, mClientVersion);
+        conn.setRequestProperty("Connection", "Keep-Alive"); 
+        conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+        
+        return conn;
     }
 
     private List<NameValuePair> stripNulls(NameValuePair... nameValuePairs) {

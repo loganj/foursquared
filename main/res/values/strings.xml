@@ -36,7 +36,7 @@
   <string name="city">City</string>
   <string name="cross_street">Cross Street</string>
   <string name="feedback_error">Couldn\'t find configured email client.</string>
-  <string name="feedback_label">Send Feedback</string>
+  <string name="feedback_label">Send Force-Close Report</string>
   <string name="feedback_more">If you are reporting a problem please answer the questions below:</string>
   <string name="feedback_question_additional_information">Please provide any additional information below.</string>
   <string name="feedback_question_expected_output">What is the expected output? What do you see instead?</string>
@@ -126,7 +126,7 @@
   <string name="search_already_in_progress_toast">A search is already in progress.</string>
   <string name="search_label">Search</string>
   <string name="search_venues_label">Venues</string>
-  <string name="send_feedback_preference_summary">Send feedback with system logs by email.</string>
+  <string name="send_feedback_preference_summary">Send a force-close report by email.</string>
   <string name="shout_action_label">Shout!</string>
   <string name="shout_activity_label">Foursquare Checkin</string>
   <string name="shout_hint">Shout, shout, let it all out...                              </string> <!-- The whitespace is a layout hack to make sure the dialog box doesn't bounce in size so quickly.  -->
@@ -181,6 +181,8 @@
   <string name="add_friends_no_matches">No matches found.</string>
   <string name="add_friends_contacts_found_on_foursqare">Contacts found on Foursquare</string>
   <string name="add_friends_contacts_not_found_on_foursqare">Contacts not found on Foursquare</string>
+  <string name="add_friends_contacts_title_invite_all">Invite All</string>
+  <string name="add_friends_contacts_message_invite_all">"Are you sure you want to send invites to all %s contacts?"</string>
   <string name="friend_requests_activity_label">Foursquare Friend Requests</string>
   <string name="friend_requests_approved">You are now friends with</string>
   <string name="friend_requests_no_new_requests">You have no new friend requests.</string>
@@ -204,6 +206,14 @@
   <string name="user_details_activity_tab_title_friends">Friends</string>
   <string name="user_details_activity_title_mayorships">MAYORSHIPS</string>
   <string name="user_details_activity_title_badges">BADGES</string>
+  <string name="user_details_activity_error_set_photo_load">There was an error using the chosen photo.</string>
+  <string name="user_details_activity_error_set_photo_resample">There was an error using the selected photo.</string>
+  <string name="user_details_activity_error_no_photo_gallery">Photo gallery could not be started!</string>
+  <string name="user_details_activity_set_photo_confirm_title">Profile Photo</string>
+  <string name="user_details_activity_set_photo_confirm_message">Set selected photo as your profile picture?</string>
+  <string name="user_details_activity_set_photo_progress_title">Profile Photo</string>
+  <string name="user_details_activity_set_photo_progress_message">Updating your photo...</string>
+  <string name="user_details_activity_set_photo_success">Photo updated ok!</string>
   <string name="main_activity_tab_title_me">Me</string>
   <string name="checkin_execute_activity_progress_bar_message">Checking-in...</string>
   <string name="shout_execute_activity_progress_bar_message">Posting shout...</string>
@@ -261,6 +271,16 @@
   <string name="send_log_message_device_build">"Build number: "</string>
   <string name="send_log_main_dialog_text">After we\'ve completed collecting the logs, please choose an email client to send.</string>  
   <string name="send_log_acquiring_log_progress_dialog_message">Collecting logs from system...</string>
-  <string name="send_log_chooser_title">Foursquare for Android Feedback</string>
+  <string name="send_log_chooser_title">Foursquare Force-Close Report</string>
   <string name="send_log_failed_to_get_log_message">Failed to get the log from the system.</string>
+  <string name="ok">OK</string>
+  <string name="cancel">Cancel</string>
+  <string name="yes">Yes</string>
+  <string name="no">No</string>
+  <string name="preferences_native_full_size_image_viewer_title">Image Viewing</string>
+  <string name="preferences_native_full_size_image_viewer_summary_on">Use your phone\'s built-in image viewer for viewing friend photos.</string>
+  <string name="preferences_native_full_size_image_viewer_summary_off">Use app image viewer for viewing friend photos.</string> 
+  <string name="help_label">Help</string>
+  <string name="help_preference_summary">Get help using Foursquare!</string>
+  <string name="category_picket_dialog_title">Pick a Category</string>
 </resources>

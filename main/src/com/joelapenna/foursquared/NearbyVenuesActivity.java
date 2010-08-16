@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.Group;
 import com.joelapenna.foursquare.types.Venue;
 import com.joelapenna.foursquared.app.LoadableListActivity;
@@ -402,7 +403,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 // Get last known location.
                 Location location = ((Foursquared) mActivity.getApplication()).getLastKnownLocation();
                 if (location == null) {
-                    throw new Exception("Your location could not be found, please try again!");
+                    throw new FoursquareException("Your location could not be found! Make sure network or GPS location services are turned on, then try refreshing the venues list again!");
                 }
                 
                 // Get the venues.

@@ -7,10 +7,12 @@ package com.joelapenna.foursquare;
 import com.joelapenna.foursquare.error.FoursquareCredentialsException;
 import com.joelapenna.foursquare.error.FoursquareError;
 import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.error.FoursquareParseException;
 import com.joelapenna.foursquare.http.AbstractHttpApi;
 import com.joelapenna.foursquare.http.HttpApi;
 import com.joelapenna.foursquare.http.HttpApiWithBasicAuth;
 import com.joelapenna.foursquare.http.HttpApiWithOAuth;
+import com.joelapenna.foursquare.parsers.AbstractParser;
 import com.joelapenna.foursquare.parsers.CategoryParser;
 import com.joelapenna.foursquare.parsers.CheckinParser;
 import com.joelapenna.foursquare.parsers.CheckinResultParser;
@@ -35,6 +37,7 @@ import com.joelapenna.foursquare.types.Settings;
 import com.joelapenna.foursquare.types.Tip;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquare.types.Venue;
+import com.joelapenna.foursquared.util.Base64Coder;
 
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -43,7 +46,14 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -86,6 +96,7 @@ class FoursquareHttpApiV1 {
     private static final String URL_API_VENUE_FLAG_MISLOCATED = "/venue/flagmislocated";
     private static final String URL_API_VENUE_FLAG_DUPLICATE = "/venue/flagduplicate";
     private static final String URL_API_VENUE_PROPOSE_EDIT = "/venue/proposeedit";
+    private static final String URL_API_USER_UPDATE = "/user/update";
     
     private final DefaultHttpClient mHttpClient = AbstractHttpApi.createHttpClient();
     private HttpApi mHttpApi;
@@ -442,9 +453,11 @@ class FoursquareHttpApiV1 {
      * /history
      */
     @SuppressWarnings("unchecked")
-    public Group<Checkin> history(int limit) throws FoursquareException,
+    public Group<Checkin> history(String limit, String sinceid) throws FoursquareException,
             FoursquareCredentialsException, FoursquareError, IOException {
-        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_HISTORY));
+        HttpGet httpGet = mHttpApi.createHttpGet(fullUrl(URL_API_HISTORY),
+            new BasicNameValuePair("l", limit),
+            new BasicNameValuePair("sinceid", sinceid));
         return (Group<Checkin>) mHttpApi.doHttpRequest(httpGet, new GroupParser(new CheckinParser()));
     }
     
@@ -567,5 +580,61 @@ class FoursquareHttpApiV1 {
     
     private String fullUrl(String url) {
         return mApiBaseUrl + url;
+    }
+    
+    /**
+     * /user/update
+     * Need to bring this method under control like the rest of the api methods. Leaving it 
+     * in this state as authorization will probably switch from basic auth in the near future
+     * anyway, will have to be updated. Also unlike the other methods, we're sending up data
+     * which aren't basic name/value pairs.
+     */
+    public User userUpdate(String imagePathToJpg, String username, String password) 
+        throws SocketTimeoutException, IOException, FoursquareError, FoursquareParseException {
+        String BOUNDARY = "------------------319831265358979362846";
+        String lineEnd = "\r\n"; 
+        String twoHyphens = "--";
+        int maxBufferSize = 8192;
+        
+        File file = new File(imagePathToJpg);
+        FileInputStream fileInputStream = new FileInputStream(file);
+        
+        HttpURLConnection conn = mHttpApi.createHttpURLConnectionPost(new URL(fullUrl(URL_API_USER_UPDATE)), BOUNDARY);
+        conn.setRequestProperty("Authorization", "Basic " +  Base64Coder.encodeString(username + ":" + password));
+        
+        // We are always saving the image to a jpg so we can use .jpg as the extension below.
+        DataOutputStream dos = new DataOutputStream(conn.getOutputStream()); 
+        dos.writeBytes(twoHyphens + BOUNDARY + lineEnd); 
+        dos.writeBytes("Content-Disposition: form-data; name=\"image,jpeg\";filename=\"" + "image.jpeg" +"\"" + lineEnd); 
+        dos.writeBytes("Content-Type: " + "image/jpeg" + lineEnd);
+        dos.writeBytes(lineEnd); 
+        
+        int bytesAvailable = fileInputStream.available(); 
+        int bufferSize = Math.min(bytesAvailable, maxBufferSize); 
+        byte[] buffer = new byte[bufferSize]; 
+        
+        int bytesRead = fileInputStream.read(buffer, 0, bufferSize); 
+        int totalBytesRead = bytesRead;
+        while (bytesRead > 0) {
+            dos.write(buffer, 0, bufferSize); 
+            bytesAvailable = fileInputStream.available(); 
+            bufferSize = Math.min(bytesAvailable, maxBufferSize); 
+            bytesRead = fileInputStream.read(buffer, 0, bufferSize); 
+            totalBytesRead = totalBytesRead  + bytesRead;
+        }
+        dos.writeBytes(lineEnd); 
+        dos.writeBytes(twoHyphens + BOUNDARY + twoHyphens + lineEnd); 
+        
+        fileInputStream.close(); 
+        dos.flush(); 
+        dos.close(); 
+        
+        UserParser parser = new UserParser();
+        InputStream is = conn.getInputStream();
+        try {
+            return parser.parse(AbstractParser.createXmlPullParser(is));
+        } finally {
+            is.close();
+        }
     }
 }
