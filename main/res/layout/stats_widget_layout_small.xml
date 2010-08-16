@@ -34,7 +34,7 @@
 
     <TextView
         android:id="@+id/badge_count_small"
-        android:layout_marginLeft="86dip"
+        android:layout_marginLeft="85dip"
         style="@style/SmallCountStyle" />
 
     <TextView

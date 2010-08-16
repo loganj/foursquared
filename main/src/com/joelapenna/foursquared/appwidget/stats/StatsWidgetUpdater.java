@@ -98,17 +98,9 @@ public abstract class StatsWidgetUpdater {
             }
         }
 
-//      When user clicks on widget, re-run the service
-		Intent updateIntent = new Intent(context, FoursquaredService.class);
-        updateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);        
-        updateIntent.putExtra(mRefreshToastExtra, true);
-
-		PendingIntent pendingIntent;
-		int flag = PendingIntent.FLAG_UPDATE_CURRENT;
-		pendingIntent = PendingIntent.getService(context, 0, updateIntent, flag);
-        updateViews.setOnClickPendingIntent(mLayoutId, pendingIntent);
-
-        addOnClickIntents(updateViews,context, user);
+        if ( user != null ) {
+            addOnClickIntents(updateViews,context, user);
+        }
 
         return updateViews;
     }
