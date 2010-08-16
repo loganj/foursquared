@@ -173,7 +173,7 @@ public class UserHistoryActivity extends LoadableListActivity {
                 Foursquare foursquare = foursquared.getFoursquare();
                 
                 // Prune out shouts for now.
-                Group<Checkin> history = foursquare.history(100);
+                Group<Checkin> history = foursquare.history("50", null);
                 Group<Checkin> venuesOnly = new Group<Checkin>();
                 for (Checkin it : history) {
                     if (it.getVenue() != null) {

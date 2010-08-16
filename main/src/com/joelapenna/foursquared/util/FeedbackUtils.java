@@ -21,7 +21,7 @@ import android.widget.Toast;
  */
 public class FeedbackUtils {
 
-    private static final String FEEDBACK_EMAIL_ADDRESS = "android@foursquare.zendesk.com";
+    private static final String FEEDBACK_EMAIL_ADDRESS = "crashreport-android@foursquare.com";
 
     public static void SendFeedBack(Context context, Foursquared foursquared) {
 

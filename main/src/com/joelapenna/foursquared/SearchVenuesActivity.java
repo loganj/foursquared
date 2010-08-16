@@ -29,6 +29,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.SearchRecentSuggestions;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,7 +55,7 @@ import java.util.Observable;
 public class SearchVenuesActivity extends TabActivity {
     static final String TAG = "SearchVenuesActivity";
     static final boolean DEBUG = FoursquaredSettings.DEBUG;
-
+    
     public static final String QUERY_NEARBY = null;
 
     public static SearchResultsObservable searchResultsObservable;
@@ -187,22 +188,26 @@ public class SearchVenuesActivity extends TabActivity {
 
     @Override
     public void onNewIntent(Intent intent) {
-        if (DEBUG) Log.d(TAG, "New Intent: " + intent);
-        String action = intent.getAction();
-        String query = intent.getStringExtra(SearchManager.QUERY);
-
-        if (intent == null) {
-            if (DEBUG) Log.d(TAG, "No intent to search, querying default.");
-            executeSearchTask(query);
-
-        } else if (Intent.ACTION_SEARCH.equals(action) && query != null) {
-            if (DEBUG) Log.d(TAG, "onNewIntent received search intent and saving.");
-            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
-                    VenueQuerySuggestionsProvider.AUTHORITY, VenueQuerySuggestionsProvider.MODE);
-            suggestions.saveRecentQuery(query, null);
-            executeSearchTask(query);
+        
+        if (intent != null) {
+            String action = intent.getAction();
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            
+            if (DEBUG) Log.d(TAG, "New Intent: " + action + ", " + query);
+            
+            if (TextUtils.isEmpty(action) || Intent.ACTION_VIEW.equals(action) && query != null) {
+                startSearch(query, false, null, false);
+            } else if (Intent.ACTION_SEARCH.equals(action) && query != null) {
+                if (DEBUG) Log.d(TAG, "onNewIntent received search intent and saving.");
+                SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+                        VenueQuerySuggestionsProvider.AUTHORITY, VenueQuerySuggestionsProvider.MODE);
+                suggestions.saveRecentQuery(query, null);
+                executeSearchTask(query);
+            } else {
+                onSearchRequested();
+            }
         } else {
-            onSearchRequested();
+            executeSearchTask("");
         }
     }
 
