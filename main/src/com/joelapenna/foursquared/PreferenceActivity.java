@@ -7,6 +7,7 @@ package com.joelapenna.foursquared;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquared.preferences.Preferences;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -23,7 +24,11 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
@@ -162,24 +167,24 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                 String userName = ((Foursquared) getApplication()).getUserName();
                 String userEmail = ((Foursquared) getApplication()).getUserEmail();
                 
-                ArrayAdapter<String> adapterProfileSettings = new ArrayAdapter<String>(
-                        this, android.R.layout.simple_list_item_1);
-                adapterProfileSettings.add(
-                        getResources().getString(R.string.preference_activity_profile_setting_user_id) + ":\t" + userId);
-                adapterProfileSettings.add(
-                        getResources().getString(R.string.preference_activity_profile_setting_username) + ":\t" + userName);
-                adapterProfileSettings.add(
-                        getResources().getString(R.string.preference_activity_profile_setting_email) + ":\t" + userEmail);
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+                View layout = inflater.inflate(R.layout.settings_user_info,  
+                        (ViewGroup) findViewById(R.id.settings_user_info_layout_root));
+                TextView tvUserId = (TextView)layout.findViewById(R.id.settings_user_info_label_user_id);
+                TextView tvUserName = (TextView)layout.findViewById(R.id.settings_user_info_label_user_name);
+                TextView tvUserEmail = (TextView)layout.findViewById(R.id.settings_user_info_label_user_email);
+
+                tvUserId.setText(userId);
+                tvUserName.setText(userName);
+                tvUserEmail.setText(userEmail);
                 
                 AlertDialog dlgProfileSettings = new AlertDialog.Builder(this)
                     .setTitle(getResources().getString(R.string.preference_activity_profile_settings_dlg_title))
-                    .setAdapter(adapterProfileSettings, null)
-                    .set
+                    .setView(layout)
                     .create();
                 return dlgProfileSettings;
         }
         
-        //preference_activity_tos_privacy_dlg_title
         return null;
     }
 }

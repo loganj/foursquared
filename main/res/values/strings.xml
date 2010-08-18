@@ -309,4 +309,7 @@
   <string name="help_label">Help</string>
   <string name="help_preference_summary">Get help using Foursquare!</string>
   <string name="category_picket_dialog_title">Pick a Category</string>
+  <string name="settings_user_info_label_user_id">User ID:</string>
+  <string name="settings_user_info_label_username">User Name:</string>
+  <string name="settings_user_info_label_email">Email:</string>
 </resources>
