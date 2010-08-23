@@ -33,7 +33,7 @@
       android:key="friend_requests"
       android:title="@string/preferences_friend_requests_title"
       android:summary="@string/preferences_friend_requests_summary" />
-    <CheckBoxPreference
+    <com.joelapenna.foursquared.preferences.ProgressCheckBoxPreference
       android:key="sync_contacts"
       android:persistent="true"
       android:title="@string/preferences_sync_contacts_title"
