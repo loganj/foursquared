@@ -4,6 +4,7 @@
 
 package com.joelapenna.foursquared;
 
+import android.os.AsyncTask;
 import com.joelapenna.foursquare.Foursquare;
 import com.joelapenna.foursquared.preferences.Preferences;
 
@@ -30,6 +31,28 @@ import java.lang.reflect.Constructor;
  *    -removed user update, moved to NotificationSettingsActivity (June 2, 2010)
  */
 public class PreferenceActivity extends android.preference.PreferenceActivity {
+
+    final private class ChangeSyncTask extends AsyncTask<Boolean,Object,Boolean[]> {
+        @Override
+        protected Boolean[] doInBackground(Boolean... enableSync) {
+            Sync sync = Foursquared.get(PreferenceActivity.this).getSync();
+            return new Boolean[] { sync.setEnabled(enableSync[0]), enableSync[0] };
+        }
+
+        @Override
+        protected void onPostExecute(Boolean[] updateFlagAndNewState) {
+            if (updateFlagAndNewState[0]) {
+                CheckBoxPreference syncPref = (CheckBoxPreference)getPreferenceScreen().findPreference(Preferences.PREFERENCE_SYNC_CONTACTS);
+                syncPref.setChecked(updateFlagAndNewState[1]);
+            }
+            Preference pref = getSyncPref();
+            pref.setEnabled(true);
+            pref.setOnPreferenceChangeListener(syncChangeListener);
+        }
+    }
+
+
+
     private static final String TAG = "PreferenceActivity";
 
     private static final boolean DEBUG = FoursquaredSettings.DEBUG;
@@ -47,12 +70,16 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         }
     };
 
+    private CheckBoxPreference getSyncPref() {
+        return (CheckBoxPreference)getPreferenceScreen().findPreference(Preferences.PREFERENCE_SYNC_CONTACTS);
+    }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        CheckBoxPreference syncPref = (CheckBoxPreference)getPreferenceScreen().findPreference(Preferences.PREFERENCE_SYNC_CONTACTS);
+
+        CheckBoxPreference syncPref = getSyncPref();
 
         syncPref.setChecked(Foursquared.get(this).getSync().isEnabled());
         if ( syncChangeListener != null ) {
@@ -73,12 +100,12 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
         syncChangeListener = new OnPreferenceChangeListener() {
-
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                boolean enableSync = (Boolean)newValue;
-                Sync sync = Foursquared.get(PreferenceActivity.this).getSync();
-                return sync.setEnabled(enableSync);
+                preference.setOnPreferenceChangeListener(null);
+                preference.setEnabled(false);
+                new ChangeSyncTask().execute((Boolean)newValue);
+                return false;
             }
         };
 
