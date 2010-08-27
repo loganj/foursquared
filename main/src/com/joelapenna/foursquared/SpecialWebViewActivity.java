@@ -149,7 +149,7 @@ public class SpecialWebViewActivity extends Activity
                 String specialid = params[2];
 
                 StringBuilder sbUrl = new StringBuilder(128);
-                sbUrl.append("http://api.foursquare.com/iphone/special?sid=");
+                sbUrl.append("https://api.foursquare.com/iphone/special?sid=");
                 sbUrl.append(specialid);
                 
                 AuthScope authScope = new AuthScope("api.foursquare.com", 80);
