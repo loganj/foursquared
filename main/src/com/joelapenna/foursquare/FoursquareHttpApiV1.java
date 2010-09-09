@@ -105,9 +105,9 @@ class FoursquareHttpApiV1 {
     private final AuthScope mAuthScope;
 
     public FoursquareHttpApiV1(String domain, String clientVersion, boolean useOAuth) {
-        mApiBaseUrl = "http://" + domain + "/v1";
+        mApiBaseUrl = "https://" + domain + "/v1";
         mAuthScope = new AuthScope(domain, 80);
-
+        
         if (useOAuth) {
             mHttpApi = new HttpApiWithOAuth(mHttpClient, clientVersion);
         } else {

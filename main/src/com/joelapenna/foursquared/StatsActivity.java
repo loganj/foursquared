@@ -44,7 +44,7 @@ public class StatsActivity extends Activity {
         setContentView(R.layout.stats_activity);
         registerReceiver(mLoggedOutReceiver, new IntentFilter(Foursquared.INTENT_ACTION_LOGGED_OUT));
 
-        setTitle("Foursquare Scoreboard");
+        setTitle(getResources().getString(R.string.stats_activity_scoreboard));
 
         WebView webView = (WebView) findViewById(R.id.webView);
         webView.setWebViewClient(new MyWebViewClient());

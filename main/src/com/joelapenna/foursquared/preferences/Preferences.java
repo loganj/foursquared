@@ -11,6 +11,7 @@ import com.joelapenna.foursquare.types.City;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.FoursquaredSettings;
 import com.joelapenna.foursquared.R;
+import com.joelapenna.foursquared.util.StringFormatters;
 import com.joelapenna.foursquared.util.UserUtils;
 
 import android.content.SharedPreferences;
@@ -49,6 +50,8 @@ public class Preferences {
     public static final String PREFERENCE_PINGS = "pings_on";
     public static final String PREFERENCE_PINGS_INTERVAL = "pings_refresh_interval_in_minutes";
     public static final String PREFERENCE_PINGS_VIBRATE = "pings_vibrate";
+    public static final String PREFERENCE_TOS_PRIVACY = "tos_privacy";
+    public static final String PREFERENCE_PROFILE_SETTINGS = "profile_settings";
 
     // Credentials related preferences
     public static final String PREFERENCE_LOGIN = "phone";
@@ -62,6 +65,12 @@ public class Preferences {
 
     // Extra info for getUserId
     private static final String PREFERENCE_ID = "id";
+    
+    // Extra for storing user's supplied email address.
+    private static final String PREFERENCE_USER_EMAIL = "user_email";
+    
+    // Extra for storing user's supplied first and last name.
+    private static final String PREFERENCE_USER_NAME = "user_name";
     
     // Extra info about the user, their gender, to control icon used for 'me' in the UI.
     private static final String PREFERENCE_GENDER = "gender";
@@ -170,6 +179,14 @@ public class Preferences {
     public static String getUserId(SharedPreferences prefs) {
         return prefs.getString(PREFERENCE_ID, null);
     }
+    
+    public static String getUserName(SharedPreferences prefs) {
+        return prefs.getString(PREFERENCE_USER_NAME, null);
+    }
+    
+    public static String getUserEmail(SharedPreferences prefs) {
+        return prefs.getString(PREFERENCE_USER_EMAIL, null);
+    }
 
     public static String getUserGender(SharedPreferences prefs) {
         return prefs.getString(PREFERENCE_GENDER, null);
@@ -197,6 +214,8 @@ public class Preferences {
     public static void storeUser(final Editor editor, User user) {
         if (user != null && user.getId() != null) {
             editor.putString(PREFERENCE_ID, user.getId());
+            editor.putString(PREFERENCE_USER_NAME, StringFormatters.getUserFullName(user));
+            editor.putString(PREFERENCE_USER_EMAIL, user.getEmail());
             editor.putBoolean(PREFERENCE_TWITTER_CHECKIN, user.getSettings().sendtotwitter());
             editor.putBoolean(PREFERENCE_FACEBOOK_CHECKIN, user.getSettings().sendtofacebook());
             editor.putString(PREFERENCE_TWITTER_HANDLE, user.getTwitter() != null ? user.getTwitter() : "");

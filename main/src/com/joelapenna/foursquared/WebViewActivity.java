@@ -7,6 +7,7 @@ package com.joelapenna.foursquared;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Window;
 import android.webkit.WebView;
@@ -19,9 +20,12 @@ import android.widget.LinearLayout;
  * @author Mark Wyszomierski (markww@gmail.com).
  *
  */
-public class HelpWebViewActivity extends Activity {
+public class WebViewActivity extends Activity {
     
-    private static final String HELP_URL = "http://foursquare.com/help/android";
+    private static final String TAG = "WebViewActivity";
+    
+    public static final String INTENT_EXTRA_URL = Foursquared.PACKAGE_NAME
+        + ".WebViewActivity.INTENT_EXTRA_URL";
     
     private WebView mWebView;
     
@@ -37,7 +41,13 @@ public class HelpWebViewActivity extends Activity {
                 LinearLayout.LayoutParams.FILL_PARENT));
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.setWebViewClient(new EmbeddedWebViewClient());
-        mWebView.loadUrl(HELP_URL);
+        if (getIntent().getStringExtra(INTENT_EXTRA_URL) != null) {
+            mWebView.loadUrl(getIntent().getStringExtra(INTENT_EXTRA_URL));   
+        } else {
+            Log.e(TAG, "Missing url in intent extras.");
+            finish();
+            return;
+        }
         
         setContentView(mWebView);
     }

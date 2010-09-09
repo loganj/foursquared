@@ -253,7 +253,8 @@ public class UserActionsActivity extends LoadableListActivity {
             if (user != null) {
                 if (user.getCheckin() != null && user.getCheckin().getVenue() != null) {
                     mActions.add(new Action(
-                            "Last seen at " + user.getCheckin().getVenue().getName(),
+                            context.getResources().getString(R.string.user_actions_activity_label_Last_seen_at,
+                            user.getCheckin().getVenue().getName()),
                             R.drawable.map_marker_blue, ACTION_ID_LAST_SEEN_AT, false));
                 }
                 if (UserUtils.isFriend(user)) {
