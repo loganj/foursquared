@@ -166,10 +166,6 @@ public class PingsService extends WakefulIntentService {
                     if (DEBUG) Log.d(TAG, "  Checkin is off the grid, ignoring.");
                     continue;
                 }
-                
-                // Check against date times.
-                try {
-                    Date dateCheckin = StringFormatters.DATE_FORMAT.parse(it.getCreated()); 
 
                 if (dateCheckin.after(dateLast)) {
                     if (DEBUG) Log.d(TAG, "  Checkin is younger than our last run time, passes all tests!!");
