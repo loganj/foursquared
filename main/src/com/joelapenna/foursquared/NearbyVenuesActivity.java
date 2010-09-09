@@ -400,6 +400,8 @@ public class NearbyVenuesActivity extends LoadableListActivity {
         private long mSleepTimeInMs;
         private Foursquare mFoursquare;
         private String mReverseGeoLoc; // Filled in after execution.
+        private String mNoLocException;
+        private String mLabelNearby;
         
         public SearchTask(NearbyVenuesActivity activity, String query, long sleepTimeInMs) {
             super();
@@ -407,6 +409,8 @@ public class NearbyVenuesActivity extends LoadableListActivity {
             mQuery = query;
             mSleepTimeInMs = sleepTimeInMs;
             mFoursquare = ((Foursquared)activity.getApplication()).getFoursquare();
+            mNoLocException = activity.getResources().getString(R.string.nearby_venues_no_location);
+            mLabelNearby = activity.getResources().getString(R.string.nearby_venues_label_nearby);
         }
 
         @Override
@@ -427,7 +431,7 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                 // Get last known location.
                 Location location = ((Foursquared) mActivity.getApplication()).getLastKnownLocation();
                 if (location == null) {
-                    throw new FoursquareException("Your location could not be found! Make sure network or GPS location services are turned on, then try refreshing the venues list again!");
+                    throw new FoursquareException(mNoLocException);
                 }
                 
                 // Get the venues.
@@ -461,7 +465,8 @@ public class NearbyVenuesActivity extends LoadableListActivity {
                     Address address = addresses.get(0);
 
                     StringBuilder sb = new StringBuilder(128);
-                    sb.append("Near ");
+                    sb.append(mLabelNearby);
+                    sb.append(" ");
                     sb.append(address.getAddressLine(0));
                     if (addresses.size() > 1) {
                         sb.append(", ");

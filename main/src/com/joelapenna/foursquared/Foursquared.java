@@ -154,6 +154,14 @@ public class Foursquared extends Application {
         return Preferences.getUserId(mPrefs);
     }
     
+    public String getUserName() {
+        return Preferences.getUserName(mPrefs);
+    }
+    
+    public String getUserEmail() {
+        return Preferences.getUserEmail(mPrefs);
+    }
+    
     public String getUserGender() {
         return Preferences.getUserGender(mPrefs);
     }

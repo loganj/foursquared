@@ -373,7 +373,8 @@ public class FriendsActivity extends LoadableListActivityWithView {
             if (DEBUG) Log.d(TAG, "Query already running attempting to cancel: " + mSearchTask);
             if (!mSearchTask.cancel(true) && !mSearchTask.isCancelled()) {
                 if (DEBUG) Log.d(TAG, "Unable to cancel search? Notifying the user.");
-                Toast.makeText(this, "A search is already in progress.", Toast.LENGTH_SHORT);
+                Toast.makeText(this, getResources().getString(R.string.friendsactivity_search_in_progress), 
+                        Toast.LENGTH_SHORT);
                 return;
             }
         }

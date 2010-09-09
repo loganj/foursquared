@@ -5,6 +5,7 @@
 package com.joelapenna.foursquared;
 
 import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.error.FoursquareException;
 import com.joelapenna.foursquare.types.User;
 import com.joelapenna.foursquared.location.LocationUtils;
 import com.joelapenna.foursquared.preferences.Preferences;
@@ -671,7 +672,8 @@ public class UserDetailsActivity extends TabActivity {
         @Override
         protected void onCancelled() {
             if (mActivity != null) {
-                mActivity.onSetUserPhotoTaskComplete(null, new Exception("Set photo request cancelled."));
+                mActivity.onSetUserPhotoTaskComplete(null, new FoursquareException(
+                        mActivity.getResources().getString(R.string.user_details_activity_set_photo_cancel)));
             }
         }
     }
