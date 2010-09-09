@@ -95,6 +95,12 @@ public class MainActivity extends TabActivity {
                     R.drawable.friends_tab, new Intent(this, FriendsActivity.class));
         } 
         
+/*
+        TabsUtil.addNativeLookingTab(this, mTabHost, "t3", "Tips", //getString(R.string.checkins_label), 
+                R.drawable.friends_tab, new Intent(this, FriendsActivity.class));
+        TabsUtil.addNativeLookingTab(this, mTabHost, "t4", "Todos", //getString(R.string.checkins_label), 
+                R.drawable.friends_tab, new Intent(this, FriendsActivity.class));
+*/        
         // 1.5 can't display tabs within tabs, so we won't have the 'me' tab for
         // 1.5 users. They can access the 'me' page through the context menu.
         int sdk = new Integer(Build.VERSION.SDK).intValue();
@@ -108,7 +114,7 @@ public class MainActivity extends TabActivity {
             Intent intentTabMe = new Intent(this, UserDetailsActivity.class);
             intentTabMe.putExtra(UserDetailsActivity.EXTRA_USER_ID, userId == null ? "unknown"
                     : userId);
-            TabsUtil.addNativeLookingTab(this, mTabHost, "t3", getString(R.string.main_activity_tab_title_me), 
+            TabsUtil.addNativeLookingTab(this, mTabHost, "t5", getString(R.string.main_activity_tab_title_me), 
                     UserUtils.getDrawableForMeTabByGender(userGender), intentTabMe);
         }
         

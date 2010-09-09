@@ -4,6 +4,13 @@
 
 package com.joelapenna.foursquared;
 
+import com.joelapenna.foursquare.Foursquare;
+import com.joelapenna.foursquare.error.FoursquareException;
+import com.joelapenna.foursquare.types.CheckinResult;
+import com.joelapenna.foursquared.location.LocationUtils;
+import com.joelapenna.foursquared.util.NotificationsUtil;
+import com.joelapenna.foursquared.util.RemoteResourceManager;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -19,12 +26,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
-
-import com.joelapenna.foursquare.Foursquare;
-import com.joelapenna.foursquare.types.CheckinResult;
-import com.joelapenna.foursquared.location.LocationUtils;
-import com.joelapenna.foursquared.util.NotificationsUtil;
-import com.joelapenna.foursquared.util.RemoteResourceManager;
 
 /**
  * Can be called to execute a checkin. Should be presented with the transparent
@@ -291,7 +292,7 @@ public class CheckinExecuteActivity extends Activity {
         @Override
         protected void onCancelled() {
             if (mActivity != null) {
-                mActivity.onCheckinComplete(null, new Exception(
+                mActivity.onCheckinComplete(null, new FoursquareException(
                         "Check-in cancelled."));
             }
         }

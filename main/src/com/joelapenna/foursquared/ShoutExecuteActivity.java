@@ -145,7 +145,8 @@ public class ShoutExecuteActivity extends Activity {
         stopProgressBar();
 
         if (result != null) {
-            Toast.makeText(this, "Shout posted ok!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getResources().getString(R.string.shout_exceute_activity_result), 
+                    Toast.LENGTH_LONG).show();
             setResult(Activity.RESULT_OK);
         } else {
             NotificationsUtil.ToastReasonForFailure(this, ex);

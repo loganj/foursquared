@@ -30,7 +30,9 @@
   <string name="checkin_specials">Specials</string>
   <string name="checkin_specials_nearby">Nearby Venues that have Specials</string>
   <string name="checkin_title_shouted">Shouted!</string>
+  <string name="checkin_title_checking_in">Checking in @%s</string>
   <string name="checkin_totals">Total:</string>
+  <string name="checkin_title_result">Checked in!</string>
   <string name="checkins_activity_label">Foursquare Friends</string>
   <string name="checkins_label">Friends</string>
   <string name="city">City</string>
@@ -59,6 +61,7 @@
   <string name="friendsactivity_menu_map">Map</string>
   <string name="friendsactivity_menu_leaderboard">Leaderboard</string>
   <string name="friendsactivity_menu_add_friends">Add Friends</string>
+  <string name="friendsactivity_search_in_progress">A search is already in progress.</string>
   <string name="friendsmapactivity_no_checkins">No recent friend checkins nearby.</string>
   <string name="friendsactivity_menu_friend_requests">Friend Requests</string>
   <string name="last_seen_header">Last Seen</string>
@@ -75,6 +78,8 @@
   <string name="myinfo_label">My Info</string>
   <string name="nearby_label">Places</string>
   <string name="nearby_menu_add_venue">Add Venue</string>
+  <string name="nearby_venues_no_location">Your location could not be found! Make sure network or GPS location services are turned on, then try refreshing the venues list again!</string>
+  <string name="nearby_venues_label_nearby">Nearby</string>
   <string name="need_an_account">Need an account?</string>
   <string name="no_checkins_be_the_first">No recent checkins here!</string>
   <string name="no_friend_checkins">No recent friend checkins!</string>
@@ -121,6 +126,17 @@
   <string name="preferences_unable_to_find_city_toast">Unable to update your city.</string>
   <string name="preferences_updating_city_toast">Updating your city.</string>
   <string name="preferences_welcome_city_toast">Welcome to %s!</string>
+  <string name="preferences_tos_label">"Terms of Service &amp; Privacy"</string>
+  <string name="preferences_tos_summary">"View Foursquare\'s Terms of Service and Privacy Policy."</string>
+  <string name="preference_activity_tos_privacy_dlg_title">Terms of Service &amp; Privacy</string>
+  <string name="preference_activity_tos">Terms of Service</string>
+  <string name="preference_activity_privacy">Privacy Policy</string>
+  <string name="preference_activity_profile_setting_username">Name</string>
+  <string name="preference_activity_profile_setting_email">Email</string>
+  <string name="preference_activity_profile_setting_user_id">User ID</string>
+  <string name="preference_activity_profile_settings_dlg_title">Profile Settings</string>
+  <string name="preferences_profile_settings_label">Profile Settings</string>
+  <string name="preferences_profile_settings_summary">Information about your Foursquare account.</string>
   <string name="refresh_address_label">Refresh Address</string>
   <string name="refresh_label">Refresh</string>
   <string name="search_already_in_progress_toast">A search is already in progress.</string>
@@ -200,6 +216,7 @@
   <string name="user_actions_activity_action_readonly_friend_request">Friend Request Sent</string>
   <string name="user_actions_activity_action_twitter">Twitter</string>
   <string name="user_actions_activity_action_facebook">Facebook</string>
+  <string name="user_actions_activity_label_Last_seen_at">Last seen at %s</string>
   <string name="user_history_activity_no_info">No history available.</string>
   <string name="user_details_activity_tab_title_info">Info</string>
   <string name="user_details_activity_tab_title_history">History</string>
@@ -214,9 +231,11 @@
   <string name="user_details_activity_set_photo_progress_title">Profile Photo</string>
   <string name="user_details_activity_set_photo_progress_message">Updating your photo...</string>
   <string name="user_details_activity_set_photo_success">Photo updated ok!</string>
+  <string name="user_details_activity_set_photo_cancel">Set photo request cancelled.</string>
   <string name="main_activity_tab_title_me">Me</string>
   <string name="checkin_execute_activity_progress_bar_message">Checking-in...</string>
   <string name="shout_execute_activity_progress_bar_message">Posting shout...</string>
+  <string name="checkin_result_dialog_badges">Badges</string>
   <string name="checkin_result_dialog_score_total">Total for this checkin:</string>
   <string name="user_mayorships_activity_adapter_title">Mayorships</string>
   <string name="user_mayorships_activity_no_info">This user has no mayorships.</string>
@@ -232,11 +251,14 @@
   <string name="sign_up_progress_bar_message_send_request">Joining Foursquare...</string>
   <string name="venue_activity_checkin_button">CHECK-IN HERE</string>
   <string name="venue_activity_checkin_button_quick">QUICK CHECK-IN HERE</string>
+  <string name="venue_activity_tip_add_result">Added Tip #%s %s</string>
+  <string name="venue_checkins_activity_label_recent_checkins">Recent Checkins</string>
+  <string name="venue_checkins_activity_label_mayor">Mayor</string>
   <string name="send_invite_button">Invite</string>
   <string name="prelaunch_text"></string>
   <string name="prelaunch_button"></string>
   <string name="prelaunch_checkbox_dont_show_again"></string>
-  <string name="preferences_category_pings">Pings</string>
+  <string name="preferences_category_user_info">User Info</string>
   <string name="preferences_pings_title">Pings</string>
   <string name="preferences_pings_summary">Check status of friends in the background.</string>
   <string name="user_actions_activity_action_pings_on">Pings on</string>
@@ -253,6 +275,7 @@
   <string name="pings_settings_title">Foursquare Pings Settings</string>
   <string name="pings_settings_progressbar_title_updateuser">Pings Settings</string>
   <string name="pings_settings_progressbar_message_updateuser">Updating pings settings...</string>
+  <string name="pings_settings_result">Pings have been turned %s!</string>
   <string name="edit_venue_options_label">Foursquare Edit Venue</string>
   <string name="edit_venue_options_progress_title">Flag Venue</string>
   <string name="edit_venue_options_progress_message">Submitting venue flag info...</string>
@@ -261,6 +284,8 @@
   <string name="edit_venue_options_btn_flag_as_mislocated">Flag incorrect address</string>
   <string name="edit_venue_options_btn_flag_as_duplicate">Flag venue as duplicate</string>
   <string name="edit_venue_options_btn_flag_as_closed">Flag venue as closed</string>
+  <string name="edit_venue_options_thankyou">Thank you for submitting this venue update.</string>
+  <string name="edit_venue_options_error">There was an error submitting the venue update, please try again.</string>
   <string name="edit_venue">Edit Venue</string> 
   <string name="send_log_message_subject">Foursquare for Android Feedback</string>
   <string name="send_log_message_device_our_version">"Foursquare version: "</string>
@@ -273,6 +298,8 @@
   <string name="send_log_acquiring_log_progress_dialog_message">Collecting logs from system...</string>
   <string name="send_log_chooser_title">Foursquare Force-Close Report</string>
   <string name="send_log_failed_to_get_log_message">Failed to get the log from the system.</string>
+  <string name="shout_exceute_activity_result">Shout posted ok!</string>
+  <string name="stats_activity_scoreboard">Foursquare Scoreboard</string>
   <string name="ok">OK</string>
   <string name="cancel">Cancel</string>
   <string name="yes">Yes</string>
@@ -283,4 +310,7 @@
   <string name="help_label">Help</string>
   <string name="help_preference_summary">Get help using Foursquare!</string>
   <string name="category_picket_dialog_title">Pick a Category</string>
+  <string name="settings_user_info_label_user_id">User ID:</string>
+  <string name="settings_user_info_label_username">User Name:</string>
+  <string name="settings_user_info_label_email">Email:</string>
 </resources>
