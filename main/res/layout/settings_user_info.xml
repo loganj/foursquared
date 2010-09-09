@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+  <!-- Copyright 2010 Mark Wyszomierski-->
+  
+  <LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/settings_user_info_layout_root"
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:padding="5dip" >
+    
+    <LinearLayout 
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:paddingBottom="5dip"
+      android:paddingLeft="10dip"
+      android:paddingRight="10dip"
+      >
+       
+      <TextView
+        android:layout_width="110dip"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_user_info_label_user_id"
+        android:textColor="@color/white"
+        android:textAppearance="@android:style/TextAppearance.Medium" 
+        />
+        
+      <TextView
+        android:id="@+id/settings_user_info_label_user_id"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        />
+        
+    </LinearLayout>
+    
+    
+    <LinearLayout 
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content"
+      android:paddingBottom="5dip"
+      android:paddingLeft="10dip"
+      android:paddingRight="10dip"
+      >
+      
+      <TextView
+        android:layout_width="110dip"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_user_info_label_username"
+        android:textColor="@color/white"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        />
+        
+      <TextView
+        android:id="@+id/settings_user_info_label_user_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        />
+        
+    </LinearLayout>
+    
+    
+    <LinearLayout 
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content"
+      android:paddingBottom="5dip"
+      android:paddingLeft="10dip"
+      android:paddingRight="10dip"
+      >
+      
+      <TextView
+        android:layout_width="110dip"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_user_info_label_email"
+        android:textColor="@color/white"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        />
+        
+      <TextView
+        android:id="@+id/settings_user_info_label_user_email"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        />
+        
+    </LinearLayout>
+    
+  </LinearLayout>

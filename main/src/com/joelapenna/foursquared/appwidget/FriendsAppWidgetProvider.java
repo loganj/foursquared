@@ -132,7 +132,7 @@ public class FriendsAppWidgetProvider extends AppWidgetProvider {
         Intent baseIntent;
         baseIntent = new Intent(context, UserDetailsActivity.class);
         baseIntent.putExtra(UserDetailsActivity.EXTRA_USER_ID, checkin.getUser().getId());
-        baseIntent.setData(Uri.parse("http://foursquare.com/user/" + checkin.getUser().getId()));
+        baseIntent.setData(Uri.parse("https://foursquare.com/user/" + checkin.getUser().getId()));
         views.setOnClickPendingIntent(viewId, PendingIntent.getActivity(context, 0, baseIntent, 0));
 
         try {
