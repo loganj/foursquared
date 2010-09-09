@@ -148,6 +148,12 @@ public class PingsService extends WakefulIntentService {
                     continue;
                 }
                 
+                // If it's an 'off the grid' checkin, ignore.
+                if (it.getVenue() == null && it.getShout() == null) {
+                    if (DEBUG) Log.d(TAG, "  Checkin is off the grid, ignoring.");
+                    continue;
+                }
+                
                 // Check against date times.
                 try {
                     Date dateCheckin = StringFormatters.DATE_FORMAT.parse(it.getCreated()); 

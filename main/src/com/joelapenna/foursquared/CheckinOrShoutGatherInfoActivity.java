@@ -150,7 +150,8 @@ public class CheckinOrShoutGatherInfoActivity extends Activity {
 
     private void ensureUi() {
         if (mStateHolder.getIsCheckin()) {
-            setTitle("Checking in @" + mStateHolder.getVenueName());
+            setTitle(getResources().getString(R.string.checkin_title_checking_in, 
+                    mStateHolder.getVenueName()));
         } else {
             setTitle(getResources().getString(R.string.shout_action_label));    
         }

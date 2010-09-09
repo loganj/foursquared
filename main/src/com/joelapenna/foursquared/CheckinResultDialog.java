@@ -83,8 +83,8 @@ public class CheckinResultDialog extends Dialog
         super.onCreate(savedInstanceState); 
     
         setContentView(R.layout.checkin_result_dialog);
-        setTitle("Checked in!");
-
+        setTitle(getContext().getResources().getString(R.string.checkin_title_result));
+       
         TextView tvMessage = (TextView)findViewById(R.id.textViewCheckinMessage);
         if (mCheckinResult != null) {
         
@@ -143,7 +143,8 @@ public class CheckinResultDialog extends Dialog
         BadgeWithIconListAdapter adapter = new BadgeWithIconListAdapter(
             getContext(), rrm, R.layout.badge_list_item);
         adapter.setGroup(badges);
-        adapterMain.addSection("Badges", adapter);
+        adapterMain.addSection(getContext().getResources().getString(R.string.checkin_result_dialog_badges), 
+                adapter);
     }
 
     private void addScores(Group<Score> scores,

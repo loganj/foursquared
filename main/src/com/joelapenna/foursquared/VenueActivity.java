@@ -458,9 +458,13 @@ public class VenueActivity extends TabActivity {
                 if (tip == null) {
                     NotificationsUtil.ToastReasonForFailure(VenueActivity.this, mReason);
                 } else {
-                    String tipToastString = "Added Tip #" + tip.getId() + " " + tip.getText();
                     // Refresh the tips list.
-                    Toast.makeText(VenueActivity.this, tipToastString, Toast.LENGTH_LONG).show();
+                    Toast.makeText(VenueActivity.this, 
+                            VenueActivity.this.getResources().getString(
+                                    R.string.venue_activity_tip_add_result,
+                                    tip.getId(),
+                                    tip.getText()), 
+                            Toast.LENGTH_LONG).show();
                     new VenueTask().execute(mStateHolder.venueId);
                 }
             } finally {

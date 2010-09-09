@@ -213,7 +213,7 @@ public class PingsSettingsActivity extends Activity {
         } else {
             Toast.makeText(
                     this, 
-                    "Pings have been turned " + settings.getPings() + "!", 
+                    getResources().getString(R.string.pings_settings_result, settings.getPings()),
                     Toast.LENGTH_SHORT).show();
             
             if (settings.getPings().equals("on")) {

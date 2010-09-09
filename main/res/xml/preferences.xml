@@ -43,7 +43,11 @@
   </PreferenceCategory>
   
   <PreferenceCategory
-    android:title="@string/preferences_category_pings">
+    android:title="@string/preferences_category_user_info">
+    <com.joelapenna.foursquared.preferences.ClickPreference
+      android:key="profile_settings"
+      android:title="@string/preferences_profile_settings_label"
+      android:summary="@string/preferences_profile_settings_summary" />
     <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="pings_on"
       android:title="@string/preferences_pings_title"
@@ -91,9 +95,13 @@
       android:title="@string/feedback_label"
       android:summary="@string/send_feedback_preference_summary" />
     <com.joelapenna.foursquared.preferences.ClickPreference
+      android:key="tos_privacy"
+      android:title="@string/preferences_tos_label"
+      android:summary="@string/preferences_tos_summary" />
+    <com.joelapenna.foursquared.preferences.ClickPreference
       android:key="logout"
       android:title="@string/preferences_logout_title"
       android:summary="@string/preferences_logout_summary" />
   </PreferenceCategory>
-
+  
 </PreferenceScreen>

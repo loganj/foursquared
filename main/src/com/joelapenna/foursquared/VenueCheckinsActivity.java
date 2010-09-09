@@ -90,7 +90,8 @@ public class VenueCheckinsActivity extends LoadableListActivity {
                 ((Foursquared)getApplication()).getRemoteResourceManager(),
                 ((Foursquared)getApplication()).getSync());
         adapter.setGroup(checkins);
-        mListAdapter.addSection("Recent Checkins", adapter);
+        mListAdapter.addSection(getResources().getString(
+                R.string.venue_checkins_activity_label_recent_checkins), adapter);
     }
 
     private void putMayorInAdapter(final Mayor mayor) {
@@ -101,7 +102,8 @@ public class VenueCheckinsActivity extends LoadableListActivity {
                 ((Foursquared)getApplication()).getRemoteResourceManager(),
                 ((Foursquared)getApplication()).getSync());
         adapter.setGroup(mayors);
-        mListAdapter.addSection("Mayor", adapter);
+        mListAdapter.addSection(getResources().getString(
+                R.string.venue_checkins_activity_label_mayor), adapter);
     }
 
     private void startItemActivity(User user) {

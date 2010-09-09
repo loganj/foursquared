@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.net.URLDecoder;
+
 /**
  * @author Joe LaPenna (joe@joelapenna.com)
  */
@@ -80,7 +82,7 @@ public class BrowsableActivity extends Activity {
                 if (DEBUG) Log.d(TAG, "Matched: URI_PATH_SEARCH");
                 intent = new Intent(this, SearchVenuesActivity.class);
                 if (!TextUtils.isEmpty(uri.getQueryParameter(PARAM_SEARCH_QUERY))) {
-                    intent.putExtra(SearchManager.QUERY, uri.getQueryParameter(PARAM_SEARCH_QUERY));
+                    intent.putExtra(SearchManager.QUERY, URLDecoder.decode(uri.getQueryParameter(PARAM_SEARCH_QUERY)));
                     if (uri.getQueryParameter(PARAM_SEARCH_IMMEDIATE) != null && 
                         uri.getQueryParameter(PARAM_SEARCH_IMMEDIATE).equals("1")) {
                         intent.setAction(Intent.ACTION_SEARCH); // interpret action as search immediately.
@@ -96,7 +98,7 @@ public class BrowsableActivity extends Activity {
                 intent.putExtra(CheckinOrShoutGatherInfoActivity.INTENT_EXTRA_IS_SHOUT, true);
                 if (!TextUtils.isEmpty(uri.getQueryParameter(PARAM_SHOUT_TEXT))) {
                     intent.putExtra(CheckinOrShoutGatherInfoActivity.INTENT_EXTRA_TEXT_PREPOPULATE, 
-                            uri.getQueryParameter(PARAM_SHOUT_TEXT));
+                            URLDecoder.decode(uri.getQueryParameter(PARAM_SHOUT_TEXT)));
                 }
                 startActivity(intent);
                 break;
